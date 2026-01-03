@@ -1,0 +1,186 @@
+.card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: #e0e0e0;
+    }
+}
+
+.header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.companyLogo {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #f0f0f0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.placeholderLogo {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1890ff, #36cfc9);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-decoration: none;
+    line-height: 1.3;
+
+    &:hover {
+        color: #1890ff;
+    }
+}
+
+.companyName {
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.typeBadge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #f0f5ff;
+    color: #2f54eb;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.details {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    color: #666;
+    font-size: 13px;
+    padding: 12px 0;
+    border-top: 1px solid #f5f5f5;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    svg {
+        color: #999;
+    }
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category {
+    font-size: 12px;
+    color: #999;
+    background: #fafafa;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.applyBtn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #1890ff;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #096dd9;
+    }
+}
+
+/* Owner Actions & Status */
+.ownerActions {
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn,
+.deleteBtn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #f5f5f5;
+        border-color: #ccc;
+    }
+}
+
+.deleteBtn {
+    color: #ff4d4f;
+    border-color: #ffa39e;
+
+    &:hover {
+        background: #fff1f0;
+        border-color: #ff4d4f;
+    }
+}
+
+.appliedBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #52c41a;
+    font-weight: 600;
+    font-size: 14px;
+    background: #f6ffed;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #b7eb8f;
+}

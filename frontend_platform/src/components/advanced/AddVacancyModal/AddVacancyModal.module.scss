@@ -1,0 +1,47 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+
+    >* {
+        flex: 1;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+}
+
+.select,
+.input,
+.textarea {
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+
+    &:focus {
+        border-color: #1890ff;
+    }
+}
+
+.textarea {
+    resize: vertical;
+}

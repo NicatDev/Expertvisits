@@ -1,0 +1,74 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2100;
+}
+
+.modal {
+    background: #fff;
+    width: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    button {
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+}
+
+.userList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.userItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .userInfo {
+        display: flex;
+        flex-direction: column;
+
+        .date {
+            color: #6f6f6f;
+            font-size: 12px;
+        }
+    }
+}

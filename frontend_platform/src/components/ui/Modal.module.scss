@@ -1,0 +1,98 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    position: relative;
+    background-color: #fff;
+    border-radius: $border-radius-base;
+    box-shadow: $box-shadow-hover;
+    width: 520px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.2s ease-out;
+
+    @include mobile {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+}
+
+.header {
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    color: $text-color;
+}
+
+.closeParams {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    color: $text-secondary;
+    transition: color 0.3s;
+
+    &:hover {
+        color: $text-color;
+    }
+}
+
+.body {
+    padding: $spacing-lg;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.footer {
+    padding: $spacing-sm $spacing-md;
+    border-top: 1px solid $border-color;
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-sm;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

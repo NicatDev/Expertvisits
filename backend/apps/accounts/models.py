@@ -1,0 +1,62 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from core.utils import custom_slugify
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, db_index=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, db_index=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class User(AbstractUser):
+    profession_sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True, blank=True)
+    interests = models.ManyToManyField(SubCategory, related_name="interested_users", blank=True)
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
+    is_service_open = models.BooleanField(default=False, db_index=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    work_hours_start = models.TimeField(null=True, blank=True)
+    work_hours_end = models.TimeField(null=True, blank=True)
+    working_days = models.JSONField(default=list) # ["Monday", "Tuesday", etc.]
+    birth_day = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.username
+
+class VerificationCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='verification_codes')
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.code}"
+
+class RegistrationSession(models.Model):
+    email = models.EmailField(unique=True, db_index=True)
+    code = models.CharField(max_length=6)
+    user_data = models.JSONField() # Stores username, password, fields, etc.
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Session: {self.email}"

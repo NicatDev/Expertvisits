@@ -1,0 +1,49 @@
+.content {
+    padding: 16px 0;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    color: #444;
+}
+
+.formGroup {
+    margin-top: 20px;
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: #333;
+    }
+}
+
+.selectInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+    transition: all 0.2s;
+    cursor: pointer;
+
+    &:focus {
+        border-color: #1890ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    }
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+}

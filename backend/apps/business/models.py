@@ -1,0 +1,104 @@
+from django.db import models
+from apps.accounts.models import User, SubCategory
+from core.utils import custom_slugify
+
+class Company(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='companies')
+    name = models.CharField(max_length=255, db_index=True)
+    slug = models.SlugField(unique=True, db_index=True)
+    logo = models.ImageField(upload_to='company_logos/')
+    summary = models.TextField()
+    founded_at = models.DateField()
+    email = models.EmailField(db_index=True)
+    phone = models.CharField(max_length=50, blank=True)
+    website_url = models.URLField(blank=True)
+    address = models.CharField(max_length=500, blank=True)
+    linkedin_url = models.URLField(blank=True)
+    instagram_url = models.URLField(blank=True)
+    facebook_url = models.URLField(blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class CompanyNews(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='news')
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='company_news/', null=True, blank=True)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Vacancy(models.Model):
+    LISTING_TYPE = [('job', 'Job'), ('internship', 'Internship')]
+    JOB_TYPE = [('full-time', 'Full-time'), ('part-time', 'Part-time')]
+    WORK_MODE = [('remote', 'Remote'), ('hybrid', 'Hybrid'), ('office', 'Office')]
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vacancies')
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_vacancies', null=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True)
+    listing_type = models.CharField(choices=LISTING_TYPE, max_length=20, db_index=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from core.utils import custom_slugify
+            base_slug = custom_slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Vacancy.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+    title = models.CharField(max_length=255, db_index=True)
+    salary_range = models.CharField(max_length=100, null=True, blank=True)
+    job_type = models.CharField(choices=JOB_TYPE, max_length=20)
+    work_mode = models.CharField(choices=WORK_MODE, max_length=20)
+    location = models.CharField(max_length=255)
+    description = models.TextField(default='')
+    posted_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateField()
+
+    def __str__(self):
+        return self.title
+
+class VacancyApplication(models.Model):
+    STATUS_CHOICES = [('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')]
+    
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_applications')
+    motivation_letter = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('vacancy', 'applicant')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.applicant.username} -> {self.vacancy.title}"
+
+class OngoingProject(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_projects')
+    participants = models.ManyToManyField(User, related_name='joined_projects', blank=True)
+    title = models.CharField(max_length=255, db_index=True)
+    image_logo = models.ImageField(upload_to='project_logos/', null=True, blank=True)
+    description = models.TextField()
+    is_active = models.BooleanField(default=True)
+
+class ProjectInternalPost(models.Model):
+    project = models.ForeignKey(OngoingProject, related_name="internal_posts", on_delete=models.CASCADE)
+    description = models.TextField()
+    image = models.ImageField(upload_to='project_posts/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ProjectRequest(models.Model):
+    STATUS_CHOICES = [('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')]
+    project = models.ForeignKey(OngoingProject, on_delete=models.CASCADE, related_name='requests')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    status = models.CharField(choices=STATUS_CHOICES, default='pending', max_length=20)

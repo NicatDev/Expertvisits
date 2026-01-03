@@ -1,0 +1,263 @@
+.feedItem {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #eee;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+
+    .userInfo {
+        display: flex;
+        gap: 10px;
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .meta {
+            .username {
+                font-weight: bold;
+            }
+
+            .date {
+                font-size: 12px;
+                color: #999;
+            }
+        }
+    }
+
+    .moreBtn {
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+}
+
+.contentBody {
+    margin-bottom: 16px;
+
+    .coverImage {
+        width: 100%;
+        max-height: 500px;
+        position: relative;
+        margin-bottom: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+        }
+    }
+
+    h3 {
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .quizCard {
+        background: #f0faff;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid #bae7ff;
+
+        h3 {
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #666;
+        }
+    }
+
+    .surveyCard {
+        background: #fff7e6;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ffd591;
+        position: relative; // For participants count positioning
+
+        h4 {
+            margin-bottom: 12px;
+            color: #d46b08;
+        }
+
+        .question {
+            font-weight: 500;
+            fontSize: 16px;
+            margin-bottom: 16px;
+        }
+
+        .participants {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 11px;
+            color: #d46b08;
+            opacity: 0.8;
+        }
+    }
+}
+
+.statsBar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+
+    span {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.footerActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    .actionGroup {
+        display: flex;
+        gap: 20px;
+    }
+
+    button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #666;
+
+        &.active {
+            color: #1890ff;
+        }
+    }
+}
+
+.commentInput {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .inputWrapper {
+        flex: 1;
+        position: relative;
+
+        input {
+            width: 100%;
+            padding: 8px 36px 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #eee;
+            background: #f9f9f9;
+            outline: none;
+
+            &:focus {
+                border-color: #1890ff;
+                background: #fff;
+            }
+        }
+
+        button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #1890ff;
+        }
+    }
+}
+
+.latestComment {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    cursor: pointer;
+
+    .userInfo {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .commentContent {
+        font-size: 13px;
+
+        .username {
+            font-weight: bold;
+            margin-right: 6px;
+        }
+    }
+
+    .viewAll {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .noComments {
+        font-size: 13px;
+        color: #999;
+        text-align: center;
+    }
+}

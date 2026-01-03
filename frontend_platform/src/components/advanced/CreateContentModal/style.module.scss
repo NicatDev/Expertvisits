@@ -1,0 +1,221 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal {
+    background: #fff;
+    width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+
+    .closeBtn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    h2 {
+        margin-bottom: 24px;
+    }
+}
+
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+
+    button {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: none;
+        background: #f5f5f5;
+        color: #666;
+        cursor: pointer;
+        text-transform: capitalize;
+        font-weight: 500;
+
+        &.active {
+            background: #1890ff;
+            color: #fff;
+        }
+    }
+}
+
+.formContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .fieldGroup {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d9d9d9;
+            min-height: 150px;
+            resize: vertical;
+        }
+    }
+
+    /* New Upload Styles */
+    .uploadContainer {
+        border: 2px dashed #d9d9d9;
+        border-radius: 8px;
+        padding: 2px;
+        text-align: center;
+        cursor: pointer;
+        transition: border 0.3s;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fafafa;
+        position: relative;
+
+        &:hover {
+            border-color: #1890ff;
+        }
+
+        .uploadTrigger {
+            padding: 20px;
+            color: #999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+
+            span {
+                font-size: 13px;
+            }
+        }
+
+        .previewImage {
+            position: relative;
+            width: 100%;
+
+            img {
+                width: 100%;
+                max-height: 300px;
+                object-fit: contain;
+                border-radius: 6px;
+                display: block;
+            }
+
+            .removeBtn {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                border: none;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.8);
+                }
+            }
+        }
+    }
+}
+
+.quizBuilder {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .questionCard {
+        background: #f9f9f9;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+
+            span {
+                font-weight: 600;
+            }
+
+            button {
+                color: red;
+                border: none;
+                background: none;
+                cursor: pointer;
+            }
+        }
+
+        .answers {
+            margin-top: 12px;
+            padding-left: 12px;
+            border-left: 2px solid #ddd;
+
+            .answerRow {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                margin-bottom: 8px;
+
+                .check {
+                    cursor: pointer;
+                    color: #ccc;
+
+                    &.correct {
+                        color: green;
+                    }
+                }
+
+                input {
+                    flex: 1;
+                    padding: 6px;
+                    border-radius: 4px;
+                    border: 1px solid #ddd;
+                }
+
+                .removeBtn {
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                    color: #999;
+                }
+            }
+        }
+    }
+}
+
+.actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}

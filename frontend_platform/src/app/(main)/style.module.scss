@@ -1,0 +1,175 @@
+.container {
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    gap: 24px;
+}
+
+.sidebarBox {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+
+    h3 {
+        margin-bottom: 8px;
+    }
+
+    .welcomeText {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .guestBox {
+        text-align: center;
+
+        p {
+            margin-bottom: 12px;
+        }
+    }
+
+    .trendList {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+
+        li {
+            margin-bottom: 8px;
+            color: #1890ff;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+/* New: Create Post Input at Top */
+.createBox {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f0f2f5;
+        // placeholder for user avatar if we add it
+    }
+
+    .placeholderInput {
+        flex: 1;
+        background: #f0f2f5;
+        padding: 10px 20px;
+        border-radius: 24px;
+        color: #666;
+        font-size: 14px;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #e6e6e6;
+        }
+    }
+}
+
+/* New: Filters + Search + Ordering */
+.controlsBox {
+    background: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .leftGroup {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex: 1;
+    }
+
+    .filters {
+        display: flex;
+        gap: 8px;
+
+        button {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            background: #f5f5f5;
+            color: #666;
+            cursor: pointer;
+            font-weight: 500;
+            text-transform: capitalize;
+            font-size: 13px;
+
+            &.active {
+                background: #e6f7ff;
+                color: #1890ff;
+            }
+        }
+    }
+
+    .searchWrapper {
+        display: flex;
+        align-items: center;
+        background: #f0f2f5;
+        padding: 6px 12px;
+        border-radius: 20px;
+        flex: 1;
+        max-width: 300px;
+
+        .searchIcon {
+            color: #999;
+            margin-right: 8px;
+        }
+
+        input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
+    }
+
+    select {
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        color: #666;
+        font-size: 13px;
+    }
+}
+
+.feedList {
+    display: flex;
+    flex-direction: column;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+
+    p {
+        margin-bottom: 12px;
+    }
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+}
