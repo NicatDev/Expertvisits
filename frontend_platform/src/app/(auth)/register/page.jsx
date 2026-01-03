@@ -16,6 +16,7 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedInterests, setSelectedInterests] = useState([]); // Array of IDs
+    const [professionId, setProfessionId] = useState(''); // Single ID for profession
     const [error, setError] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
 
@@ -102,7 +103,8 @@ export default function RegisterPage() {
         try {
             await auth.register({
                 ...formData,
-                interests: selectedInterests
+                interests: selectedInterests,
+                profession_sub_category: professionId
             });
             // On success, move to step 3
             setStep(3);
@@ -176,6 +178,35 @@ export default function RegisterPage() {
                         <p style={{ marginBottom: '24px', color: '#666', textAlign: 'center' }}>
                             Select at least 1 topic to personalize your feed.
                         </p>
+
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>Primary Profession</label>
+                            <select
+                                value={professionId}
+                                onChange={(e) => setProfessionId(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+                                    fontSize: '14px'
+                                }}
+                            >
+                                <option value="">Select your profession...</option>
+                                {categories.map(cat => (
+                                    <optgroup key={cat.id} label={cat.name}>
+                                        {cat.subcategories.map(sub => (
+                                            <option key={sub.id} value={sub.id}>
+                                                {sub.profession || sub.name}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                ))}
+                            </select>
+                            <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                                This will be displayed on your profile (e.g. "Biznes Meneceri")
+                            </p>
+                        </div>
 
                         <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '24px' }}>
                             {categories.map(cat => (
@@ -256,6 +287,6 @@ export default function RegisterPage() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

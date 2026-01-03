@@ -41,6 +41,24 @@ const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHour
                 businessHours={businessHours}
                 selectConstraint={businessHours ? "businessHours" : undefined}
                 selectOverlap={false}
+
+                // Time Formatting (24h)
+                slotLabelFormat={{
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    meridiem: false
+                }}
+                eventTimeFormat={{
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }}
+
+                // Event Application Colors (Dark Green BG, White Text) - Defaults if not provided by event
+                eventBackgroundColor="#389e0d"
+                eventBorderColor="#237804"
+                eventTextColor="#ffffff"
             />
         </div>
     );

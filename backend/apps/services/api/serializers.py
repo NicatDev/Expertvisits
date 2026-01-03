@@ -1,12 +1,7 @@
 from rest_framework import serializers
-from apps.services.models import Service, BookingRequest
+from apps.services.models import BookingRequest
 from apps.accounts.models import User
 from apps.accounts.api.serializers import UserSerializer
-
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = '__all__'
 
 class BookingRequestSerializer(serializers.ModelSerializer):
     provider_name = serializers.StringRelatedField(source='provider', read_only=True)
@@ -18,7 +13,7 @@ class BookingRequestSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BookingRequest
-        fields = ['id', 'provider_name', 'provider_id', 'customer', 'customer_details', 'service', 'requested_datetime', 'duration_minutes', 'note', 'status']
+        fields = ['id', 'provider_name', 'provider_id', 'customer', 'customer_details', 'requested_datetime', 'duration_minutes', 'note', 'status']
         extra_kwargs = {
             'customer': {'read_only': True},
         }

@@ -62,8 +62,8 @@ const RecommendedUsers = () => {
                             <Link href={`/user/${user.username}`} className={styles.name}>
                                 {user.first_name} {user.last_name}
                             </Link>
-                            <span className={styles.followers}>
-                                {user.followers_count || 0} followers
+                            <span className={styles.followers} style={{ color: '#999', fontSize: '12px' }}>
+                                {user.profession_sub_category?.profession || user.profession_sub_category?.name || 'User'}
                             </span>
                         </div>
                         <button

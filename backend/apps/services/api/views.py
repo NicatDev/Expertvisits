@@ -4,17 +4,9 @@ from rest_framework.response import Response
 from django.utils import timezone
 import datetime
 
-from apps.services.models import Service, BookingRequest
+from apps.services.models import BookingRequest
 from django.db import models
-from apps.services.api.serializers import ServiceSerializer, BookingRequestSerializer
-
-class ServiceViewSet(viewsets.ModelViewSet):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user) # Default to user service
+from apps.services.api.serializers import BookingRequestSerializer
 
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingRequestSerializer
@@ -23,17 +15,63 @@ class BookingViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if self.action == 'list':
+            qs = BookingRequest.objects.all()
+            
             role = self.request.query_params.get('role', 'customer')
             if role == 'provider':
-                return BookingRequest.objects.filter(provider=user)
-            return BookingRequest.objects.filter(customer=user)
+                qs = qs.filter(provider=user)
+            else:
+                qs = qs.filter(customer=user)
+            
+            # Status Filter
+            status_param = self.request.query_params.get('status')
+            if status_param:
+                statuses = status_param.split(',')
+                qs = qs.filter(status__in=statuses)
+                
+            # Exclude Self (Self-bookings)
+            exclude_self = self.request.query_params.get('exclude_self')
+            if exclude_self == 'true':
+                qs = qs.exclude(customer=user)
+            
+            return qs.order_by('-requested_datetime')
             
         # For details and actions, allow if user involved
         return BookingRequest.objects.filter(models.Q(provider=user) | models.Q(customer=user))
 
     def perform_create(self, serializer):
+        from rest_framework import serializers
+        from datetime import timedelta
+        
         provider = serializer.validated_data.get('provider')
         customer = self.request.user
+        request_start = serializer.validated_data.get('requested_datetime')
+        duration = serializer.validated_data.get('duration_minutes', 30)
+        request_end = request_start + timedelta(minutes=duration)
+
+        # Check for overlaps
+        # Overlap if: (StartA < EndB) and (EndA > StartB)
+        # We need to check against CONFIRMED bookings for this provider
+        
+        # Note: Ideally we should use database-level constraints or range fields (Postgres Tstzrange)
+        # But for now, we iterate or use basic Q lookup. Since end_time isn't a column, we annotate or filter carefully.
+        # Simple approach: Get all confirmed bookings for the day, check in python.
+        
+        day_start = request_start.replace(hour=0, minute=0, second=0)
+        day_end = day_start + timedelta(days=1)
+        
+        existing_bookings = BookingRequest.objects.filter(
+            provider=provider,
+            status='confirmed',
+            requested_datetime__range=(day_start, day_end)
+        )
+        
+        for b in existing_bookings:
+            b_start = b.requested_datetime
+            b_end = b_start + timedelta(minutes=b.duration_minutes)
+            
+            if request_start < b_end and request_end > b_start:
+                raise serializers.ValidationError({"non_field_errors": ["The selected time slot overlaps with an existing appointment."]})
         
         status_val = 'pending'
         if provider == customer:
@@ -70,16 +108,21 @@ class BookingViewSet(viewsets.ModelViewSet):
         
         if provider_id:
             # Public view of a provider's schedule
-            bookings = BookingRequest.objects.filter(
-                status='confirmed',
-                provider_id=provider_id
-            )
-            is_owner = False
+            # 1. Confirmed bookings (Busy for everyone)
+            query = models.Q(status='confirmed', provider_id=provider_id)
+            
+            # 2. My pending requests (Visible to me)
+            if request.user.is_authenticated:
+                query |= models.Q(status='pending', provider_id=provider_id, customer=request.user)
+            
+            bookings = BookingRequest.objects.filter(query)
+            is_owner = False # Viewing someone else
         else:
             # Private view for the logged-in user (my schedule)
             user = self.request.user
+            # Show both confirmed and pending for owner
             bookings = BookingRequest.objects.filter(
-                status='confirmed'
+                models.Q(status='confirmed') | models.Q(status='pending')
             ).filter(
                 models.Q(provider=user) | models.Q(customer=user)
             )
@@ -90,19 +133,24 @@ class BookingViewSet(viewsets.ModelViewSet):
             start = b.requested_datetime
             end = start + datetime.timedelta(minutes=b.duration_minutes)
             
-            if is_owner:
-                # Owners see details
-                if b.provider == b.customer:
-                     title = b.note if b.note else "Busy"
-                elif user == b.provider:
-                    title = f"Meeting with {b.customer.first_name} {b.customer.last_name}"
+            title = "Busy" # Default
+            color = '#595959' # Lighter black (Blocked)
+
+            if b.status == 'pending':
+                # Pending requests (Owner or Customer viewing their own)
+                color = '#fa8c16'
+                title = "Request Pending"
+            elif is_owner:
+                # Owners see details for confirmed
+                if b.provider == user and b.customer == user:
+                     title = "Blocked"
                 else:
-                    title = f"Meeting with {b.provider.first_name} {b.provider.last_name}"
-                color = '#333333' if b.provider == b.customer else '#52c41a'
+                     title = f"Meeting with {b.customer.first_name}" if b.provider == user else f"Meeting with {b.provider.first_name}"
+                color = '#52c41a' # Green confirmed
             else:
                 # Public sees generic "Busy"
                 title = "Busy"
-                color = '#333333' # Black for busy/blocked
+                color = '#595959' # Lighter black for busy
             
             events.append({
                 'id': b.id,
@@ -110,8 +158,11 @@ class BookingViewSet(viewsets.ModelViewSet):
                 'start': start.isoformat(),
                 'end': end.isoformat(),
                 'backgroundColor': color,
-                'borderColor': color
-                # Removed 'display': 'background' so it renders as a visible block
+                'borderColor': color,
+                'extendedProps': {
+                    'status': b.status,
+                    'note': b.note
+                }
             })
             
         return Response(events)

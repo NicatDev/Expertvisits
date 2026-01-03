@@ -198,11 +198,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
-        serializer = self.get_serializer(request.user)
-        data = serializer.data
-        # Add is_following flag if looking at other profiles in generic get? 
-        # No, 'me' is current user.
-        return Response(data)
+        # Retrieve user using get_queryset() to ensure annotations (like followers_count) are present
+        instance = self.get_queryset().get(pk=request.user.pk)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def check_availability(self, request):
@@ -278,3 +277,36 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
+
+from apps.profiles.models import Experience, Education, Skill, Language, Certificate
+from apps.profiles.api.serializers import (
+    ExperienceSerializer, EducationSerializer, SkillSerializer,
+    LanguageSerializer, CertificateSerializer
+)
+
+class UserProfileDetailsAPIView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        user_id = request.query_params.get('user_id')
+        username = request.query_params.get('username')
+
+        if not user_id and not username:
+            return Response({'error': 'user_id or username required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if user_id:
+                user = User.objects.get(id=user_id)
+            else:
+                user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'experience': ExperienceSerializer(Experience.objects.filter(user=user), many=True).data,
+            'education': EducationSerializer(Education.objects.filter(user=user), many=True).data,
+            'skills': SkillSerializer(Skill.objects.filter(user=user), many=True).data,
+            'languages': LanguageSerializer(Language.objects.filter(user=user), many=True).data,
+            'certificates': CertificateSerializer(Certificate.objects.filter(user=user), many=True).data,
+        }
+        return Response(data)

@@ -9,6 +9,7 @@ const Button = ({
     block = false,
     className = '',
     onClick,
+    loading = false,
     ...props
 }) => {
     const classes = [
@@ -20,7 +21,13 @@ const Button = ({
     ].join(' ');
 
     return (
-        <button type={htmlType} className={classes} onClick={onClick} {...props}>
+        <button
+            type={htmlType}
+            className={`${classes} ${loading ? styles.loading : ''}`}
+            onClick={loading ? undefined : onClick}
+            disabled={loading || props.disabled}
+            {...props}
+        >
             {children}
         </button>
     );

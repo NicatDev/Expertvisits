@@ -1,0 +1,215 @@
+[
+  {
+    "category": "Biznes və İdarəetmə",
+    "subcategories": [
+      { "name": "Biznesin İdarə Edilməsi (Ümumi)", "profession": "Biznes Meneceri" },
+      { "name": "Biznes Konsaltinqi", "profession": "Biznes Konsultantı" },
+      { "name": "Biznes Analitikası", "profession": "Business Analyst" },
+      { "name": "Layihə İdarəetməsi (Project Management)", "profession": "Project Manager" },
+      { "name": "Məhsul İdarəetməsi (Product Management)", "profession": "Product Manager" },
+      { "name": "Biznes Prosesləri", "profession": "Proses Analitiki" },
+      { "name": "Strateji Planlama", "profession": "Strateji Menecer" },
+      { "name": "Biznesin İnkişafı", "profession": "Business Development Manager" },
+      { "name": "Əməliyyatlar (Operations)", "profession": "Operations Manager" },
+      { "name": "Risk Menecmenti", "profession": "Risk Meneceri" },
+      { "name": "Logistika və Təchizat", "profession": "Logistika Meneceri" }
+    ]
+  },
+  {
+    "category": "Maliyyə, Mühasibatlıq və Audit",
+    "subcategories": [
+      { "name": "Maliyyə İşləri (Ümumi)", "profession": "Maliyyəçi" },
+      { "name": "Mühasibat Uçotu", "profession": "Mühasib" },
+      { "name": "Maliyyə Analizi", "profession": "Maliyyə Analitiki" },
+      { "name": "Audit", "profession": "Auditor" },
+      { "name": "Vergi Planlaması", "profession": "Vergi Məsləhətçisi" },
+      { "name": "İnvestisiya", "profession": "İnvestisiya Məsləhətçisi" },
+      { "name": "Maliyyə Planlaması", "profession": "Financial Planner" },
+      { "name": "Xəzinədarlıq", "profession": "Xəzinədar" }
+    ]
+  },
+  {
+    "category": "Bankçılıq və Kredit",
+    "subcategories": [
+      { "name": "Kredit", "profession": "Kredit Mütəxəssisi" },
+      { "name": "Kredit Riskləri", "profession": "Risk Analitiki" },
+      { "name": "İpoteka", "profession": "İpoteka Məsləhətçisi" },
+      { "name": "Korporativ Bankçılıq", "profession": "Korporativ Bankir" },
+      { "name": "KOS (SME) Bankçılığı", "profession": "KOS Mütəxəssisi" }
+    ]
+  },
+  {
+    "category": "İnformasiya Texnologiyaları (Proqramlaşdırma)",
+    "subcategories": [
+      { "name": "Proqramlaşdırma (Ümumi)", "profession": "Proqramçı / Software Engineer" },
+      { "name": "Backend Development", "profession": "Backend Developer" },
+      { "name": "Frontend Development", "profession": "Frontend Developer" },
+      { "name": "Full Stack Development", "profession": "Full Stack Developer" },
+      { "name": "Mobil Tətbiq İnkişafı", "profession": "Mobile Developer" },
+      { "name": "DevOps", "profession": "DevOps Engineer" },
+      { "name": "Süni İntellekt (AI) və ML", "profession": "AI / ML Engineer" },
+      { "name": "Oyun Yaradılması (Gamedev)", "profession": "Game Developer" },
+      { "name": "Proqram Təminatı Memarlığı", "profession": "Software Architect" }
+    ]
+  },
+  {
+    "category": "İT İnfrastruktur və Təhlükəsizlik",
+    "subcategories": [
+      { "name": "İT Mütəxəssisliyi (Ümumi)", "profession": "İT Mütəxəssisi" },
+      { "name": "Kiber Təhlükəsizlik", "profession": "Cybersecurity Specialist" },
+      { "name": "Penetrasiya Testləri", "profession": "Penetration Tester" },
+      { "name": "Şəbəkə İnzibatçılığı", "profession": "Network Engineer" },
+      { "name": "Sistem İnzibatçılığı", "profession": "System Administrator" },
+      { "name": "Bulud Texnologiyaları", "profession": "Cloud Engineer" },
+      { "name": "QA və Testləşdirmə", "profession": "QA Engineer" },
+      { "name": "Texniki Dəstək (IT Support)", "profession": "Helpdesk Specialist" }
+    ]
+  },
+  {
+    "category": "Data və Analitika",
+    "subcategories": [
+      { "name": "Data Analitikası", "profession": "Data Analyst" },
+      { "name": "Data Elmi (Data Science)", "profession": "Data Scientist" },
+      { "name": "Data Mühəndisliyi", "profession": "Data Engineer" },
+      { "name": "Bazar Araşdırması", "profession": "Market Research Analyst" },
+      { "name": "Statistika", "profession": "Statistik" },
+      { "name": "Business Intelligence (BI)", "profession": "BI Developer" }
+    ]
+  },
+  {
+    "category": "Marketinq, PR və Media",
+    "subcategories": [
+      { "name": "Marketinq (Ümumi)", "profession": "Marketoloq" },
+      { "name": "Rəqəmsal Marketinq", "profession": "Digital Marketing Specialist" },
+      { "name": "Sosial Media (SMM)", "profession": "SMM Meneceri" },
+      { "name": "Axtarış Motoru Optimizasiyası (SEO)", "profession": "SEO Mütəxəssisi" },
+      { "name": "Kontent Yaradıcılığı", "profession": "Content Creator" },
+      { "name": "Brendinq", "profession": "Brend Meneceri" },
+      { "name": "İctimaiyyətlə Əlaqələr (PR)", "profession": "PR Meneceri" },
+      { "name": "Reklam (PPC/Performance)", "profession": "Reklam Mütəxəssisi" }
+    ]
+  },
+  {
+    "category": "Satış və Müştəri Xidmətləri",
+    "subcategories": [
+      { "name": "Satış (Ümumi)", "profession": "Satış Təmsilçisi" },
+      { "name": "Satış İdarəetməsi", "profession": "Satış Meneceri" },
+      { "name": "Müştəri Xidmətləri", "profession": "Müştəri Xidmətləri Mütəxəssisi" },
+      { "name": "Account Management", "profession": "Account Manager" },
+      { "name": "Elektron Ticarət (E-commerce)", "profession": "E-commerce Manager" },
+      { "name": "Müştəri Uğuru (Customer Success)", "profession": "Customer Success Manager" }
+    ]
+  },
+  {
+    "category": "Dizayn və Yaradıcılıq",
+    "subcategories": [
+      { "name": "Dizayn (Ümumi)", "profession": "Dizayner" },
+      { "name": "Qrafik Dizayn", "profession": "Qrafik Dizayner" },
+      { "name": "UI/UX Dizayn", "profession": "UI/UX Dizayner" },
+      { "name": "Məhsul Dizaynı", "profession": "Product Designer" },
+      { "name": "Motion Dizayn", "profession": "Motion Dizayner" },
+      { "name": "3D Modelləşdirmə", "profession": "3D Artist" },
+      { "name": "İnteryer Dizaynı", "profession": "İnteryer Dizayner" },
+      { "name": "Landşaft Dizaynı", "profession": "Landşaft Dizayneri" },
+      { "name": "Dəb və Geyim Dizaynı", "profession": "Modelyer" },
+      { "name": "İllüstrasiya", "profession": "İllüstrator" }
+    ]
+  },
+  {
+    "category": "Video, Foto və Məzmun",
+    "subcategories": [
+      { "name": "Video Çəkiliş", "profession": "Videoqraf" },
+      { "name": "Video Montaj", "profession": "Video Editor" },
+      { "name": "Fotoqrafiya", "profession": "Fotoqraf" },
+      { "name": "Kopiraytinq", "profession": "Kopirayter" },
+      { "name": "Ssenari Yazarlığı", "profession": "Ssenarist" },
+      { "name": "Rejissorluq", "profession": "Rejissor" },
+      { "name": "Səs Rejissorluğu", "profession": "Səs Rejissoru" }
+    ]
+  },
+  {
+    "category": "İnsan Resursları (HR)",
+    "subcategories": [
+      { "name": "İnsan Resursları (Ümumi)", "profession": "HR Mütəxəssisi" },
+      { "name": "İşə Qəbul (Recruitment)", "profession": "Recruiter" },
+      { "name": "Təlim və İnkişaf (L&D)", "profession": "Təlimçi / L&D Mütəxəssisi" },
+      { "name": "HR Biznes Tərəfdaşlığı", "profession": "HR Business Partner" },
+      { "name": "Kadr Kargüzarlığı", "profession": "Kadrlar üzrə Mütəxəssis" }
+    ]
+  },
+  {
+    "category": "Psixologiya və Psixoterapiya",
+    "subcategories": [
+      { "name": "Psixologiya (Ümumi)", "profession": "Psixoloq" },
+      { "name": "Klinik Psixologiya", "profession": "Klinik Psixoloq" },
+      { "name": "Uşaq Psixologiyası", "profession": "Uşaq Psixoloqu" },
+      { "name": "Ailə və Cütlük Psixologiyası", "profession": "Ailə Psixoloqu" },
+      { "name": "Psixoterapiya", "profession": "Psixoterapevt" },
+      { "name": "Neyropsixologiya", "profession": "Neyropsixoloq" },
+      { "name": "Loqopediya", "profession": "Loqoped" }
+    ]
+  },
+  {
+    "category": "Kouçinq və Şəxsi İnkişaf",
+    "subcategories": [
+      { "name": "Kouçinq (Ümumi)", "profession": "Kouç" },
+      { "name": "Həyat Kouçluğu (Life Coaching)", "profession": "Life Coach" },
+      { "name": "Karyera Kouçluğu", "profession": "Karyera Kouçu" },
+      { "name": "Biznes Kouçluğu", "profession": "Biznes Kouçu" },
+      { "name": "Mentorluq", "profession": "Mentor" }
+    ]
+  },
+  {
+    "category": "Tibb və Səhiyyə",
+    "subcategories": [
+      { "name": "Təbabət (Ümumi)", "profession": "Həkim" },
+      { "name": "Terapevtika", "profession": "Terapevt" },
+      { "name": "Pediatriya", "profession": "Pediatr" },
+      { "name": "Kardiologiya", "profession": "Kardioloq" },
+      { "name": "Stomatologiya", "profession": "Stomatoloq" },
+      { "name": "Nevrologiya", "profession": "Nevroloq" },
+      { "name": "Dermatologiya", "profession": "Dermatoloq" },
+      { "name": "Cərrahiyyə", "profession": "Cərrah" },
+      { "name": "Ginekologiya", "profession": "Ginekoloq" },
+      { "name": "Diyetologiya", "profession": "Diyetoloq" },
+      { "name": "Fizioterapiya", "profession": "Fizioterapevt" },
+      { "name": "Oftalmologiya", "profession": "Oftalmoloq (Göz Həkimi)" },
+      { "name": "Radiologiya", "profession": "Radioloq" },
+      { "name": "Əczaçılıq", "profession": "Əczaçı" }
+    ]
+  },
+  {
+    "category": "Hüquq",
+    "subcategories": [
+      { "name": "Hüquqşünaslıq (Ümumi)", "profession": "Hüquqşünas" },
+      { "name": "Vəkillik", "profession": "Vəkil" },
+      { "name": "Korporativ Hüquq", "profession": "Korporativ Hüquqşünas" },
+      { "name": "Notariat", "profession": "Notarius" },
+      { "name": "Miqrasiya Hüququ", "profession": "Miqrasiya Hüquqşünası" }
+    ]
+  },
+  {
+    "category": "Təhsil və Tədris",
+    "subcategories": [
+      { "name": "Pedaqogika (Ümumi)", "profession": "Müəllim" },
+      { "name": "İbtidai Sinif Tədrisi", "profession": "İbtidai Sinif Müəllimi" },
+      { "name": "Xarici Dil Tədrisi", "profession": "Xarici Dil Müəllimi" },
+      { "name": "Riyaziyyat Tədrisi", "profession": "Riyaziyyat Müəllimi" },
+      { "name": "Repetitorluq", "profession": "Repetitor" },
+      { "name": "Ali Təhsil", "profession": "Lektor / Professor" },
+      { "name": "Korporativ Təlim", "profession": "Təlimçi" }
+    ]
+  },
+  {
+    "category": "Mühəndislik",
+    "subcategories": [
+      { "name": "Mühəndislik (Ümumi)", "profession": "Mühəndis" },
+      { "name": "İnşaat Mühəndisliyi", "profession": "İnşaat Mühəndisi" },
+      { "name": "Neft və Qaz Mühəndisliyi", "profession": "Neft-Qaz Mühəndisi" },
+      { "name": "Elektrik Mühəndisliyi", "profession": "Elektrik Mühəndisi" },
+      { "name": "Mexanika Mühəndisliyi", "profession": "Mexanika Mühəndisi" },
+      { "name": "Memarlıq", "profession": "Memar" },
+      { "name": "Geologiya", "profession": "Geoloq" }
+    ]
+  }
+]

@@ -14,7 +14,6 @@ const Navigation = () => {
     const [lang, setLang] = useState('EN');
     const [showLangMenu, setShowLangMenu] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
-
     const changeLang = (l) => {
         setLang(l);
         localStorage.setItem('language', l.toLowerCase());

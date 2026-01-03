@@ -38,4 +38,12 @@ export const profiles = {
 
     // Change Password
     changePassword: (data) => api.post('accounts/users/set_password/', data),
+
+    // Unified Profile Details
+    getProfileDetails: (id_or_username) => {
+        const params = {};
+        if (isNaN(id_or_username)) params.username = id_or_username;
+        else params.user_id = id_or_username;
+        return api.get('accounts/profile-details/', { params });
+    },
 };

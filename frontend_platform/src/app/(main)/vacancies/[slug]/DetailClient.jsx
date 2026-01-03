@@ -16,10 +16,18 @@ export default function DetailClient({ vacancy }) {
     const [showApplyModal, setShowApplyModal] = useState(false);
 
     useEffect(() => {
-        if (vacancy.is_applied !== undefined) {
+        // If user is logged in, re-fetch vacancy to get accurate 'is_applied' status
+        // because server-side render doesn't have user context.
+        if (user && vacancy.slug) {
+            business.getVacancy(vacancy.slug)
+                .then(res => {
+                    if (res.data.is_applied !== undefined) setIsApplied(res.data.is_applied);
+                })
+                .catch(err => console.error("Failed to refresh vacancy status", err));
+        } else if (vacancy.is_applied !== undefined) {
             setIsApplied(vacancy.is_applied);
         }
-    }, [vacancy.is_applied]);
+    }, [user, vacancy.slug, vacancy.is_applied]);
 
     const handleApplyClick = () => {
         if (!user) {
@@ -39,10 +47,10 @@ export default function DetailClient({ vacancy }) {
 
     return (
         <div className={styles.container}>
-            {/* Hero Section */}
-            <div className={styles.hero}>
-                <div className={styles.heroContent}>
-                    <div className={styles.companyInfo}>
+            {/* Header Section */}
+            <div className={styles.headerPanel}>
+                <div className={styles.headerContent}>
+                    <div className={styles.identity}>
                         {vacancy.company?.logo ? (
                             <img src={vacancy.company.logo} alt={vacancy.company.name} className={styles.logo} />
                         ) : (
@@ -50,26 +58,9 @@ export default function DetailClient({ vacancy }) {
                                 {(vacancy.company_name || vacancy.company?.name || 'C').charAt(0)}
                             </div>
                         )}
-                        <span className={styles.companyName}>{vacancy.company_name || vacancy.company?.name}</span>
-                    </div>
-                    <h1 className={styles.title}>{vacancy.title}</h1>
-
-                    <div className={styles.heroMeta}>
-                        <div className={styles.metaItem}>
-                            <MapPin size={18} />
-                            {vacancy.location}
-                        </div>
-                        <div className={styles.metaItem}>
-                            <Briefcase size={18} />
-                            {vacancy.job_type}
-                        </div>
-                        <div className={styles.metaItem}>
-                            <Clock size={18} />
-                            {vacancy.work_mode}
-                        </div>
-                        <div className={styles.metaItem}>
-                            <DollarSign size={18} />
-                            {vacancy.salary_range || 'Competitive Salary'}
+                        <div className={styles.titleBlock}>
+                            <h1 className={styles.title}>{vacancy.title}</h1>
+                            <span className={styles.companyName}>{vacancy.company_name || vacancy.company?.name}</span>
                         </div>
                     </div>
 
@@ -79,61 +70,86 @@ export default function DetailClient({ vacancy }) {
                                 <CheckCircle size={18} /> Applied
                             </Button>
                         ) : (
-                            <Button size="lg" onClick={handleApplyClick}>
+                            <Button size="lg" onClick={handleApplyClick} className={styles.applyBtn}>
                                 Apply Now
                             </Button>
                         )}
+
                         <button className={styles.shareBtn} onClick={handleShare}>
-                            <Share2 size={20} />
+                            <Share2 size={18} />
+                            <span>Share this job</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <div className={styles.contentGrid}>
-                {/* Main Content */}
+                {/* Main Content: Description */}
                 <div className={styles.main}>
                     <div className={styles.section}>
-                        <h2>Description</h2>
-                        <div className={styles.richText}>
-                            {vacancy.description ? (
-                                <p>{vacancy.description}</p>
-                            ) : (
-                                <p>No detailed description provided for this vacancy.</p>
-                            )}
+                        <h2>About the job</h2>
+
+                        <div className={styles.datesRow}>
+                            <div className={styles.dateItem}>
+                                <span className={styles.dateLabel}>Posted Date:</span>
+                                <span className={styles.dateValue}>{new Date(vacancy.posted_at).toLocaleDateString()}</span>
+                            </div>
+                            <div className={styles.dateItem}>
+                                <span className={styles.dateLabel}>Deadline:</span>
+                                <span className={styles.dateValue}>{new Date(vacancy.expires_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+
+                        <div className={styles.descriptionBlock}>
+                            <h3>Description</h3>
+                            <div className={styles.richText}>
+                                {vacancy.description ? (
+                                    <p>{vacancy.description}</p>
+                                ) : (
+                                    <p>No detailed description provided for this vacancy.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    <div className={styles.section}>
-                        <h2>Requirements & Responsibilities</h2>
-                        <p>
-                            {/* Placeholder as these fields aren't separate yet */}
-                            Detailed requirements would go here. For now, please refer to the description above.
-                        </p>
-                    </div>
+                    {/* Additional sections can go here */}
                 </div>
 
-                {/* Sidebar */}
+                {/* Sidebar: Job Overview / Details */}
                 <div className={styles.sidebar}>
                     <div className={styles.card}>
                         <h3>Job Overview</h3>
                         <ul className={styles.overviewList}>
                             <li>
-                                <Calendar size={18} className={styles.icon} />
+                                <MapPin size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Posted</span>
-                                    <span className={styles.value}>{new Date(vacancy.posted_at).toLocaleDateString()}</span>
+                                    <span className={styles.label}>Location</span>
+                                    <span className={styles.value}>{vacancy.location}</span>
                                 </div>
                             </li>
                             <li>
-                                <Clock size={18} className={styles.icon} />
+                                <DollarSign size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Expires</span>
-                                    <span className={styles.value}>{new Date(vacancy.expires_at).toLocaleDateString()}</span>
+                                    <span className={styles.label}>Salary</span>
+                                    <span className={styles.value}>{vacancy.salary_range || 'Competitive'}</span>
                                 </div>
                             </li>
                             <li>
-                                <Building size={18} className={styles.icon} />
+                                <Briefcase size={20} className={styles.icon} />
+                                <div>
+                                    <span className={styles.label}>Job Type</span>
+                                    <span className={styles.value}>{vacancy.job_type}</span>
+                                </div>
+                            </li>
+                            <li>
+                                <Clock size={20} className={styles.icon} />
+                                <div>
+                                    <span className={styles.label}>Work Mode</span>
+                                    <span className={styles.value}>{vacancy.work_mode}</span>
+                                </div>
+                            </li>
+                            <li>
+                                <Building size={20} className={styles.icon} />
                                 <div>
                                     <span className={styles.label}>Industry</span>
                                     <span className={styles.value}>{vacancy.sub_category?.name || 'Technology'}</span>
@@ -150,7 +166,6 @@ export default function DetailClient({ vacancy }) {
                 vacancyId={vacancy.id}
                 onSuccess={() => {
                     setIsApplied(true);
-                    toast.success("Application submitted successfully!");
                 }}
             />
         </div>

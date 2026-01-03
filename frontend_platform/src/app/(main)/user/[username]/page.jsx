@@ -9,8 +9,9 @@ import styles from './profile.module.scss';
 import FeedItem from '@/components/advanced/FeedItem';
 import VacancyCard from '@/components/advanced/VacancyCard';
 import Calendar from '@/components/advanced/Calendar';
-import BookingModal from '@/components/advanced/BookingModal';
+// import BookingModal from '@/components/advanced/BookingModal'; // Removed
 import FollowListModal from '@/components/advanced/FollowListModal';
+import BookingViewWrapper from './components/BookingViewWrapper';
 
 
 
@@ -40,8 +41,10 @@ export default function PublicProfilePage() {
     const [followingCount, setFollowingCount] = useState(0);
 
     // Booking State
-    const [showBookingModal, setShowBookingModal] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    // Booking State
+    const [isBookingView, setIsBookingView] = useState(false);
+    // const [showBookingModal, setShowBookingModal] = useState(false); // Removed
+    // const [selectedDate, setSelectedDate] = useState(null); // Removed
 
     // Follow Modal
     const [showFollowModal, setShowFollowModal] = useState(false);
@@ -152,10 +155,7 @@ export default function PublicProfilePage() {
         }
     };
 
-    const handleDateSelect = (info) => {
-        setSelectedDate(info);
-        setShowBookingModal(true);
-    };
+    // Removed handleDateSelect for old modal
 
     if (loading) return <div>Loading...</div>;
     if (!profile) return <div>User not found</div>;
@@ -168,7 +168,7 @@ export default function PublicProfilePage() {
                     {profile.cover_image ? (
                         <img src={profile.cover_image} className={styles.coverImage} alt="Cover" />
                     ) : (
-                        <div className={styles.defaultCover} />
+                        <div className={styles.defaultCover} style={{ background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)' }} />
                     )}
                 </div>
 
@@ -185,7 +185,7 @@ export default function PublicProfilePage() {
 
                     <div className={styles.names}>
                         <h1>{profile.first_name} {profile.last_name}</h1>
-                        <p className={styles.subtitle}>@{profile.username} • {profile.profession_sub_category?.name || 'Professional'}</p>
+                        <p className={styles.subtitle}>@{profile.username} • {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Professional'}</p>
 
                         <div style={{ display: 'flex', gap: '16px', marginTop: '8px', fontSize: '14px', color: '#666' }}>
                             <span
@@ -212,8 +212,8 @@ export default function PublicProfilePage() {
                                 >
                                     {isFollowing ? "Unfollow" : "Follow"}
                                 </Button>
-                                <Button type="default" onClick={() => setShowBookingModal(true)}>
-                                    Muraciet
+                                <Button type="default" onClick={() => setIsBookingView(true)}>
+                                    Book Now
                                 </Button>
                             </>
                         )}
@@ -221,175 +221,164 @@ export default function PublicProfilePage() {
                 </div>
             </div>
 
-            {/* Tabs */}
-            <div className={styles.tabs}>
-                <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
-                <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Paylaşımlar</button>
-                <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>Vacancies</button>
-                <button className={activeTab === 'calendar' ? styles.activeTab : ''} onClick={() => setActiveTab('calendar')}>Book Now</button>
+            {/* Tabs & Content or Booking View */}
+            {
+                !isBookingView && (
+                    <>
+                        <div className={styles.tabs}>
+                            <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
+                            <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Paylaşımlar</button>
+                            <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>Vacancies</button>
 
-                {/* Services Tab with Status Indicator */}
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                    <button
-                        className={activeTab === 'services' ? styles.activeTab : ''}
-                        onClick={() => profile.is_service_open && setActiveTab('services')}
-                        disabled={!profile.is_service_open}
-                        style={{ cursor: profile.is_service_open ? 'pointer' : 'not-allowed', opacity: profile.is_service_open ? 1 : 0.6 }}
-                    >
-                        Services
-                    </button>
-                    <span
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            right: '-12px',
-                            transform: 'translateY(-50%)',
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: profile.is_service_open ? '#52c41a' : '#ff4d4f'
+                        </div>
+
+                        {/* Tab Content */}
+                        <div className={styles.tabContent}>
+                            {activeTab === 'about' && (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+
+                                    {/* Info with Birthday */}
+                                    <div className={styles.section}>
+                                        <div className={styles.sectionHeader}>
+                                            <h2>Information</h2>
+                                        </div>
+                                        <div className={styles.list}>
+                                            <div className={styles.editableField}>
+                                                <span className={styles.label}>FULL NAME</span>
+                                                <div className={styles.value}>{profile.first_name} {profile.last_name}</div>
+                                            </div>
+                                            <div className={styles.editableField}>
+                                                <span className={styles.label}>USERNAME</span>
+                                                <div className={styles.value}>@{profile.username}</div>
+                                            </div>
+                                            <div className={styles.editableField}>
+                                                <span className={styles.label}>BIRTHDAY</span>
+                                                <div className={styles.value}>
+                                                    <span style={{ color: profile.birth_day ? '#333' : '#999' }}>{profile.birth_day || 'Not set'}</span>
+                                                </div>
+                                            </div>
+                                            <div className={styles.editableField}>
+                                                <span className={styles.label}>POSITION</span>
+                                                <div className={styles.value}>
+                                                    <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
+                                                        {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Not set'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Section title="Experience" items={experiences} renderItem={(item) => (
+                                        <div className={styles.itemContent}>
+                                            <h3>{item.position}</h3>
+                                            <p>{item.company_name}</p>
+                                            <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                                        </div>
+                                    )} />
+
+                                    <Section title="Education" items={educations} renderItem={(item) => (
+                                        <div className={styles.itemContent}>
+                                            <h3>{item.institution}</h3>
+                                            <p>{item.degree_type_display || item.degree_type} in {item.field_of_study}</p>
+                                            <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                                        </div>
+                                    )} />
+
+                                    <Section title="Skills" items={skills} renderItem={(item) => (
+                                        <div className={styles.itemContent}>
+                                            <h3>{item.name}</h3>
+                                            <span>{item.skill_type}</span>
+                                        </div>
+                                    )} />
+
+                                    <Section title="Languages" items={languages} renderItem={(item) => (
+                                        <div className={styles.itemContent}>
+                                            <h3>{item.name}</h3>
+                                            <span>Level: {item.level.toUpperCase()}</span>
+                                        </div>
+                                    )} />
+
+                                    <Section title="Certificates" items={certificates} renderItem={(item) => (
+                                        <div className={styles.itemContent}>
+                                            <h3>{item.name}</h3>
+                                            <p>{item.issuing_organization}</p>
+                                            <span>{item.issue_date}</span>
+                                        </div>
+                                    )} />
+
+                                </div>
+                            )}
+
+                            {activeTab === 'posts' && (
+                                <div className={styles.tabContent}>
+                                    <div className={styles.sectionHeader}>
+                                        <h3>Paylaşımlar</h3>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            {['all', 'article', 'quiz', 'survey'].map(ft => (
+                                                <Button
+                                                    key={ft}
+                                                    size="small"
+                                                    style={{ background: filterType === ft ? '#1890ff' : '#f0f0f0', color: filterType === ft ? '#fff' : '#333', border: 'none' }}
+                                                    onClick={() => setFilterType(ft)}
+                                                >
+                                                    {ft.charAt(0).toUpperCase() + ft.slice(1)}s
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className={styles.list} style={{ flexDirection: 'column', gap: '16px' }}>
+                                        {posts
+                                            .filter(p => filterType === 'all' || p.type === filterType)
+                                            .map(item => (
+                                                <FeedItem
+                                                    key={`${item.type}-${item.id}`}
+                                                    item={item}
+                                                    onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
+                                                />
+                                            ))
+                                        }
+                                        {posts.length === 0 && <p>This user hasn't shared anything yet.</p>}
+                                    </div>
+                                </div>
+                            )}
+
+
+
+                            {activeTab === 'vacancies' && (
+                                <div className={styles.section}>
+                                    <h3>Vacancies</h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+                                        {vacancies.map(v => (
+                                            <VacancyCard key={v.id} vacancy={v} />
+                                        ))}
+                                        {vacancies.length === 0 && <p>Thinking about hiring? No vacancies here yet.</p>}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )
+            }
+
+            {
+                isBookingView && (
+                    <BookingViewWrapper
+                        profile={profile}
+                        events={calendarEvents}
+                        onBack={() => setIsBookingView(false)}
+                        onBookingSuccess={() => {
+                            // Refresh events
+                            try {
+                                services.getEvents(profile.id).then(res => setCalendarEvents(res.data));
+                            } catch (e) { console.error(e); }
                         }}
-                        title={profile.is_service_open ? "Available" : "Unavailable"}
                     />
-                </div>
-            </div>
-
-            {/* Tab Content */}
-            <div className={styles.tabContent}>
-                {activeTab === 'about' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-
-                        {/* Info with Birthday */}
-                        <div className={styles.section}>
-                            <div className={styles.sectionHeader}>
-                                <h2>Information</h2>
-                            </div>
-                            <div className={styles.list}>
-                                <div className={styles.editableField}>
-                                    <span className={styles.label}>FULL NAME</span>
-                                    <div className={styles.value}>{profile.first_name} {profile.last_name}</div>
-                                </div>
-                                <div className={styles.editableField}>
-                                    <span className={styles.label}>USERNAME</span>
-                                    <div className={styles.value}>@{profile.username}</div>
-                                </div>
-                                <div className={styles.editableField}>
-                                    <span className={styles.label}>BIRTHDAY</span>
-                                    <div className={styles.value}>{profile.birth_day || 'Not set'}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <Section title="Experience" items={experiences} renderItem={(item) => (
-                            <div className={styles.itemContent}>
-                                <h3>{item.position}</h3>
-                                <p>{item.company_name}</p>
-                                <span>{item.start_date} - {item.end_date || 'Present'}</span>
-                            </div>
-                        )} />
-
-                        <Section title="Education" items={educations} renderItem={(item) => (
-                            <div className={styles.itemContent}>
-                                <h3>{item.institution}</h3>
-                                <p>{item.degree_type_display || item.degree_type} in {item.field_of_study}</p>
-                                <span>{item.start_date} - {item.end_date || 'Present'}</span>
-                            </div>
-                        )} />
-
-                        <Section title="Skills" items={skills} renderItem={(item) => (
-                            <div className={styles.itemContent}>
-                                <h3>{item.name}</h3>
-                                <span>{item.skill_type}</span>
-                            </div>
-                        )} />
-
-                        <Section title="Languages" items={languages} renderItem={(item) => (
-                            <div className={styles.itemContent}>
-                                <h3>{item.name}</h3>
-                                <span>Level: {item.level.toUpperCase()}</span>
-                            </div>
-                        )} />
-
-                        <Section title="Certificates" items={certificates} renderItem={(item) => (
-                            <div className={styles.itemContent}>
-                                <h3>{item.name}</h3>
-                                <p>{item.issuing_organization}</p>
-                                <span>{item.issue_date}</span>
-                            </div>
-                        )} />
-
-                    </div>
-                )}
-
-                {activeTab === 'posts' && (
-                    <div className={styles.tabContent}>
-                        <div className={styles.sectionHeader}>
-                            <h3>Paylaşımlar</h3>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                {['all', 'article', 'quiz', 'survey'].map(ft => (
-                                    <Button
-                                        key={ft}
-                                        size="small"
-                                        style={{ background: filterType === ft ? '#1890ff' : '#f0f0f0', color: filterType === ft ? '#fff' : '#333', border: 'none' }}
-                                        onClick={() => setFilterType(ft)}
-                                    >
-                                        {ft.charAt(0).toUpperCase() + ft.slice(1)}s
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className={styles.list} style={{ flexDirection: 'column', gap: '16px' }}>
-                            {posts
-                                .filter(p => filterType === 'all' || p.type === filterType)
-                                .map(item => (
-                                    <FeedItem
-                                        key={`${item.type}-${item.id}`}
-                                        item={item}
-                                        onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
-                                    />
-                                ))
-                            }
-                            {posts.length === 0 && <p>This user hasn't shared anything yet.</p>}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'services' && profile.is_service_open && (
-                    <div className={styles.section}>
-                        <h3>Available Slots</h3>
-                        <Calendar
-                            events={calendarEvents}
-                            onDateSelect={handleDateSelect}
-                            workingDays={profile.working_days}
-                            workingHours={{
-                                start: profile.work_hours_start,
-                                end: profile.work_hours_end
-                            }}
-                        />
-                    </div>
-                )}
-
-                {activeTab === 'vacancies' && (
-                    <div className={styles.section}>
-                        <h3>Vacancies</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                            {vacancies.map(v => (
-                                <VacancyCard key={v.id} vacancy={v} />
-                            ))}
-                            {vacancies.length === 0 && <p>Thinking about hiring? No vacancies here yet.</p>}
-                        </div>
-                    </div>
-                )}
-            </div>
+                )
+            }
 
             {/* Booking Modal */}
-            <BookingModal
-                isOpen={showBookingModal}
-                onClose={() => setShowBookingModal(false)}
-                selectedDate={selectedDate}
-                providerId={profile.id}
-                existingEvents={calendarEvents} // Pass events for overlap check
-            />
+            {/* Booking Modal Removed */}
+            {/* <BookingModal ... /> */}
 
             <FollowListModal
                 isOpen={showFollowModal}
@@ -397,7 +386,7 @@ export default function PublicProfilePage() {
                 username={username}
                 type={followType}
             />
-        </div>
+        </div >
     );
 }
 

@@ -43,6 +43,9 @@ export const AuthProvider = ({ children }) => {
             const profileRes = await auth.getProfile();
             console.log("Login User fetched:", profileRes.data);
             setUser(profileRes.data);
+            // Ensure state propagation is attempted before return
+            await new Promise(resolve => setTimeout(resolve, 0));
+            router.refresh(); // Update server components/header
         } catch (err) {
             console.error("Failed to fetch profile after login", err);
             // Fallback

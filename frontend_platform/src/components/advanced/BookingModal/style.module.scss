@@ -2,6 +2,34 @@
     padding: 16px 0;
 }
 
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
+
+    &:hover {
+        color: #1890ff;
+    }
+
+    &.active {
+        color: #1890ff;
+        border-bottom-color: #1890ff;
+    }
+}
+
 .infoRow {
     display: flex;
     justify-content: space-between;
@@ -21,7 +49,19 @@
     }
 }
 
-.selectInput {
+.row {
+    display: flex;
+    gap: 16px;
+
+    .formGroup {
+        flex: 1;
+        margin-top: 0; // if inside row
+    }
+}
+
+.selectInput,
+.dateInput,
+.timeInput {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #d9d9d9;

@@ -4,7 +4,7 @@ from apps.accounts.models import User, Category, SubCategory
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ['id', 'name', 'slug']
+        fields = ['id', 'name', 'slug', 'profession']
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)

@@ -5,7 +5,7 @@ export const services = {
     createService: (data) => api.post('services/', data),
 
     bookSlot: (data) => api.post('services/bookings/', data), // data: { provider_id, service_id, timestamp }
-    getBookings: (role, status) => api.get('services/bookings/', { params: { role, status } }), // Added status filter
+    getBookings: (params) => api.get('services/bookings/', { params }), // params: { role, status, exclude_self }
     updateBookingStatus: (id, status) => api.patch(`services/bookings/${id}/`, { status }),
 
     acceptBooking: (id) => api.post(`services/bookings/${id}/accept/`),

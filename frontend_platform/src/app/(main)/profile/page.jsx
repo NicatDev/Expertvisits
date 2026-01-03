@@ -1,17 +1,21 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 import FollowListModal from '@/components/advanced/FollowListModal';
 
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import SearchableSelect from '@/components/ui/SearchableSelect';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import styles from './profile.module.scss';
 import FeedItem from '@/components/advanced/FeedItem';
 import VacancyCard from '@/components/advanced/VacancyCard';
 import Calendar from '@/components/advanced/Calendar';
-import BookingModal from '@/components/advanced/BookingModal';
+import BlockingModal from '@/components/advanced/BlockingModal';
 import { auth, profiles, content, accounts, services, business } from '@/lib/api';
+import api from '@/lib/api/client'; // Direct client for categories
 import { Edit2, Trash2, Plus, Camera, Check, X, User, LinkIcon } from 'lucide-react';
 import {
     ExperienceModal, EducationModal, SkillModal, LanguageModal, CertificateModal, PasswordModal
@@ -55,36 +59,94 @@ export default function PrivateProfilePage() {
     // Booking Modal for blocking
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
+    const [confirmationModal, setConfirmationModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+    const [actionModal, setActionModal] = useState({ isOpen: false, type: null }); // type: 'avatar' | 'cover'
+
+    // Booking Sub-tabs
+    const [bookingSubTab, setBookingSubTab] = useState('calendar'); // 'calendar' | 'requests'
+
+    // Request History (Paginated)
+    const [requestHistory, setRequestHistory] = useState([]);
+    const [historyPage, setHistoryPage] = useState(1);
+    const [hasMoreHistory, setHasMoreHistory] = useState(true);
+    const [historyLoading, setHistoryLoading] = useState(false);
 
     // Follower count (ReadOnly for owner)
     const [followersCount, setFollowersCount] = useState(0);
+
+    const [allCategories, setAllCategories] = useState([]);
+
+    // Track initial "Availability" state for enabling Save button
+    const [savedAvailability, setSavedAvailability] = useState(null);
 
     const isOwner = true; // Always true for /profile
 
     useEffect(() => {
         loadProfile();
-        // Load bookings if tab is calendar
-        if (activeTab === 'calendar') {
+        // Load bookings if tab is booking
+        if (activeTab === 'booking') {
             loadBookingsData();
+            if (bookingSubTab === 'requests') {
+                loadRequestHistory(1, true); // Reset history on tab switch
+            }
         }
-    }, [currentUser, activeTab]);
+    }, [currentUser, activeTab, bookingSubTab]);
 
     const loadBookingsData = async () => {
         try {
             const [reqs, evts] = await Promise.all([
-                services.getBookings('provider'), // status='pending' is default? No, backend filters by role only currently.
+                services.getBookings({ role: 'provider', status: 'pending' }),
                 services.getEvents()
             ]);
-            // Filter pending locally if backend doesn't support status filter yet for getBookings 
-            // Update: I added status filter support in services.js but backend get_queryset filters by role. 
-            // Backend get_queryset doesn't explicitly filter status, returns all for role.
-            // So we filter locally.
+
             const allBookings = reqs.data.results || reqs.data;
-            setBookingRequests(allBookings.filter(b => b.status === 'pending'));
+            setBookingRequests(allBookings); // Pending ones
 
             setCalendarEvents(evts.data);
         } catch (err) {
-            console.error(err);
+            console.error("Failed to load bookings data", err);
+        }
+    };
+
+    const loadRequestHistory = async (page = 1, reset = false) => {
+        if (reset) {
+            setRequestHistory([]);
+            setHistoryPage(1);
+            setHasMoreHistory(true);
+        }
+
+        setHistoryLoading(true);
+        try {
+            const res = await services.getBookings({
+                role: 'provider',
+                status: 'confirmed,cancelled,rejected', // All other statuses
+                exclude_self: true,
+                page: page,
+                limit: 10 // Assuming backend supports limit or page_size, usually DRF uses page_size in settings or param
+            });
+
+            // Handle DRF pagination response
+            const newItems = res.data.results || res.data;
+            const totalCount = res.data.count;
+
+            if (reset) {
+                setRequestHistory(newItems);
+            } else {
+                setRequestHistory(prev => [...prev, ...newItems]);
+            }
+
+            // Check if more
+            if (res.data.next) {
+                setHasMoreHistory(true);
+                setHistoryPage(page);
+            } else {
+                setHasMoreHistory(false);
+            }
+
+        } catch (err) {
+            console.error("Failed to load history", err);
+        } finally {
+            setHistoryLoading(false);
         }
     };
 
@@ -93,6 +155,7 @@ export default function PrivateProfilePage() {
             await services.acceptBooking(id);
             toast.success("Booking Accepted");
             loadBookingsData(); // Refresh list and calendar
+            loadRequestHistory(1, true); // Refresh history to show the accepted item
         } catch (err) {
             toast.error("Failed to accept");
         }
@@ -104,6 +167,7 @@ export default function PrivateProfilePage() {
             await services.rejectBooking(id);
             toast.success("Booking Rejected");
             loadBookingsData();
+            loadRequestHistory(1, true); // Refresh history
         } catch (err) {
             toast.error("Failed to reject");
         }
@@ -111,10 +175,13 @@ export default function PrivateProfilePage() {
 
     const loadProfile = async () => {
         // Wait for auth to resolve
-        if (!currentUser && loading) {
-            // If auth is strictly required, wrapper handles it, but let's safe check
-            // Actually, useAuth usually has a loading state, but for this component, if no user, we can't show much.
-            // We can fetch profile from API if token exists.
+        if (!currentUser) {
+            // If user is null (and potentially loading finished), stop.
+            // If loading is true, we might just be waiting.
+            if (!loading) {
+                setProfile(null);
+            }
+            return;
         }
 
         try {
@@ -136,19 +203,24 @@ export default function PrivateProfilePage() {
                 last_name: targetUser.last_name,
                 username: targetUser.username,
                 phone_number: targetUser.phone_number,
+                phone_number: targetUser.phone_number,
                 birth_day: targetUser.birth_day
             });
 
-            // 2. Fetch Related Data (By User ID)
-            const userId = targetUser.id;
-            const fetchConfig = { user_id: userId };
+            // Save initial availability state for change detection
+            setSavedAvailability({
+                is_service_open: targetUser.is_service_open,
+                work_hours_start: targetUser.work_hours_start,
+                work_hours_end: targetUser.work_hours_end,
+                working_days: targetUser.working_days // array
+            });
 
-            const [exp, edu, ski, lan, cert, arts, quizzes, surveys, vacs, apps] = await Promise.all([
-                profiles.getExperience(fetchConfig),
-                profiles.getEducation(fetchConfig),
-                profiles.getSkills(fetchConfig),
-                profiles.getLanguages(fetchConfig),
-                profiles.getCertificates(fetchConfig),
+            // 2. Fetch Related Data (Unified)
+            const userId = targetUser.id;
+
+            // Unified Call
+            const [detailsRes, arts, quizzes, surveys, vacs, apps] = await Promise.all([
+                profiles.getProfileDetails(userId),
                 content.getUserArticles(userId),
                 content.getUserQuizzes(userId),
                 content.getUserSurveys(userId),
@@ -156,14 +228,15 @@ export default function PrivateProfilePage() {
                 business.getMyApplications()
             ]);
 
-            setExperiences(exp.data.results || exp.data || []);
-            setEducations(edu.data.results || edu.data || []);
-            setSkills(ski.data.results || ski.data || []);
-            setLanguages(lan.data.results || lan.data || []);
-            setCertificates(cert.data.results || cert.data || []);
-            setMyVacancies(vacs.data.results || vacs.data || []);
-            setMyApplications(apps.data.results || apps.data || []);
+            const details = detailsRes.data;
 
+            setExperiences(details.experience || []);
+            setEducations(details.education || []);
+            setSkills((details.skills || []).map(s => ({ ...s, skill_type: s.skill_type || 'hard' })));
+            setLanguages(details.languages || []);
+            setCertificates(details.certificates || []);
+            setMyApplications(apps.data.results || apps.data || []);
+            setMyVacancies(vacs.data.results || vacs.data || []);
             // Normalize and Combine
             const _articles = (arts.data.results || arts.data || []).map(a => ({ ...a, type: 'article' }));
             const _quizzes = (quizzes.data.results || quizzes.data || []).map(q => ({ ...q, type: 'quiz' }));
@@ -171,9 +244,6 @@ export default function PrivateProfilePage() {
 
             const combined = [..._articles, ..._quizzes, ..._surveys].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             setPosts(combined);
-            setSkills(ski.data.results || ski.data || []);
-            setLanguages(lan.data.results || lan.data || []);
-            setCertificates(cert.data.results || cert.data || []);
             setArticles(arts.data.results || arts.data || []);
 
         } catch (err) {
@@ -210,12 +280,24 @@ export default function PrivateProfilePage() {
 
     const saveInline = async (field) => {
         try {
-            await profiles.updateProfile(profile.username, { [field]: aboutData[field] });
-            setProfile(prev => ({ ...prev, [field]: aboutData[field] }));
+            let payload = { [field]: aboutData[field] };
+
+            // Special handling for nested objects updates (if any, typically fields are flat on user update except relations)
+            // For profession_sub_category, we need to send ID.
+            if (field === 'profession_sub_category') {
+                payload = { profession_sub_category_id: aboutData['profession_sub_category'] };
+            }
+
+            await profiles.updateProfile(profile.username, payload);
+            setProfile(prev => ({ ...prev, [field]: aboutData[field] })); // Optimistic update might be tricky for relation objects
+            // Better to just reload
+            loadProfile();
             toggleEdit(field);
             refreshUser();
         } catch (err) {
-            alert('Failed to update. Username might be taken.');
+            console.error(err);
+            const msg = err.response?.data ? JSON.stringify(err.response.data) : 'Failed to update';
+            alert(`Failed to update: ${msg}`);
         }
     };
 
@@ -225,7 +307,7 @@ export default function PrivateProfilePage() {
 
     const handleSaveItem = async (formData) => {
         const { type, data } = modalState;
-        const isEdit = !!data;
+        const isEdit = !!(data && data.id);
         const apiFunc = profiles[isEdit ? `update${capitalize(type)}` : `add${capitalize(type)}`];
 
         try {
@@ -244,21 +326,35 @@ export default function PrivateProfilePage() {
         }
     };
 
-    const handleDeleteItem = async (type, id) => {
-        if (!confirm('Are you sure?')) return;
+    const handleDeleteWithConfirmation = (type, id) => {
+        setConfirmationModal({
+            isOpen: true,
+            title: `Delete ${capitalize(type)}`,
+            message: 'Are you sure you want to delete this item? This action cannot be undone.',
+            onConfirm: () => deleteItem(type, id)
+        });
+    };
+
+    const deleteItem = async (type, id) => {
         try {
             await profiles[`delete${capitalize(type)}`](id);
             loadProfile();
+            toast.success("Deleted successfully");
         } catch (err) {
             console.error(err);
+            toast.error("Failed to delete");
         }
     };
 
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
     // Calendar Handler
-    const handleDateSelect = (info) => {
-        setSelectedDate(info);
+    const handleDateSelect = (selectInfo) => {
+        // Convert strings to Dates for the modal
+        const start = new Date(selectInfo.startStr);
+        const end = new Date(selectInfo.endStr);
+
+        setSelectedDate({ start, end }); // Store as object expected by BlockingModal
         setShowBookingModal(true);
     };
 
@@ -277,12 +373,21 @@ export default function PrivateProfilePage() {
         const data = {
             work_hours_start: profile.work_hours_start,
             work_hours_end: profile.work_hours_end,
-            working_days: profile.working_days, // Now sends array of ints [1, 2, ...]
+            working_days: profile.working_days,
             is_service_open: profile.is_service_open
         };
         try {
             await profiles.updateProfile(profile.username, data);
             toast.success("Availability settings saved successfully!");
+
+            // Update saved state
+            setSavedAvailability({
+                is_service_open: data.is_service_open,
+                work_hours_start: data.work_hours_start,
+                work_hours_end: data.work_hours_end,
+                working_days: data.working_days
+            });
+
             refreshUser();
         } catch (err) {
             console.error(err);
@@ -324,10 +429,33 @@ export default function PrivateProfilePage() {
                     {profile.cover_image ? (
                         <img src={profile.cover_image} className={styles.coverImage} alt="Cover" />
                     ) : (
-                        <div className={styles.defaultCover} />
+                        <div className={styles.defaultCover} style={{ background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)' }} />
                     )}
-                    <div className={styles.editOverlay} onClick={() => coverInputRef.current.click()}>
-                        <Edit2 size={16} /> Edit Cover
+                    <div className={styles.editOverlay} style={{ backdropFilter: 'none', background: 'transparent', gap: '10px' }}>
+                        <div
+                            onClick={(e) => { e.stopPropagation(); coverInputRef.current.click(); }}
+                            style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.9)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#333' }}
+                            title="Edit Cover"
+                        >
+                            <Edit2 size={16} />
+                        </div>
+                        {profile.cover_image && (
+                            <div
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setConfirmationModal({
+                                        isOpen: true, title: "Delete Cover", message: "Are you sure?", onConfirm: async () => {
+                                            await profiles.updateProfile(profile.username, { cover_image: null });
+                                            loadProfile(); refreshUser();
+                                        }
+                                    });
+                                }}
+                                style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.9)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'red' }}
+                                title="Delete Cover"
+                            >
+                                <Trash2 size={16} />
+                            </div>
+                        )}
                         <input type="file" hidden ref={coverInputRef} onChange={(e) => handleFileChange(e, 'cover')} />
                     </div>
                 </div>
@@ -341,7 +469,10 @@ export default function PrivateProfilePage() {
                                 <User size={40} />
                             </div>
                         )}
-                        <div className={styles.avatarOverlay} onClick={() => fileInputRef.current.click()}>
+                        <div
+                            className={styles.avatarOverlay}
+                            onClick={() => setActionModal({ isOpen: true, type: 'avatar' })}
+                        >
                             <Edit2 size={24} />
                         </div>
                         <input type="file" hidden ref={fileInputRef} onChange={(e) => handleFileChange(e, 'avatar')} />
@@ -349,7 +480,7 @@ export default function PrivateProfilePage() {
 
                     <div className={styles.names}>
                         <h1>{profile.first_name} {profile.last_name}</h1>
-                        <p className={styles.subtitle}>@{profile.username} • {profile.profession_sub_category?.name || 'Professional'}</p>
+                        <p className={styles.subtitle}>@{profile.username} • {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Professional'}</p>
 
                         <div style={{ display: 'flex', gap: '16px', marginTop: '8px', fontSize: '14px', color: '#666' }}>
                             <span
@@ -378,7 +509,7 @@ export default function PrivateProfilePage() {
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
                 <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Paylaşımlar</button>
                 <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>Availability</button>
-                <button className={activeTab === 'calendar' ? styles.activeTab : ''} onClick={() => setActiveTab('calendar')}>Calendar</button>
+                <button className={activeTab === 'booking' ? styles.activeTab : ''} onClick={() => setActiveTab('booking')}>Booking</button>
                 <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>My Vacancies</button>
                 <button className={activeTab === 'applications' ? styles.activeTab : ''} onClick={() => setActiveTab('applications')}>My Applications</button>
             </div>
@@ -411,7 +542,7 @@ export default function PrivateProfilePage() {
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <span>{profile[field] || 'Not set'}</span>
+                                                    <span style={{ color: profile[field] ? '#333' : '#999' }}>{profile[field] || 'Not set'}</span>
                                                     <Edit2 className={styles.editIcon} size={14} onClick={() => toggleEdit(field)} />
                                                 </>
                                             )}
@@ -425,8 +556,58 @@ export default function PrivateProfilePage() {
                                         <span style={{ color: '#999' }}>{profile.email}</span>
                                     </div>
                                 </div>
+
+                                {/* Position Editable */}
+                                <div className={styles.editableField}>
+                                    <span className={styles.label}>POSITION</span>
+                                    <div className={styles.value}>
+                                        {editMode['profession_sub_category'] ? (
+                                            <div className={styles.inlineForm}>
+                                                <SearchableSelect
+                                                    options={allCategories}
+                                                    value={aboutData.profession_sub_category}
+                                                    onChange={(val) => setAboutData({ ...aboutData, profession_sub_category: val })}
+                                                    groupBy="subcategories"
+                                                    labelKey="name"
+                                                    valueKey="id"
+                                                    placeholder="Search profession..."
+                                                />
+                                                <button onClick={() => saveInline('profession_sub_category')} className={styles.iconBtn}><Check size={18} color="green" /></button>
+                                                <button onClick={() => toggleEdit('profession_sub_category')} className={styles.iconBtn}><X size={18} color="red" /></button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
+                                                    {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Not set'}
+                                                </span>
+                                                <Edit2
+                                                    className={styles.editIcon}
+                                                    size={14}
+                                                    onClick={async () => {
+                                                        // Load categories if not loaded
+                                                        if (allCategories.length === 0) {
+                                                            try {
+                                                                const { data } = await api.get('/accounts/categories/');
+                                                                setAllCategories(data.results || data);
+                                                            } catch (e) {
+                                                                console.error(e);
+                                                                return;
+                                                            }
+                                                        }
+                                                        // Set initial ID
+                                                        setAboutData(prev => ({ ...prev, profession_sub_category: profile.profession_sub_category?.id }));
+                                                        toggleEdit('profession_sub_category');
+                                                    }}
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+
+
 
                         {/* Sections */}
                         <Section
@@ -435,7 +616,7 @@ export default function PrivateProfilePage() {
                             isOwner={true}
                             onAdd={() => openModal('experience')}
                             onEdit={(item) => openModal('experience', item)}
-                            onDelete={(id) => handleDeleteItem('experience', id)}
+                            onDelete={(id) => handleDeleteWithConfirmation('experience', id)}
                             renderItem={(item) => (
                                 <div className={styles.itemContent}>
                                     <h3>{item.position}</h3>
@@ -451,7 +632,7 @@ export default function PrivateProfilePage() {
                             isOwner={true}
                             onAdd={() => openModal('education')}
                             onEdit={(item) => openModal('education', item)}
-                            onDelete={(id) => handleDeleteItem('education', id)}
+                            onDelete={(id) => handleDeleteWithConfirmation('education', id)}
                             renderItem={(item) => (
                                 <div className={styles.itemContent}>
                                     <h3>{item.institution}</h3>
@@ -461,17 +642,31 @@ export default function PrivateProfilePage() {
                             )}
                         />
 
+
                         <Section
-                            title="Skills"
-                            items={skills}
+                            title="Hard Skills"
+                            items={skills.filter(s => s.skill_type === 'hard')}
                             isOwner={true}
-                            onAdd={() => openModal('skill')}
+                            onAdd={() => openModal('skill', { skill_type: 'hard' })}
                             onEdit={(item) => openModal('skill', item)}
-                            onDelete={(id) => handleDeleteItem('skill', id)}
+                            onDelete={(id) => handleDeleteWithConfirmation('skill', id)}
                             renderItem={(item) => (
                                 <div className={styles.itemContent}>
                                     <h3>{item.name}</h3>
-                                    <span>{item.skill_type}</span>
+                                </div>
+                            )}
+                        />
+
+                        <Section
+                            title="Soft Skills"
+                            items={skills.filter(s => s.skill_type === 'soft')}
+                            isOwner={true}
+                            onAdd={() => openModal('skill', { skill_type: 'soft' })}
+                            onEdit={(item) => openModal('skill', item)}
+                            onDelete={(id) => handleDeleteWithConfirmation('skill', id)}
+                            renderItem={(item) => (
+                                <div className={styles.itemContent}>
+                                    <h3>{item.name}</h3>
                                 </div>
                             )}
                         />
@@ -482,7 +677,7 @@ export default function PrivateProfilePage() {
                             isOwner={true}
                             onAdd={() => openModal('language')}
                             onEdit={(item) => openModal('language', item)}
-                            onDelete={(id) => handleDeleteItem('language', id)}
+                            onDelete={(id) => handleDeleteWithConfirmation('language', id)}
                             renderItem={(item) => (
                                 <div className={styles.itemContent}>
                                     <h3>{item.name}</h3>
@@ -497,7 +692,7 @@ export default function PrivateProfilePage() {
                             isOwner={true}
                             onAdd={() => openModal('certificate')}
                             onEdit={(item) => openModal('certificate', item)}
-                            onDelete={(id) => handleDeleteItem('certificate', id)}
+                            onDelete={(id) => handleDeleteWithConfirmation('certificate', id)}
                             renderItem={(item) => (
                                 <div className={styles.itemContent}>
                                     <h3>{item.name}</h3>
@@ -544,121 +739,266 @@ export default function PrivateProfilePage() {
                     </div>
                 )}
 
-                {activeTab === 'services' && (
-                    <div className={styles.section}>
-                        <div className={styles.sectionHeader}>
-                            <h2>Availability Settings</h2>
-                            <Button size="small" onClick={handleAvailabilitySave}>Save Changes</Button>
-                        </div>
+                {activeTab === 'services' && (() => {
+                    const hasAvailabilityChanges = (() => {
+                        if (!savedAvailability) return false;
+                        // Compare normalized (sorted strings of ints)
+                        const currentDays = (profile.working_days || []).map(d => +d).sort().join(',');
+                        const savedDays = (savedAvailability.working_days || []).map(d => +d).sort().join(',');
 
-                        <div className={styles.list}>
-                            <div className={styles.editableField}>
-                                <span className={styles.label}>Accept Bookings</span>
-                                <div className={styles.value}>
-                                    <input
-                                        type="checkbox"
-                                        checked={profile.is_service_open || false}
-                                        onChange={e => setProfile(prev => ({ ...prev, is_service_open: e.target.checked }))}
-                                        style={{ transform: 'scale(1.5)', cursor: 'pointer' }}
-                                    />
-                                </div>
+                        return (
+                            Boolean(profile.is_service_open) !== Boolean(savedAvailability.is_service_open) ||
+                            (profile.work_hours_start || '') !== (savedAvailability.work_hours_start || '') ||
+                            (profile.work_hours_end || '') !== (savedAvailability.work_hours_end || '') ||
+                            currentDays !== savedDays
+                        );
+                    })();
+
+                    return (
+                        <div className={styles.section}>
+                            <div className={styles.sectionHeader}>
+                                <h2>Availability Settings</h2>
+                                <Button
+                                    size="small"
+                                    onClick={handleAvailabilitySave}
+                                    disabled={!hasAvailabilityChanges}
+                                    style={{
+                                        backgroundColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
+                                        borderColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
+                                        cursor: hasAvailabilityChanges ? 'pointer' : 'not-allowed',
+                                        color: '#fff',
+                                        opacity: hasAvailabilityChanges ? 1 : 0.7
+                                    }}
+                                >
+                                    Save Changes
+                                </Button>
                             </div>
 
-                            <div className={styles.editableField}>
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    <span className={styles.label}>Working Hours</span>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ width: '40px' }}>Start:</span>
-                                        <Input
-                                            type="time"
-                                            value={profile.work_hours_start || ''}
-                                            onChange={e => setProfile(prev => ({ ...prev, work_hours_start: e.target.value }))}
-                                            style={{ width: '120px' }}
-                                        />
-                                        <span style={{ width: '40px' }}>End:</span>
-                                        <Input
-                                            type="time"
-                                            value={profile.work_hours_end || ''}
-                                            onChange={e => setProfile(prev => ({ ...prev, work_hours_end: e.target.value }))}
-                                            style={{ width: '120px' }}
-                                        />
+                            <div className={styles.list}>
+                                <div className={styles.editableField}>
+                                    <span className={styles.label}>Accept Bookings</span>
+                                    <div className={styles.value}>
+                                        <label className={styles.switch}>
+                                            <input
+                                                type="checkbox"
+                                                checked={profile.is_service_open || false}
+                                                onChange={e => setProfile(prev => ({ ...prev, is_service_open: e.target.checked }))}
+                                            />
+                                            <span className={styles.slider}></span>
+                                        </label>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div style={{ paddingTop: '10px' }}>
-                                <span className={styles.label} style={{ display: 'block', marginBottom: '8px' }}>Working Days</span>
-                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                    {daysOfWeek.map(dayObj => (
-                                        <button
-                                            key={dayObj.value}
-                                            onClick={() => toggleDay(dayObj.value)}
-                                            style={{
-                                                padding: '8px 12px',
-                                                borderRadius: '20px',
-                                                border: '1px solid #ddd',
-                                                background: (profile.working_days || []).includes(dayObj.value) ? '#1890ff' : '#fff',
-                                                color: (profile.working_days || []).includes(dayObj.value) ? '#fff' : '#333',
-                                                cursor: 'pointer',
-                                                fontSize: '14px'
-                                            }}
-                                        >
-                                            {dayObj.name.slice(0, 3)}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'calendar' && (
-                    <div className={styles.section} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        {/* Incoming Requests */}
-                        <div className={styles.sectionHeader}>
-                            <h2>Incoming Requests</h2>
-                        </div>
-                        <div className={styles.list}>
-                            {bookingRequests.length === 0 ? <p style={{ color: '#999' }}>No pending requests.</p> : (
-                                bookingRequests.map(req => (
-                                    <div key={req.id} className={styles.listItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                            {req.customer_details?.avatar ? (
-                                                <img src={req.customer_details.avatar} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
-                                            ) : <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><User size={20} /></div>}
-                                            <div>
-                                                <h4 style={{ margin: 0 }}>{req.customer_details?.first_name} {req.customer_details?.last_name}</h4>
-                                                <span style={{ fontSize: '13px', color: '#666' }}>
-                                                    {new Date(req.requested_datetime).toLocaleDateString()} @ {new Date(req.requested_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({req.duration_minutes} min)
-                                                </span>
-                                                {req.note && <p style={{ margin: '4px 0 0', fontSize: '13px', fontStyle: 'italic', color: '#444' }}>"{req.note}"</p>}
+                                {profile.is_service_open && (
+                                    <>
+                                        <div className={styles.editableField}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                                <span className={styles.label}>Working Hours</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <span style={{ width: '40px' }}>Start:</span>
+                                                    <Input
+                                                        type="time"
+                                                        value={profile.work_hours_start || ''}
+                                                        onChange={e => setProfile(prev => ({ ...prev, work_hours_start: e.target.value }))}
+                                                        style={{ width: '120px' }}
+                                                        wrapperStyle={{ marginBottom: 0 }}
+                                                    />
+                                                    <span style={{ width: '40px' }}>End:</span>
+                                                    <Input
+                                                        type="time"
+                                                        value={profile.work_hours_end || ''}
+                                                        onChange={e => setProfile(prev => ({ ...prev, work_hours_end: e.target.value }))}
+                                                        style={{ width: '120px' }}
+                                                        wrapperStyle={{ marginBottom: 0 }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <Button size="small" onClick={() => handleAcceptBooking(req.id)} style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}><Check size={16} /> Accept</Button>
-                                            <Button size="small" type="default" onClick={() => handleRejectBooking(req.id)} style={{ color: 'red', borderColor: 'red' }}><X size={16} /> Reject</Button>
+
+                                        <div style={{ paddingTop: '10px' }}>
+                                            <span className={styles.label} style={{ display: 'block', marginBottom: '8px' }}>Working Days</span>
+                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                {daysOfWeek.map(dayObj => (
+                                                    <button
+                                                        key={dayObj.value}
+                                                        onClick={() => toggleDay(dayObj.value)}
+                                                        style={{
+                                                            padding: '8px 12px',
+                                                            borderRadius: '20px',
+                                                            border: '1px solid #ddd',
+                                                            background: (profile.working_days || []).includes(dayObj.value) ? '#1890ff' : '#fff',
+                                                            color: (profile.working_days || []).includes(dayObj.value) ? '#fff' : '#333',
+                                                            cursor: 'pointer',
+                                                            fontSize: '14px'
+                                                        }}
+                                                    >
+                                                        {dayObj.name.slice(0, 3)}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })()}
+
+                {activeTab === 'booking' && (
+                    <div className={styles.section} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+                        {/* Sub Tabs */}
+                        <div style={{ display: 'flex', gap: '20px', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
+                            <button
+                                onClick={() => setBookingSubTab('calendar')}
+                                style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    fontWeight: bookingSubTab === 'calendar' ? 600 : 400,
+                                    color: bookingSubTab === 'calendar' ? '#1890ff' : '#666',
+                                    borderBottom: bookingSubTab === 'calendar' ? '2px solid #1890ff' : 'none'
+                                }}
+                            >
+                                Calendar
+                            </button>
+                            <button
+                                onClick={() => setBookingSubTab('requests')}
+                                style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    fontWeight: bookingSubTab === 'requests' ? 600 : 400,
+                                    color: bookingSubTab === 'requests' ? '#1890ff' : '#666',
+                                    borderBottom: bookingSubTab === 'requests' ? '2px solid #1890ff' : 'none'
+                                }}
+                            >
+                                Requests
+                            </button>
+                        </div>
+
+                        {bookingSubTab === 'calendar' && (
+                            <div className={styles.list}>
+                                <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{ width: 12, height: 12, background: '#fa8c16', borderRadius: '50%' }}></div>
+                                    <span style={{ fontSize: '0.9rem', color: '#666' }}>Pending Requests</span>
+                                    <div style={{ width: 12, height: 12, background: '#595959', marginLeft: '16px', borderRadius: '50%' }}></div>
+                                    <span style={{ fontSize: '0.9rem', color: '#666' }}>Blocked / Busy</span>
+                                    <div style={{ width: 12, height: 12, background: '#52c41a', marginLeft: '16px', borderRadius: '50%' }}></div>
+                                    <span style={{ fontSize: '0.9rem', color: '#666' }}>Confirmed Meetings</span>
+                                </div>
+                                <Calendar
+                                    events={calendarEvents}
+                                    onDateSelect={handleDateSelect}
+                                />
+                            </div>
+                        )}
+
+                        {bookingSubTab === 'requests' && (
+                            <>
+                                {/* Incoming Requests */}
+                                <div>
+                                    <div className={styles.sectionHeader}>
+                                        <h2>Incoming Requests</h2>
                                     </div>
-                                ))
-                            )}
-                        </div>
+                                    <div className={styles.list} style={{ flexDirection: 'column', gap: '12px' }}>
+                                        {bookingRequests.length === 0 ? <p style={{ color: '#999', fontStyle: 'italic' }}>No pending requests.</p> : (
+                                            bookingRequests.map(req => (
+                                                <div key={req.id} className={styles.listItem} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                            <Link href={`/user/${req.customer_details?.username}`}>
+                                                                {req.customer_details?.avatar ? (
+                                                                    <img src={req.customer_details.avatar} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', cursor: 'pointer' }} />
+                                                                ) : (
+                                                                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><User size={20} /></div>
+                                                                )}
+                                                            </Link>
+                                                            <div>
+                                                                <Link href={`/user/${req.customer_details?.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                    <h4 style={{ margin: 0, cursor: 'pointer' }}>{req.customer_details?.first_name} {req.customer_details?.last_name}</h4>
+                                                                </Link>
+                                                                <span style={{ fontSize: '0.85rem', color: '#888' }}>@{req.customer_details?.username}</span>
+                                                            </div>
+                                                        </div>
+                                                        <span style={{ fontSize: '0.85rem', color: '#fa8c16', fontWeight: 500 }}>Pending</span>
+                                                    </div>
 
-                        <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '0' }} />
+                                                    <div style={{ background: '#f9f9f9', padding: '10px', borderRadius: '6px', width: '100%' }}>
+                                                        <div style={{ display: 'flex', gap: '16px', fontSize: '0.9rem', marginBottom: '4px' }}>
+                                                            <span>📅 {new Date(req.requested_datetime).toLocaleDateString()}</span>
+                                                            <span>⏰ {new Date(req.requested_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                            <span>⏳ {req.duration_minutes} min</span>
+                                                        </div>
+                                                        {req.note && <p style={{ margin: '4px 0 0 0', color: '#555', fontSize: '0.9rem' }}>"{req.note}"</p>}
+                                                    </div>
 
-                        {/* Calendar View */}
-                        <div className={styles.sectionHeader}>
-                            <h2>My Calendar</h2>
-                        </div>
-                        <Calendar
-                            events={calendarEvents}
-                            onDateSelect={handleDateSelect}
-                            workingDays={profile.working_days}
-                            workingHours={{
-                                start: profile.work_hours_start,
-                                end: profile.work_hours_end
-                            }}
-                        />
+                                                    <div style={{ display: 'flex', gap: '10px', width: '100%', justifyContent: 'flex-end' }}>
+                                                        <Button size="small" type="default" style={{ borderColor: '#ff4d4f', color: '#ff4d4f' }} onClick={() => handleRejectBooking(req.id)}>Reject</Button>
+                                                        <Button size="small" type="primary" onClick={() => handleAcceptBooking(req.id)}>Accept</Button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Request History */}
+                                <div style={{ marginTop: '30px' }}>
+                                    <div className={styles.sectionHeader}>
+                                        <h2>All Requests</h2>
+                                    </div>
+                                    <div className={styles.list} style={{ flexDirection: 'column', gap: '12px' }}>
+                                        {requestHistory.map(req => (
+                                            <div key={req.id} className={styles.listItem} style={{ alignItems: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                                                    {req.customer_details?.avatar ? (
+                                                        <img src={req.customer_details.avatar} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+                                                    ) : (
+                                                        <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><User size={20} /></div>
+                                                    )}
+                                                    <div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <Link href={`/user/${req.customer_details?.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                <strong style={{ fontSize: '0.95rem', cursor: 'pointer' }}>{req.customer_details?.first_name} {req.customer_details?.last_name}</strong>
+                                                            </Link>
+                                                            <span style={{
+                                                                fontSize: '0.8rem', padding: '2px 8px', borderRadius: '10px',
+                                                                background: req.status === 'confirmed' ? '#f6ffed' : '#fff1f0',
+                                                                color: req.status === 'confirmed' ? '#52c41a' : '#f5222d',
+                                                                border: `1px solid ${req.status === 'confirmed' ? '#b7eb8f' : '#ffa39e'}`
+                                                            }}>
+                                                                {req.status.toUpperCase()}
+                                                            </span>
+                                                        </div>
+                                                        <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '2px' }}>
+                                                            {new Date(req.requested_datetime).toLocaleString()} • {req.duration_minutes} min
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {req.note && (
+                                                    <div style={{ maxWidth: '40%', fontSize: '0.85rem', color: '#555', fontStyle: 'italic', textAlign: 'right' }}>
+                                                        "{req.note}"
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {requestHistory.length === 0 && !historyLoading && (
+                                            <p style={{ color: '#999', fontStyle: 'italic' }}>No history yet.</p>
+                                        )}
+
+                                        {hasMoreHistory && (
+                                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                                <Button
+                                                    type="default"
+                                                    loading={historyLoading}
+                                                    onClick={() => loadRequestHistory(historyPage + 1)}
+                                                >
+                                                    Load More
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
 
@@ -676,10 +1016,16 @@ export default function PrivateProfilePage() {
                                     isOwner={true}
                                     onEdit={() => openModal('vacancy', v)}
                                     onDelete={async () => {
-                                        if (!confirm("Delete this vacancy?")) return;
-                                        await business.deleteVacancy(v.id);
-                                        setMyVacancies(prev => prev.filter(item => item.id !== v.id));
-                                        toast.success("Vacancy deleted");
+                                        setConfirmationModal({
+                                            isOpen: true,
+                                            title: "Delete Vacancy",
+                                            message: "Are you sure you want to delete this vacancy?",
+                                            onConfirm: async () => {
+                                                await business.deleteVacancy(v.id);
+                                                setMyVacancies(prev => prev.filter(item => item.id !== v.id));
+                                                toast.success("Vacancy deleted");
+                                            }
+                                        });
                                     }}
                                 />
                             ))}
@@ -729,6 +1075,57 @@ export default function PrivateProfilePage() {
                 <LanguageModal isOpen={modalState.type === 'language'} onClose={closeModal} initialData={modalState.data} onSave={handleSaveItem} />
                 <CertificateModal isOpen={modalState.type === 'certificate'} onClose={closeModal} initialData={modalState.data} onSave={handleSaveItem} />
                 <PasswordModal isOpen={modalState.type === 'password'} onClose={closeModal} onSave={handleSaveItem} />
+                <ConfirmationModal
+                    isOpen={confirmationModal.isOpen}
+                    onClose={() => setConfirmationModal({ ...confirmationModal, isOpen: false })}
+                    onConfirm={confirmationModal.onConfirm}
+                    title={confirmationModal.title}
+                    message={confirmationModal.message}
+                />
+
+                {/* Simple Action Modal for Avatar */}
+                {actionModal.isOpen && actionModal.type === 'avatar' && (
+                    <div style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                    }} onClick={() => setActionModal({ isOpen: false, type: null })}>
+                        <div style={{ background: 'white', borderRadius: '8px', width: '300px', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+                            <div style={{ padding: '16px', borderBottom: '1px solid #eee', fontWeight: 'bold' }}>Update Profile Picture</div>
+                            <div
+                                style={{ padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                onClick={() => {
+                                    fileInputRef.current.click();
+                                    setActionModal({ isOpen: false, type: null });
+                                }}
+                            >
+                                <Edit2 size={16} /> Change Photo
+                            </div>
+                            {profile.avatar && (
+                                <div
+                                    style={{ padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: 'red' }}
+                                    onClick={() => {
+                                        setActionModal({ isOpen: false, type: null });
+                                        setConfirmationModal({
+                                            isOpen: true, title: "Delete Avatar", message: "Are you sure you want to remove your profile picture?", onConfirm: async () => {
+                                                await profiles.updateProfile(profile.username, { avatar: null });
+                                                loadProfile(); refreshUser();
+                                            }
+                                        });
+                                    }}
+                                >
+                                    <Trash2 size={16} /> Remove Current Photo
+                                </div>
+                            )}
+                            <div
+                                style={{ padding: '12px 16px', cursor: 'pointer', borderTop: '1px solid #eee', textAlign: 'center', color: '#666' }}
+                                onClick={() => setActionModal({ isOpen: false, type: null })}
+                            >
+                                Cancel
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <CreateContentModal
                     isOpen={modalState.type === 'content'}
                     onClose={closeModal}
@@ -747,14 +1144,20 @@ export default function PrivateProfilePage() {
                 username={profile.username}
                 type={followModalType}
             />
-            <BookingModal
+            {/* Blocking Modal */}
+            <BlockingModal
                 isOpen={showBookingModal}
-                onClose={() => { setShowBookingModal(false); loadBookingsData(); }} // Reload events after blocking
-                selectedDate={selectedDate}
+                onClose={() => setShowBookingModal(false)}
+                selectedEvent={selectedDate} // Passing full selectInfo object which contains start/end
                 providerId={profile.id}
-                isOwner={true}
+                onSuccess={() => { loadBookingsData(); setShowBookingModal(false); }}
+                workingDays={profile.working_days}
+                workingHours={{
+                    start: profile.work_hours_start,
+                    end: profile.work_hours_end
+                }}
             />
-        </div>
+        </div >
     );
 }
 

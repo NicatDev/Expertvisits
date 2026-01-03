@@ -1,26 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../ui/Modal';
 import Button from '../../ui/Button';
 import Input from '../../ui/Input';
+import Calendar from '../Calendar'; // Import Calendar
 import { services } from '@/lib/api';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
 
-const BookingModal = ({ isOpen, onClose, selectedDate, providerId, isOwner = false, existingEvents = [] }) => {
+const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workingDays, workingHours }) => {
+    const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' | 'manual'
     const [loading, setLoading] = useState(false);
+
+    // Form State
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
     const [note, setNote] = useState('');
-    const [duration, setDuration] = useState(30); // Default 30 mins
+    const [duration, setDuration] = useState(30);
+
+    // Initial Duration Options
+    const durationOptions = [];
+    for (let i = 30; i <= 360; i += 30) {
+        durationOptions.push(i);
+    }
+
+    // Generate Time Options based on working hours
+    const timeOptions = React.useMemo(() => {
+        if (!workingHours || !workingHours.start || !workingHours.end) {
+            // Fallback generic 09:00 - 18:00 if no hours
+            return ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+                "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
+        }
+
+        const slots = [];
+        const [startH, startM] = workingHours.start.split(':').map(Number);
+        const [endH, endM] = workingHours.end.split(':').map(Number);
+
+        // Use arbitrary date to calculate steps
+        let current = new Date();
+        current.setHours(startH, startM, 0, 0);
+        const end = new Date();
+        end.setHours(endH, endM, 0, 0);
+
+        while (current < end) {
+            const h = String(current.getHours()).padStart(2, '0');
+            const m = String(current.getMinutes()).padStart(2, '0');
+            slots.push(`${h}:${m}`);
+            current.setMinutes(current.getMinutes() + 30);
+        }
+        return slots;
+    }, [workingHours]);
+
+    // Reset state on open
+    useEffect(() => {
+        if (isOpen) {
+            setActiveTab('calendar');
+            setDate('');
+            setTime('');
+            setNote('');
+            setDuration(30);
+        }
+    }, [isOpen]);
+
+    const handleCalendarSelect = (selectInfo) => {
+        // selectInfo: { startStr: "YYYY-MM-DDTHH:mm:ss", endStr: ..., start: Date, end: Date }
+        const start = new Date(selectInfo.startStr);
+
+        // Populate manual fields from calendar selection
+        // YYYY-MM-DD
+        const yyyy = start.getFullYear();
+        const mm = String(start.getMonth() + 1).padStart(2, '0');
+        const dd = String(start.getDate()).padStart(2, '0');
+        setDate(`${yyyy}-${mm}-${dd}`);
+
+        // HH:mm
+        const hh = String(start.getHours()).padStart(2, '0');
+        const min = String(start.getMinutes()).padStart(2, '0');
+        setTime(`${hh}:${min}`);
+
+        // Calculate duration if user selected a range
+        const diffMins = (new Date(selectInfo.endStr) - start) / 60000;
+        if (diffMins >= 30) {
+            setDuration(diffMins);
+        } else {
+            setDuration(30);
+        }
+
+        // Switch to manual tab to confirm/edit
+        setActiveTab('manual');
+    };
 
     const handleBook = async () => {
+        if (!date || !time) {
+            toast.error("Please select a date and time.");
+            return;
+        }
+
         setLoading(true);
         try {
+            // Construct ISO datetime string (UTC)
+            const localDate = new Date(`${date}T${time}:00`);
+            const requestedDatetime = localDate.toISOString();
+
             await services.bookSlot({
                 provider_id: providerId,
-                requested_datetime: selectedDate.startStr, // Match backend field
+                requested_datetime: requestedDatetime,
                 note: note,
                 duration_minutes: duration
             });
-            toast.success(isOwner ? 'Time Blocked Successfully!' : 'Booking Request Sent!');
+            toast.success('Booking Request Sent!');
             onClose();
         } catch (err) {
             console.error(err);
@@ -30,103 +117,126 @@ const BookingModal = ({ isOpen, onClose, selectedDate, providerId, isOwner = fal
         }
     };
 
-    // Duration Options (30 to 360 mins, step 30)
-    const durationOptions = [];
-    for (let i = 30; i <= 360; i += 30) {
-        durationOptions.push(i);
-    }
-
-    React.useEffect(() => {
-        if (selectedDate && selectedDate.start && selectedDate.end) {
-            const diff = (selectedDate.end.getTime() - selectedDate.start.getTime()) / 60000;
-            if (diff >= 30) {
-                setDuration(diff);
-            } else {
-                setDuration(30);
-            }
-        }
-    }, [selectedDate]);
-
     const formatDuration = (mins) => {
         const h = Math.floor(mins / 60);
         const m = mins % 60;
         let text = '';
-        if (h > 0) text += `${h} hour${h > 1 ? 's' : ''}`;
+        if (h > 0) text += `${h} hr${h > 1 ? 's' : ''}`;
         if (m > 0) text += ` ${m} min`;
         return text.trim();
     };
 
-    if (!selectedDate) return null;
-
-    const startTime = new Date(selectedDate.startStr || selectedDate.start);
-
-    // Check overlaps for dynamic options
     const checkOverlap = (mins) => {
-        if (!existingEvents || existingEvents.length === 0) return false;
-        const proposedEnd = new Date(startTime.getTime() + mins * 60000);
+        if (!date || !time || !existingEvents) return false;
+        const start = new Date(`${date}T${time}:00`);
+        const end = new Date(start.getTime() + mins * 60000);
 
         return existingEvents.some(event => {
             const eStart = new Date(event.start);
             const eEnd = new Date(event.end);
-
-            // Check intersection: (StartA < EndB) and (EndA > StartB)
-            return (startTime < eEnd && proposedEnd > eStart);
+            return (start < eEnd && end > eStart);
         });
     };
 
-    const endTimeDisplay = new Date(startTime.getTime() + duration * 60000);
-
-    const handleDurationChange = (e) => {
-        setDuration(parseInt(e.target.value));
-    };
-
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={isOwner ? "Block Time" : "Book Appointment"}>
+        <Modal isOpen={isOpen} onClose={onClose} title="Book Appointment">
+            <div className={styles.tabs}>
+                <button
+                    className={`${styles.tab} ${activeTab === 'calendar' ? styles.active : ''}`}
+                    onClick={() => setActiveTab('calendar')}
+                >
+                    Calendar View
+                </button>
+                <button
+                    className={`${styles.tab} ${activeTab === 'manual' ? styles.active : ''}`}
+                    onClick={() => setActiveTab('manual')}
+                >
+                    Manual Input
+                </button>
+            </div>
+
             <div className={styles.content}>
-                <div className={styles.infoRow}>
-                    <span>Date:</span>
-                    <strong>{startTime.toLocaleDateString()}</strong>
-                </div>
-                <div className={styles.infoRow}>
-                    <span>Time:</span>
-                    <strong>{startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {endTimeDisplay.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong>
-                </div>
+                {activeTab === 'calendar' && (
+                    <div style={{ /* Removed max-height here to assume Modal handles scroll */ }}>
+                        <p style={{ marginBottom: '10px', color: '#666', fontSize: '0.9rem' }}>
+                            Click or drag on the calendar to select a slot.
+                        </p>
+                        <Calendar
+                            events={existingEvents}
+                            onDateSelect={handleCalendarSelect}
+                            workingDays={workingDays}
+                            workingHours={workingHours}
+                        />
+                    </div>
+                )}
 
-                <div className={styles.formGroup}>
-                    <label>Duration</label>
-                    <select
-                        className={styles.selectInput}
-                        value={duration}
-                        onChange={handleDurationChange}
-                    >
-                        {durationOptions.map(mins => {
-                            const isInvalid = checkOverlap(mins);
-                            if (isInvalid) return null; // Hide invalid options? Or disable?
-                            // User asked: "150 dise 2 saat yarim kimi gorunsun... eger 5 saat sonra doludusa 6 saat duration sece bilmemeliyem"
-                            // (If full after 5 hours, shouldn't be able to select 6 hours).
-                            // So hiding or disabling. Hiding is cleaner for now as it removes unusable choices.
-                            return (
-                                <option key={mins} value={mins} disabled={isInvalid}>
-                                    {formatDuration(mins)}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
+                {activeTab === 'manual' && (
+                    <div>
+                        <div className={styles.row} style={{ marginBottom: '20px' }}>
+                            <div className={styles.formGroup}>
+                                <label>Date</label>
+                                <input
+                                    type="date"
+                                    className={styles.dateInput}
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Time</label>
+                                <select
+                                    className={styles.selectInput}
+                                    value={time}
+                                    onChange={(e) => setTime(e.target.value)}
+                                >
+                                    <option value="" disabled>Select Time</option>
+                                    {timeOptions.map(t => (
+                                        <option key={t} value={t}>{t}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
 
-                <div className={styles.formGroup}>
-                    <label>{isOwner ? "Title / Reason" : "Note (Optional)"}</label>
-                    <Input
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder={isOwner ? "e.g. Lunch Break" : "Briefly describe your request..."}
-                    />
-                </div>
+                        <div className={styles.formGroup}>
+                            <label>Duration</label>
+                            <select
+                                className={styles.selectInput}
+                                value={duration}
+                                onChange={(e) => setDuration(parseInt(e.target.value))}
+                            >
+                                {durationOptions.map(mins => {
+                                    const isInvalid = checkOverlap(mins);
+                                    return (
+                                        <option key={mins} value={mins} disabled={isInvalid}>
+                                            {formatDuration(mins)} {isInvalid ? '(Unavailable)' : ''}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label>Note (Optional)</label>
+                            <Input
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                                placeholder="Briefly describe your request..."
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className={styles.footer}>
                 <Button type="default" onClick={onClose}>Cancel</Button>
-                <Button type="primary" loading={loading} onClick={handleBook}>{isOwner ? "Block Slot" : "Confirm Booking"}</Button>
+                <Button
+                    type="primary"
+                    loading={loading}
+                    onClick={handleBook}
+                    disabled={activeTab === 'calendar' || !date || !time}
+                >
+                    Confirm Booking
+                </Button>
             </div>
         </Modal>
     );
