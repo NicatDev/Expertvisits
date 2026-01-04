@@ -105,6 +105,7 @@ const FeedItem = ({ item, onDelete }) => {
             });
             setCommentText('');
             toast.success("Comment posted!");
+            setCommentsCount(prev => prev + 1);
             await refreshItem();
         } catch (err) {
             console.error(err);
@@ -352,6 +353,7 @@ const FeedItem = ({ item, onDelete }) => {
                 contentType={typeStr}
                 objectId={item.id}
                 refreshTrigger={localItem.comments_count}
+                onCommentAdded={() => setCommentsCount(prev => prev + 1)}
             // Pass styles or use its own? CommentsSection uses its own inline for now, 
             // ideally refactor that too.
             />

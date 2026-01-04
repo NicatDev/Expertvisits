@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { MapPin, Link as LinkIcon, Calendar as CalendarIcon, Mail, Phone, Globe, User } from 'lucide-react';
 import { profiles, content, accounts, interactions, services, business } from '@/lib/api';
+import api from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import styles from './profile.module.scss';
@@ -39,6 +40,61 @@ export default function PublicProfilePage() {
     const [isFollowing, setIsFollowing] = useState(false);
     const [followersCount, setFollowersCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
+
+    // Posts Pagination
+    const [postsPage, setPostsPage] = useState(1);
+    const [hasMorePosts, setHasMorePosts] = useState(true);
+    const [postsLoading, setPostsLoading] = useState(false);
+
+    useEffect(() => {
+        if (activeTab === 'posts' && profile) {
+            loadUserContent(profile.id, 1, filterType, true);
+        }
+    }, [activeTab, filterType, profile]);
+
+    const loadUserContent = async (userId, page = 1, type = 'all', reset = false) => {
+        if (!userId) return;
+
+        if (reset) {
+            setPosts([]);
+            setPostsPage(1);
+            setHasMorePosts(true);
+        }
+        setPostsLoading(true);
+        try {
+            const { data } = await api.get('/content/public-feed/', {
+                params: {
+                    user_id: userId,
+                    type: type,
+                    page: page,
+                    limit: 3
+                }
+            });
+
+            const newPosts = data.results;
+            if (reset) {
+                setPosts(newPosts);
+            } else {
+                setPosts(prev => [...prev, ...newPosts]);
+            }
+
+            if (newPosts.length < 3) {
+                setHasMorePosts(false);
+            } else {
+                if (data.count && (page * 3) >= data.count) {
+                    setHasMorePosts(false);
+                } else {
+                    setHasMorePosts(true);
+                }
+            }
+            setPostsPage(page);
+
+        } catch (err) {
+            console.error("Failed to load posts", err);
+        } finally {
+            setPostsLoading(false);
+        }
+    };
 
     // Booking State
     // Booking State
@@ -94,15 +150,12 @@ export default function PublicProfilePage() {
             const userId = targetUser.id;
             const fetchConfig = { user_id: userId };
 
-            const [exp, edu, ski, lan, cert, arts, quizzes, surveys] = await Promise.all([
+            const [exp, edu, ski, lan, cert] = await Promise.all([
                 profiles.getExperience(fetchConfig),
                 profiles.getEducation(fetchConfig),
                 profiles.getSkills(fetchConfig),
                 profiles.getLanguages(fetchConfig),
                 profiles.getCertificates(fetchConfig),
-                content.getUserArticles(userId),
-                content.getUserQuizzes(userId),
-                content.getUserSurveys(userId)
             ]);
 
             setExperiences(exp.data.results || exp.data || []);
@@ -111,14 +164,8 @@ export default function PublicProfilePage() {
             setLanguages(lan.data.results || lan.data || []);
             setCertificates(cert.data.results || cert.data || []);
 
-            // Normalize and Combine
-            const _articles = (arts.data.results || arts.data || []).map(a => ({ ...a, type: 'article' }));
-            const _quizzes = (quizzes.data.results || quizzes.data || []).map(q => ({ ...q, type: 'quiz' }));
-            const _surveys = (surveys.data.results || surveys.data || []).map(s => ({ ...s, type: 'survey' }));
-
-            const combined = [..._articles, ..._quizzes, ..._surveys].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            setPosts(combined);
-            setArticles(arts.data.results || arts.data || []);
+            // Posts loaded via loadUserContent
+            // Vacancies
 
             // Vacancies
             const vacRes = await business.getVacancies({ company__owner: userId });
@@ -327,17 +374,27 @@ export default function PublicProfilePage() {
                                         </div>
                                     </div>
                                     <div className={styles.list} style={{ flexDirection: 'column', gap: '16px' }}>
-                                        {posts
-                                            .filter(p => filterType === 'all' || p.type === filterType)
-                                            .map(item => (
-                                                <FeedItem
-                                                    key={`${item.type}-${item.id}`}
-                                                    item={item}
-                                                    onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
-                                                />
-                                            ))
+                                        {posts.map(item => (
+                                            <FeedItem
+                                                key={`${item.type}-${item.id}`}
+                                                item={item}
+                                                onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
+                                            />
+                                        ))
                                         }
-                                        {posts.length === 0 && <p>This user hasn't shared anything yet.</p>}
+                                        {posts.length === 0 && !postsLoading && <p>This user hasn't shared anything yet.</p>}
+
+                                        {hasMorePosts && (
+                                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                                                <Button
+                                                    type="default"
+                                                    loading={postsLoading}
+                                                    onClick={() => loadUserContent(profile.id, postsPage + 1, filterType)}
+                                                >
+                                                    Load More
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}

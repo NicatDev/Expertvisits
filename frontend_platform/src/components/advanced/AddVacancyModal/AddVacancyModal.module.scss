@@ -1,47 +1,83 @@
-.form {
+.container {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding: 8px 0;
 }
 
 .row {
     display: flex;
     gap: 16px;
+    align-items: flex-end;
+    /* Align inputs properly if labels differ */
 
     >* {
         flex: 1;
     }
 }
 
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    padding-bottom: 4px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 8px 0;
+    width: 100%;
+}
+
 .field {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
 
     label {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
-        color: #333;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 }
 
 .select,
 .input,
 .textarea {
-    padding: 10px 12px;
-    border: 1px solid #d9d9d9;
-    border-radius: 6px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+    height: 40px;
+    /* Standard height */
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
     font-size: 14px;
     width: 100%;
     outline: none;
-    transition: border-color 0.2s;
-    background: #fff;
+    transition: all 0.2s;
+    background: #f9f9f9;
+    color: #333;
 
     &:focus {
         border-color: #1890ff;
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
     }
 }
 
 .textarea {
+    height: auto;
     resize: vertical;
+    min-height: 100px;
 }

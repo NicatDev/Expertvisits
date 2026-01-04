@@ -13,7 +13,7 @@ import styles from './profile.module.scss';
 import FeedItem from '@/components/advanced/FeedItem';
 import VacancyCard from '@/components/advanced/VacancyCard';
 import Calendar from '@/components/advanced/Calendar';
-import BlockingModal from '@/components/advanced/BlockingModal';
+import BlockingModal from './components/BlockingModal';
 import { auth, profiles, content, accounts, services, business } from '@/lib/api';
 import api from '@/lib/api/client'; // Direct client for categories
 import { Edit2, Trash2, Plus, Camera, Check, X, User, LinkIcon } from 'lucide-react';
@@ -30,6 +30,17 @@ export default function PrivateProfilePage() {
 
     const [profile, setProfile] = useState(null);
     const [activeTab, setActiveTab] = useState('about');
+
+    useEffect(() => {
+        const savedTab = sessionStorage.getItem('profileActiveTab');
+        if (savedTab) {
+            setActiveTab(savedTab);
+        }
+    }, []);
+
+    useEffect(() => {
+        sessionStorage.setItem('profileActiveTab', activeTab);
+    }, [activeTab]);
     const [loading, setLoading] = useState(true);
 
     // Profile Data Sections
@@ -70,6 +81,62 @@ export default function PrivateProfilePage() {
     const [historyPage, setHistoryPage] = useState(1);
     const [hasMoreHistory, setHasMoreHistory] = useState(true);
     const [historyLoading, setHistoryLoading] = useState(false);
+
+    // Posts Pagination
+    const [postsPage, setPostsPage] = useState(1);
+    const [hasMorePosts, setHasMorePosts] = useState(true);
+    const [postsLoading, setPostsLoading] = useState(false);
+
+    useEffect(() => {
+        if (activeTab === 'posts') {
+            loadUserContent(1, filterType, true);
+        }
+    }, [activeTab, filterType]);
+
+    const loadUserContent = async (page = 1, type = 'all', reset = false) => {
+        if (reset) {
+            setPosts([]);
+            setPostsPage(1);
+            setHasMorePosts(true);
+        }
+        setPostsLoading(true);
+        try {
+            const { data } = await api.get('/content/my-feed/', {
+                params: {
+                    type: type,
+                    page: page,
+                    limit: 3 // User requested 3 items
+                }
+            });
+
+            const newPosts = data.results;
+            if (reset) {
+                setPosts(newPosts);
+            } else {
+                setPosts(prev => [...prev, ...newPosts]);
+            }
+
+            // Check if more
+            if (newPosts.length < 3) { // If less than limit, no more
+                setHasMorePosts(false);
+            } else {
+                // If exactly limit, maybe more? simplified check
+                // Actually if backend returned count, we can be smarter.
+                // data.count exists.
+                if ((page * 3) >= data.count) {
+                    setHasMorePosts(false);
+                } else {
+                    setHasMorePosts(true);
+                }
+            }
+            setPostsPage(page);
+
+        } catch (err) {
+            console.error("Failed to load posts", err);
+        } finally {
+            setPostsLoading(false);
+        }
+    };
 
     // Follower count (ReadOnly for owner)
     const [followersCount, setFollowersCount] = useState(0);
@@ -219,11 +286,8 @@ export default function PrivateProfilePage() {
             const userId = targetUser.id;
 
             // Unified Call
-            const [detailsRes, arts, quizzes, surveys, vacs, apps] = await Promise.all([
+            const [detailsRes, vacs, apps] = await Promise.all([
                 profiles.getProfileDetails(userId),
-                content.getUserArticles(userId),
-                content.getUserQuizzes(userId),
-                content.getUserSurveys(userId),
                 business.getMyVacancies(),
                 business.getMyApplications()
             ]);
@@ -237,14 +301,8 @@ export default function PrivateProfilePage() {
             setCertificates(details.certificates || []);
             setMyApplications(apps.data.results || apps.data || []);
             setMyVacancies(vacs.data.results || vacs.data || []);
-            // Normalize and Combine
-            const _articles = (arts.data.results || arts.data || []).map(a => ({ ...a, type: 'article' }));
-            const _quizzes = (quizzes.data.results || quizzes.data || []).map(q => ({ ...q, type: 'quiz' }));
-            const _surveys = (surveys.data.results || surveys.data || []).map(s => ({ ...s, type: 'survey' }));
 
-            const combined = [..._articles, ..._quizzes, ..._surveys].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            setPosts(combined);
-            setArticles(arts.data.results || arts.data || []);
+            // Posts are loaded via separate API in loadUserContent
 
         } catch (err) {
             console.error("Load profile failed", err);
@@ -724,17 +782,27 @@ export default function PrivateProfilePage() {
                             <Button onClick={() => openModal('content')}>+ Add Content</Button>
                         </div>
                         <div className={styles.list} style={{ flexDirection: 'column', gap: '16px' }}>
-                            {posts
-                                .filter(p => filterType === 'all' || p.type === filterType)
-                                .map(item => (
-                                    <FeedItem
-                                        key={`${item.type}-${item.id}`}
-                                        item={item}
-                                        onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
-                                    />
-                                ))
+                            {posts.map(item => (
+                                <FeedItem
+                                    key={`${item.type}-${item.id}`}
+                                    item={item}
+                                    onDelete={(id) => setPosts(prev => prev.filter(p => p.id !== id))}
+                                />
+                            ))
                             }
-                            {posts.length === 0 && <p>No content shared yet.</p>}
+                            {posts.length === 0 && !postsLoading && <p>No content shared yet.</p>}
+
+                            {hasMorePosts && (
+                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                                    <Button
+                                        type="default"
+                                        loading={postsLoading}
+                                        onClick={() => loadUserContent(postsPage + 1, filterType)}
+                                    >
+                                        Load More
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -1129,7 +1197,11 @@ export default function PrivateProfilePage() {
                 <CreateContentModal
                     isOpen={modalState.type === 'content'}
                     onClose={closeModal}
-                    onSuccess={() => { loadProfile(); toast.success('Content created successfully'); }}
+                    onSuccess={() => {
+                        loadProfile();
+                        if (activeTab === 'posts') loadUserContent(1, filterType, true);
+                        toast.success('Content created successfully');
+                    }}
                 />
                 <AddVacancyModal
                     isOpen={modalState.type === 'vacancy'}

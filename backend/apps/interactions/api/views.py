@@ -96,7 +96,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             content_type=ct, 
             object_id=object_id, 
             parent__isnull=True
-        ).select_related('user').prefetch_related('replies')
+        ).select_related('user').prefetch_related('replies').order_by('-created_at')
         
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)

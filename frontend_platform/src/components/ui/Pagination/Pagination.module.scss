@@ -6,64 +6,84 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-    margin: 30px 0;
-    gap: 8px;
+    margin: 40px 0;
+    gap: 10px;
 
     .paginationItem {
-        height: 36px;
-        width: 36px;
+        height: 40px;
+        min-width: 40px;
+        padding: 0 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
+        border-radius: 8px; // Soft square look usually looks more "UI component" than circles for numbers
         cursor: pointer;
         font-size: 14px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        transition: all 0.2s;
+        font-weight: 600;
+        color: #555;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         user-select: none;
+        border: 1px solid #e6e6e6;
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 
         &:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
+            background-color: #f9f9f9;
+            border-color: #d1d1d1;
+            color: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         &.selected {
-            background-color: var(--primary);
+            background-color: #1890ff; // Primary
+            border-color: #1890ff;
             color: white;
-            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(24, 144, 255, 0.3);
+
+            &:hover {
+                background-color: #40a9ff;
+                border-color: #40a9ff;
+            }
         }
 
         &.dots {
             cursor: default;
+            border: none;
+            background: transparent;
+            box-shadow: none;
 
             &:hover {
                 background-color: transparent;
-                color: var(--text-secondary);
+                border: none;
+                transform: none;
+                box-shadow: none;
             }
         }
 
         &.disabled {
             pointer-events: none;
             opacity: 0.5;
+            background-color: #f5f5f5;
         }
 
-        // Previous/Next styling if not just icon
+        // Previous/Next styling
         &:first-child,
         &:last-child {
             width: auto;
-            padding: 0 12px;
-            border-radius: 20px;
-            gap: 6px;
-            background-color: var(--bg-secondary);
+            padding: 0 16px;
+            gap: 8px;
+            font-weight: 600;
+            border-radius: 8px;
 
             &:hover {
-                background-color: var(--hover-bg);
+                background-color: #f0f0f0;
+                border-color: #ccc;
             }
         }
 
         .arrowText {
-            display: none; // Icon only on mobile
+            display: none;
 
             @include desktop {
                 display: inline;

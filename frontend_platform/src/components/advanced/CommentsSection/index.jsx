@@ -89,7 +89,7 @@ const CommentItem = ({ comment, contentType, objectId, onReply, onLike }) => {
     );
 };
 
-export default function CommentsSection({ contentType, objectId, refreshTrigger }) {
+export default function CommentsSection({ contentType, objectId, refreshTrigger, onCommentAdded }) {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [newComment, setNewComment] = useState(''); // Not used directly in UI as input is in FeedItem? Actually FeedItem calls API directly. But recursion needs this.
@@ -134,6 +134,7 @@ export default function CommentsSection({ contentType, objectId, refreshTrigger 
                 parent: parentId
             });
 
+            if (onCommentAdded) onCommentAdded();
             fetchComments();
         } catch (err) {
             console.error(err);

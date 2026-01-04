@@ -120,67 +120,92 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Edit Vacancy" : "Post a Vacancy"}>
             <div className={styles.container}>
-                <div className={styles.field}>
-                    <label>Company</label>
-                    <select
-                        value={formData.company_id}
-                        onChange={e => handleChange('company_id', e.target.value)}
-                        className={styles.select}
-                    >
-                        {companies.length === 0 && <option value="">No companies found</option>}
-                        {companies.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <Input label="Title" value={formData.title} onChange={e => handleChange('title', e.target.value)} placeholder="e.g. Senior Frontend Developer" />
-
-                <div className={styles.row}>
+                {/* Section 1: Basic Info */}
+                <div className={styles.section}>
+                    <h4 className={styles.sectionTitle}>Company & Role</h4>
                     <div className={styles.field}>
-                        <label>Listing Type</label>
-                        <select className={styles.select} value={formData.listing_type} onChange={e => handleChange('listing_type', e.target.value)}>
-                            <option value="job">Job</option>
-                            <option value="internship">Internship</option>
+                        <label>Company</label>
+                        <select
+                            value={formData.company_id}
+                            onChange={e => handleChange('company_id', e.target.value)}
+                            className={styles.select}
+                        >
+                            {companies.length === 0 && <option value="">No companies found</option>}
+                            {companies.map(c => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                            ))}
                         </select>
                     </div>
+
+                    <Input label="Title" value={formData.title} onChange={e => handleChange('title', e.target.value)} placeholder="e.g. Senior Frontend Developer" />
+
+                    <Input label="Salary Range" value={formData.salary_range} onChange={e => handleChange('salary_range', e.target.value)} placeholder="e.g. 1000-1500 AZN" />
+                </div>
+
+                <hr className={styles.divider} />
+
+                {/* Section 2: Details */}
+                <div className={styles.section}>
+                    <h4 className={styles.sectionTitle}>Job Details</h4>
+                    <div className={styles.row}>
+                        <div className={styles.field}>
+                            <label>Listing Type</label>
+                            <select className={styles.select} value={formData.listing_type} onChange={e => handleChange('listing_type', e.target.value)}>
+                                <option value="job">Job</option>
+                                <option value="internship">Internship</option>
+                            </select>
+                        </div>
+                        <div className={styles.field}>
+                            <label>Job Type</label>
+                            <select className={styles.select} value={formData.job_type} onChange={e => handleChange('job_type', e.target.value)}>
+                                <option value="full-time">Full-time</option>
+                                <option value="part-time">Part-time</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className={styles.row}>
+                        <div className={styles.field}>
+                            <label>Work Mode</label>
+                            <select className={styles.select} value={formData.work_mode} onChange={e => handleChange('work_mode', e.target.value)}>
+                                <option value="office">Office</option>
+                                <option value="remote">Remote</option>
+                                <option value="hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div className={styles.field}>
+                            <label>Location</label>
+                            <Input value={formData.location} onChange={e => handleChange('location', e.target.value)} placeholder="e.g. Baku, Azerbaijan" />
+                        </div>
+                    </div>
+
                     <div className={styles.field}>
-                        <label>Job Type</label>
-                        <select className={styles.select} value={formData.job_type} onChange={e => handleChange('job_type', e.target.value)}>
-                            <option value="full-time">Full-time</option>
-                            <option value="part-time">Part-time</option>
-                        </select>
+                        <label>Expiry Date</label>
+                        <input
+                            type="date"
+                            className={styles.input}
+                            value={formData.expires_at}
+                            onChange={e => handleChange('expires_at', e.target.value)}
+                            onClick={(e) => e.target.showPicker()}
+                            style={{ cursor: 'pointer' }}
+                        />
                     </div>
                 </div>
 
-                <div className={styles.row}>
+                <hr className={styles.divider} />
+
+                {/* Section 3: Description */}
+                <div className={styles.section}>
+                    <h4 className={styles.sectionTitle}>Description</h4>
                     <div className={styles.field}>
-                        <label>Work Mode</label>
-                        <select className={styles.select} value={formData.work_mode} onChange={e => handleChange('work_mode', e.target.value)}>
-                            <option value="office">Office</option>
-                            <option value="remote">Remote</option>
-                            <option value="hybrid">Hybrid</option>
-                        </select>
+                        <textarea
+                            className={styles.textarea}
+                            rows={6}
+                            value={formData.description}
+                            onChange={e => handleChange('description', e.target.value)}
+                            placeholder="Describe the role, responsibilities, and requirements..."
+                        />
                     </div>
-                    <Input label="Location" value={formData.location} onChange={e => handleChange('location', e.target.value)} placeholder="e.g. Baku, Azerbaijan" />
-                </div>
-
-                <Input label="Salary Range" value={formData.salary_range} onChange={e => handleChange('salary_range', e.target.value)} placeholder="e.g. 1000-1500 AZN" />
-
-                <div className={styles.field}>
-                    <label>Expiry Date</label>
-                    <input type="date" className={styles.input} value={formData.expires_at} onChange={e => handleChange('expires_at', e.target.value)} />
-                </div>
-
-                <div className={styles.field}>
-                    <label>Description</label>
-                    <textarea
-                        className={styles.textarea}
-                        rows={4}
-                        value={formData.description}
-                        onChange={e => handleChange('description', e.target.value)}
-                        placeholder="Describe the role..."
-                    />
                 </div>
 
                 <Button onClick={handleSubmit} disabled={loading} style={{ width: '100%', marginTop: '10px' }}>

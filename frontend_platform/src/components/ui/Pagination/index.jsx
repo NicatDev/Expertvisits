@@ -4,10 +4,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './Pagination.module.scss';
 import clsx from 'clsx';
 
-const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className }) => {
+const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className, alwaysShow = false }) => {
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    if (totalPages <= 1) return null;
+    if (totalPages <= 1 && !alwaysShow) return null;
 
     const onNext = () => {
         onPageChange(currentPage + 1);

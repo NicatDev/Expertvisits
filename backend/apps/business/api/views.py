@@ -3,8 +3,51 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.business.models import Company, Vacancy, OngoingProject, VacancyApplication
-from apps.business.api.serializers import CompanySerializer, VacancySerializer, ProjectSerializer, VacancyApplicationSerializer
+from apps.business.models import Company, Vacancy, OngoingProject, VacancyApplication, WhoWeAre, WhatWeDo, OurValues, CompanyService
+from apps.business.api.serializers import (
+    CompanySerializer, VacancySerializer, ProjectSerializer, VacancyApplicationSerializer,
+    WhoWeAreSerializer, WhatWeDoSerializer, OurValuesSerializer, CompanyServiceSerializer
+)
+
+class BaseSectionViewSet(viewsets.ModelViewSet):
+    """ Base ViewSet for company sections to handle permissions """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        # We assume the frontend passes 'company' ID, but we must verify ownership.
+        # Actually safer: The ViewSet should probably be nested or similar. 
+        # But simpler logic: Check if request.user is owner of the passed company.
+        company = serializer.validated_data['company']
+        if company.owner != self.request.user:
+             raise serializers.ValidationError("You permission denied to add content to this company.")
+        serializer.save()
+
+    def perform_update(self, serializer):
+        obj = self.get_object()
+        if obj.company.owner != self.request.user:
+             raise serializers.ValidationError("Permission denied.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.company.owner != self.request.user:
+             raise serializers.ValidationError("Permission denied.")
+        instance.delete()
+
+class WhoWeAreViewSet(BaseSectionViewSet):
+    queryset = WhoWeAre.objects.all()
+    serializer_class = WhoWeAreSerializer
+
+class WhatWeDoViewSet(BaseSectionViewSet):
+    queryset = WhatWeDo.objects.all()
+    serializer_class = WhatWeDoSerializer
+
+class OurValuesViewSet(BaseSectionViewSet):
+    queryset = OurValues.objects.all()
+    serializer_class = OurValuesSerializer
+
+class CompanyServiceViewSet(BaseSectionViewSet):
+    queryset = CompanyService.objects.all()
+    serializer_class = CompanyServiceSerializer
 
 class VacancyApplicationViewSet(viewsets.ModelViewSet):
     queryset = VacancyApplication.objects.all()
@@ -48,10 +91,13 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 100
 
 class CompanyViewSet(viewsets.ModelViewSet):
-    queryset = Company.objects.all()
+    queryset = Company.objects.all().order_by('-founded_at') # Add ordering
     serializer_class = CompanySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['name', 'summary', 'services__title'] # Search by name, summary, service title
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -166,7 +212,7 @@ class VacancyViewSet(viewsets.ModelViewSet):
         applications = VacancyApplication.objects.filter(vacancy=vacancy)
         if not applications.exists():
             return Response([])
-        serializer = VacancyApplicationSerializer(applications, many=True)
+        serializer = VacancyApplicationSerializer(applications, many=True, context={'request': request})
         return Response(serializer.data)
     
     @action(detail=True, methods=['get'])

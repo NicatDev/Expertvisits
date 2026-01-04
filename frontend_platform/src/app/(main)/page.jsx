@@ -23,6 +23,10 @@ export default function HomePage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
+    // Pagination
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
     // Debounce Logic
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -32,26 +36,62 @@ export default function HomePage() {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Fetch Trigger
+    // Fetch Trigger (Reset)
     useEffect(() => {
-        loadFeed();
+        loadFeed(1, true);
     }, [filterType, ordering, debouncedSearch]);
 
-    const loadFeed = async () => {
-        setLoading(true);
+    const loadFeed = async (pageNo = 1, reset = false) => {
+        if (reset) {
+            setLoading(true);
+            setArticles([]);
+            setPage(1);
+            setHasMore(true);
+        } else {
+            // Loading more logic could utilize a small separate loading state if desired, 
+            // but we reused 'loading' which masks the whole feed. 
+            // Better to have separate loading for "more" or just not mask everything.
+            // keeping simple for now, maybe just don't set global loading if load more
+        }
+
         try {
             const params = {
                 type: filterType,
                 ordering: ordering,
-                search: debouncedSearch
+                search: debouncedSearch,
+                page: pageNo,
+                limit: 10
             };
             const { data } = await content.getFeed(params);
-            setArticles(data.results || []);
+            const newItems = data.results || [];
+
+            if (reset) {
+                setArticles(newItems);
+            } else {
+                setArticles(prev => [...prev, ...newItems]);
+            }
+
+            // Check if more
+            if (newItems.length < 10) {
+                setHasMore(false);
+            } else {
+                if (data.count && (pageNo * 10) >= data.count) {
+                    setHasMore(false);
+                } else {
+                    setHasMore(true);
+                }
+            }
+            setPage(pageNo);
+
         } catch (err) {
             console.error(err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleLoadMore = () => {
+        loadFeed(page + 1, false);
     };
 
     const handleCreateClick = () => {
@@ -141,11 +181,22 @@ export default function HomePage() {
                 ) : (
                     <div className={styles.feedList}>
                         {articles.length > 0 ? articles.map(article => (
-                            <FeedItem key={article.id} item={article} />
+                            <FeedItem key={`${article.type || 'article'}-${article.id}`} item={article} />
                         )) : (
                             <div className={styles.emptyState}>
                                 <p>No results found.</p>
                                 <Button type="link" onClick={handleCreateClick}>Create content</Button>
+                            </div>
+                        )}
+
+                        {hasMore && articles.length > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: '20px' }}>
+                                <Button
+                                    type="default"
+                                    onClick={handleLoadMore}
+                                >
+                                    Load More
+                                </Button>
                             </div>
                         )}
                     </div>
@@ -175,7 +226,7 @@ export default function HomePage() {
                 onClose={() => setShowCreateModal(false)}
                 onSuccess={() => {
                     setFilterType('article'); // Reset to see the new post if it was an article
-                    loadFeed();
+                    loadFeed(1, true);
                 }}
             />
         </div>

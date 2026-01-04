@@ -6,7 +6,7 @@ class Company(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='companies')
     name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(unique=True, db_index=True)
-    logo = models.ImageField(upload_to='company_logos/')
+    logo = models.ImageField(upload_to='company_logos/', null=True, blank=True)
     summary = models.TextField()
     founded_at = models.DateField()
     email = models.EmailField(db_index=True)
@@ -101,4 +101,31 @@ class ProjectRequest(models.Model):
     project = models.ForeignKey(OngoingProject, on_delete=models.CASCADE, related_name='requests')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
-    status = models.CharField(choices=STATUS_CHOICES, default='pending', max_length=20)
+
+class WhoWeAre(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='who_we_are')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class WhatWeDo(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='what_we_do')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class OurValues(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='our_values')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class CompanyService(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='services')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='company_services/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -2,6 +2,7 @@ import api from './client';
 
 export const content = {
     getFeed: (params) => api.get('content/feed/', { params }), // params: { page, category, sub_category, search }
+    getArticleStats: () => api.get('content/article-stats/'),
     getUserArticles: (userId) => api.get('content/articles/', { params: { author: userId } }),
     getArticle: (slug) => api.get(`content/articles/${slug}/`),
     createArticle: (data) => {

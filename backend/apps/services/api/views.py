@@ -144,9 +144,10 @@ class BookingViewSet(viewsets.ModelViewSet):
                 # Owners see details for confirmed
                 if b.provider == user and b.customer == user:
                      title = "Blocked"
+                     color = '#5E4F4C' # Black for self-blocked
                 else:
                      title = f"Meeting with {b.customer.first_name}" if b.provider == user else f"Meeting with {b.provider.first_name}"
-                color = '#52c41a' # Green confirmed
+                     color = '#52c41a' # Green confirmed
             else:
                 # Public sees generic "Busy"
                 title = "Busy"

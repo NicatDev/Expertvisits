@@ -1,5 +1,18 @@
 @import './variables.scss';
 
+:root {
+    --primary: #{$primary-color};
+    --primary-hover: #{$primary-hover};
+    --text-primary: #{$text-color};
+    --text-secondary: #{$text-secondary};
+    --border-color: #{$border-color};
+    --bg-primary: #{$bg-container};
+    --bg-secondary: #{$bg-color};
+    --success: #{$success-color};
+    --warning: #{$warning-color};
+    --error: #{$error-color};
+}
+
 * {
     box-sizing: border-box;
     padding: 0;

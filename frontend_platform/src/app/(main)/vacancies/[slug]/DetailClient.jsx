@@ -92,11 +92,12 @@ export default function DetailClient({ vacancy }) {
                         <div className={styles.datesRow}>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>Posted Date:</span>
-                                <span className={styles.dateValue}>{new Date(vacancy.posted_at).toLocaleDateString()}</span>
+                                {/* Fix hydration: Use direct substring if ISO or suppress hydration warning. Better: just consistent formatting */}
+                                <span className={styles.dateValue}>{vacancy.posted_at ? new Date(vacancy.posted_at).toISOString().split('T')[0] : 'N/A'}</span>
                             </div>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>Deadline:</span>
-                                <span className={styles.dateValue}>{new Date(vacancy.expires_at).toLocaleDateString()}</span>
+                                <span className={styles.dateValue}>{vacancy.expires_at ? new Date(vacancy.expires_at).toISOString().split('T')[0] : 'N/A'}</span>
                             </div>
                         </div>
 
@@ -113,6 +114,11 @@ export default function DetailClient({ vacancy }) {
                     </div>
 
                     {/* Additional sections can go here */}
+
+                    {/* Applicants Section (Visible only to owner) */}
+                    {(vacancy.is_owner || (user && (user.id === vacancy.company?.owner || user.id === vacancy.posted_by))) && (
+                        <ApplicantsList vacancyId={vacancy.id} />
+                    )}
                 </div>
 
                 {/* Sidebar: Job Overview / Details */}
@@ -168,6 +174,107 @@ export default function DetailClient({ vacancy }) {
                     setIsApplied(true);
                 }}
             />
+        </div>
+
+    );
+}
+
+function ApplicantsList({ vacancyId }) {
+    const [applicants, setApplicants] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadApplicants();
+    }, [vacancyId]);
+
+    const loadApplicants = async () => {
+        try {
+            const res = await business.getVacancyApplicants(vacancyId);
+            setApplicants(res.data);
+        } catch (err) {
+            console.error("Failed to load applicants", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleStatusChange = async (appId, newStatus) => {
+        try {
+            await business.updateApplicationStatus(appId, newStatus);
+            toast.success(`Application ${newStatus}`);
+            // Optimistic update
+            setApplicants(prev => prev.map(app =>
+                app.id === appId ? { ...app, status: newStatus } : app
+            ));
+        } catch (err) {
+            console.error("Failed to update status", err);
+            toast.error("Failed to update status");
+        }
+    };
+
+    if (loading) return <div className={styles.section} style={{ marginTop: 20 }}>Loading applicants...</div>;
+
+    // Empty state
+    if (applicants.length === 0) {
+        return (
+            <div className={styles.applicantsSection}>
+                <h3>Applicants</h3>
+                <div className={styles.emptyApplicants}>
+                    <div className={styles.emptyIcon}>📂</div>
+                    <p>No applications received yet.</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.applicantsSection}>
+            <h3>Applicants ({applicants.length})</h3>
+            <div className={styles.applicantsList}>
+                {applicants.map(app => (
+                    <div key={app.id} className={styles.applicantCard}>
+                        <div className={styles.applicantHeader}>
+                            <div className={styles.applicantInfo}>
+                                {app.applicant_avatar ? (
+                                    <img src={app.applicant_avatar} alt="avatar" className={styles.avatarPlaceholder} style={{ objectFit: 'cover' }} />
+                                ) : (
+                                    <div className={styles.avatarPlaceholder}>
+                                        {(app.applicant_first_name?.[0] || 'U')}
+                                    </div>
+                                )}
+                                <div>
+                                    <a href={`/user/${app.applicant_username}`} target="_blank" rel="noopener noreferrer" className={styles.applicantName}>
+                                        {app.applicant_first_name} {app.applicant_last_name}
+                                    </a>
+                                    <span className={styles.username}>@{app.applicant_username}</span>
+                                    <div className={styles.appliedDate}>Applied on {new Date(app.created_at).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                            <span className={`${styles.statusBadge} ${styles[app.status]}`}>
+                                {app.status.toUpperCase()}
+                            </span>
+                        </div>
+
+                        <div className={styles.motivationSection}>
+                            <span className={styles.motivationLabel}>Motivation Note:</span>
+                            <div className={styles.motivationContent}>
+                                {app.motivation_letter}
+                            </div>
+                        </div>
+
+                        {app.status === 'pending' && (
+                            <div className={styles.applicantActions}>
+                                <Button size="small" variant="outline" onClick={() => handleStatusChange(app.id, 'rejected')} className={styles.rejectBtn}>
+                                    Reject
+                                </Button>
+                                <Button size="small" onClick={() => handleStatusChange(app.id, 'accepted')} className={styles.acceptBtn}>
+                                    Accept
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

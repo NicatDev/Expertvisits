@@ -17,11 +17,29 @@ export const business = {
 
     // Companies
     getCompanies: (params = {}) => client.get('/business/companies/', { params }),
-    getMyCompanies: () => client.get('/business/companies/?my=true'), // Assuming backend supports filtering by owner or creating a dedicated endpoint
-    // Note: If backend doesn't support ?my=true on list, we might need a dedicated action or filter locally if list is small. 
-    // Given the previous backend view code, I commented out the 'my' filter. 
-    // I should probably ensure the backend supports fetching user companies for the dropdown.
-    // For now, I'll assume we can filter or fetch all.
+    createCompany: (data) => client.post('/business/companies/', data),
+    getCompany: (slug) => client.get(`/business/companies/${slug}/`),
+    updateCompany: (slug, data) => client.patch(`/business/companies/${slug}/`, data),
+
+    // Company Sections
+    // Company Sections
+    createWhoWeAre: (data) => client.post('/business/who-we-are/', data),
+    updateWhoWeAre: (id, data) => client.patch(`/business/who-we-are/${id}/`, data),
+    deleteWhoWeAre: (id) => client.delete(`/business/who-we-are/${id}/`),
+
+    createWhatWeDo: (data) => client.post('/business/what-we-do/', data),
+    updateWhatWeDo: (id, data) => client.patch(`/business/what-we-do/${id}/`, data),
+    deleteWhatWeDo: (id) => client.delete(`/business/what-we-do/${id}/`),
+
+    createOurValue: (data) => client.post('/business/our-values/', data),
+    updateOurValue: (id, data) => client.patch(`/business/our-values/${id}/`, data),
+    deleteOurValue: (id) => client.delete(`/business/our-values/${id}/`),
+
+    createService: (data) => client.post('/business/services/', data),
+    updateService: (id, data) => client.patch(`/business/services/${id}/`, data),
+    deleteService: (id) => client.delete(`/business/services/${id}/`),
+
+    getMyCompanies: () => client.get('/business/companies/?my=true'),
 };
 
 export default business;
