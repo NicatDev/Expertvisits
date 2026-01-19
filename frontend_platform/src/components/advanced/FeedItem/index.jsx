@@ -92,6 +92,7 @@ const FeedItem = ({ item, onDelete }) => {
 
     const handlePostComment = async () => {
         if (!user) {
+            setCommentText('');
             toast.error("Please login to comment");
             return;
         }

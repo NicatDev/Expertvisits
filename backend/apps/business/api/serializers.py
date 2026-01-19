@@ -4,67 +4,134 @@ from apps.business import models as business_models
 class VacancyApplicationSerializer(serializers.ModelSerializer):
     vacancy_title = serializers.ReadOnlyField(source='vacancy.title')
     company_name = serializers.ReadOnlyField(source='vacancy.company.name')
-    applicant_first_name = serializers.ReadOnlyField(source='applicant.first_name')
-    applicant_last_name = serializers.ReadOnlyField(source='applicant.last_name')
-    applicant_username = serializers.ReadOnlyField(source='applicant.username')
-    applicant_avatar = serializers.SerializerMethodField()
+    vacancy_title = serializers.ReadOnlyField(source='vacancy.title')
+    company_name = serializers.ReadOnlyField(source='vacancy.company.name')
+    applicant_details = serializers.SerializerMethodField()
 
     class Meta:
         model = business_models.VacancyApplication
-        fields = ['id', 'vacancy', 'vacancy_title', 'company_name', 'applicant', 'applicant_first_name', 'applicant_last_name', 'applicant_username', 'applicant_avatar', 'motivation_letter', 'status', 'created_at']
+        fields = ['id', 'vacancy', 'vacancy_title', 'company_name', 'applicant', 'applicant_details', 'motivation_letter', 'status', 'created_at']
         read_only_fields = ['applicant', 'status', 'created_at']
 
-    def get_applicant_avatar(self, obj):
-        if obj.applicant.avatar:
+    def get_applicant_details(self, obj):
+        applicant = obj.applicant
+        avatar_url = None
+        if applicant.avatar:
             try:
                 request = self.context.get('request')
-                url = obj.applicant.avatar.url
+                url = applicant.avatar.url
                 if request:
-                    return request.build_absolute_uri(url)
-                return url
+                    avatar_url = request.build_absolute_uri(url)
+                else:
+                    avatar_url = url
             except:
-                return None
-        return None
+                pass
+        
+        return {
+            'id': applicant.id,
+            'full_name': applicant.get_full_name(),
+            'username': applicant.username,
+            'avatar': avatar_url
+        }
 
 class WhoWeAreSerializer(serializers.ModelSerializer):
+    delete_image = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = business_models.WhoWeAre
         fields = '__all__'
 
+    def create(self, validated_data):
+        validated_data.pop('delete_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        delete_image = validated_data.pop('delete_image', False)
+        if delete_image:
+            instance.image = None
+        return super().update(instance, validated_data)
+
 class WhatWeDoSerializer(serializers.ModelSerializer):
+    delete_image = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = business_models.WhatWeDo
         fields = '__all__'
 
+    def create(self, validated_data):
+        validated_data.pop('delete_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        delete_image = validated_data.pop('delete_image', False)
+        if delete_image:
+            instance.image = None
+        return super().update(instance, validated_data)
+
 class OurValuesSerializer(serializers.ModelSerializer):
+    delete_image = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = business_models.OurValues
         fields = '__all__'
 
+    def create(self, validated_data):
+        validated_data.pop('delete_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        delete_image = validated_data.pop('delete_image', False)
+        if delete_image:
+            instance.image = None
+        return super().update(instance, validated_data)
+
 class CompanyServiceSerializer(serializers.ModelSerializer):
+    delete_image = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = business_models.CompanyService
         fields = '__all__'
+
+    def create(self, validated_data):
+        validated_data.pop('delete_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        delete_image = validated_data.pop('delete_image', False)
+        if delete_image:
+            instance.image = None
+        return super().update(instance, validated_data)
 
 class CompanySerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField(read_only=True)
     owner_id = serializers.PrimaryKeyRelatedField(source='owner', read_only=True)
     slug = serializers.SlugField(read_only=True)
     
-    who_we_are = WhoWeAreSerializer(many=True, read_only=True)
-    what_we_do = WhatWeDoSerializer(many=True, read_only=True)
-    our_values = OurValuesSerializer(many=True, read_only=True)
+    who_we_are = WhoWeAreSerializer(read_only=True)
+    what_we_do = WhatWeDoSerializer(read_only=True)
+    our_values = OurValuesSerializer(read_only=True)
     services = CompanyServiceSerializer(many=True, read_only=True)
     delete_logo = serializers.BooleanField(write_only=True, required=False)
+    delete_cover_image = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
         model = business_models.Company
         fields = '__all__'
 
+    def create(self, validated_data):
+        validated_data.pop('delete_logo', None)
+        validated_data.pop('delete_cover_image', None)
+        return super().create(validated_data)
+
     def update(self, instance, validated_data):
         delete_logo = validated_data.pop('delete_logo', False)
+        delete_cover = validated_data.pop('delete_cover_image', False)
+        
         if delete_logo:
             instance.logo = None
+        if delete_cover:
+            instance.cover_image = None
+            
         return super().update(instance, validated_data)
 
 class VacancySerializer(serializers.ModelSerializer):

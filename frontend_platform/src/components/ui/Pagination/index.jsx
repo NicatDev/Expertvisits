@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import styles from './Pagination.module.scss';
+import styles from './styles.module.scss';
 import clsx from 'clsx';
 
 const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className, alwaysShow = false }) => {

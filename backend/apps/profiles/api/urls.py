@@ -1,15 +1,27 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from apps.profiles.api.views import ExperienceViewSet, EducationViewSet, SkillViewSet, QuickNoteViewSet, LanguageViewSet, CertificateViewSet
-
-router = DefaultRouter()
-router.register(r'experience', ExperienceViewSet, basename='experience')
-router.register(r'education', EducationViewSet, basename='education')
-router.register(r'skills', SkillViewSet, basename='skills')
-router.register(r'notes', QuickNoteViewSet, basename='notes')
-router.register(r'languages', LanguageViewSet, basename='languages')
-router.register(r'certificates', CertificateViewSet, basename='certificates')
+from django.urls import path
+from .views.experience import ExperienceListCreateAPIView, ExperienceDetailAPIView
+from .views.education import EducationListCreateAPIView, EducationDetailAPIView
+from .views.skills import SkillListCreateAPIView, SkillDetailAPIView
+from .views.notes import QuickNoteListCreateAPIView, QuickNoteDetailAPIView
+from .views.languages import LanguageListCreateAPIView, LanguageDetailAPIView
+from .views.certificates import CertificateListCreateAPIView, CertificateDetailAPIView
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('experience/', ExperienceListCreateAPIView.as_view(), name='experience-list-create'),
+    path('experience/<int:pk>/', ExperienceDetailAPIView.as_view(), name='experience-detail'),
+    
+    path('education/', EducationListCreateAPIView.as_view(), name='education-list-create'),
+    path('education/<int:pk>/', EducationDetailAPIView.as_view(), name='education-detail'),
+    
+    path('skills/', SkillListCreateAPIView.as_view(), name='skill-list-create'),
+    path('skills/<int:pk>/', SkillDetailAPIView.as_view(), name='skill-detail'),
+    
+    path('notes/', QuickNoteListCreateAPIView.as_view(), name='note-list-create'),
+    path('notes/<int:pk>/', QuickNoteDetailAPIView.as_view(), name='note-detail'),
+    
+    path('languages/', LanguageListCreateAPIView.as_view(), name='language-list-create'),
+    path('languages/<int:pk>/', LanguageDetailAPIView.as_view(), name='language-detail'),
+    
+    path('certificates/', CertificateListCreateAPIView.as_view(), name='certificate-list-create'),
+    path('certificates/<int:pk>/', CertificateDetailAPIView.as_view(), name='certificate-detail'),
 ]

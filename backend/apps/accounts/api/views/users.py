@@ -1,0 +1,188 @@
+from rest_framework import generics, permissions, filters, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Count, Exists, OuterRef
+from apps.accounts.models import User, RegistrationSession
+from apps.accounts.api.serializers import UserSerializer
+import random
+from django.core.mail import send_mail
+
+class UserListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['username', 'first_name', 'last_name']
+    ordering_fields = ['followers_count', 'date_joined']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # Except for create logic below which overrides
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticatedOrReadOnly()]
+
+    def get_queryset(self):
+        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company').annotate(
+            followers_count=Count('followers', distinct=True),
+            following_count=Count('following', distinct=True)
+        )
+        if self.request.user.is_authenticated:
+            queryset = queryset.exclude(id=self.request.user.id)
+            queryset = queryset.annotate(
+                is_following=Exists(
+                    User.following.through.objects.filter(
+                        from_user_id=self.request.user.id,
+                        to_user_id=OuterRef('pk')
+                    )
+                )
+            )
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        validated_data = serializer.validated_data
+        email = validated_data.get('email')
+        code = str(random.randint(100000, 999999))
+        
+        user_data = dict(validated_data) 
+        if 'profession_sub_category' in user_data and user_data['profession_sub_category']:
+             user_data['profession_sub_category_id'] = user_data['profession_sub_category'].id
+             del user_data['profession_sub_category']
+        
+        RegistrationSession.objects.update_or_create(
+            email=email,
+            defaults={
+                'code': code,
+                'user_data': user_data
+            }
+        )
+        
+        try:
+            send_mail(
+                'Verify your account',
+                f'Your verification code is: {code}',
+                'expertvisits@gmail.com', 
+                [email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'message': 'Verification code sent', 'email': email}, status=status.HTTP_201_CREATED)
+
+
+class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    # queryset explicitly not defining here because dependent on auth status annotation
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'username'
+
+    def get_queryset(self):
+        # Same annotation logic
+        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company').annotate(
+            followers_count=Count('followers', distinct=True),
+            following_count=Count('following', distinct=True)
+        )
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                is_following=Exists(
+                    User.following.through.objects.filter(
+                        from_user_id=self.request.user.id,
+                        to_user_id=OuterRef('pk')
+                    )
+                )
+            )
+        return queryset
+
+class UserMeAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        # Apply annotations manually or call helper if we had one
+        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company').annotate(
+            followers_count=Count('followers', distinct=True),
+            following_count=Count('following', distinct=True)
+        )
+        return queryset.get(pk=self.request.user.pk)
+
+class FollowAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, username=None):
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user == target_user:
+            return Response({"error": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        request.user.following.add(target_user)
+        return Response({"status": "followed"})
+
+class UnfollowAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, username=None):
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        request.user.following.remove(target_user)
+        return Response({"status": "unfollowed"})
+
+class UserFollowersAPIView(generics.ListAPIView):
+     serializer_class = UserSerializer
+     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+     
+     def get_queryset(self):
+        username = self.kwargs['username']
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+             return User.objects.none()
+
+        queryset = User.objects.filter(following=target_user).annotate(
+            followers_count=Count('followers', distinct=True),
+            following_count=Count('following', distinct=True)
+        )
+        # Add is_following context
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                is_following=Exists(
+                    User.following.through.objects.filter(
+                        from_user_id=self.request.user.id,
+                        to_user_id=OuterRef('pk')
+                    )
+                )
+            )
+        return queryset
+
+class UserFollowingAPIView(generics.ListAPIView):
+     serializer_class = UserSerializer
+     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+     
+     def get_queryset(self):
+        username = self.kwargs['username']
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+             return User.objects.none()
+
+        following_ids = target_user.following.values_list('id', flat=True)
+        queryset = User.objects.filter(id__in=following_ids).annotate(
+            followers_count=Count('followers', distinct=True),
+            following_count=Count('following', distinct=True)
+        )
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                is_following=Exists(
+                    User.following.through.objects.filter(
+                        from_user_id=self.request.user.id,
+                        to_user_id=OuterRef('pk')
+                    )
+                )
+            )
+        return queryset

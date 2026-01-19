@@ -173,8 +173,10 @@ export default function PublicProfilePage() {
 
             // Fetch public events (busy slots)
             try {
-                const eventsRes = await services.getEvents(userId);
-                setCalendarEvents(eventsRes.data);
+                if(currentUser?.id && userId === currentUser.id){
+                    const eventsRes = await services.getEvents(userId);
+                    setCalendarEvents(eventsRes.data);
+                }
             } catch (e) {
                 console.error("Failed to load events", e);
             }

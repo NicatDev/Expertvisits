@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import hardSkills from '@/data/hard_skills.json';
+import softSkills from '@/data/soft_skills.json';
 
 // Reusable Form Modal Wrapper
-const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children }) => {
+const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={title}>
+        <Modal isOpen={isOpen} onClose={onClose} title={title} bodyStyle={bodyStyle}>
             <form onSubmit={onSubmit}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {children}
@@ -95,17 +97,38 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
     const [formData, setFormData] = useState({ name: '', skill_type: 'hard' });
     const [loading, setLoading] = useState(false);
 
+    const [suggestions, setSuggestions] = useState([]);
+
     useEffect(() => {
         if (initialData) {
             setFormData({
                 name: initialData.name || '',
                 skill_type: initialData.skill_type || 'hard',
-                id: initialData.id // Ensure ID is preserved for updates
+                id: initialData.id
             });
         } else {
             setFormData({ name: '', skill_type: 'hard' });
         }
+        setSuggestions([]);
     }, [initialData, isOpen]);
+
+    const handleNameChange = (e) => {
+        const val = e.target.value;
+        setFormData(prev => ({ ...prev, name: val }));
+
+        if (val.length > 0) {
+            const source = (formData.skill_type === 'soft') ? softSkills : hardSkills;
+            const filtered = source.filter(s => s.name_en.toLowerCase().includes(val.toLowerCase())).slice(0, 10);
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    const selectSuggestion = (val) => {
+        setFormData(prev => ({ ...prev, name: val }));
+        setSuggestions([]);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -115,33 +138,63 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
         onClose();
     };
 
-    // If type matches initialData type (and we are in 'add' mode specific type), hide selector.
-    // However, for Edit mode, initialData usually has type too. The user said "auto gonderilsin" (auto send) and "secim olmasin" (no selection).
-    // So if type is pre-defined, we likely disable or hide it. 
-    // If it's pure "Add" (no type specified in initialData), we might show it? 
-    // The user's flow in profile page passes { skill_type: 'hard' } for specific sections.
-    // If we have initialData.skill_type, we hide the select.
     const showTypeSelect = !initialData?.skill_type || (initialData.id && !initialData.skill_type_fixed);
-    // Wait, editing an existing skill -> should we allow changing type? User said "when adding... auto set... no selection". 
-    // Let's hide it if initialData.skill_type is present.
 
     return (
-        <FormModal isOpen={isOpen} onClose={onClose} title={initialData?.id ? "Edit Skill" : "Add Skill"} onSubmit={handleSubmit} loading={loading}>
-            <Input label="Skill Name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+        <FormModal isOpen={isOpen} onClose={onClose} title={initialData?.id ? "Edit Skill" : "Add Skill"} onSubmit={handleSubmit} loading={loading} bodyStyle={{ overflow: 'visible' }}>
+            <div style={{ position: 'relative' }}>
+                <Input
+                    label="Skill Name"
+                    value={formData.name}
+                    onChange={handleNameChange}
+                    required
+                    autoComplete="off"
+                />
+                {suggestions.length > 0 && (
+                    <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: '#fff',
+                        border: '1px solid #d9d9d9',
+                        borderRadius: '0 0 6px 6px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        marginTop: '0px'
+                    }}>
+                        {suggestions.map(s => (
+                            <div
+                                key={s.code}
+                                onClick={() => selectSuggestion(s.name_en)}
+                                style={{
+                                    padding: '8px 12px',
+                                    cursor: 'pointer',
+                                    borderBottom: '1px solid #f0f0f0',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                                onMouseLeave={(e) => e.target.style.background = '#fff'}
+                            >
+                                {s.name_en}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
-            {/* If we are forcing a type via initialData (like from the section add button), hide this. 
-                But if we are editing, we usually want to see what it is, maybe not change it if stuck to section? 
-                User said "ele bir secim olmasin" (let there be no such choice). 
-                I will hide it if a type is set in formData and we are adding, or just always hide if we want to enforce structure.
-                Best approach: If specific type passed in navigation (initialData), hide.
-            */}
             {!initialData?.skill_type && (
                 <div style={{ marginBottom: '8px' }}>
                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>Type</label>
                     <select
                         style={{ width: '100%', padding: '8px 12px', border: '1px solid #d9d9d9', borderRadius: '6px' }}
                         value={formData.skill_type}
-                        onChange={e => setFormData({ ...formData, skill_type: e.target.value })}
+                        onChange={e => {
+                            setFormData(prev => ({ ...prev, skill_type: e.target.value, name: '' })); // Reset name on type change to reset suggestions context
+                            setSuggestions([]);
+                        }}
                     >
                         <option value="hard">Hard Skill</option>
                         <option value="soft">Soft Skill</option>

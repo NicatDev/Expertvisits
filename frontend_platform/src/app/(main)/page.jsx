@@ -68,7 +68,11 @@ export default function HomePage() {
             if (reset) {
                 setArticles(newItems);
             } else {
-                setArticles(prev => [...prev, ...newItems]);
+                setArticles(prev => {
+                    const existingIds = new Set(prev.map(p => `${p.type || 'article'}-${p.id}`));
+                    const uniqueNewItems = newItems.filter(item => !existingIds.has(`${item.type || 'article'}-${item.id}`));
+                    return [...prev, ...uniqueNewItems];
+                });
             }
 
             // Check if more

@@ -32,15 +32,16 @@ class UserSerializer(serializers.ModelSerializer):
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
     is_following = serializers.BooleanField(read_only=True, required=False)
+    company_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name', 
-            'phone_number', 'birth_day', 'interests', 'avatar', 'cover_image',
+            'phone_number', 'birth_day', 'city', 'interests', 'avatar', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
-            'followers_count', 'following_count', 'is_following'
+            'followers_count', 'following_count', 'is_following', 'company_slug'
         ]
         # read_only_fields = ['username', 'email'] # Username/Email handled by default logic? 
         # Wait, RegisterSerializer usually handles creation, so fields should be writable.
@@ -79,3 +80,8 @@ class UserSerializer(serializers.ModelSerializer):
             print(f"Error sending email: {e}")
             
         return user
+    def get_company_slug(self, obj):
+        try:
+            return obj.company.slug
+        except:
+            return None

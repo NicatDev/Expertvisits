@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
 import styles from './AddVacancyModal.module.scss'; // Assuming simple styles or reuse
+import LocationSelect from '@/components/ui/LocationSelect'; // Adjust path if needed
 import { useAuth } from '@/lib/contexts/AuthContext';
 
 const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
@@ -30,75 +31,85 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
 
     useEffect(() => {
         if (isOpen) {
-            fetchCompanies();
-            if (initialData) {
-                setFormData({
-                    company_id: initialData.company.id,
-                    title: initialData.title,
-                    sub_category: initialData.sub_category?.id || '',
-                    listing_type: initialData.listing_type,
-                    job_type: initialData.job_type,
-                    work_mode: initialData.work_mode,
-                    location: initialData.location,
-                    salary_range: initialData.salary_range || '',
-                    description: initialData.description || '',
-                    expires_at: initialData.expires_at
-                });
-            } else {
-                setFormData({
-                    company_id: '',
-                    title: '',
-                    sub_category: '',
-                    listing_type: 'job',
-                    job_type: 'full-time',
-                    work_mode: 'office',
-                    location: 'Baku',
-                    salary_range: '',
-                    description: '',
-                    expires_at: ''
-                });
-            }
+            initForm();
         }
-    }, [isOpen, initialData]);
+    }, [isOpen, initialData, user?.id]);
+
+    const initForm = async () => {
+        const myCompanies = await fetchCompanies();
+
+        if (initialData) {
+            setFormData({
+                company_id: initialData.company.id,
+                title: initialData.title,
+                sub_category: initialData.sub_category?.id || '',
+                listing_type: initialData.listing_type,
+                job_type: initialData.job_type,
+                work_mode: initialData.work_mode,
+                location: initialData.location,
+                salary_range: initialData.salary_range || '',
+                description: initialData.description || '',
+                expires_at: initialData.expires_at
+            });
+        } else {
+            setFormData({
+                company_id: myCompanies && myCompanies.length > 0 ? myCompanies[0].id : '',
+                title: '',
+                sub_category: '',
+                listing_type: 'job',
+                job_type: 'full-time',
+                work_mode: 'office',
+                location: 'Baku',
+                salary_range: '',
+                description: '',
+                expires_at: ''
+            });
+        }
+    };
 
     const fetchCompanies = async () => {
         try {
-            // Fetch companies owned by the current user
-            // Assuming filter needs to be implemented or we filter client side if list is small
-            // For now, let's try fetch all and filter client side if 'owner' field available in serializer
-            // Or rely on backend providing only my companies if endpoint designed so
             const res = await business.getCompanies();
-            // NOTE: Ideally backend should have ?my=true. 
-            // If the user has no companies, they can't post.
-            // Let's assume the user IS the owner of the companies returned or we filter by logged in user ID if available.
-            // Simplification: Just show all for now (demo), or better: 
-            // Since CompanyViewSet perform_create sets owner, create a company first?
-            // I'll show available companies.
-            setCompanies(res.data.results || res.data);
+            // Filter companies owned by the current user
+            const myCompanies = (res.data.results || res.data).filter(c =>
+                c.owner_id === user?.id || c.owner === user?.username
+            );
 
-            // Auto-select first if available
-            if ((res.data.results || res.data).length > 0 && !formData.company_id) {
-                setFormData(prev => ({ ...prev, company_id: (res.data.results || res.data)[0].id }));
-            }
+            setCompanies(myCompanies);
+            return myCompanies;
         } catch (err) {
             console.error("Failed to load companies", err);
+            return [];
         }
     };
+
+    const [errors, setErrors] = useState({});
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
     };
 
     const handleSubmit = async () => {
-        if (!formData.company_id) {
-            toast.error("Please select a company.");
+        const newErrors = {};
+        if (!formData.company_id) newErrors.company_id = "Please select a company.";
+        if (!formData.title) newErrors.title = "This field is required.";
+        if (!formData.location) newErrors.location = "This field is required.";
+        if (!formData.expires_at) newErrors.expires_at = "This field is required.";
+        if (!formData.description) newErrors.description = "This field is required.";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            toast.error("Please fill required fields.");
             return;
         }
-        if (!formData.title || !formData.location || !formData.expires_at) {
-            toast.error("Please fill required fields (Title, Location, Expiry).");
-            return;
-        }
+
         setLoading(true);
+        setErrors({});
+
         try {
             if (isEdit) {
                 await business.updateVacancy(initialData.id, formData);
@@ -111,11 +122,40 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to save vacancy.");
+            if (err.response?.data) {
+                const data = err.response.data;
+                const backendErrors = {};
+                Object.keys(data).forEach(key => {
+                    // DRF returns arrays of strings
+                    backendErrors[key] = Array.isArray(data[key]) ? data[key][0] : data[key];
+                });
+                setErrors(backendErrors);
+                toast.error("Please check the form for errors.");
+            } else {
+                toast.error("Failed to save vacancy.");
+            }
         } finally {
             setLoading(false);
         }
     };
+
+    // If not edit mode and no companies found (after initial loading)
+    if (isOpen && !isEdit && companies.length === 0) {
+        return (
+            <Modal isOpen={isOpen} onClose={onClose} title="Post a Vacancy">
+                <div className={styles.container} style={{ textAlign: 'center', padding: '40px 20px' }}>
+                    <h3 style={{ marginBottom: '16px' }}>No Companies Found</h3>
+                    <p style={{ color: '#666', marginBottom: '24px' }}>
+                        You need to register a company before you can post a vacancy.
+                        Please create a company profile first.
+                    </p>
+                    <Button onClick={() => { onClose(); window.location.href = '/companies'; }}>
+                        Go to Companies
+                    </Button>
+                </div>
+            </Modal>
+        );
+    }
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Edit Vacancy" : "Post a Vacancy"}>
@@ -124,22 +164,36 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                 <div className={styles.section}>
                     <h4 className={styles.sectionTitle}>Company & Role</h4>
                     <div className={styles.field}>
-                        <label>Company</label>
+                        <label>Company <span style={{ color: 'red' }}>*</span></label>
                         <select
                             value={formData.company_id}
                             onChange={e => handleChange('company_id', e.target.value)}
                             className={styles.select}
+                            style={{ borderColor: errors.company_id ? 'red' : '#ddd' }}
                         >
                             {companies.length === 0 && <option value="">No companies found</option>}
                             {companies.map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
                         </select>
+                        {errors.company_id && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.company_id}</span>}
                     </div>
 
-                    <Input label="Title" value={formData.title} onChange={e => handleChange('title', e.target.value)} placeholder="e.g. Senior Frontend Developer" />
+                    <Input
+                        label={<>Title <span style={{ color: 'red' }}>*</span></>}
+                        value={formData.title}
+                        onChange={e => handleChange('title', e.target.value)}
+                        placeholder="e.g. Senior Frontend Developer"
+                        error={errors.title}
+                    />
 
-                    <Input label="Salary Range" value={formData.salary_range} onChange={e => handleChange('salary_range', e.target.value)} placeholder="e.g. 1000-1500 AZN" />
+                    <Input
+                        label="Salary Range"
+                        value={formData.salary_range}
+                        onChange={e => handleChange('salary_range', e.target.value)}
+                        placeholder="e.g. 1000-1500 AZN"
+                        error={errors.salary_range}
+                    />
                 </div>
 
                 <hr className={styles.divider} />
@@ -174,21 +228,29 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                             </select>
                         </div>
                         <div className={styles.field}>
-                            <label>Location</label>
-                            <Input value={formData.location} onChange={e => handleChange('location', e.target.value)} placeholder="e.g. Baku, Azerbaijan" />
+                            <label>Location <span style={{ color: 'red' }}>*</span></label>
+                            <div style={{ border: errors.location ? '1px solid red' : 'none', borderRadius: '8px' }}>
+                                <LocationSelect
+                                    value={formData.location}
+                                    onChange={val => handleChange('location', val)}
+                                    placeholder="Select City (e.g. Baku)"
+                                />
+                            </div>
+                            {errors.location && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.location}</span>}
                         </div>
                     </div>
 
                     <div className={styles.field}>
-                        <label>Expiry Date</label>
+                        <label>Expiry Date <span style={{ color: 'red' }}>*</span></label>
                         <input
                             type="date"
                             className={styles.input}
                             value={formData.expires_at}
                             onChange={e => handleChange('expires_at', e.target.value)}
                             onClick={(e) => e.target.showPicker()}
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', borderColor: errors.expires_at ? 'red' : '#ddd' }}
                         />
+                        {errors.expires_at && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.expires_at}</span>}
                     </div>
                 </div>
 
@@ -196,7 +258,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
 
                 {/* Section 3: Description */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Description</h4>
+                    <h4 className={styles.sectionTitle}>Description <span style={{ color: 'red' }}>*</span></h4>
                     <div className={styles.field}>
                         <textarea
                             className={styles.textarea}
@@ -204,7 +266,9 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                             value={formData.description}
                             onChange={e => handleChange('description', e.target.value)}
                             placeholder="Describe the role, responsibilities, and requirements..."
+                            style={{ borderColor: errors.description ? 'red' : '#ddd' }}
                         />
+                        {errors.description && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.description}</span>}
                     </div>
                 </div>
 

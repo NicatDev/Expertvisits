@@ -5,6 +5,7 @@ import VacancyCard from '@/components/advanced/VacancyCard';
 import AddVacancyModal from '@/components/advanced/AddVacancyModal';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import LocationSelect from '@/components/ui/LocationSelect';
 import { Search, Filter, Plus } from 'lucide-react';
 import styles from './vacancies.module.scss';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -18,6 +19,7 @@ export default function VacanciesPage() {
 
     // Filters
     const [search, setSearch] = useState('');
+    const [searchLocation, setSearchLocation] = useState(''); // New state
     const [jobType, setJobType] = useState('');
     const [workMode, setWorkMode] = useState('');
     const [page, setPage] = useState(1);
@@ -32,6 +34,7 @@ export default function VacanciesPage() {
                 search,
                 job_type: jobType || undefined,
                 work_mode: workMode || undefined,
+                location: searchLocation || undefined, // Use new state
             };
             const res = await business.getVacancies(params);
             setVacancies(res.data.results || res.data);
@@ -43,12 +46,19 @@ export default function VacanciesPage() {
         }
     };
 
+
+    // Debounced Search (only for text input)
     useEffect(() => {
         const timeout = setTimeout(() => {
             fetchVacancies();
-        }, 500); // Debounce search
+        }, 500);
         return () => clearTimeout(timeout);
-    }, [search, jobType, workMode, page]);
+    }, [search]);
+
+    // Immediate Filter Update (filters & pagination)
+    useEffect(() => {
+        fetchVacancies();
+    }, [jobType, workMode, searchLocation, page]);
 
     return (
         <div className={styles.container}>
@@ -69,10 +79,18 @@ export default function VacanciesPage() {
                     <Search size={18} className={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search by title, company, or location..."
+                        placeholder="Search by title, company..."
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         className={styles.searchInput}
+                    />
+                </div>
+
+                <div style={{ width: '250px' }}>
+                    <LocationSelect
+                        value={searchLocation}
+                        onChange={val => { setSearchLocation(val); setPage(1); }}
+                        placeholder="Filter by City"
                     />
                 </div>
 

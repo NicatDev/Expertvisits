@@ -122,6 +122,7 @@ export default function CommentsSection({ contentType, objectId, refreshTrigger,
 
     const handlePostComment = async (parentId = null, text) => {
         if (!user) {
+            setNewComment('');
             toast.error("Please login to comment");
             return;
         }

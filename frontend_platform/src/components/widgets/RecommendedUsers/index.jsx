@@ -4,7 +4,7 @@ import Link from 'next/link';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
 import { User } from 'lucide-react';
-
+import { toast } from 'react-toastify';
 import { interactions } from '@/lib/api';
 
 const RecommendedUsers = () => {
@@ -33,6 +33,10 @@ const RecommendedUsers = () => {
     };
 
     const handleFollow = async (user) => {
+        if (!user.is_following) {
+         toast.error("You must be logged in to follow users");   
+         return;
+        }
         try {
             if (user.is_following) {
                 await interactions.unfollowUser(user.username);

@@ -1,13 +1,34 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from apps.accounts.api.views import UserViewSet, CategoryViewSet, VerifyEmailView, UserProfileDetailsAPIView
-
-router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'categories', CategoryViewSet)
+from django.urls import path
+from .views.users import (
+    UserListCreateAPIView, UserDetailAPIView, UserMeAPIView, 
+    FollowAPIView, UnfollowAPIView, UserFollowersAPIView, UserFollowingAPIView
+)
+from .views.categories import CategoryListAPIView, CategoryDetailAPIView
+from .views.auth import VerifyEmailAPIView, CheckAvailabilityAPIView, ResendCodeAPIView, SetPasswordAPIView
+from .views.profiles import UserProfileDetailsAPIView
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('verify-email/', VerifyEmailView.as_view(), name='verify-email'),
+    # User actions (must be before detail view to avoid conflict with username capture)
+    path('users/me/', UserMeAPIView.as_view(), name='user-me'),
+    path('users/set_password/', SetPasswordAPIView.as_view(), name='set-password'),
+    path('users/check_availability/', CheckAvailabilityAPIView.as_view(), name='check-availability'),
+    path('users/resend_code/', ResendCodeAPIView.as_view(), name='resend-code'),
+    
+    # User List and Detail
+    path('users/', UserListCreateAPIView.as_view(), name='user-list'),
+    path('users/<str:username>/', UserDetailAPIView.as_view(), name='user-detail'),
+    
+    # User Detail Actions
+    path('users/<str:username>/follow/', FollowAPIView.as_view(), name='user-follow'),
+    path('users/<str:username>/unfollow/', UnfollowAPIView.as_view(), name='user-unfollow'),
+    path('users/<str:username>/followers/', UserFollowersAPIView.as_view(), name='user-followers'),
+    path('users/<str:username>/following/', UserFollowingAPIView.as_view(), name='user-following'),
+
+    # Categories
+    path('categories/', CategoryListAPIView.as_view(), name='category-list'),
+    path('categories/<int:pk>/', CategoryDetailAPIView.as_view(), name='category-detail'),
+
+    # Auth & Profile
+    path('verify-email/', VerifyEmailAPIView.as_view(), name='verify-email'),
     path('profile-details/', UserProfileDetailsAPIView.as_view(), name='profile-details'),
 ]

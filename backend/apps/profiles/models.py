@@ -37,9 +37,6 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
 
-    def __str__(self):
-        return self.name
-
 class Language(models.Model):
     LEVEL_CHOICES = [
         ('a1', 'A1'), ('a2', 'A2'),

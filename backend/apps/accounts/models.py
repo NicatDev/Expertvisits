@@ -40,6 +40,7 @@ class User(AbstractUser):
     work_hours_end = models.TimeField(null=True, blank=True)
     working_days = models.JSONField(default=list) # ["Monday", "Tuesday", etc.]
     birth_day = models.DateField(null=True, blank=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.username

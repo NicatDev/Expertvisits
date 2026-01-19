@@ -75,8 +75,6 @@ api.interceptors.response.use((response) => {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                // Optional: Redirect to login or dispatch event
-                window.location.href = '/auth/login';
             }
             return Promise.reject(error);
         }
@@ -110,13 +108,20 @@ api.interceptors.response.use((response) => {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                window.location.href = '/auth/login';
             }
             return Promise.reject(refreshError);
         }
     }
 
-    const message = error.response?.data?.detail || error.message || 'Something went wrong';
+    let message = error.response?.data?.detail || error.message || 'Something went wrong';
+
+    // If it's a 400 error with field validation (no detail, but has data keys), don't show generic axios message
+    if (error.response?.status === 400 && !error.response?.data?.detail && error.response?.data) {
+        // It's likely field errors. We can either show nothing (letting form handle it)
+        // or show "Please check form". User asked to hide the "Request failed" message.
+        // Let's suppress the toast for field errors, as forms should handle them.
+        return Promise.reject(error);
+    }
 
     // Use toast to show error. Preventing duplicate toasts could be good but this is simple MVP.
     // Check if we are on client side

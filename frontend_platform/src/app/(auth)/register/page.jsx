@@ -7,6 +7,7 @@ import { auth } from '@/lib/api';
 import api from '@/lib/api/client'; // Direct client for categories
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import LocationSelect from '@/components/ui/LocationSelect';
 import styles from '../auth.module.scss';
 import { ChevronRight, Check } from 'lucide-react';
 
@@ -27,7 +28,9 @@ export default function RegisterPage() {
         confirmPassword: '',
         first_name: '',
         last_name: '',
-        phone_number: ''
+        phone_number: '',
+        birth_day: '',
+        city: ''
     });
 
     useEffect(() => {
@@ -164,6 +167,14 @@ export default function RegisterPage() {
                         <Input name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
                         <Input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
                         <Input name="phone_number" placeholder="Phone Number (Optional)" value={formData.phone_number} onChange={handleChange} />
+                        <Input name="birth_day" type="date" placeholder="Birth Date" value={formData.birth_day} onChange={handleChange} />
+                        <div style={{ marginBottom: '16px' }}>
+                            <LocationSelect
+                                value={formData.city}
+                                onChange={val => setFormData(prev => ({ ...prev, city: val }))}
+                                placeholder="City (Optional)"
+                            />
+                        </div>
                         <Input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
                         <Input name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required error={error} />
 

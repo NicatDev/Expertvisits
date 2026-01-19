@@ -3,19 +3,30 @@ from apps.accounts.models import User, SubCategory
 from core.utils import custom_slugify
 
 class Company(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='companies')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='company')
     name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(unique=True, db_index=True)
     logo = models.ImageField(upload_to='company_logos/', null=True, blank=True)
+    cover_image = models.ImageField(upload_to='company_covers/', null=True, blank=True)
     summary = models.TextField()
     founded_at = models.DateField()
     email = models.EmailField(db_index=True)
-    phone = models.CharField(max_length=50, blank=True)
-    website_url = models.URLField(blank=True)
-    address = models.CharField(max_length=500, blank=True)
-    linkedin_url = models.URLField(blank=True)
+    phone = models.CharField(max_length=50, blank=True,null=True)
+    website_url = models.URLField(blank=True,null=True)
+    address = models.CharField(max_length=500, blank=True,null=True)
+    linkedin_url = models.URLField(blank=True,null=True)
     instagram_url = models.URLField(blank=True)
     facebook_url = models.URLField(blank=True)
+    
+    SIZE_CHOICES = [
+        ('1-10', '1-10'),
+        ('11-50', '11-50'),
+        ('51-200', '51-200'),
+        ('201-500', '201-500'),
+        ('501-1000', '501-1000'),
+        ('1000+', '1000+'),
+    ]
+    company_size = models.CharField(max_length=20, choices=SIZE_CHOICES, default='1-10', null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -103,21 +114,21 @@ class ProjectRequest(models.Model):
     message = models.TextField()
 
 class WhoWeAre(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='who_we_are')
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='who_we_are')
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class WhatWeDo(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='what_we_do')
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='what_we_do')
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class OurValues(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='our_values')
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='our_values')
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='company_sections/', null=True, blank=True)

@@ -60,6 +60,7 @@ export default function ClientPage() {
 
     const handlePostComment = async () => {
         if (!user) {
+            setCommentText('');
             toast.error("Please login to comment");
             return;
         }

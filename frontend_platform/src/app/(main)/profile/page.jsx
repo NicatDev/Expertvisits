@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import SearchableSelect from '@/components/ui/SearchableSelect';
+import LocationSelect from '@/components/ui/LocationSelect';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import styles from './profile.module.scss';
 import FeedItem from '@/components/advanced/FeedItem';
@@ -271,7 +272,8 @@ export default function PrivateProfilePage() {
                 username: targetUser.username,
                 phone_number: targetUser.phone_number,
                 phone_number: targetUser.phone_number,
-                birth_day: targetUser.birth_day
+                birth_day: targetUser.birth_day,
+                city: targetUser.city
             });
 
             // Save initial availability state for change detection
@@ -583,18 +585,27 @@ export default function PrivateProfilePage() {
                                 <h2>Personal Information</h2>
                             </div>
                             <div className={styles.list}>
-                                {['first_name', 'last_name', 'username', 'phone_number', 'birth_day'].map(field => (
+                                {['first_name', 'last_name', 'username', 'phone_number', 'birth_day', 'city'].map(field => (
                                     <div key={field} className={styles.editableField}>
-                                        <span className={styles.label}>{field.replace('_', ' ').toUpperCase()}</span>
+                                        <span className={styles.label}>{field.replace('_', ' ').replace(/^\w/, c => c.toUpperCase())}</span>
                                         <div className={styles.value}>
                                             {editMode[field] ? (
                                                 <div className={styles.inlineForm}>
-                                                    <Input
-                                                        type={field === 'birth_day' ? 'date' : 'text'}
-                                                        value={aboutData[field] || ''}
-                                                        onChange={e => setAboutData({ ...aboutData, [field]: e.target.value })}
-                                                        wrapperStyle={{ marginBottom: 0 }}
-                                                    />
+                                                    {field === 'city' ? (
+                                                        <div style={{ width: '100%' }}>
+                                                            <LocationSelect
+                                                                value={aboutData[field] || ''}
+                                                                onChange={val => setAboutData({ ...aboutData, [field]: val })}
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <Input
+                                                            type={field === 'birth_day' ? 'date' : 'text'}
+                                                            value={aboutData[field] || ''}
+                                                            onChange={e => setAboutData({ ...aboutData, [field]: e.target.value })}
+                                                            wrapperStyle={{ marginBottom: 0 }}
+                                                        />
+                                                    )}
                                                     <button onClick={() => saveInline(field)} className={styles.iconBtn}><Check size={18} color="green" /></button>
                                                     <button onClick={() => toggleEdit(field)} className={styles.iconBtn}><X size={18} color="red" /></button>
                                                 </div>
@@ -609,7 +620,7 @@ export default function PrivateProfilePage() {
                                 ))}
                                 {/* Email always read-only */}
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>EMAIL</span>
+                                    <span className={styles.label}>Email</span>
                                     <div className={styles.value}>
                                         <span style={{ color: '#999' }}>{profile.email}</span>
                                     </div>
@@ -617,7 +628,7 @@ export default function PrivateProfilePage() {
 
                                 {/* Position Editable */}
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>POSITION</span>
+                                    <span className={styles.label}>Position</span>
                                     <div className={styles.value}>
                                         {editMode['profession_sub_category'] ? (
                                             <div className={styles.inlineForm}>

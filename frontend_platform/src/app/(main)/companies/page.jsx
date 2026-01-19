@@ -44,17 +44,20 @@ export default function CompaniesPage() {
 
     // Filter State
     const [search, setSearch] = useState(searchParams.get('search') || '');
-    const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
+    const [companySize, setCompanySize] = useState(searchParams.get('company_size') || '');
+    const page = parseInt(searchParams.get('page')) || 1;
 
     // Modal State
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
+    // Load data based on URLSearchParams
     const loadCompanies = async () => {
         try {
             setLoading(true);
             const params = {
-                page: page,
-                search: search,
+                page: searchParams.get('page') || 1,
+                search: searchParams.get('search') || '',
+                company_size: searchParams.get('company_size') || undefined,
                 page_size: 9 // Grid 3x3
             };
             const res = await business.getCompanies(params);
@@ -69,70 +72,109 @@ export default function CompaniesPage() {
         }
     };
 
-    // Debounced search handler
-    const handleSearch = debounce((term) => {
-        const params = new URLSearchParams(searchParams);
-        if (term) params.set('search', term);
-        else params.delete('search');
+    // Ref to hold latest searchParams for debounce
+    const searchParamsRef = React.useRef(searchParams);
 
-        // Reset to page 1 on search
-        params.set('page', '1');
-        setPage(1);
-
-        router.replace(`?${params.toString()}`);
-        // Trigger load via effect or manual?
-        // Ideally effect depends on search state.
-    }, 500);
-
-    // Sync URL params to State
     useEffect(() => {
-        const p = parseInt(searchParams.get('page')) || 1;
-        const s = searchParams.get('search') || '';
-        setPage(p);
-        setSearch(s);
+        searchParamsRef.current = searchParams;
+
+        // Sync URL to State (handle back/forward)
+        const currentSearch = searchParams.get('search') || '';
+        const currentSize = searchParams.get('company_size') || '';
+
+        // Only update search state if it differs essentially (avoid cursor jumps if possible, 
+        // though typically this runs after URL commit which matches input)
+        if (currentSearch !== search) {
+            // Only force update if we are not "ahead" ? 
+            // Actually, if URL changes, we must sync. 
+            // If user typed "abc" (state) -> debounce -> URL "abc" -> Effect "abc". No change.
+            // If user typed "abc" -> clicked back -> URL "ab" -> Effect "ab". State becomes "ab". Correct.
+            setSearch(currentSearch);
+        }
+        setCompanySize(currentSize);
+
+        // Trigger Load
+        loadCompanies();
     }, [searchParams]);
 
-    // Load data when page/search changes
+    // Debounced URL Updater
+    const debouncedSearch = React.useMemo(
+        () => debounce((term) => {
+            const params = new URLSearchParams(searchParamsRef.current);
+            if (term) params.set('search', term);
+            else params.delete('search');
+            params.set('page', '1');
+            router.push(`?${params.toString()}`);
+        }, 500),
+        [router]
+    );
+
+    // Cleanup debounce
     useEffect(() => {
-        loadCompanies();
-    }, [page, search]);
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
     const onSearchInput = (e) => {
-        setSearch(e.target.value); // Optimistic UI update for input
-        handleSearch(e.target.value); // Debounced URL update
+        const val = e.target.value;
+        setSearch(val);
+        debouncedSearch(val);
+    };
+
+    const handleFilterChange = (key, value) => {
+        const params = new URLSearchParams(searchParams);
+        if (value) params.set(key, value);
+        else params.delete(key);
+        params.set('page', '1');
+        router.push(`?${params.toString()}`);
     };
 
     const handlePageChange = (newPage) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', newPage);
         router.push(`?${params.toString()}`);
-        setPage(newPage);
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <div className={styles.titleSection}>
+                <div>
                     <h1>Discover Companies</h1>
-                    <p>Connect with industry leaders and innovators.</p>
+                    <p>Connect with industry leaders and innovators</p>
                 </div>
-                {user && (
-                    <Button onClick={() => setShowRegisterModal(true)} className={styles.registerBtn}>
+                {user && !user.company_slug && (
+                    <Button onClick={() => setShowRegisterModal(true)}>
                         <Plus size={18} /> Register Company
                     </Button>
                 )}
             </div>
 
-            <div className={styles.controls}>
-                <div className={styles.searchBar}>
-                    <Search className={styles.searchIcon} size={20} />
+            <div className={styles.filters}>
+                <div className={styles.searchWrapper}>
+                    <Search size={18} className={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search for companies..."
+                        placeholder="Search by name, industry..."
                         value={search}
                         onChange={onSearchInput}
+                        className={styles.searchInput}
                     />
                 </div>
+
+                <select
+                    className={styles.filterSelect}
+                    value={companySize}
+                    onChange={(e) => handleFilterChange('company_size', e.target.value)}
+                >
+                    <option value="">All Company Sizes</option>
+                    <option value="1-10">1-10 Employees</option>
+                    <option value="11-50">11-50 Employees</option>
+                    <option value="51-200">51-200 Employees</option>
+                    <option value="201-500">201-500 Employees</option>
+                    <option value="501-1000">501-1000 Employees</option>
+                    <option value="1000+">1000+ Employees</option>
+                </select>
             </div>
 
             {loading ? (
@@ -179,7 +221,7 @@ export default function CompaniesPage() {
                                 </div>
 
                                 <Link href={`/companies/${company.slug}`} className={styles.viewBtn}>
-                                    View Profile
+                                    View Company
                                 </Link>
                             </div>
                         )) : (
