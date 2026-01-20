@@ -21,8 +21,7 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
         questions: [{ text: '', choices: [{ text: '', is_correct: false }, { text: '', is_correct: false }] }]
     });
 
-    // Survey
-    const [surveyData, setSurveyData] = useState({ question: '' });
+
 
     // Load Initial Data for Editing
     React.useEffect(() => {
@@ -40,17 +39,14 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                     title: initialData.title,
                     questions: initialData.questions // Assumes matching structure
                 });
-            } else if (initialType === 'survey') {
-                setSurveyData({
-                    question: initialData.question
-                });
+
             }
         } else if (isOpen && !initialData) {
             // Reset if opening fresh
             setArticleData({ title: '', body: '', image: null });
             setPreviewUrl(null);
             setQuizData({ title: '', questions: [{ text: '', choices: [{ text: '', is_correct: false }, { text: '', is_correct: false }] }] });
-            setSurveyData({ question: '' });
+
         }
     }, [isOpen, initialData, initialType]);
 
@@ -147,12 +143,8 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                 } else {
                     await content.createQuiz(quizData);
                 }
-            } else {
-                if (initialData) {
-                    await content.updateSurvey(initialData.id, surveyData);
-                } else {
-                    await content.createSurvey(surveyData);
-                }
+
+
             }
 
             toast.success(initialData ? 'Content updated!' : 'Content created successfully!');
@@ -176,7 +168,7 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                 <h2>Create Content</h2>
 
                 <div className={styles.tabs}>
-                    {['article', 'quiz', 'survey'].map(t => (
+                    {['article', 'quiz'].map(t => (
                         <button
                             key={t}
                             onClick={() => setActiveTab(t)}
@@ -268,11 +260,7 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                         </>
                     )}
 
-                    {activeTab === 'survey' && (
-                        <>
-                            <Input label="Survey Question" value={surveyData.question} onChange={e => setSurveyData({ ...surveyData, question: e.target.value })} />
-                        </>
-                    )}
+
 
                     <div className={styles.actions}>
                         <Button type="default" onClick={onClose}>Cancel</Button>

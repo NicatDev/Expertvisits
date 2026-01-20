@@ -99,33 +99,7 @@
         }
     }
 
-    .surveyCard {
-        background: #fff7e6;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #ffd591;
-        position: relative; // For participants count positioning
-
-        h4 {
-            margin-bottom: 12px;
-            color: #d46b08;
-        }
-
-        .question {
-            font-weight: 500;
-            fontSize: 16px;
-            margin-bottom: 16px;
-        }
-
-        .participants {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 11px;
-            color: #d46b08;
-            opacity: 0.8;
-        }
-    }
+    
 }
 
 .statsBar {

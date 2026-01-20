@@ -12,11 +12,13 @@
 
 .authCard {
     background: #fff;
-    padding: 40px;
+    padding: 32px;
     border-radius: $border-radius-base;
     box-shadow: $box-shadow-base;
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
 
     @include mobile {
         padding: 24px;
@@ -36,7 +38,48 @@
 .form {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: $primary-color;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
+
+    @include mobile {
+        grid-template-columns: 1fr;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    /* Override Input component wrapper style if needed, or target input directly */
+    :global(.input-wrapper) {
+        margin-bottom: 0 !important;
+    }
 }
 
 .footer {
@@ -53,4 +96,8 @@
             text-decoration: underline;
         }
     }
+}
+
+.interestsStep {
+    /* Retain styles for step 2 just in case, though user asked for single form, Step 2 is logically separate (interests selection) */
 }

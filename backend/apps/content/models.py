@@ -73,19 +73,4 @@ class QuizAttempt(models.Model):
     score = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Survey(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='surveys')
-    sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
-    question = models.TextField()
-    likes = GenericRelation(Like)
-    comments = GenericRelation(Comment)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.question[:50]
-
-class SurveyResponse(models.Model):
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name='responses')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    answer_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)

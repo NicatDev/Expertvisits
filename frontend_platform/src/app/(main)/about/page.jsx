@@ -18,7 +18,7 @@ export default function AboutPage() {
                 <h2>Features</h2>
                 <ul>
                     <li>Professional Profile & CV Generation</li>
-                    <li>Content Publishing (Articles, Quizzes, Surveys)</li>
+                    <li>Content Publishing (Articles, Quizzes)</li>
                     <li>Company & Vacancy Management</li>
                     <li>Service Booking System</li>
                     <li>Personal Website Builder</li>

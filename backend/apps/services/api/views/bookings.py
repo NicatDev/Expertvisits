@@ -8,11 +8,16 @@ from apps.services.api.serializers import BookingRequestSerializer
 import datetime
 from datetime import timedelta
 
+from django.utils import timezone
+
 class BookingListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = BookingRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        # Auto-expire pending bookings
+        BookingRequest.objects.filter(status='pending', requested_datetime__lt=timezone.now()).update(status='missed')
+        
         user = self.request.user
         qs = BookingRequest.objects.select_related('provider', 'customer')
         
@@ -100,6 +105,31 @@ class BookingDetailManagerAPIView(APIView):
             
         return Response({'error': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
     
+    def patch(self, request, pk=None):
+        booking = self.get_object(pk)
+        if not booking:
+             return Response({'error': 'Not found or permission denied'}, status=status.HTTP_404_NOT_FOUND)
+
+        new_status = request.data.get('status')
+        
+        if new_status == 'cancelled':
+             # Both parties can cancel
+             if booking.provider != request.user and booking.customer != request.user:
+                 return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+             booking.status = 'cancelled'
+             booking.save()
+             return Response({'status': 'cancelled'})
+
+        elif new_status == 'rejected':
+             # Only provider can reject
+             if booking.provider != request.user and booking.customer != request.user:
+                 return Response({'error': 'Only provider or customer can reject'}, status=status.HTTP_403_FORBIDDEN)
+             booking.status = 'cancelled' 
+             booking.save()
+             return Response({'status': 'cancelled'})
+             
+        return Response({'error': 'Invalid status update'}, status=status.HTTP_400_BAD_REQUEST)
+
     def get(self, request, pk=None):
          booking = self.get_object(pk)
          if not booking:

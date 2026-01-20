@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import Modal from '@/components/ui/Modal';
 import FollowListModal from '@/components/advanced/FollowListModal';
 
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -17,7 +18,7 @@ import Calendar from '@/components/advanced/Calendar';
 import BlockingModal from './components/BlockingModal';
 import { auth, profiles, content, accounts, services, business } from '@/lib/api';
 import api from '@/lib/api/client'; // Direct client for categories
-import { Edit2, Trash2, Plus, Camera, Check, X, User, LinkIcon } from 'lucide-react';
+import { Edit2, Trash2, Plus, Camera, Check, X, User, LinkIcon, AlertTriangle } from 'lucide-react';
 import {
     ExperienceModal, EducationModal, SkillModal, LanguageModal, CertificateModal, PasswordModal
 } from '@/components/advanced/ProfileModals';
@@ -52,7 +53,7 @@ export default function PrivateProfilePage() {
     const [certificates, setCertificates] = useState([]);
     const [articles, setArticles] = useState([]);
     const [posts, setPosts] = useState([]);
-    const [filterType, setFilterType] = useState('all'); // all, article, quiz, survey
+    const [filterType, setFilterType] = useState('all'); // all, article, quiz
 
     // Vacancies
     const [myVacancies, setMyVacancies] = useState([]);
@@ -68,6 +69,7 @@ export default function PrivateProfilePage() {
     // Booking State
     const [bookingRequests, setBookingRequests] = useState([]);
     const [calendarEvents, setCalendarEvents] = useState([]);
+    const [selectedBooking, setSelectedBooking] = useState(null);
     // Booking Modal for blocking
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -187,7 +189,7 @@ export default function PrivateProfilePage() {
         try {
             const res = await services.getBookings({
                 role: 'provider',
-                status: 'confirmed,cancelled,rejected', // All other statuses
+                status: 'confirmed,cancelled,rejected,missed', // All other statuses
                 exclude_self: true,
                 page: page,
                 limit: 10 // Assuming backend supports limit or page_size, usually DRF uses page_size in settings or param
@@ -229,16 +231,23 @@ export default function PrivateProfilePage() {
         }
     };
 
-    const handleRejectBooking = async (id) => {
-        if (!confirm("Reject this booking?")) return;
-        try {
-            await services.rejectBooking(id);
-            toast.success("Booking Rejected");
-            loadBookingsData();
-            loadRequestHistory(1, true); // Refresh history
-        } catch (err) {
-            toast.error("Failed to reject");
-        }
+    const handleRejectBooking = (id) => {
+        setConfirmationModal({
+            isOpen: true,
+            title: "Reject Request",
+            message: "Are you sure you want to reject this request?",
+            onConfirm: async () => {
+                try {
+                    await services.rejectBooking(id);
+                    toast.success("Booking Rejected");
+                    loadBookingsData();
+                    loadRequestHistory(1, true); // Refresh history
+                    setConfirmationModal((prev) => ({ ...prev, isOpen: false }));
+                } catch (err) {
+                    toast.error("Failed to reject");
+                }
+            }
+        });
     };
 
     const loadProfile = async () => {
@@ -568,7 +577,6 @@ export default function PrivateProfilePage() {
             <div className={styles.tabs}>
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
                 <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Paylaşımlar</button>
-                <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>Availability</button>
                 <button className={activeTab === 'booking' ? styles.activeTab : ''} onClick={() => setActiveTab('booking')}>Booking</button>
                 <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>My Vacancies</button>
                 <button className={activeTab === 'applications' ? styles.activeTab : ''} onClick={() => setActiveTab('applications')}>My Applications</button>
@@ -628,7 +636,7 @@ export default function PrivateProfilePage() {
 
                                 {/* Position Editable */}
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>Position</span>
+                                    <span className={styles.label}>Profession</span>
                                     <div className={styles.value}>
                                         {editMode['profession_sub_category'] ? (
                                             <div className={styles.inlineForm}>
@@ -779,7 +787,7 @@ export default function PrivateProfilePage() {
                         <div className={styles.sectionHeader}>
                             <h3>Paylaşımlar</h3>
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                {['all', 'article', 'quiz', 'survey'].map(ft => (
+                                {['all', 'article', 'quiz'].map(ft => (
                                     <Button
                                         key={ft}
                                         size="small"
@@ -818,116 +826,24 @@ export default function PrivateProfilePage() {
                     </div>
                 )}
 
-                {activeTab === 'services' && (() => {
-                    const hasAvailabilityChanges = (() => {
-                        if (!savedAvailability) return false;
-                        // Compare normalized (sorted strings of ints)
-                        const currentDays = (profile.working_days || []).map(d => +d).sort().join(',');
-                        const savedDays = (savedAvailability.working_days || []).map(d => +d).sort().join(',');
 
-                        return (
-                            Boolean(profile.is_service_open) !== Boolean(savedAvailability.is_service_open) ||
-                            (profile.work_hours_start || '') !== (savedAvailability.work_hours_start || '') ||
-                            (profile.work_hours_end || '') !== (savedAvailability.work_hours_end || '') ||
-                            currentDays !== savedDays
-                        );
-                    })();
-
-                    return (
-                        <div className={styles.section}>
-                            <div className={styles.sectionHeader}>
-                                <h2>Availability Settings</h2>
-                                <Button
-                                    size="small"
-                                    onClick={handleAvailabilitySave}
-                                    disabled={!hasAvailabilityChanges}
-                                    style={{
-                                        backgroundColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
-                                        borderColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
-                                        cursor: hasAvailabilityChanges ? 'pointer' : 'not-allowed',
-                                        color: '#fff',
-                                        opacity: hasAvailabilityChanges ? 1 : 0.7
-                                    }}
-                                >
-                                    Save Changes
-                                </Button>
-                            </div>
-
-                            <div className={styles.list}>
-                                <div className={styles.editableField}>
-                                    <span className={styles.label}>Accept Bookings</span>
-                                    <div className={styles.value}>
-                                        <label className={styles.switch}>
-                                            <input
-                                                type="checkbox"
-                                                checked={profile.is_service_open || false}
-                                                onChange={e => setProfile(prev => ({ ...prev, is_service_open: e.target.checked }))}
-                                            />
-                                            <span className={styles.slider}></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                {profile.is_service_open && (
-                                    <>
-                                        <div className={styles.editableField}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                                <span className={styles.label}>Working Hours</span>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <span style={{ width: '40px' }}>Start:</span>
-                                                    <Input
-                                                        type="time"
-                                                        value={profile.work_hours_start || ''}
-                                                        onChange={e => setProfile(prev => ({ ...prev, work_hours_start: e.target.value }))}
-                                                        style={{ width: '120px' }}
-                                                        wrapperStyle={{ marginBottom: 0 }}
-                                                    />
-                                                    <span style={{ width: '40px' }}>End:</span>
-                                                    <Input
-                                                        type="time"
-                                                        value={profile.work_hours_end || ''}
-                                                        onChange={e => setProfile(prev => ({ ...prev, work_hours_end: e.target.value }))}
-                                                        style={{ width: '120px' }}
-                                                        wrapperStyle={{ marginBottom: 0 }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div style={{ paddingTop: '10px' }}>
-                                            <span className={styles.label} style={{ display: 'block', marginBottom: '8px' }}>Working Days</span>
-                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                                {daysOfWeek.map(dayObj => (
-                                                    <button
-                                                        key={dayObj.value}
-                                                        onClick={() => toggleDay(dayObj.value)}
-                                                        style={{
-                                                            padding: '8px 12px',
-                                                            borderRadius: '20px',
-                                                            border: '1px solid #ddd',
-                                                            background: (profile.working_days || []).includes(dayObj.value) ? '#1890ff' : '#fff',
-                                                            color: (profile.working_days || []).includes(dayObj.value) ? '#fff' : '#333',
-                                                            cursor: 'pointer',
-                                                            fontSize: '14px'
-                                                        }}
-                                                    >
-                                                        {dayObj.name.slice(0, 3)}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })()}
 
                 {activeTab === 'booking' && (
                     <div className={styles.section} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
                         {/* Sub Tabs */}
                         <div style={{ display: 'flex', gap: '20px', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
+                            <button
+                                onClick={() => setBookingSubTab('availability')}
+                                style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    fontWeight: bookingSubTab === 'availability' ? 600 : 400,
+                                    color: bookingSubTab === 'availability' ? '#1890ff' : '#666',
+                                    borderBottom: bookingSubTab === 'availability' ? '2px solid #1890ff' : 'none'
+                                }}
+                            >
+                                Availability
+                            </button>
                             <button
                                 onClick={() => setBookingSubTab('calendar')}
                                 style={{
@@ -952,6 +868,111 @@ export default function PrivateProfilePage() {
                             </button>
                         </div>
 
+                        {bookingSubTab === 'availability' && (() => {
+                            const hasAvailabilityChanges = (() => {
+                                if (!savedAvailability) return false;
+                                // Compare normalized (sorted strings of ints)
+                                const currentDays = (profile.working_days || []).map(d => +d).sort().join(',');
+                                const savedDays = (savedAvailability.working_days || []).map(d => +d).sort().join(',');
+
+                                return (
+                                    Boolean(profile.is_service_open) !== Boolean(savedAvailability.is_service_open) ||
+                                    (profile.work_hours_start || '') !== (savedAvailability.work_hours_start || '') ||
+                                    (profile.work_hours_end || '') !== (savedAvailability.work_hours_end || '') ||
+                                    currentDays !== savedDays
+                                );
+                            })();
+
+                            return (
+                                <div className={styles.section}>
+                                    <div className={styles.sectionHeader}>
+                                        <h2>Availability Settings</h2>
+                                        <Button
+                                            size="small"
+                                            onClick={handleAvailabilitySave}
+                                            disabled={!hasAvailabilityChanges}
+                                            style={{
+                                                backgroundColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
+                                                borderColor: hasAvailabilityChanges ? '#1890ff' : '#ccc',
+                                                cursor: hasAvailabilityChanges ? 'pointer' : 'not-allowed',
+                                                color: '#fff',
+                                                opacity: hasAvailabilityChanges ? 1 : 0.7
+                                            }}
+                                        >
+                                            Save Changes
+                                        </Button>
+                                    </div>
+
+                                    <div className={styles.list}>
+                                        <div className={styles.editableField}>
+                                            <span className={styles.label}>Accept Bookings</span>
+                                            <div className={styles.value}>
+                                                <label className={styles.switch}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={profile.is_service_open || false}
+                                                        onChange={e => setProfile(prev => ({ ...prev, is_service_open: e.target.checked }))}
+                                                    />
+                                                    <span className={styles.slider}></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        {profile.is_service_open && (
+                                            <>
+                                                <div className={styles.editableField}>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                                        <span className={styles.label}>Working Hours</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <span style={{ width: '40px' }}>Start:</span>
+                                                            <Input
+                                                                type="time"
+                                                                value={profile.work_hours_start || ''}
+                                                                onChange={e => setProfile(prev => ({ ...prev, work_hours_start: e.target.value }))}
+                                                                style={{ width: '120px' }}
+                                                                wrapperStyle={{ marginBottom: 0 }}
+                                                            />
+                                                            <span style={{ width: '40px' }}>End:</span>
+                                                            <Input
+                                                                type="time"
+                                                                value={profile.work_hours_end || ''}
+                                                                onChange={e => setProfile(prev => ({ ...prev, work_hours_end: e.target.value }))}
+                                                                style={{ width: '120px' }}
+                                                                wrapperStyle={{ marginBottom: 0 }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ paddingTop: '10px' }}>
+                                                    <span className={styles.label} style={{ display: 'block', marginBottom: '8px' }}>Working Days</span>
+                                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                        {daysOfWeek.map(dayObj => (
+                                                            <button
+                                                                key={dayObj.value}
+                                                                onClick={() => toggleDay(dayObj.value)}
+                                                                style={{
+                                                                    padding: '8px 12px',
+                                                                    borderRadius: '20px',
+                                                                    border: '1px solid #ddd',
+                                                                    background: (profile.working_days || []).includes(dayObj.value) ? '#1890ff' : '#fff',
+                                                                    color: (profile.working_days || []).includes(dayObj.value) ? '#fff' : '#333',
+                                                                    cursor: 'pointer',
+                                                                    fontSize: '14px'
+                                                                }}
+                                                            >
+                                                                {dayObj.name.slice(0, 3)}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
                         {bookingSubTab === 'calendar' && (
                             <div className={styles.list}>
                                 <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -965,6 +986,19 @@ export default function PrivateProfilePage() {
                                 <Calendar
                                     events={calendarEvents}
                                     onDateSelect={handleDateSelect}
+                                    onEventClick={(info) => {
+                                        // info.event.extendedProps contains 'status', 'note'
+                                        // info.event.id is booking ID
+                                        setSelectedBooking({
+                                            id: info.event.id,
+                                            title: info.event.title,
+                                            start: info.event.start,
+                                            end: info.event.end,
+                                            status: info.event.extendedProps.status,
+                                            note: info.event.extendedProps.note,
+                                            customer: info.event.extendedProps.customer // Need to ensure backend sends this or we infer from title/setup
+                                        });
+                                    }}
                                 />
                             </div>
                         )}
@@ -1039,9 +1073,9 @@ export default function PrivateProfilePage() {
                                                             </Link>
                                                             <span style={{
                                                                 fontSize: '0.8rem', padding: '2px 8px', borderRadius: '10px',
-                                                                background: req.status === 'confirmed' ? '#f6ffed' : '#fff1f0',
-                                                                color: req.status === 'confirmed' ? '#52c41a' : '#f5222d',
-                                                                border: `1px solid ${req.status === 'confirmed' ? '#b7eb8f' : '#ffa39e'}`
+                                                                background: req.status === 'confirmed' ? '#f6ffed' : (req.status === 'missed' ? '#fffbe6' : '#fff1f0'),
+                                                                color: req.status === 'confirmed' ? '#52c41a' : (req.status === 'missed' ? '#faad14' : '#f5222d'),
+                                                                border: `1px solid ${req.status === 'confirmed' ? '#b7eb8f' : (req.status === 'missed' ? '#ffe58f' : '#ffa39e')}`
                                                             }}>
                                                                 {req.status.toUpperCase()}
                                                             </span>
@@ -1227,6 +1261,70 @@ export default function PrivateProfilePage() {
                 username={profile.username}
                 type={followModalType}
             />
+            {/* Booking Action Modal */}
+            <Modal
+                isOpen={!!selectedBooking}
+                onClose={() => setSelectedBooking(null)}
+                title="Booking Values"
+            >
+                {selectedBooking && (
+                    <div className={styles.content}>
+                        <div style={{ padding: '20px' }}>
+                            <h3 style={{ marginTop: 0 }}>{selectedBooking.title}</h3>
+                            <p><strong>Status:</strong> <span style={{ textTransform: 'capitalize', color: selectedBooking.status === 'confirmed' ? 'green' : selectedBooking.status === 'pending' ? 'orange' : '#666' }}>{selectedBooking.status}</span></p>
+                            <p><strong>Time:</strong> {selectedBooking.start.toLocaleString()} - {selectedBooking.end.toLocaleTimeString()}</p>
+                            {selectedBooking.note && <p><strong>Note:</strong> {selectedBooking.note}</p>}
+
+                            <div style={{ marginTop: '24px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                {selectedBooking.status === 'pending' && (
+                                    <>
+                                        <Button type="default" style={{ borderColor: 'red', color: 'red' }} onClick={() => {
+                                            setConfirmationModal({
+                                                isOpen: true,
+                                                title: "Reject Request",
+                                                message: "Are you sure you want to reject this request?",
+                                                onConfirm: async () => {
+                                                    await services.rejectBooking(selectedBooking.id);
+                                                    loadBookingsData();
+                                                    setSelectedBooking(null);
+                                                    toast.success("Rejected");
+                                                    setConfirmationModal((prev) => ({ ...prev, isOpen: false }));
+                                                }
+                                            });
+                                        }}>Reject</Button>
+                                        <Button type="primary" onClick={async () => {
+                                            await services.acceptBooking(selectedBooking.id);
+                                            loadBookingsData();
+                                            setSelectedBooking(null);
+                                            toast.success("Accepted");
+                                        }}>Accept</Button>
+                                    </>
+                                )}
+                                {(selectedBooking.status === 'confirmed' || selectedBooking.title === 'Blocked') && (
+                                    <Button type="default" style={{ borderColor: 'red', color: 'red' }} onClick={() => {
+                                        setConfirmationModal({
+                                            isOpen: true,
+                                            title: selectedBooking.title === 'Blocked' ? "Unblock Slot" : "Cancel Meeting",
+                                            message: "Are you sure you want to cancel this booking?",
+                                            onConfirm: async () => {
+                                                await services.updateBookingStatus(selectedBooking.id, 'rejected');
+                                                loadBookingsData();
+                                                setSelectedBooking(null);
+                                                toast.success("Cancelled");
+                                                setConfirmationModal((prev) => ({ ...prev, isOpen: false }));
+                                            }
+                                        });
+                                    }}>
+                                        {selectedBooking.title === 'Blocked' ? 'Unblock' : 'Cancel Meeting'}
+                                    </Button>
+                                )}
+                                <Button type="default" onClick={() => setSelectedBooking(null)}>Close</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
             {/* Blocking Modal */}
             <BlockingModal
                 isOpen={showBookingModal}
@@ -1239,6 +1337,7 @@ export default function PrivateProfilePage() {
                     start: profile.work_hours_start,
                     end: profile.work_hours_end
                 }}
+                events={calendarEvents}
             />
         </div >
     );

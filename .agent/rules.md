@@ -15,7 +15,6 @@ To prevent "fat" files and ensure scalability:
 - **Modular APIs**: Create separate files for every distinct functionality.
 - **Folder Structure**: Each app must have an `api/` folder:
   - `api/serializers.py`: Dedicated serializers for the app.
-  - `api/views.py` (or `viewsets.py`): Logic separated by domain/resource.
 - **Optimization**:
   - **MANDATORY**: Use `select_related` (for FK) and `prefetch_related` (for M2M/Generic) in all `get_queryset` methods.
   - Use `@action` decorators for custom endpoints within ViewSets.

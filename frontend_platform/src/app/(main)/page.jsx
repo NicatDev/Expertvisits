@@ -18,7 +18,7 @@ export default function HomePage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     // Filters & Search
-    const [filterType, setFilterType] = useState('all'); // article, quiz, survey
+    const [filterType, setFilterType] = useState('all'); // article, quiz
     const [ordering, setOrdering] = useState('created_at'); // created_at, popularity
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -114,20 +114,7 @@ export default function HomePage() {
                 <RecommendedUsers />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}
-                <div className={styles.sidebarBox} style={{ marginTop: '24px' }}>
-                    {user ? (
-                        <>
-                            <h3>{user.username}</h3>
-                            <p className={styles.welcomeText}>Welcome back!</p>
-                        </>
-                    ) : (
-                        <div className={styles.guestBox}>
-                            <h3>Guest</h3>
-                            <p>Login to track your stats</p>
-                            <Button block size="small" onClick={() => window.location.href = '/login'}>Login</Button>
-                        </div>
-                    )}
-                </div>
+                
             </aside>
 
             {/* Center: Feed */}
@@ -135,7 +122,7 @@ export default function HomePage() {
                 {/* 1. Create Post Section (Moved Top) */}
                 <div className={styles.createBox} onClick={handleCreateClick}>
                     <div className={styles.placeholderInput}>
-                        Start a post, quiz, or survey...
+                        Start a post, or quiz...
                     </div>
                 </div>
 
@@ -144,7 +131,7 @@ export default function HomePage() {
                     <div className={styles.leftGroup}>
                         {/* Filters */}
                         <div className={styles.filters}>
-                            {['all', 'article', 'quiz', 'survey'].map(type => (
+                            {['all', 'article', 'quiz'].map(type => (
                                 <button
                                     key={type}
                                     onClick={() => setFilterType(type)}
@@ -215,14 +202,7 @@ export default function HomePage() {
                     I'll keep Trending below it or replace it? User said "kicik ve lazimli melumatlar". 
                     Usually one main widget is good. I'll remove trends to clean up or push down. 
                     I'll keep it for now as "Trending" fits the theme, but maybe push down. */}
-                <div className={styles.sidebarBox} style={{ marginTop: '24px' }}>
-                    <h3>Trending Topics</h3>
-                    <ul className={styles.trendList}>
-                        <li>#Technology</li>
-                        <li>#Startups</li>
-                        <li>#Education</li>
-                    </ul>
-                </div>
+             
             </aside>
 
             <CreateContentModal

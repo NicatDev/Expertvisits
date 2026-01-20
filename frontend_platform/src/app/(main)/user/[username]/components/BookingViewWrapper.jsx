@@ -2,15 +2,32 @@ import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import CalendarView from './CalendarView';
 import SimpleBookingModal from './SimpleBookingModal';
+import Modal from '@/components/ui/Modal';
 import { ArrowLeft, Calendar as CalendarIcon, Plus } from 'lucide-react';
 
 const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null); // { dateStr: string } or null
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     const handleCalendarSelect = (info) => {
         setModalData(info);
         setIsModalOpen(true);
+    };
+
+    const handleEventClick = (info) => {
+        // info.event.extendedProps: { status, note }
+        // title: "Request Pending" etc.
+        const evt = {
+            id: info.event.id,
+            title: info.event.title,
+            start: info.event.start,
+            end: info.event.end,
+            status: info.event.extendedProps.status
+        };
+        setSelectedEvent(evt);
     };
 
     const handleManualBooking = () => {
@@ -43,6 +60,7 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
             <CalendarView
                 events={events} // Pass events (busy slots)
                 onDateSelect={handleCalendarSelect}
+                onEventClick={handleEventClick}
                 workingDays={profile.working_days}
                 workingHours={{
                     start: profile.work_hours_start,
@@ -67,6 +85,62 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                     if (onBookingSuccess) onBookingSuccess();
                 }}
             />
+
+            {/* Action Modal for Existing Events */}
+            {
+                selectedEvent && (
+                    <div style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                    }} onClick={() => setSelectedEvent(null)}>
+                        <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', minWidth: '300px' }} onClick={e => e.stopPropagation()}>
+                            <h3>{selectedEvent.title}</h3>
+                            <p><strong>Time:</strong> {selectedEvent.start.toLocaleString()} - {selectedEvent.end.toLocaleTimeString()}</p>
+
+                            {(selectedEvent.title !== 'Busy' && selectedEvent.title !== 'Blocked') ? (
+                                <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                    <Button type="default" style={{ borderColor: 'red', color: 'red' }} onClick={() => {
+                                        setConfirmModal({
+                                            isOpen: true,
+                                            title: 'Cancel Booking',
+                                            message: 'Are you sure you want to cancel this booking?',
+                                            onConfirm: async () => {
+                                                const { services } = await import('@/lib/api');
+                                                try {
+                                                    await services.updateBookingStatus(selectedEvent.id, 'cancelled');
+                                                    if (onBookingSuccess) onBookingSuccess();
+                                                    setSelectedEvent(null);
+                                                    setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null });
+                                                } catch (e) { console.error(e); alert('Failed to cancel'); }
+                                            }
+                                        });
+                                    }}>Cancel Booking</Button>
+                                    <Button type="default" onClick={() => setSelectedEvent(null)}>Close</Button>
+                                </div>
+                            ) : (
+                                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+                                    <p style={{ color: '#666', fontStyle: 'italic', marginRight: 'auto' }}>This slot is occupied.</p>
+                                    <Button type="default" onClick={() => setSelectedEvent(null)}>Close</Button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )
+            }
+            {/* Confirmation Modal */}
+            <Modal
+                isOpen={confirmModal.isOpen}
+                onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                title={confirmModal.title}
+            >
+                <div style={{ padding: '20px' }}>
+                    <p>{confirmModal.message}</p>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+                        <Button type="default" onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}>No, Keep it</Button>
+                        <Button type="default" style={{ borderColor: 'red', color: 'red' }} onClick={confirmModal.onConfirm}>Yes, Cancel it</Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

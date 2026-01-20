@@ -6,7 +6,7 @@ import { services } from '@/lib/api';
 import { toast } from 'react-toastify';
 import styles from './style.module.scss'; // Reuse or create new
 
-const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, workingHours }) => {
+const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, workingHours, events }) => {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [duration, setDuration] = useState(30);
@@ -67,9 +67,33 @@ const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, 
         }
     }, [isOpen, selectedEvent]);
 
+    const checkOverlap = (start, end) => {
+        if (!events) return false;
+        const startMs = start.getTime();
+        const endMs = end.getTime();
+
+        for (const evt of events) {
+            const evtStart = new Date(evt.start).getTime();
+            const evtEnd = new Date(evt.end).getTime();
+
+            if (startMs < evtEnd && endMs > evtStart) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     const handleBlock = async () => {
         if (!date || !time) {
             toast.error("Please select date and time");
+            return;
+        }
+
+        const localDate = new Date(`${date}T${time}:00`);
+        const endDateTime = new Date(localDate.getTime() + duration * 60000);
+
+        if (checkOverlap(localDate, endDateTime)) {
+            toast.error("Selected time overlaps with an existing booking or busy slot.");
             return;
         }
 
@@ -77,7 +101,7 @@ const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, 
         try {
             // Convert to Date object (Local Time) then to ISO String (UTC)
             // Explicitly ensuring browser parses it as local time by not adding 'Z'
-            const localDate = new Date(`${date}T${time}:00`);
+            // const localDate = new Date(`${date}T${time}:00`); // Already defined above
             const requestedDatetime = localDate.toISOString();
 
             await services.bookSlot({

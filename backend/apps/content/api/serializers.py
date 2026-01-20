@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from apps.content.models import Article, Quiz, Question, Choice, Survey
+from apps.content.models import Article, Quiz, Question, Choice
 
 # Define Mixin here to minimize dependencies
 class ContentSerializerMixin(serializers.Serializer):
     is_liked = serializers.SerializerMethodField()
     latest_comment = serializers.SerializerMethodField()
+    author_avatar = serializers.SerializerMethodField()
 
     def get_is_liked(self, obj):
         user = self.context.get('request', None).user if self.context.get('request') else None
@@ -25,6 +26,11 @@ class ContentSerializerMixin(serializers.Serializer):
             }
         return None
 
+    def get_author_avatar(self, obj):
+        if obj.author.avatar:
+            return obj.author.avatar.url
+        return None
+
 class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
     author = serializers.StringRelatedField(read_only=True)
     slug = serializers.SlugField(read_only=True)
@@ -33,7 +39,7 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Article
-        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'author', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'author', 'author_avatar', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
 
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,7 +61,7 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Quiz
-        fields = ['id', 'title', 'sub_category', 'author', 'questions', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
+        fields = ['id', 'title', 'sub_category', 'author', 'author_avatar', 'questions', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
 
     participation_count = serializers.SerializerMethodField()
     is_participated = serializers.SerializerMethodField()
@@ -85,22 +91,4 @@ class QuizDetailSerializer(QuizSerializer):
     """Include questions when taking the quiz"""
     pass
 
-class SurveySerializer(serializers.ModelSerializer, ContentSerializerMixin):
-    likes_count = serializers.IntegerField(read_only=True)
-    comments_count = serializers.IntegerField(read_only=True)
 
-    class Meta:
-        model = Survey
-        fields = ['id', 'question', 'sub_category', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
-        
-    participation_count = serializers.SerializerMethodField()
-    is_participated = serializers.SerializerMethodField()
-
-    def get_participation_count(self, obj):
-        return obj.responses.count()
-
-    def get_is_participated(self, obj):
-        user = self.context.get('request').user if 'request' in self.context else None
-        if user and user.is_authenticated:
-            return obj.responses.filter(user=user).exists()
-        return False

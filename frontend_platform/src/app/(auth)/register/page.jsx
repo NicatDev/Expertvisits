@@ -8,8 +8,9 @@ import api from '@/lib/api/client'; // Direct client for categories
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import LocationSelect from '@/components/ui/LocationSelect';
+import SearchableSelect from '@/components/ui/SearchableSelect';
 import styles from '../auth.module.scss';
-import { ChevronRight, Check } from 'lucide-react';
+import { ChevronRight, Check, AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -34,10 +35,8 @@ export default function RegisterPage() {
     });
 
     useEffect(() => {
-        if (step === 2) {
-            fetchCategories();
-        }
-    }, [step]);
+        fetchCategories();
+    }, []);
 
     const fetchCategories = async () => {
         try {
@@ -58,7 +57,7 @@ export default function RegisterPage() {
             setError("Passwords don't match");
             return;
         }
-        if (!formData.first_name || !formData.last_name || !formData.username || !formData.email || !formData.password) {
+        if (!formData.first_name || !formData.last_name || !formData.username || !formData.email || !formData.password || !professionId) {
             setError("Please fill in all required fields");
             return;
         }
@@ -107,7 +106,7 @@ export default function RegisterPage() {
             await auth.register({
                 ...formData,
                 interests: selectedInterests,
-                profession_sub_category: professionId
+                profession_sub_category_id: professionId
             });
             // On success, move to step 3
             setStep(3);
@@ -155,28 +154,94 @@ export default function RegisterPage() {
         <div className={styles.authContainer}>
             <div className={styles.authCard} style={{ maxWidth: step === 2 ? '800px' : '480px' }}>
                 <h1 className={styles.title}>
-                    {step === 1 ? 'Join Octopus' : step === 2 ? 'Select Your Interests' : 'Verify Email'}
+                    {step === 1 ? 'Join Expert Visits' : step === 2 ? 'Select Your Interests' : 'Verify Email'}
                 </h1>
 
                 {step === 1 && (
                     <form onSubmit={handleNext} className={styles.form}>
-                        <div style={{ display: 'flex', gap: '16px' }}>
-                            <Input name="first_name" placeholder="First Name" value={formData.first_name} onChange={handleChange} required />
-                            <Input name="last_name" placeholder="Last Name" value={formData.last_name} onChange={handleChange} required />
+                        {/* Personal Information */}
+                        <div className={styles.section}>
+                            <h3 className={styles.sectionTitle}>Personal Information</h3>
+                            <div className={styles.grid}>
+                                <div className={styles.field}>
+                                    <Input label="First Name" name="first_name" placeholder="John" value={formData.first_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                                <div className={styles.field}>
+                                    <Input label="Last Name" name="last_name" placeholder="Doe" value={formData.last_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                            </div>
+                            <div className={styles.field}>
+                                <Input label="Username" name="username" placeholder="johndoe" value={formData.username} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                            </div>
+                            <div className={styles.grid}>
+                                <div className={styles.field}>
+                                    <Input label="Phone Number" name="phone_number" placeholder="+994 50 123 45 67 (Optional)" value={formData.phone_number} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                                <div className={styles.field}>
+                                    <Input label="Birth Date" name="birth_day" type="date" placeholder="DD.MM.YYYY" value={formData.birth_day} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                            </div>
                         </div>
-                        <Input name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
-                        <Input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-                        <Input name="phone_number" placeholder="Phone Number (Optional)" value={formData.phone_number} onChange={handleChange} />
-                        <Input name="birth_day" type="date" placeholder="Birth Date" value={formData.birth_day} onChange={handleChange} />
-                        <div style={{ marginBottom: '16px' }}>
-                            <LocationSelect
-                                value={formData.city}
-                                onChange={val => setFormData(prev => ({ ...prev, city: val }))}
-                                placeholder="City (Optional)"
-                            />
+
+                        {/* Professional Details */}
+                        <div className={styles.section}>
+                            <h3 className={styles.sectionTitle}>Professional Details</h3>
+                            <div className={styles.grid}>
+                                <div className={styles.field}>
+                                    <label>City</label>
+                                    <LocationSelect
+                                        value={formData.city}
+                                        onChange={val => setFormData(prev => ({ ...prev, city: val }))}
+                                        placeholder="Select City"
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label>Profession</label>
+                                    <SearchableSelect
+                                        options={categories}
+                                        value={professionId}
+                                        onChange={(val) => setProfessionId(val)}
+                                        groupBy="subcategories"
+                                        labelKey="name"
+                                        valueKey="id"
+                                        placeholder="Select Profession"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <Input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-                        <Input name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required error={error} />
+
+                        {/* Account Security */}
+                        <div className={styles.section}>
+                            <h3 className={styles.sectionTitle}>Account Security</h3>
+                            <div className={styles.field}>
+                                <Input label="Email" name="email" type="email" placeholder="example@mail.com" value={formData.email} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                            </div>
+                            <div className={styles.grid}>
+                                <div className={styles.field}>
+                                    <Input label="Password" name="password" type="password" placeholder="********" value={formData.password} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                                <div className={styles.field}>
+                                    <Input label="Confirm Password" name="confirmPassword" type="password" placeholder="********" value={formData.confirmPassword} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {error && (
+                            <div style={{
+                                backgroundColor: '#fff2f0',
+                                border: '1px solid #ffccc7',
+                                borderRadius: '8px',
+                                padding: '12px',
+                                color: '#ff4d4f',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '14px'
+                            }}>
+                                <AlertCircle size={18} />
+                                <span>{error}</span>
+                            </div>
+                        )}
 
                         <Button type="primary" htmlType="submit" block>
                             Next <ChevronRight size={16} />
@@ -190,34 +255,7 @@ export default function RegisterPage() {
                             Select at least 1 topic to personalize your feed.
                         </p>
 
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>Primary Profession</label>
-                            <select
-                                value={professionId}
-                                onChange={(e) => setProfessionId(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px'
-                                }}
-                            >
-                                <option value="">Select your profession...</option>
-                                {categories.map(cat => (
-                                    <optgroup key={cat.id} label={cat.name}>
-                                        {cat.subcategories.map(sub => (
-                                            <option key={sub.id} value={sub.id}>
-                                                {sub.profession || sub.name}
-                                            </option>
-                                        ))}
-                                    </optgroup>
-                                ))}
-                            </select>
-                            <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                                This will be displayed on your profile (e.g. "Biznes Meneceri")
-                            </p>
-                        </div>
+
 
                         <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '24px' }}>
                             {categories.map(cat => (

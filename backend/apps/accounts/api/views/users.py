@@ -48,7 +48,13 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         if 'profession_sub_category' in user_data and user_data['profession_sub_category']:
              user_data['profession_sub_category_id'] = user_data['profession_sub_category'].id
              del user_data['profession_sub_category']
-        
+        elif 'profession_sub_category_id' in user_data and user_data['profession_sub_category_id']:
+             # Already has ID, just ensure it's not None
+             pass
+
+        if 'birth_day' in user_data and user_data['birth_day']:
+            user_data['birth_day'] = str(user_data['birth_day'])
+
         RegistrationSession.objects.update_or_create(
             email=email,
             defaults={

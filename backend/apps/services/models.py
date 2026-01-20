@@ -3,10 +3,9 @@ from apps.accounts.models import User
 from apps.business.models import Company
 
 class BookingRequest(models.Model):
-    STATUS_CHOICES = [('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')]
+    STATUS_CHOICES = [('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled'), ('missed', 'Missed')]
     provider = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_bookings")
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="made_bookings")
-    # service field removed
     requested_datetime = models.DateTimeField(db_index=True)
     duration_minutes = models.IntegerField(default=30)
     note = models.TextField(blank=True, null=True)

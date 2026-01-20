@@ -26,10 +26,4 @@ export const content = {
     deleteQuiz: (id) => api.delete(`content/quizzes/${id}/`),
     submitQuiz: (id, answers) => api.post(`content/quizzes/${id}/submit/`, { answers }),
 
-    getUserSurveys: (userId) => api.get('content/surveys/', { params: { author: userId } }),
-    getSurvey: (id) => api.get(`content/surveys/${id}/`),
-    createSurvey: (data) => api.post('content/surveys/', data),
-    updateSurvey: (id, data) => api.patch(`content/surveys/${id}/`, data),
-    deleteSurvey: (id) => api.delete(`content/surveys/${id}/`),
-    submitSurvey: (id, answer) => api.post(`content/surveys/${id}/submit/`, { answer }),
 };

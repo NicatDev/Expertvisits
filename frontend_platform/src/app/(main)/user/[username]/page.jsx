@@ -173,10 +173,10 @@ export default function PublicProfilePage() {
 
             // Fetch public events (busy slots)
             try {
-                if(currentUser?.id && userId === currentUser.id){
-                    const eventsRes = await services.getEvents(userId);
-                    setCalendarEvents(eventsRes.data);
-                }
+                // Always fetch events for the user we are viewing. 
+                // The backend handles privacy (showing confirmed as 'Busy' for others).
+                const eventsRes = await services.getEvents(userId);
+                setCalendarEvents(eventsRes.data);
             } catch (e) {
                 console.error("Failed to load events", e);
             }
@@ -307,7 +307,7 @@ export default function PublicProfilePage() {
                                                 </div>
                                             </div>
                                             <div className={styles.editableField}>
-                                                <span className={styles.label}>POSITION</span>
+                                                <span className={styles.label}>PROFESSION</span>
                                                 <div className={styles.value}>
                                                     <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
                                                         {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Not set'}
@@ -363,7 +363,7 @@ export default function PublicProfilePage() {
                                     <div className={styles.sectionHeader}>
                                         <h3>Paylaşımlar</h3>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            {['all', 'article', 'quiz', 'survey'].map(ft => (
+                                            {['all', 'article', 'quiz'].map(ft => (
                                                 <Button
                                                     key={ft}
                                                     size="small"
