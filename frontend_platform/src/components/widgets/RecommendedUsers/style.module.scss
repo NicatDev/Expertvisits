@@ -45,17 +45,25 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    margin-right: 8px;
 }
 
 .name {
     font-size: 14px;
     font-weight: 600;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .followers {
     font-size: 12px;
     color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .followBtn {
@@ -68,6 +76,7 @@
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s;
+    flex-shrink: 0;
 
     &:hover {
         background: #e6f7ff;

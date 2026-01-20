@@ -1,0 +1,65 @@
+.container {
+    position: relative;
+    display: inline-block;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    color: #666;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .currentLabel {
+        font-weight: 500;
+        font-size: 14px;
+    }
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 80px;
+    z-index: 100;
+    overflow: hidden;
+
+    .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        &.active {
+            color: #1890ff;
+            font-weight: 500;
+            background: #e6f7ff;
+        }
+    }
+}

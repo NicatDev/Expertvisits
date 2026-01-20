@@ -1,0 +1,584 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "search": "Search...",
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "nav": {
+        "home": "Home",
+        "vacancies": "Vacancies",
+        "companies": "Companies",
+        "services": "Services",
+        "explore": "Explore",
+        "notifications": "Notifications",
+        "messages": "Messages",
+        "profile": "Profile"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout"
+    },
+    "article_page": {
+        "load_error": "Failed to load article",
+        "not_found": "Article not found.",
+        "likes_count": "{{count}} Likes",
+        "comments_count": "{{count}} Comments"
+    },
+    "feed": {
+        "placeholder": "Start a post, or quiz...",
+        "all": "All",
+        "article": "Article",
+        "quiz": "Quiz",
+        "latest": "Latest",
+        "popular": "Popular",
+        "no_results": "No results found.",
+        "create_content": "Create content",
+        "load_more": "Load more"
+    },
+    "feed_item": {
+        "likes": "Likes",
+        "comments": "Comments",
+        "like_action": "Like",
+        "comment_action": "Comment",
+        "share_action": "Share",
+        "view_more": "View more",
+        "unknown_user": "Unknown User",
+        "questions_count": "Questions",
+        "participants_count": "Participants",
+        "completed": "Completed",
+        "start_quiz": "Start Quiz",
+        "write_comment": "Write a comment...",
+        "toast": {
+            "link_copied": "Link copied to clipboard!",
+            "login_like": "Please login to like",
+            "login_comment": "Please login to comment",
+            "login_participate": "Please login to participate",
+            "failed_like": "Failed to like",
+            "failed_comment": "Failed to post comment",
+            "comment_posted": "Comment posted!",
+            "already_participated": "You have already participated in this quiz.",
+            "delete_confirm": "Are you sure you want to delete this content?",
+            "deleted": "Content deleted.",
+            "failed_delete": "Failed to delete."
+        }
+    },
+    "auth_page": {
+        "welcome_back": "Welcome Back",
+        "join_title": "Join Us",
+        "interests_title": "Select Your Interests",
+        "verify_title": "Verify Email",
+        "username": "Username",
+        "password": "Password",
+        "email": "Email",
+        "confirm_password": "Confirm Password",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "phone": "Phone",
+        "birth_date": "Birth Date",
+        "city": "City",
+        "profession": "Profession",
+        "select_city": "Select City",
+        "select_profession": "Select Profession",
+        "login_btn": "Login",
+        "logging_in": "Logging in...",
+        "register_btn": "Complete Registration",
+        "registering": "Registering...",
+        "verify_btn": "Verify",
+        "resend_code": "Resend Code",
+        "next": "Next",
+        "back": "Back",
+        "no_account": "Don't have an account?",
+        "have_account": "Already have an account?",
+        "register_link": "Register",
+        "login_link": "Login",
+        "personal_info": "Personal Information",
+        "professional_details": "Professional Details",
+        "security": "Account Security",
+        "enter_code": "Enter code"
+    },
+    "create_modal": {
+        "title": "Create Content",
+        "article_tab": "Article",
+        "quiz_tab": "Quiz",
+        "post_title": "Title",
+        "cover_image": "Cover Image",
+        "content": "Content",
+        "upload_placeholder": "Click to upload cover image",
+        "quiz_title": "Quiz Title",
+        "question_label": "Question",
+        "enter_question": "Enter question text...",
+        "option_placeholder": "Option",
+        "add_option": "+ Add Option",
+        "add_question": "+ Add Question",
+        "post_btn": "Post",
+        "posting": "Posting..."
+    },
+    "edit_modal": {
+        "title": "Edit Article",
+        "post_title": "Title",
+        "cover_image": "Cover Image",
+        "change_image": "Change cover image",
+        "content": "Content",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "required_error": "Title and body are required",
+        "success": "Article updated!",
+        "error": "Failed to update article"
+    },
+    "quiz_modal": {
+        "score": "You scored",
+        "questions": "Questions",
+        "thanks": "Thanks for participating!",
+        "close": "Close",
+        "submitting": "Submitting...",
+        "submit": "Submit Quiz",
+        "success": "Quiz completed!",
+        "error": "Failed to submit quiz"
+    },
+    "likes_modal": {
+        "title": "Likes",
+        "loading": "Loading...",
+        "no_likes": "No likes yet."
+    },
+    "comments": {
+        "reply_action": "Reply",
+        "like_action": "Like",
+        "post_btn": "Post",
+        "view_more_replies": "View more replies",
+        "view_more_comments": "View more comments",
+        "view_less": "View less",
+        "loading": "Loading comments...",
+        "login_to_comment": "Please login to comment",
+        "login_to_like": "Please login to like",
+        "post_error": "Failed to post comment",
+        "like_error": "Failed to like comment",
+        "reply_placeholder": "Reply to"
+    },
+    "widgets": {
+        "popular_articles": "Popular Articles",
+        "recommended_users": "Recommended Users",
+        "loading": "Loading...",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "login_to_follow": "You must be logged in to follow users",
+        "user_role": "User"
+    },
+    "profile": {
+        "section_helper": {
+            "add": "Add",
+            "no_items": "No items added."
+        },
+        "section_helper": {
+            "add": "Add",
+            "no_items": "No items added."
+        },
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "username": "Username",
+        "phone_number": "Phone Number",
+        "birth_day": "Birth Date",
+        "city": "City",
+        "profession": "Profession",
+        "delete_cover": "Delete Cover",
+        "avatar": "Avatar",
+        "edit_avatar": "Edit Avatar",
+        "followers": "followers",
+        "following": "following",
+        "change_password": "Change Password",
+        "tabs": {
+            "about": "About",
+            "posts": "Posts",
+            "booking": "Booking",
+            "vacancies": "My Vacancies",
+            "applications": "My Applications"
+        },
+        "personal_info": "Personal Information",
+        "sections": {
+            "experience": "Experience",
+            "education": "Education",
+            "hard_skills": "Hard Skills",
+            "soft_skills": "Soft Skills",
+            "languages": "Languages",
+            "certificates": "Certificates"
+        },
+        "level": "Level",
+        "filters": {
+            "all": "All",
+            "articles": "Articles",
+            "quizzes": "Quizzes"
+        },
+        "toasts": {
+            "accepted": "Booking Accepted",
+            "rejected": "Booking Rejected",
+            "deleted": "Deleted successfully",
+            "failed_delete": "Failed to delete",
+            "failed_update": "Failed to update",
+            "availability_saved": "Availability settings saved successfully!",
+            "password_changed": "Password changed successfully"
+        },
+        "modals": {
+            "reject_title": "Reject Request",
+            "reject_message": "Are you sure you want to reject this request?",
+            "delete_title": "Delete",
+            "delete_message": "Are you sure you want to delete this item? This action cannot be undone.",
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        },
+        "not_set": "Not set",
+        "professional": "Professional",
+        "days": {
+            "Monday": "Monday",
+            "Tuesday": "Tuesday",
+            "Wednesday": "Wednesday",
+            "Thursday": "Thursday",
+            "Friday": "Friday",
+            "Saturday": "Saturday",
+            "Sunday": "Sunday"
+        },
+        "booking": {
+            "availability": "Availability",
+            "calendar": "Calendar",
+            "requests": "Requests",
+            "settings_title": "Availability Settings",
+            "save_changes": "Save Changes",
+            "accept_bookings": "Accept Bookings",
+            "working_hours": "Working Hours",
+            "start": "Start:",
+            "end": "End:",
+            "working_days": "Working Days",
+            "legend": {
+                "pending": "Pending",
+                "blocked": "Blocked / Busy",
+                "confirmed": "Confirmed"
+            },
+            "incoming_title": "Incoming Requests",
+            "no_pending": "No pending requests.",
+            "all_requests_title": "All Requests",
+            "no_history": "No history yet.",
+            "load_more": "Load More",
+            "values_title": "Booking Values",
+            "status": "Status:",
+            "time": "Time:",
+            "note": "Note:",
+            "unblock_slot": "Unblock Slot",
+            "cancel_meeting": "Cancel Meeting",
+            "unblock_btn": "Unblock",
+            "cancel_btn": "Cancel",
+            "close_btn": "Close",
+            "reject_btn": "Reject",
+            "accept_btn": "Accept",
+            "confirm_cancel": "Are you sure you want to cancel this booking?",
+            "confirm_unblock": "Are you sure you want to unblock this slot?"
+        }
+    },
+    "vacancies": {
+        "title": "My Vacancies",
+        "post_new": "Post New",
+        "no_vacancies": "No vacancies posted.",
+        "delete_title": "Delete Vacancy",
+        "delete_message": "Are you sure you want to delete this vacancy?",
+        "deleted_success": "Vacancy deleted"
+    },
+    "applications": {
+        "title": "My Applications",
+        "no_applications": "No applications sent.",
+        "applied_on": "Applied on"
+    },
+    "days": {
+        "Monday": "Monday",
+        "Tuesday": "Tuesday",
+        "Wednesday": "Wednesday",
+        "Thursday": "Thursday",
+        "Friday": "Friday",
+        "Saturday": "Saturday",
+        "Sunday": "Sunday"
+    },
+    "avatar_modal": {
+        "title": "Update Profile Picture",
+        "change": "Change Photo",
+        "remove": "Remove Current Photo",
+        "delete_title": "Delete Avatar",
+        "delete_message": "Are you sure you want to remove your profile picture?",
+        "cancel": "Cancel"
+    },
+    "content": {
+        "add_content": "Add Content",
+        "no_content": "No content shared yet.",
+        "load_more": "Load More",
+        "created_success": "Content created successfully"
+    },
+    "booking_modal": {
+        "title": "Book Appointment",
+        "calendar_view": "Calendar View",
+        "manual_input": "Manual Input",
+        "instruction": "Click or drag on the calendar to select a slot.",
+        "date": "Date",
+        "time": "Time",
+        "select_time": "Select Time",
+        "duration": "Duration",
+        "unavailable": "(Unavailable)",
+        "note": "Note (Optional)",
+        "placeholder": "Briefly describe your request...",
+        "cancel": "Cancel",
+        "confirm": "Confirm Booking",
+        "success": "Booking Request Sent!",
+        "error": "Failed to book slot.",
+        "select_date_error": "Please select a date and time.",
+        "hr": "hr",
+        "min": "min"
+    },
+    "follow_modal": {
+        "followers": "Followers",
+        "following": "Following",
+        "loading": "Loading...",
+        "no_users": "No users found.",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "action_failed": "Action failed",
+        "load_failed": "Failed to load list",
+        "followed": "Followed",
+        "unfollowed": "Unfollowed"
+    },
+    "profile_modals": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "experience": {
+            "edit": "Edit Experience",
+            "add": "Add Experience",
+            "position": "Position",
+            "company": "Company Name",
+            "start": "Start Date",
+            "end": "End Date"
+        },
+        "education": {
+            "edit": "Edit Education",
+            "add": "Add Education",
+            "degree": "Degree Type",
+            "institution": "Institution",
+            "field": "Field of Study",
+            "start": "Start Date",
+            "end": "End Date"
+        },
+        "skill": {
+            "edit": "Edit Skill",
+            "add": "Add Skill",
+            "name": "Skill Name",
+            "type": "Type",
+            "hard": "Hard Skill",
+            "soft": "Soft Skill"
+        },
+        "language": {
+            "edit": "Edit Language",
+            "add": "Add Language",
+            "name": "Language",
+            "level": "Level"
+        },
+        "certificate": {
+            "edit": "Edit Certificate",
+            "add": "Add Certificate",
+            "name": "Name",
+            "org": "Issuing Org.",
+            "date": "Date"
+        },
+        "password": {
+            "title": "Change Password",
+            "new": "New Password",
+            "confirm": "Confirm Password",
+            "mismatch": "Passwords don't match",
+            "error": "Failed to change password"
+        }
+    },
+    "vacancy_detail": {
+        "apply_now": "Apply Now",
+        "applied": "Applied",
+        "share": "Share this job",
+        "about": "About the job",
+        "posted_date": "Posted Date",
+        "deadline": "Deadline",
+        "description": "Description",
+        "no_description": "No detailed description provided for this vacancy.",
+        "overview": "Job Overview",
+        "location": "Location",
+        "salary": "Salary",
+        "job_type": "Job Type",
+        "work_mode": "Work Mode",
+        "industry": "Industry",
+        "applicants": "Applicants",
+        "applicants_modal": {
+            "title": "Applicants",
+            "loading": "Loading applicants...",
+            "empty": "No applications yet.",
+            "failed_load": "Failed to load applicants.",
+            "app_status_update": "Application {{status}}",
+            "failed_update": "Failed to update status.",
+            "motivation_letter": "Motivation Letter",
+            "accept": "Accept",
+            "reject": "Reject",
+            "statuses": {
+                "pending": "Pending",
+                "accepted": "Accepted",
+                "rejected": "Rejected"
+            }
+        },
+        "loading_applicants": "Loading applicants...",
+        "no_applicants": "No applications received yet.",
+        "motivation": "Motivation Note",
+        "reject": "Reject",
+        "accept": "Accept",
+        "toasts": {
+            "login_apply": "Please login to apply",
+            "link_copied": "Link copied to clipboard!",
+            "status_updated": "Application {{status}}",
+            "update_failed": "Failed to update status"
+        }
+    },
+    "vacancies": {
+        "title": "Vacancies",
+        "subtitle": "Find your dream job or internship",
+        "post_vacancy": "Post Vacancy",
+        "search_placeholder": "Search by title, company...",
+        "filter_city": "Filter by City",
+        "all_job_types": "All Job Types",
+        "full_time": "Full-time",
+        "part_time": "Part-time",
+        "all_work_modes": "All Work Modes",
+        "office": "Office",
+        "remote": "Remote",
+        "hybrid": "Hybrid",
+        "loading": "Loading vacancies...",
+        "empty": "No vacancies found matching your criteria.",
+        "apply": "Apply",
+        "view": "View",
+        "add_modal": {
+            "title_add": "Post a Vacancy",
+            "title_edit": "Edit Vacancy",
+            "no_companies_title": "No Companies Found",
+            "no_companies_desc": "You need to register a company before you can post a vacancy. Please create a company profile first.",
+            "go_to_companies": "Go to Companies",
+            "company_role": "Company & Role",
+            "company": "Company",
+            "title_label": "Title",
+            "salary_range": "Salary Range",
+            "job_details": "Job Details",
+            "listing_type": "Listing Type",
+            "job_type": "Job Type",
+            "work_mode": "Work Mode",
+            "location": "Location",
+            "expiry_date": "Expiry Date",
+            "description": "Description",
+            "description_placeholder": "Describe the role, responsibilities, and requirements...",
+            "submit": "Post Vacancy",
+            "submitting": "Posting...",
+            "update": "Update Vacancy",
+            "updating": "Updating...",
+            "errors": {
+                "select_company": "Please select a company.",
+                "required": "This field is required.",
+                "fill_required": "Please fill required fields.",
+                "check_form": "Please check the form for errors.",
+                "save_failed": "Failed to save vacancy."
+            },
+            "success": {
+                "updated": "Vacancy updated successfully!",
+                "posted": "Vacancy posted successfully!"
+            }
+        }
+    },
+    "company_detail": {
+        "not_found": "Company not found or access denied.",
+        "edit_cover": "Edit Cover",
+        "delete_cover": "Delete Cover",
+        "delete_cover_confirm": "Are you sure you want to delete the cover photo?",
+        "edit_company": "Edit Company",
+        "follow": "Follow",
+        "tabs": {
+            "about": "About",
+            "services": "Services",
+            "vacancies": "Vacancies",
+            "posts": "Posts"
+        },
+        "info": {
+            "title": "Company Info",
+            "summary": "Summary",
+            "website": "Website",
+            "phone": "Phone",
+            "founded": "Founded",
+            "size": "Size",
+            "email": "Email",
+            "employees": "employees"
+        },
+        "sections": {
+            "who_we_are": "Who We Are",
+            "what_we_do": "What We Do",
+            "our_values": "Our Values",
+            "add": "+ Add",
+            "add_placeholder": "Add \"{{section}}\" section"
+        },
+        "services": {
+            "title": "Services",
+            "no_services": "No services listed.",
+            "add_hint": "Add your services here.",
+            "read_more": "Read More"
+        },
+        "vacancies": {
+            "title": "Open Positions",
+            "empty": "No open vacancies."
+        },
+        "posts": {
+            "coming_soon": "Company posts coming soon..."
+        },
+        "logo_modal": {
+            "title": "Update Company Logo",
+            "change": "Change Logo",
+            "delete": "Delete Logo",
+            "remove": "Remove Current Logo",
+            "cancel": "Cancel",
+            "delete_confirm": "Are you sure you want to remove the logo?"
+        }
+    },
+    "companies": {
+        "title": "Discover Companies",
+        "subtitle": "Connect with industry leaders and innovators",
+        "register_company": "Register Company",
+        "search_placeholder": "Search by name, industry...",
+        "all_sizes": "All Company Sizes",
+        "employees": "Employees",
+        "loading": "Loading companies...",
+        "view_company": "View Company",
+        "empty": {
+            "title": "No companies found",
+            "subtitle": "Try adjusting your search terms."
+        },
+        "modal": {
+            "title": "Register Company",
+            "checking": "Checking eligibility...",
+            "eligibility_failed": "Eligibility Check Failed",
+            "eligibility_desc": "To verify your expertise and ensure quality, you must publish at least 3 articles before creating a company page.",
+            "progress": "Your Progress:",
+            "articles_count": "{{current}}/{{total}} Articles",
+            "close": "Close",
+            "write_article": "Write Article",
+            "eligible_msg": "You are eligible to create a company page ({{count}}/{{total}} articles).",
+            "form": {
+                "name": "Company Name",
+                "summary": "Summary",
+                "founded": "Founded Date",
+                "size": "Company Size",
+                "email": "Email",
+                "phone": "Phone",
+                "address": "Address",
+                "website": "Website",
+                "logo": "Logo",
+                "upload_logo": "Upload Logo",
+                "no_logo": "No Logo",
+                "creating": "Creating..."
+            }
+        }
+    }
+}

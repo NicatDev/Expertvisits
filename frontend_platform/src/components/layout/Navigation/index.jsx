@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -6,19 +7,15 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './styles.module.scss';
 import Button from '../../ui/Button';
 import { Search, Globe, User, LogOut, Menu, X, ChevronDown } from 'lucide-react';
+import LanguageSwitcher from '../../advanced/LanguageSwitcher';
+import { useTranslation } from '@/i18n/client';
 
 const Navigation = () => {
+    const { t } = useTranslation('common');
     const { user, logout } = useAuth();
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [lang, setLang] = useState('EN');
-    const [showLangMenu, setShowLangMenu] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const changeLang = (l) => {
-        setLang(l);
-        localStorage.setItem('language', l.toLowerCase());
-        window.location.reload();
-    };
 
     return (
         <nav className={styles.navbar}>
@@ -31,10 +28,9 @@ const Navigation = () => {
 
                 {/* Center: Desktop Menu */}
                 <div className={styles.centerMenu}>
-                    <Link href="/" className={styles.navLink}>Home</Link>
-                    <Link href="/vacancies" className={styles.navLink}>Vacancies</Link>
-                    <Link href="/companies" className={styles.navLink}>Companies</Link>
-                    <Link href="/services" className={styles.navLink}>Services</Link>
+                    <Link href="/" className={styles.navLink} suppressHydrationWarning>{t('nav.home')}</Link>
+                    <Link href="/vacancies" className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
+                    <Link href="/companies" className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
                 </div>
 
                 {/* Right: Actions */}
@@ -42,22 +38,7 @@ const Navigation = () => {
 
 
                     {/* Language Dropdown */}
-                    <div className={styles.dropdownWrapper}
-                        onMouseEnter={() => setShowLangMenu(true)}
-                        onMouseLeave={() => setShowLangMenu(false)}>
-                        <button className={styles.iconBtn}>
-                            <Globe size={20} />
-                            <span style={{ fontSize: '12px', fontWeight: 'bold' }}>{lang}</span>
-                            <ChevronDown size={14} />
-                        </button>
-                        {showLangMenu && (
-                            <div className={styles.dropdownMenu}>
-                                <button onClick={() => changeLang('AZ')}>AZ</button>
-                                <button onClick={() => changeLang('EN')}>EN</button>
-                                <button onClick={() => changeLang('RU')}>RU</button>
-                            </div>
-                        )}
-                    </div>
+                    <LanguageSwitcher />
 
                     {/* Auth Dropdown */}
                     <div className={styles.dropdownWrapper}
@@ -83,13 +64,13 @@ const Navigation = () => {
                             <div className={styles.dropdownMenu} style={{ right: 0, minWidth: '150px' }}>
                                 {user ? (
                                     <>
-                                        <button onClick={() => router.push('/profile')}>Profile</button>
-                                        <button onClick={logout} style={{ color: 'red' }}>Logout</button>
+                                        <button onClick={() => router.push('/profile')} suppressHydrationWarning>{t('nav.profile')}</button>
+                                        <button onClick={logout} style={{ color: 'red' }} suppressHydrationWarning>{t('auth.logout')}</button>
                                     </>
                                 ) : (
                                     <>
-                                        <button onClick={() => router.push('/login')}>Login</button>
-                                        <button onClick={() => router.push('/register')}>Register</button>
+                                        <button onClick={() => router.push('/login')} suppressHydrationWarning>{t('auth.login')}</button>
+                                        <button onClick={() => router.push('/register')} suppressHydrationWarning>{t('auth.register')}</button>
                                     </>
                                 )}
                             </div>
@@ -106,10 +87,9 @@ const Navigation = () => {
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div className={styles.mobileMenu}>
-                    <Link href="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-                    <Link href="/vacancies" onClick={() => setIsMenuOpen(false)}>Vacancies</Link>
-                    <Link href="/companies" onClick={() => setIsMenuOpen(false)}>Companies</Link>
-                    <Link href="/services" onClick={() => setIsMenuOpen(false)}>Services</Link>
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
+                    <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
+                    <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
                 </div>
             )}
         </nav>

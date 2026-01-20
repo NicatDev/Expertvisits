@@ -5,8 +5,10 @@ import Input from '../../ui/Input';
 import { X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import styles from './style.module.scss';
+import { useTranslation } from '@/i18n/client';
 
 export default function EditArticleModal({ isOpen, onClose, article, onSuccess }) {
+    const { t } = useTranslation('common');
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -43,7 +45,7 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
 
     const handleSubmit = async () => {
         if (!data.title.trim() || !data.body.trim()) {
-            toast.error("Title and body are required");
+            toast.error(t('edit_modal.required_error'));
             return;
         }
 
@@ -56,12 +58,12 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
 
             const res = await content.updateArticle(article.slug, fd);
 
-            toast.success("Article updated!");
+            toast.success(t('edit_modal.success'));
             if (onSuccess) onSuccess(res.data); // Return updated data
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to update article");
+            toast.error(t('edit_modal.error'));
         } finally {
             setLoading(false);
         }
@@ -74,17 +76,17 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                     <X size={24} color="#666" />
                 </button>
 
-                <h2>Edit Article</h2>
+                <h2>{t('edit_modal.title')}</h2>
 
                 <div className={styles.formContent}>
                     <Input
-                        label="Title"
+                        label={t('edit_modal.post_title')}
                         value={data.title}
                         onChange={e => setData({ ...data, title: e.target.value })}
                     />
 
                     <div className={styles.fieldGroup}>
-                        <label>Cover Image</label>
+                        <label>{t('edit_modal.cover_image')}</label>
                         <div className={styles.uploadContainer} onClick={() => fileInputRef.current?.click()}>
                             {previewUrl ? (
                                 <div className={styles.previewImage}>
@@ -96,7 +98,7 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                             ) : (
                                 <div className={styles.uploadTrigger}>
                                     <ImageIcon size={32} />
-                                    <span>Change cover image</span>
+                                    <span>{t('edit_modal.change_image')}</span>
                                 </div>
                             )}
                             <input
@@ -110,7 +112,7 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label>Content</label>
+                        <label>{t('edit_modal.content')}</label>
                         <textarea
                             value={data.body}
                             onChange={e => setData({ ...data, body: e.target.value })}
@@ -119,8 +121,8 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                     </div>
 
                     <div className={styles.actions}>
-                        <Button type="default" onClick={onClose}>Cancel</Button>
-                        <Button type="primary" onClick={handleSubmit} loading={loading}>Save Changes</Button>
+                        <Button type="default" onClick={onClose}>{t('edit_modal.cancel')}</Button>
+                        <Button type="primary" onClick={handleSubmit} loading={loading}>{t('edit_modal.save')}</Button>
                     </div>
                 </div>
             </div>

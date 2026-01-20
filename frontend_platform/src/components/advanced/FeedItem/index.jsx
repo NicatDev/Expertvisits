@@ -13,8 +13,10 @@ import { content } from '@/lib/api'; // Ensure content API is imported
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss'; // Import SCSS Module
 import EditArticleModal from '../EditArticleModal';
+import { useTranslation } from '@/i18n/client';
 
 const FeedItem = ({ item, onDelete }) => {
+    const { t } = useTranslation('common');
     const { user } = useAuth();
 
 
@@ -63,12 +65,12 @@ const FeedItem = ({ item, onDelete }) => {
     const handleShare = () => {
         const url = `${window.location.origin}/post/${typeStr}/${localItem.id}`;
         navigator.clipboard.writeText(url);
-        toast.info('Link copied to clipboard!');
+        toast.info(t('feed_item.toast.link_copied'));
     };
 
     const handleLike = async () => {
         if (!user) {
-            toast.error("Please login to like");
+            toast.error(t('feed_item.toast.login_like'));
             return;
         }
         // Optimistic State Update
@@ -89,14 +91,14 @@ const FeedItem = ({ item, onDelete }) => {
             // Revert
             setIsLiked(previousState);
             setLikesCount(previousCount);
-            toast.error("Failed to like");
+            toast.error(t('feed_item.toast.failed_like'));
         }
     };
 
     const handlePostComment = async () => {
         if (!user) {
             setCommentText('');
-            toast.error("Please login to comment");
+            toast.error(t('feed_item.toast.login_comment'));
             return;
         }
         if (!commentText.trim()) return;
@@ -108,22 +110,22 @@ const FeedItem = ({ item, onDelete }) => {
                 text: commentText
             });
             setCommentText('');
-            toast.success("Comment posted!");
+            toast.success(t('feed_item.toast.comment_posted'));
             setCommentsCount(prev => prev + 1);
             await refreshItem();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to post comment");
+            toast.error(t('feed_item.toast.failed_comment'));
         }
     };
 
     const handleStartQuiz = () => {
         if (!user) {
-            toast.error("Please login to participate");
+            toast.error(t('feed_item.toast.login_participate'));
             return;
         }
         if (localItem.is_participated) {
-            toast.info("You have already participated in this quiz.");
+            toast.info(t('feed_item.toast.already_participated'));
             return;
         }
         setShowQuizModal(true);
@@ -132,17 +134,17 @@ const FeedItem = ({ item, onDelete }) => {
 
 
     const handleDelete = async () => {
-        if (!window.confirm("Are you sure you want to delete this content?")) return;
+        if (!window.confirm(t('feed_item.toast.delete_confirm'))) return;
         try {
             if (isArticle) await content.deleteArticle(localItem.slug);
             else if (isQuiz) await content.deleteQuiz(localItem.id);
 
 
-            toast.success("Content deleted.");
+            toast.success(t('feed_item.toast.deleted'));
             if (onDelete) onDelete(localItem.id);
         } catch (err) {
             console.error(err);
-            toast.error("Failed to delete.");
+            toast.error(t('feed_item.toast.failed_delete'));
         }
     };
 
@@ -170,7 +172,7 @@ const FeedItem = ({ item, onDelete }) => {
                                 {localItem.author}
                             </Link>
                         ) : (
-                            <div className={styles.username}>Unknown User</div>
+                            <div className={styles.username}>{t('feed_item.unknown_user')}</div>
                         )}
                         <div className={styles.date}>{new Date(localItem.created_at).toLocaleDateString()}</div>
                     </div>
@@ -187,14 +189,14 @@ const FeedItem = ({ item, onDelete }) => {
                                         onClick={() => { setShowMenu(false); setShowEditModal(true); }}
                                         style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: '#333' }}
                                     >
-                                        <Edit2 size={16} /> Edit
+                                        <Edit2 size={16} /> {t('common.edit')}
                                     </button>
                                 )}
                                 <button
                                     onClick={() => { setShowMenu(false); handleDelete(); }}
                                     style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: 'red' }}
                                 >
-                                    <Trash2 size={16} /> Delete
+                                    <Trash2 size={16} /> {t('common.delete')}
                                 </button>
                             </div>
                         )}
@@ -222,7 +224,7 @@ const FeedItem = ({ item, onDelete }) => {
                                 <>
                                     {localItem.body.substring(0, 250)}...
                                     <Link href={`/article/${localItem.slug}`} style={{ color: '#1890ff', marginLeft: '6px', fontWeight: '500' }}>
-                                        View more
+                                        {t('feed_item.view_more')}
                                     </Link>
                                 </>
                             ) : localItem.body}
@@ -234,12 +236,12 @@ const FeedItem = ({ item, onDelete }) => {
                     <div className={styles.quizCard}>
                         <h3>{localItem.title}</h3>
                         <p>
-                            {localItem.questions.length} Questions • {localItem.participation_count || 0} Participants
+                            {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0} {t('feed_item.participants_count')}
                         </p>
                         {localItem.is_participated ? (
-                            <Button disabled icon={<CheckCircle size={16} />}>Completed</Button>
+                            <Button disabled icon={<CheckCircle size={16} />}>{t('feed_item.completed')}</Button>
                         ) : (
-                            <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>Start Quiz</Button>
+                            <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>{t('feed_item.start_quiz')}</Button>
                         )}
                     </div>
                 )}
@@ -249,8 +251,8 @@ const FeedItem = ({ item, onDelete }) => {
 
             {/* Stats Bar */}
             <div className={styles.statsBar}>
-                <span onClick={() => setShowLikesModal(true)}>{likesCount} Likes</span>
-                <span>{commentsCount} Comments</span>
+                <span onClick={() => setShowLikesModal(true)}>{likesCount} {t('feed_item.likes')}</span>
+                <span>{commentsCount} {t('feed_item.comments')}</span>
             </div>
 
             {/* Footer Actions */}
@@ -258,14 +260,14 @@ const FeedItem = ({ item, onDelete }) => {
                 <div className={styles.actionGroup}>
                     <button onClick={handleLike} className={isLiked ? styles.active : ''}>
                         <Heart size={18} fill={isLiked ? "#1890ff" : "none"} />
-                        <span>Like</span>
+                        <span>{t('feed_item.like_action')}</span>
                     </button>
 
                     <button
                         onClick={() => setShowComments(!showComments)}
                     >
                         <MessageCircle size={18} />
-                        <span>Comment</span>
+                        <span>{t('feed_item.comment_action')}</span>
                     </button>
                 </div>
 
@@ -282,7 +284,7 @@ const FeedItem = ({ item, onDelete }) => {
                 <div className={styles.inputWrapper}>
                     <input
                         type="text"
-                        placeholder="Write a comment..."
+                        placeholder={t('feed_item.write_comment')}
                         value={commentText}
                         onChange={e => setCommentText(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handlePostComment()}

@@ -10,8 +10,10 @@ import { toast } from 'react-toastify';
 import { Search } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
+import { useTranslation } from '@/i18n/client';
 
 export default function HomePage() {
+    const { t } = useTranslation('common');
     const { user } = useAuth();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -114,7 +116,7 @@ export default function HomePage() {
                 <RecommendedUsers />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}
-                
+
             </aside>
 
             {/* Center: Feed */}
@@ -122,7 +124,7 @@ export default function HomePage() {
                 {/* 1. Create Post Section (Moved Top) */}
                 <div className={styles.createBox} onClick={handleCreateClick}>
                     <div className={styles.placeholderInput}>
-                        Start a post, or quiz...
+                        {t('feed.placeholder')}
                     </div>
                 </div>
 
@@ -137,7 +139,7 @@ export default function HomePage() {
                                     onClick={() => setFilterType(type)}
                                     className={filterType === type ? styles.active : ''}
                                 >
-                                    {type}
+                                    {t(`feed.${type}`)}
                                 </button>
                             ))}
                         </div>
@@ -147,7 +149,7 @@ export default function HomePage() {
                             <Search size={16} className={styles.searchIcon} />
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder={t('common.search')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -159,8 +161,8 @@ export default function HomePage() {
                         value={ordering}
                         onChange={(e) => setOrdering(e.target.value)}
                     >
-                        <option value="created_at">Latest</option>
-                        <option value="popularity">Popular</option>
+                        <option value="created_at">{t('feed.latest')}</option>
+                        <option value="popularity">{t('feed.popular')}</option>
                     </select>
                 </div>
 
@@ -175,8 +177,8 @@ export default function HomePage() {
                             <FeedItem key={`${article.type || 'article'}-${article.id}`} item={article} />
                         )) : (
                             <div className={styles.emptyState}>
-                                <p>No results found.</p>
-                                <Button type="link" onClick={handleCreateClick}>Create content</Button>
+                                <p>{t('feed.no_results')}</p>
+                                <Button type="link" onClick={handleCreateClick}>{t('feed.create_content')}</Button>
                             </div>
                         )}
 
@@ -186,7 +188,7 @@ export default function HomePage() {
                                     type="default"
                                     onClick={handleLoadMore}
                                 >
-                                    Load More
+                                    {t('feed.load_more')}
                                 </Button>
                             </div>
                         )}
@@ -202,7 +204,7 @@ export default function HomePage() {
                     I'll keep Trending below it or replace it? User said "kicik ve lazimli melumatlar". 
                     Usually one main widget is good. I'll remove trends to clean up or push down. 
                     I'll keep it for now as "Trending" fits the theme, but maybe push down. */}
-             
+
             </aside>
 
             <CreateContentModal

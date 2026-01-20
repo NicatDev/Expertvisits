@@ -130,7 +130,7 @@ export default function EditSectionModal({ isOpen, onClose, sectionType, initial
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h2>{initialData ? 'Edit Section' : 'Add Section'}</h2>
+                    <h2>{initialData ? 'Edit Service' : 'Add Service'}</h2>
                     <button onClick={onClose} className={styles.closeBtn}><X size={24} /></button>
                 </div>
                 <form onSubmit={handleSubmit} className={styles.form}>

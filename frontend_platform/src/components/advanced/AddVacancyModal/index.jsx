@@ -4,11 +4,13 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
-import styles from './AddVacancyModal.module.scss'; // Assuming simple styles or reuse
-import LocationSelect from '@/components/ui/LocationSelect'; // Adjust path if needed
+import styles from './AddVacancyModal.module.scss';
+import LocationSelect from '@/components/ui/LocationSelect';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { useTranslation } from '@/i18n/client';
 
 const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
+    const { t } = useTranslation('common');
     const { user } = useAuth();
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -95,15 +97,15 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
 
     const handleSubmit = async () => {
         const newErrors = {};
-        if (!formData.company_id) newErrors.company_id = "Please select a company.";
-        if (!formData.title) newErrors.title = "This field is required.";
-        if (!formData.location) newErrors.location = "This field is required.";
-        if (!formData.expires_at) newErrors.expires_at = "This field is required.";
-        if (!formData.description) newErrors.description = "This field is required.";
+        if (!formData.company_id) newErrors.company_id = t('vacancies.add_modal.errors.select_company');
+        if (!formData.title) newErrors.title = t('vacancies.add_modal.errors.required');
+        if (!formData.location) newErrors.location = t('vacancies.add_modal.errors.required');
+        if (!formData.expires_at) newErrors.expires_at = t('vacancies.add_modal.errors.required');
+        if (!formData.description) newErrors.description = t('vacancies.add_modal.errors.required');
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            toast.error("Please fill required fields.");
+            toast.error(t('vacancies.add_modal.errors.fill_required'));
             return;
         }
 
@@ -113,10 +115,10 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
         try {
             if (isEdit) {
                 await business.updateVacancy(initialData.id, formData);
-                toast.success("Vacancy updated successfully!");
+                toast.success(t('vacancies.add_modal.success.updated'));
             } else {
                 await business.createVacancy(formData);
-                toast.success("Vacancy posted successfully!");
+                toast.success(t('vacancies.add_modal.success.posted'));
             }
             onSuccess();
             onClose();
@@ -130,9 +132,9 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                     backendErrors[key] = Array.isArray(data[key]) ? data[key][0] : data[key];
                 });
                 setErrors(backendErrors);
-                toast.error("Please check the form for errors.");
+                toast.error(t('vacancies.add_modal.errors.check_form'));
             } else {
-                toast.error("Failed to save vacancy.");
+                toast.error(t('vacancies.add_modal.errors.save_failed'));
             }
         } finally {
             setLoading(false);
@@ -142,15 +144,14 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
     // If not edit mode and no companies found (after initial loading)
     if (isOpen && !isEdit && companies.length === 0) {
         return (
-            <Modal isOpen={isOpen} onClose={onClose} title="Post a Vacancy">
+            <Modal isOpen={isOpen} onClose={onClose} title={t('vacancies.add_modal.title_add')}>
                 <div className={styles.container} style={{ textAlign: 'center', padding: '40px 20px' }}>
-                    <h3 style={{ marginBottom: '16px' }}>No Companies Found</h3>
+                    <h3 style={{ marginBottom: '16px' }}>{t('vacancies.add_modal.no_companies_title')}</h3>
                     <p style={{ color: '#666', marginBottom: '24px' }}>
-                        You need to register a company before you can post a vacancy.
-                        Please create a company profile first.
+                        {t('vacancies.add_modal.no_companies_desc')}
                     </p>
                     <Button onClick={() => { onClose(); window.location.href = '/companies'; }}>
-                        Go to Companies
+                        {t('vacancies.add_modal.go_to_companies')}
                     </Button>
                 </div>
             </Modal>
@@ -158,20 +159,20 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Edit Vacancy" : "Post a Vacancy"}>
+        <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? t('vacancies.add_modal.title_edit') : t('vacancies.add_modal.title_add')}>
             <div className={styles.container}>
                 {/* Section 1: Basic Info */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Company & Role</h4>
+                    <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.company_role')}</h4>
                     <div className={styles.field}>
-                        <label>Company <span style={{ color: 'red' }}>*</span></label>
+                        <label>{t('vacancies.add_modal.company')} <span style={{ color: 'red' }}>*</span></label>
                         <select
                             value={formData.company_id}
                             onChange={e => handleChange('company_id', e.target.value)}
                             className={styles.select}
                             style={{ borderColor: errors.company_id ? 'red' : '#ddd' }}
                         >
-                            {companies.length === 0 && <option value="">No companies found</option>}
+                            {companies.length === 0 && <option value="">{t('companies.empty.title')}</option>}
                             {companies.map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
@@ -180,7 +181,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                     </div>
 
                     <Input
-                        label={<>Title <span style={{ color: 'red' }}>*</span></>}
+                        label={<>{t('vacancies.add_modal.title_label')} <span style={{ color: 'red' }}>*</span></>}
                         value={formData.title}
                         onChange={e => handleChange('title', e.target.value)}
                         placeholder="e.g. Senior Frontend Developer"
@@ -188,7 +189,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                     />
 
                     <Input
-                        label="Salary Range"
+                        label={t('vacancies.add_modal.salary_range')}
                         value={formData.salary_range}
                         onChange={e => handleChange('salary_range', e.target.value)}
                         placeholder="e.g. 1000-1500 AZN"
@@ -200,40 +201,40 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
 
                 {/* Section 2: Details */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Job Details</h4>
+                    <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.job_details')}</h4>
                     <div className={styles.row}>
                         <div className={styles.field}>
-                            <label>Listing Type</label>
+                            <label>{t('vacancies.add_modal.listing_type')}</label>
                             <select className={styles.select} value={formData.listing_type} onChange={e => handleChange('listing_type', e.target.value)}>
                                 <option value="job">Job</option>
                                 <option value="internship">Internship</option>
                             </select>
                         </div>
                         <div className={styles.field}>
-                            <label>Job Type</label>
+                            <label>{t('vacancies.add_modal.job_type')}</label>
                             <select className={styles.select} value={formData.job_type} onChange={e => handleChange('job_type', e.target.value)}>
-                                <option value="full-time">Full-time</option>
-                                <option value="part-time">Part-time</option>
+                                <option value="full-time">{t('vacancies.full_time')}</option>
+                                <option value="part-time">{t('vacancies.part_time')}</option>
                             </select>
                         </div>
                     </div>
 
                     <div className={styles.row}>
                         <div className={styles.field}>
-                            <label>Work Mode</label>
+                            <label>{t('vacancies.add_modal.work_mode')}</label>
                             <select className={styles.select} value={formData.work_mode} onChange={e => handleChange('work_mode', e.target.value)}>
-                                <option value="office">Office</option>
-                                <option value="remote">Remote</option>
-                                <option value="hybrid">Hybrid</option>
+                                <option value="office">{t('vacancies.office')}</option>
+                                <option value="remote">{t('vacancies.remote')}</option>
+                                <option value="hybrid">{t('vacancies.hybrid')}</option>
                             </select>
                         </div>
                         <div className={styles.field}>
-                            <label>Location <span style={{ color: 'red' }}>*</span></label>
+                            <label>{t('vacancies.add_modal.location')} <span style={{ color: 'red' }}>*</span></label>
                             <div style={{ border: errors.location ? '1px solid red' : 'none', borderRadius: '8px' }}>
                                 <LocationSelect
                                     value={formData.location}
                                     onChange={val => handleChange('location', val)}
-                                    placeholder="Select City (e.g. Baku)"
+                                    placeholder={t('auth_page.select_city')}
                                 />
                             </div>
                             {errors.location && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.location}</span>}
@@ -241,7 +242,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                     </div>
 
                     <div className={styles.field}>
-                        <label>Expiry Date <span style={{ color: 'red' }}>*</span></label>
+                        <label>{t('vacancies.add_modal.expiry_date')} <span style={{ color: 'red' }}>*</span></label>
                         <input
                             type="date"
                             className={styles.input}
@@ -258,14 +259,14 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
 
                 {/* Section 3: Description */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Description <span style={{ color: 'red' }}>*</span></h4>
+                    <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.description')} <span style={{ color: 'red' }}>*</span></h4>
                     <div className={styles.field}>
                         <textarea
                             className={styles.textarea}
                             rows={6}
                             value={formData.description}
                             onChange={e => handleChange('description', e.target.value)}
-                            placeholder="Describe the role, responsibilities, and requirements..."
+                            placeholder={t('vacancies.add_modal.description_placeholder')}
                             style={{ borderColor: errors.description ? 'red' : '#ddd' }}
                         />
                         {errors.description && <span style={{ color: 'red', fontSize: '12px', marginTop: '4px', display: 'block' }}>{errors.description}</span>}
@@ -273,7 +274,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                 </div>
 
                 <Button onClick={handleSubmit} disabled={loading} style={{ width: '100%', marginTop: '10px' }}>
-                    {loading ? 'Posting...' : 'Post Vacancy'}
+                    {loading ? t('vacancies.add_modal.submitting') : (isEdit ? t('vacancies.add_modal.update') : t('vacancies.add_modal.submit'))}
                 </Button>
             </div>
         </Modal>

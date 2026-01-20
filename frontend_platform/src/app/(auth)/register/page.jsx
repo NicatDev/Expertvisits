@@ -11,8 +11,10 @@ import LocationSelect from '@/components/ui/LocationSelect';
 import SearchableSelect from '@/components/ui/SearchableSelect';
 import styles from '../auth.module.scss';
 import { ChevronRight, Check, AlertCircle } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 
 export default function RegisterPage() {
+    const { t } = useTranslation('common');
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -54,11 +56,11 @@ export default function RegisterPage() {
     const handleNext = async (e) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords don't match");
+            setError(t('auth_page.errors.passwords_mismatch'));
             return;
         }
         if (!formData.first_name || !formData.last_name || !formData.username || !formData.email || !formData.password || !professionId) {
-            setError("Please fill in all required fields");
+            setError(t('auth_page.errors.fill_all'));
             return;
         }
 
@@ -76,9 +78,9 @@ export default function RegisterPage() {
                 const data = err.response.data;
                 if (data.username) setError(data.username[0]);
                 else if (data.email) setError(data.email[0]);
-                else setError('Username or email already taken');
+                else setError(t('auth_page.errors.taken'));
             } else {
-                setError('Failed to validate information');
+                setError(t('auth_page.errors.validation_failed'));
             }
             return;
         }
@@ -96,7 +98,7 @@ export default function RegisterPage() {
 
     const handleRegister = async () => {
         if (selectedInterests.length === 0) {
-            setError("Please select at least one interest");
+            setError(t('auth_page.errors.select_interest'));
             return;
         }
         setLoading(true);
@@ -116,7 +118,7 @@ export default function RegisterPage() {
                 const msg = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
                 setError(msg);
             } else {
-                setError('Registration failed');
+                setError(t('auth_page.errors.registration_failed'));
             }
         } finally {
             setLoading(false);
@@ -134,7 +136,7 @@ export default function RegisterPage() {
             });
             router.push('/login?verified=true');
         } catch (err) {
-            setError(err.response?.data?.error || 'Verification failed');
+            setError(err.response?.data?.error || t('auth_page.errors.verification_failed'));
         } finally {
             setLoading(false);
         }
@@ -143,10 +145,10 @@ export default function RegisterPage() {
     const handleResendCode = async () => {
         try {
             await auth.resendCode({ email: formData.email });
-            alert('Code resent successfully!'); // Simple alert for now
+            alert(t('auth_page.alerts.code_resent')); // Simple alert for now
         } catch (err) {
             console.error(err);
-            setError('Failed to resend code');
+            setError(t('auth_page.errors.failed_resend'));
         }
     };
 
@@ -154,49 +156,49 @@ export default function RegisterPage() {
         <div className={styles.authContainer}>
             <div className={styles.authCard} style={{ maxWidth: step === 2 ? '800px' : '480px' }}>
                 <h1 className={styles.title}>
-                    {step === 1 ? 'Join Expert Visits' : step === 2 ? 'Select Your Interests' : 'Verify Email'}
+                    {step === 1 ? t('auth_page.join_title') : step === 2 ? t('auth_page.interests_title') : t('auth_page.verify_title')}
                 </h1>
 
                 {step === 1 && (
                     <form onSubmit={handleNext} className={styles.form}>
                         {/* Personal Information */}
                         <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>Personal Information</h3>
+                            <h3 className={styles.sectionTitle}>{t('auth_page.personal_info')}</h3>
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <Input label="First Name" name="first_name" placeholder="John" value={formData.first_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.first_name')} name="first_name" placeholder="John" value={formData.first_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                                 <div className={styles.field}>
-                                    <Input label="Last Name" name="last_name" placeholder="Doe" value={formData.last_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.last_name')} name="last_name" placeholder="Doe" value={formData.last_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                             </div>
                             <div className={styles.field}>
-                                <Input label="Username" name="username" placeholder="johndoe" value={formData.username} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                <Input label={t('auth_page.username')} name="username" placeholder="johndoe" value={formData.username} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                             </div>
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <Input label="Phone Number" name="phone_number" placeholder="+994 50 123 45 67 (Optional)" value={formData.phone_number} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.phone')} name="phone_number" placeholder="+994 50 123 45 67 (Optional)" value={formData.phone_number} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                                 <div className={styles.field}>
-                                    <Input label="Birth Date" name="birth_day" type="date" placeholder="DD.MM.YYYY" value={formData.birth_day} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.birth_date')} name="birth_day" type="date" placeholder="DD.MM.YYYY" value={formData.birth_day} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                             </div>
                         </div>
 
                         {/* Professional Details */}
                         <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>Professional Details</h3>
+                            <h3 className={styles.sectionTitle}>{t('auth_page.professional_details')}</h3>
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <label>City</label>
+                                    <label>{t('auth_page.city')}</label>
                                     <LocationSelect
                                         value={formData.city}
                                         onChange={val => setFormData(prev => ({ ...prev, city: val }))}
-                                        placeholder="Select City"
+                                        placeholder={t('auth_page.select_city')}
                                     />
                                 </div>
                                 <div className={styles.field}>
-                                    <label>Profession</label>
+                                    <label>{t('auth_page.profession')}</label>
                                     <SearchableSelect
                                         options={categories}
                                         value={professionId}
@@ -204,7 +206,7 @@ export default function RegisterPage() {
                                         groupBy="subcategories"
                                         labelKey="name"
                                         valueKey="id"
-                                        placeholder="Select Profession"
+                                        placeholder={t('auth_page.select_profession')}
                                     />
                                 </div>
                             </div>
@@ -212,16 +214,16 @@ export default function RegisterPage() {
 
                         {/* Account Security */}
                         <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>Account Security</h3>
+                            <h3 className={styles.sectionTitle}>{t('auth_page.security')}</h3>
                             <div className={styles.field}>
-                                <Input label="Email" name="email" type="email" placeholder="example@mail.com" value={formData.email} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                <Input label={t('auth_page.email')} name="email" type="email" placeholder="example@mail.com" value={formData.email} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                             </div>
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <Input label="Password" name="password" type="password" placeholder="********" value={formData.password} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.password')} name="password" type="password" placeholder="********" value={formData.password} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                                 <div className={styles.field}>
-                                    <Input label="Confirm Password" name="confirmPassword" type="password" placeholder="********" value={formData.confirmPassword} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.confirm_password')} name="confirmPassword" type="password" placeholder="********" value={formData.confirmPassword} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
                                 </div>
                             </div>
                         </div>
@@ -244,7 +246,7 @@ export default function RegisterPage() {
                         )}
 
                         <Button type="primary" htmlType="submit" block>
-                            Next <ChevronRight size={16} />
+                            {t('auth_page.next')} <ChevronRight size={16} />
                         </Button>
                     </form>
                 )}
@@ -252,7 +254,7 @@ export default function RegisterPage() {
                 {step === 2 && (
                     <div className={styles.interestsStep}>
                         <p style={{ marginBottom: '24px', color: '#666', textAlign: 'center' }}>
-                            Select at least 1 topic to personalize your feed.
+                            {t('auth_page.select_topics_desc')}
                         </p>
 
 
@@ -295,9 +297,9 @@ export default function RegisterPage() {
                         {error && <div style={{ color: 'red', textAlign: 'center', marginBottom: '16px' }}>{error}</div>}
 
                         <div style={{ display: 'flex', gap: '16px' }}>
-                            <Button type="default" onClick={() => setStep(1)} block>Back</Button>
+                            <Button type="default" onClick={() => setStep(1)} block>{t('auth_page.back')}</Button>
                             <Button type="primary" onClick={handleRegister} block loading={loading}>
-                                Register & Send Code
+                                {loading ? t('auth_page.registering') : t('auth_page.register_btn')}
                             </Button>
                         </div>
                     </div>
@@ -306,12 +308,11 @@ export default function RegisterPage() {
                 {step === 3 && (
                     <form onSubmit={handleVerifyParams} className={styles.form}>
                         <p style={{ marginBottom: '24px', color: '#666', textAlign: 'center' }}>
-                            We sent a 6-digit code to <strong>{formData.email}</strong>.<br />
-                            Please enter it below to verify your account.
+                            {t('auth_page.code_sent_desc')}
                         </p>
                         <Input
                             name="code"
-                            placeholder="6-Digit Code"
+                            placeholder={t('auth_page.enter_code')}
                             value={verificationCode}
                             onChange={(e) => setVerificationCode(e.target.value)}
                             required
@@ -321,10 +322,10 @@ export default function RegisterPage() {
                         />
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <Button type="default" onClick={handleResendCode} block>
-                                Resend Code
+                                {t('auth_page.resend_code')}
                             </Button>
                             <Button type="primary" htmlType="submit" block loading={loading}>
-                                Verify Account
+                                {t('auth_page.verify_btn')}
                             </Button>
                         </div>
                     </form>
@@ -332,7 +333,7 @@ export default function RegisterPage() {
 
                 {step === 1 && (
                     <div className={styles.footer}>
-                        Already have an account? <Link href="/login">Login</Link>
+                        {t('auth_page.have_account')} <Link href="/login">{t('auth_page.login_link')}</Link>
                     </div>
                 )}
             </div>

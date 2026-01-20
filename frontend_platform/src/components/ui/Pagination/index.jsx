@@ -3,8 +3,10 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './styles.module.scss';
 import clsx from 'clsx';
+import { useTranslation } from '@/i18n/client';
 
 const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className, alwaysShow = false }) => {
+    const { t } = useTranslation('common');
     const totalPages = Math.ceil(totalCount / pageSize);
 
     if (totalPages <= 1 && !alwaysShow) return null;
@@ -104,7 +106,7 @@ const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className
                 onClick={currentPage === 1 ? undefined : onPrevious}
             >
                 <ChevronLeft size={16} />
-                <span className={styles.arrowText}>Previous</span>
+                <span className={styles.arrowText}>{t('common.previous')}</span>
             </li>
             {paginationRange?.map((pageNumber, idx) => {
                 if (pageNumber === DOTS) {
@@ -127,7 +129,7 @@ const Pagination = ({ currentPage, totalCount, pageSize, onPageChange, className
                 className={clsx(styles.paginationItem, { [styles.disabled]: currentPage === totalPages })}
                 onClick={currentPage === totalPages ? undefined : onNext}
             >
-                <span className={styles.arrowText}>Next</span>
+                <span className={styles.arrowText}>{t('common.next')}</span>
                 <ChevronRight size={16} />
             </li>
         </ul>

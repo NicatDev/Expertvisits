@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { X, User } from 'lucide-react';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
+import { useTranslation } from '@/i18n/client';
 
 const LikesModal = ({ isOpen, onClose, contentType, objectId }) => {
+    const { t } = useTranslation('common');
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -33,11 +35,11 @@ const LikesModal = ({ isOpen, onClose, contentType, objectId }) => {
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h3>Likes</h3>
+                    <h3>{t('likes_modal.title')}</h3>
                     <button onClick={onClose}><X size={20} /></button>
                 </div>
 
-                {loading ? <p>Loading...</p> : (
+                {loading ? <p>{t('likes_modal.loading')}</p> : (
                     <div className={styles.userList}>
                         {users.map((u, i) => (
                             <div key={i} className={styles.userItem}>
@@ -50,7 +52,7 @@ const LikesModal = ({ isOpen, onClose, contentType, objectId }) => {
                                 </div>
                             </div>
                         ))}
-                        {users.length === 0 && <p>No likes yet.</p>}
+                        {users.length === 0 && <p>{t('likes_modal.no_likes')}</p>}
                     </div>
                 )}
             </div>

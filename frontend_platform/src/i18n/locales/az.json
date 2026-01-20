@@ -1,0 +1,547 @@
+{
+    "common": {
+        "loading": "Yüklənir...",
+        "save": "Yadda saxla",
+        "cancel": "Ləğv et",
+        "edit": "Düzəliş et",
+        "delete": "Sil",
+        "search": "Axtar...",
+        "previous": "Geriyə",
+        "next": "Növbəti"
+    },
+    "nav": {
+        "home": "Ana Səhifə",
+        "vacancies": "Vakansiyalar",
+        "companies": "Şirkətlər",
+        "services": "Xidmətlər",
+        "explore": "Kəşf et",
+        "notifications": "Bildirişlər",
+        "messages": "Mesajlar",
+        "profile": "Profil"
+    },
+    "auth": {
+        "login": "Daxil ol",
+        "register": "Qeydiyyat",
+        "logout": "Çıxış"
+    },
+    "article_page": {
+        "load_error": "Məqaləni yükləmək mümkün olmadı",
+        "not_found": "Məqalə tapılmadı.",
+        "likes_count": "{{count}} Bəyənmə",
+        "comments_count": "{{count}} Rəy"
+    },
+    "feed": {
+        "placeholder": "Məqalə və ya test paylaş...",
+        "all": "Hamısı",
+        "article": "Məqalə",
+        "quiz": "Test",
+        "latest": "Ən yeni",
+        "popular": "Populyar",
+        "no_results": "Nəticə tapılmadı.",
+        "create_content": "Məzmun yarat",
+        "load_more": "Daha çox yüklə"
+    },
+    "feed_item": {
+        "likes": "Bəyənmə",
+        "comments": "Rəy",
+        "like_action": "Bəyən",
+        "comment_action": "Rəy yaz",
+        "share_action": "Paylaş",
+        "view_more": "Daha çox",
+        "unknown_user": "Naməlum İstifadəçi",
+        "questions_count": "Sual",
+        "participants_count": "İştirakçı",
+        "completed": "Tamamlandı",
+        "start_quiz": "Başla",
+        "write_comment": "Rəy yaz...",
+        "toast": {
+            "link_copied": "Link clipboard-a kopyalandı!",
+            "login_like": "Bəyənmək üçün daxil olun",
+            "login_comment": "Şərh yazmaq üçün daxil olun",
+            "login_participate": "İştirak etmək üçün daxil olun",
+            "failed_like": "Bəyənmək mümkün olmadı",
+            "failed_comment": "Şərh yazmaq mümkün olmadı",
+            "comment_posted": "Şərh yazıldı!",
+            "already_participated": "Siz artıq bu kvizdə iştirak etmisiniz.",
+            "delete_confirm": "Bu məzmunu silmək istədiyinizə əminsiniz?",
+            "deleted": "Məzmun silindi.",
+            "failed_delete": "Silmək mümkün olmadı."
+        }
+    },
+    "auth_page": {
+        "welcome_back": "Xoş Gəldiniz",
+        "username": "İstifadəçi adı",
+        "password": "Şifrə",
+        "login_btn": "Daxil ol",
+        "logging_in": "Giriş edilir...",
+        "no_account": "Hesabınız yoxdur?",
+        "register_link": "Qeydiyyatdan keçin",
+        "join_title": "Bizə Qoşulun",
+        "interests_title": "Maraqlarınızı seçin",
+        "verify_title": "E-poçtu təsdiqləyin",
+        "personal_info": "Şəxsi Məlumatlar",
+        "first_name": "Ad",
+        "last_name": "Soyad",
+        "phone": "Telefon",
+        "birth_date": "Doğum tarixi",
+        "professional_details": "Peşəkar Məlumatlar",
+        "city": "Şəhər",
+        "select_city": "Şəhər seçin",
+        "profession": "Peşə",
+        "select_profession": "Peşə seçin",
+        "security": "Hesab Təhlükəsizliyi",
+        "email": "E-poçt",
+        "confirm_password": "Şifrəni təsdiqləyin",
+        "next": "Növbəti",
+        "select_topics_desc": "Sizə uyğun olan sahələri seçin.",
+        "back": "Geri",
+        "register_btn": "Qeydiyyatı bitir",
+        "registering": "Qeydiyyat...",
+        "code_sent_desc": "E-poçtunuza təsdiq kodu göndərildi.",
+        "enter_code": "Kodu daxil edin",
+        "resend_code": "Kodu yenidən göndər",
+        "verify_btn": "Təsdiqlə",
+        "have_account": "Artıq hesabınız var?",
+        "enter_code": "Kodu daxil edin"
+    },
+    "create_modal": {
+        "title": "Məzmun Yarat",
+        "article_tab": "Məqalə",
+        "quiz_tab": "Test",
+        "post_title": "Başlıq",
+        "cover_image": "Örtük Şəkli",
+        "content": "Məzmun",
+        "upload_placeholder": "Örtük şəkli yükləmək üçün klikləyin",
+        "quiz_title": "Test Başlığı",
+        "question_label": "Sual",
+        "enter_question": "Sual mətnini daxil edin...",
+        "option_placeholder": "Seçim",
+        "add_option": "+ Seçim Əlavə et",
+        "add_question": "+ Sual Əlavə et",
+        "post_btn": "Paylaş",
+        "posting": "Paylaşılır..."
+    },
+    "edit_modal": {
+        "title": "Məqaləyə Düzəliş Et",
+        "post_title": "Başlıq",
+        "cover_image": "Örtük Şəkli",
+        "change_image": "Örtük şəklini dəyiş",
+        "content": "Məzmun",
+        "save": "Yadda saxla",
+        "cancel": "Ləğv et",
+        "required_error": "Başlıq və məzmun mütləqdir",
+        "success": "Məqalə yeniləndi!",
+        "error": "Yenilənmə uğursuz oldu"
+    },
+    "quiz_modal": {
+        "score": "Nəticə",
+        "questions": "Sual",
+        "thanks": "İştirakınız üçün təşəkkürlər!",
+        "close": "Bağla",
+        "submitting": "Göndərilir...",
+        "submit": "Təsdiqlə",
+        "success": "Test tamamlandı!",
+        "error": "Göndərilmə uğursuz oldu"
+    },
+    "likes_modal": {
+        "title": "Bəyənmələr",
+        "loading": "Yüklənir...",
+        "no_likes": "Hələ heç kim bəyənməyib."
+    },
+    "comments": {
+        "reply_action": "Cavabla",
+        "like_action": "Bəyən",
+        "post_btn": "Paylaş",
+        "view_more_replies": "Daha çox cavab",
+        "view_more_comments": "Daha çox rəy",
+        "view_less": "Daha az",
+        "loading": "Rəylər yüklənir...",
+        "login_to_comment": "Rəy yazmaq üçün daxil olun",
+        "login_to_like": "Bəyənmək üçün daxil olun",
+        "post_error": "Rəy paylaşılmadı",
+        "like_error": "Bəyənmə uğursuz oldu",
+        "reply_placeholder": "Cavab yaz..."
+    },
+    "widgets": {
+        "popular_articles": "Populyar Məqalələr",
+        "recommended_users": "Tövsiyə olunanlar",
+        "loading": "Yüklənir...",
+        "follow": "İzlə",
+        "unfollow": "İzləmə",
+        "login_to_follow": "İzləmək üçün daxil olun",
+        "user_role": "İstifadəçi"
+    },
+    "profile": {
+        "section_helper": {
+            "add": "Əlavə et",
+            "no_items": "Hələ heç nə əlavə edilməyib."
+        },
+        "first_name": "Ad",
+        "last_name": "Soyad",
+        "username": "İstifadəçi adı",
+        "phone_number": "Telefon nömrəsi",
+        "birth_day": "Doğum tarixi",
+        "city": "Şəhər",
+        "profession": "Peşə",
+        "delete_cover": "Örtük şəklini sil",
+        "avatar": "Profil şəkli",
+        "edit_avatar": "Profil şəklini dəyiş",
+        "followers": "izləyici",
+        "following": "izləyir",
+        "change_password": "Şifrəni dəyiş",
+        "tabs": {
+            "about": "Haqqında",
+            "posts": "Paylaşımlar",
+            "booking": "Randevular",
+            "vacancies": "Vakansiyalarım",
+            "applications": "Müraciətlər"
+        },
+        "personal_info": "Şəxsi Məlumatlar",
+        "sections": {
+            "experience": "Təcrübə",
+            "education": "Təhsil",
+            "hard_skills": "Texniki Biliklər",
+            "soft_skills": "Yumşaq Bacarıqlar",
+            "languages": "Dillər",
+            "certificates": "Sertifikatlar"
+        },
+        "level": "Səviyyə",
+        "filters": {
+            "all": "Hamısı",
+            "articles": "Məqalələr",
+            "quizzes": "Testlər"
+        },
+        "toasts": {
+            "accepted": "Randevu qəbul edildi",
+            "rejected": "Randevu rədd edildi",
+            "deleted": "Uğurla silindi",
+            "failed_delete": "Silinmə uğursuz oldu",
+            "failed_update": "Yenilənmə uğursuz oldu",
+            "availability_saved": "Parametrlər saxlanıldı",
+            "password_changed": "Şifrə uğurla dəyişdirildi"
+        },
+        "modals": {
+            "reject_title": "Sorğunu Rədd Et",
+            "reject_message": "Bu sorğunu rədd etmək istədiyinizə əminsiniz?",
+            "delete_title": "Sil",
+            "delete_message": "Bu elementi silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.",
+            "confirm": "Təsdiqlə",
+            "cancel": "Ləğv et"
+        },
+        "not_set": "Təyin edilməyib",
+        "professional": "Peşəkar",
+        "days": {
+            "Monday": "Bazar ertəsi",
+            "Tuesday": "Çərşənbə axşamı",
+            "Wednesday": "Çərşənbə",
+            "Thursday": "Cümə axşamı",
+            "Friday": "Cümə",
+            "Saturday": "Şənbə",
+            "Sunday": "Bazar"
+        },
+        "booking": {
+            "availability": "İş saatları",
+            "calendar": "Təqvim",
+            "requests": "Sorğular",
+            "settings_title": "İş saatları parametrləri",
+            "save_changes": "Yadda saxla",
+            "accept_bookings": "Randevuları qəbul et",
+            "working_hours": "İş saatları",
+            "start": "Başlanğıc:",
+            "end": "Bitmə:",
+            "working_days": "İş günləri",
+            "legend": {
+                "pending": "Gözləyən",
+                "blocked": "Bloklanmış / Məşğul",
+                "confirmed": "Təsdiqlənmiş"
+            },
+            "incoming_title": "Gələn Sorğular",
+            "no_pending": "Gözləyən sorğu yoxdur.",
+            "all_requests_title": "Bütün Sorğular",
+            "no_history": "Tarixçə yoxdur.",
+            "load_more": "Daha çox yüklə",
+            "values_title": "Randevu Məlumatları",
+            "status": "Status:",
+            "time": "Vaxt:",
+            "note": "Qeyd:",
+            "unblock_slot": "Blokdan çıxar",
+            "cancel_meeting": "Görüşü ləğv et",
+            "unblock_btn": "Blokdan çıxar",
+            "cancel_btn": "Ləğv et",
+            "close_btn": "Bağla",
+            "reject_btn": "Rədd et",
+            "accept_btn": "Qəbul et",
+            "confirm_cancel": "Bu görüşü ləğv etmək istədiyinizə əminsiniz?",
+            "confirm_unblock": "Bu slotu blokdan çıxarmaq istədiyinizə əminsiniz?"
+        }
+    },
+    "vacancy_detail": {
+        "apply_now": "Müraciət et",
+        "applied": "Müraciət olunub",
+        "share": "Bu işi paylaş",
+        "applicants": "Müraciət edənlər",
+        "applicants_modal": {
+            "title": "Müraciət edənlər",
+            "loading": "Yüklənir...",
+            "empty": "Hələlik müraciət yoxdur.",
+            "failed_load": "Müraciətləri yükləmək mümkün olmadı.",
+            "app_status_update": "Müraciət statusu yeniləndi: {{status}}",
+            "failed_update": "Statusu yeniləmək mümkün olmadı.",
+            "motivation_letter": "Motivasiya məktubu",
+            "accept": "Qəbul et",
+            "reject": "İmtina et",
+            "statuses": {
+                "pending": "Gözləyir",
+                "accepted": "Qəbul edildi",
+                "rejected": "İmtina edildi"
+            }
+        },
+        "about": "İş haqqında",
+        "posted_date": "Paylaşılma tarixi",
+        "deadline": "Son tarix",
+        "description": "Təsviri",
+        "no_description": "Bu vakansiya üçün ətraflı təsvir yoxdur.",
+        "overview": "İş icmalı",
+        "location": "Ünvan",
+        "salary": "Maaş",
+        "job_type": "İş növü",
+        "work_mode": "İş rejimi",
+        "industry": "Sənaye",
+        "applicants": "Namizədlər",
+        "loading_applicants": "Namizədlər yüklənir...",
+        "no_applicants": "Hələ müraciət yoxdur.",
+        "motivation": "Motivasiya məktubu",
+        "reject": "İmtina et",
+        "accept": "Qəbul et",
+        "toasts": {
+            "login_apply": "Müraciət etmək üçün daxil olun",
+            "link_copied": "Link kopyalandı!",
+            "status_updated": "Müraciət {{status}}",
+            "update_failed": "Status yenilənmədi"
+        }
+    },
+    "vacancies": {
+        "title": "Vakansiyalar",
+        "subtitle": "Xəyalınızdakı işi və ya təcrübəni tapın",
+        "post_vacancy": "Vakansiya yerləşdir",
+        "search_placeholder": "Vəzifə, şirkət üzrə axtar...",
+        "filter_city": "Şəhər üzrə filtrlə",
+        "all_job_types": "Bütün İş Növləri",
+        "full_time": "Tam ştat",
+        "part_time": "Yarım ştat",
+        "all_work_modes": "Bütün İş Rejimləri",
+        "office": "Ofis",
+        "remote": "Distant",
+        "hybrid": "Hibrid",
+        "loading": "Vakansiyalar yüklənir...",
+        "empty": "Axtarışınıza uyğun vakansiya tapılmadı.",
+        "apply": "Müraciət et",
+        "view": "Bax",
+        "add_modal": {
+            "title_add": "Vakansiya Paylaş",
+            "title_edit": "Vakansiyaya Düzəliş Et",
+            "no_companies_title": "Şirkət Tapılmadı",
+            "no_companies_desc": "Vakansiya paylaşmaq üçün əvvəlcə şirkət qeydiyyatdan keçirməlisiniz. Zəhmət olmasa şirkət profili yaradın.",
+            "go_to_companies": "Şirkətlərə Keç",
+            "company_role": "Şirkət və Vəzifə",
+            "company": "Şirkət",
+            "title_label": "Vəzifə",
+            "salary_range": "Maaş Aralığı",
+            "job_details": "İş Təfərrüatları",
+            "listing_type": "Elan Növü",
+            "job_type": "İş Növü",
+            "work_mode": "İş Rejimi",
+            "location": "Ünvan",
+            "expiry_date": "Bitmə Tarixi",
+            "description": "Təsviri",
+            "description_placeholder": "Vəzifəni, öhdəlikləri və tələbləri təsvir edin...",
+            "submit": "Vakansiya Paylaş",
+            "submitting": "Paylaşılır...",
+            "update": "Vakansiyanı Yenilə",
+            "updating": "Yenilənir...",
+            "errors": {
+                "select_company": "Zəhmət olmasa şirkət seçin.",
+                "required": "Bu sahə mütləqdir.",
+                "fill_required": "Zəhmət olmasa tələb olunan sahələri doldurun.",
+                "check_form": "Zəhmət olmasa formadakı xətaları yoxlayın.",
+                "save_failed": "Vakansiyanı yadda saxlamaq mümkün olmadı."
+            },
+            "success": {
+                "updated": "Vakansiya uğurla yeniləndi!",
+                "posted": "Vakansiya uğurla paylaşıldı!"
+            }
+        }
+    },
+    "company_detail": {
+        "not_found": "Şirkət tapılmadı və ya giriş qadağandır.",
+        "edit_cover": "Örtük şəkilini düzəlt",
+        "delete_cover": "Örtük şəkilini sil",
+        "delete_cover_confirm": "Örtük şəkilini silmək istədiyinizə əminsiniz?",
+        "edit_company": "Şirkəti düzəlt",
+        "follow": "İzlə",
+        "tabs": {
+            "about": "Haqqında",
+            "services": "Xidmətlər",
+            "vacancies": "Vakansiyalar",
+            "posts": "Paylaşımlar"
+        },
+        "info": {
+            "title": "Şirkət Məlumatı",
+            "summary": "Xülasə",
+            "website": "Vebsayt",
+            "phone": "Telefon",
+            "founded": "Təsis tarixi",
+            "size": "İşçi sayı",
+            "email": "E-poçt",
+            "employees": "işçi"
+        },
+        "sections": {
+            "who_we_are": "Biz Kimik",
+            "what_we_do": "Nə Edirik",
+            "our_values": "Dəyərlərimiz",
+            "add": "+ Əlavə et",
+            "add_placeholder": "\"{{section}}\" bölməsi əlavə et"
+        },
+        "services": {
+            "title": "Xidmətlər",
+            "no_services": "Xidmət yoxdur.",
+            "add_hint": "Xidmətlərinizi əlavə edin.",
+            "read_more": "Daha çox oxu"
+        },
+        "vacancies": {
+            "title": "Açıq Vakansiyalar",
+            "empty": "Açıq vakansiya yoxdur."
+        },
+        "posts": {
+            "coming_soon": "Şirkət paylaşımları tezliklə..."
+        },
+        "logo_modal": {
+            "title": "Şirkət Loqosunu Yenilə",
+            "change": "Loqonu Dəyiş",
+            "delete": "Loqonu Sil",
+            "remove": "Cari Loqonu Sil",
+            "cancel": "Ləğv et",
+            "delete_confirm": "Loqonu silmək istədiyinizə əminsiniz?"
+        }
+    },
+    "companies": {
+        "title": "Şirkətləri Kəşf Et",
+        "subtitle": "Sənaye liderləri və innovatorlarla əlaqə qurun",
+        "register_company": "Şirkət Qeydiyyatı",
+        "search_placeholder": "Ad və ya sənaye üzrə axtar...",
+        "all_sizes": "Bütün Şirkət Ölçüləri",
+        "employees": "İşçi",
+        "loading": "Şirkətlər yüklənir...",
+        "view_company": "Şirkətə Bax",
+        "empty": {
+            "title": "Şirkət tapılmadı",
+            "subtitle": "Axtarış parametrlərini dəyişərək yoxlayın."
+        },
+        "modal": {
+            "title": "Şirkət Qeydiyyatı",
+            "checking": "Uyğunluq yoxlanılır...",
+            "eligibility_failed": "Uyğunluq Yoxlanışı Uğursuz Oldu",
+            "eligibility_desc": "Ekspertizanızı təsdiqləmək və keyfiyyəti təmin etmək üçün şirkət səhifəsi yaratmazdan əvvəl ən azı 3 məqalə dərc etməlisiniz.",
+            "progress": "Sizin Tərəqqiniz:",
+            "articles_count": "{{current}}/{{total}} Məqalə",
+            "close": "Bağla",
+            "write_article": "Məqalə Yaz",
+            "eligible_msg": "Siz şirkət səhifəsi yaratmaq hüququna maliksiniz ({{count}}/{{total}} məqalə).",
+            "form": {
+                "name": "Şirkət Adı",
+                "summary": "Qısa Məlumat",
+                "founded": "Yaranma Tarixi",
+                "size": "Şirkət Himəsi",
+                "email": "E-poçt",
+                "phone": "Telefon",
+                "address": "Ünvan",
+                "website": "Vebsayt",
+                "logo": "Logo",
+                "upload_logo": "Logo Yüklə",
+                "no_logo": "Logo Yoxdur",
+                "creating": "Yaradılır..."
+            }
+        }
+    },
+    "booking_modal": {
+        "title": "Randevu götür",
+        "calendar_view": "Təqvim",
+        "manual_input": "Əl ilə daxiletmə",
+        "instruction": "Slot seçmək üçün təqvimdə klikləyin və ya sürüşdürün.",
+        "date": "Tarix",
+        "time": "Vaxt",
+        "select_time": "Vaxt seçin",
+        "duration": "Müddət",
+        "unavailable": "(Mövcud deyil)",
+        "note": "Qeyd (İstəyə bağlı)",
+        "placeholder": "Sorğunuzu qısaca təsvir edin...",
+        "cancel": "Ləğv et",
+        "confirm": "Təsdiqlə",
+        "success": "Sorğu göndərildi!",
+        "error": "Xəta baş verdi.",
+        "select_date_error": "Zəhmət olmasa tarix və vaxt seçin.",
+        "hr": "saat",
+        "min": "dəq"
+    },
+    "follow_modal": {
+        "followers": "İzləyicilər",
+        "following": "İzlənilənlər",
+        "loading": "Yüklənir...",
+        "no_users": "İstifadəçi tapılmadı.",
+        "follow": "İzlə",
+        "unfollow": "İzləmə",
+        "action_failed": "Əməliyyat uğursuz oldu",
+        "load_failed": "Siyahı yüklənmədi",
+        "followed": "İzlənildi:",
+        "unfollowed": "İzləmə ləğv edildi:"
+    },
+    "profile_modals": {
+        "cancel": "Ləğv et",
+        "save": "Yadda saxla",
+        "experience": {
+            "edit": "Təcrübəni redaktə et",
+            "add": "Təcrübə əlavə et",
+            "position": "Vəzifə",
+            "company": "Şirkət adı",
+            "start": "Başlanğıc tarixi",
+            "end": "Bitmə tarixi"
+        },
+        "education": {
+            "edit": "Təhsili redaktə et",
+            "add": "Təhsil əlavə et",
+            "degree": "Dərəcə",
+            "institution": "Təhsil müəssisəsi",
+            "field": "İxtisas",
+            "start": "Başlanğıc tarixi",
+            "end": "Bitmə tarixi"
+        },
+        "skill": {
+            "edit": "Bacarığı redaktə et",
+            "add": "Bacarıq əlavə et",
+            "name": "Bacarıq adı",
+            "type": "Növ",
+            "hard": "Hard Skill",
+            "soft": "Soft Skill"
+        },
+        "language": {
+            "edit": "Dili redaktə et",
+            "add": "Dil əlavə et",
+            "name": "Dil",
+            "level": "Səviyyə"
+        },
+        "certificate": {
+            "edit": "Sertifikatı redaktə et",
+            "add": "Sertifikat əlavə et",
+            "name": "Ad",
+            "org": "Verən təşkilat",
+            "date": "Tarix"
+        },
+        "password": {
+            "title": "Şifrəni dəyiş",
+            "new": "Yeni şifrə",
+            "confirm": "Şifrəni təsdiqlə",
+            "mismatch": "Şifrələr uyğun gəlmir",
+            "error": "Şifrəni dəyişmək mümkün olmadı"
+        }
+    }
+}

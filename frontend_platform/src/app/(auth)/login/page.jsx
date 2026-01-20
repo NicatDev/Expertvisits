@@ -7,8 +7,10 @@ import { auth } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import styles from '../auth.module.scss';
+import { useTranslation } from '@/i18n/client';
 
 export default function LoginPage() {
+    const { t } = useTranslation('common');
     const router = useRouter();
     const { login } = useAuth(); // Destructure login
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -29,7 +31,7 @@ export default function LoginPage() {
             await login(formData.username, formData.password);
             router.push('/');
         } catch (err) {
-            setError('Invalid username or password');
+            setError(t('auth_page.errors.invalid_credentials'));
         } finally {
             setLoading(false);
         }
@@ -38,11 +40,11 @@ export default function LoginPage() {
     return (
         <div className={styles.authContainer}>
             <div className={styles.authCard}>
-                <h1 className={styles.title}>Welcome Back</h1>
+                <h1 className={styles.title}>{t('auth_page.welcome_back')}</h1>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <Input
                         name="username"
-                        placeholder="Username"
+                        placeholder={t('auth_page.username')}
                         value={formData.username}
                         onChange={handleChange}
                         required
@@ -50,18 +52,18 @@ export default function LoginPage() {
                     <Input
                         name="password"
                         type="password"
-                        placeholder="Password"
+                        placeholder={t('auth_page.password')}
                         value={formData.password}
                         onChange={handleChange}
                         required
                         error={error}
                     />
                     <Button type="primary" htmlType="submit" block loading={loading}>
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? t('auth_page.logging_in') : t('auth_page.login_btn')}
                     </Button>
                 </form>
                 <div className={styles.footer}>
-                    Don't have an account? <Link href="/register">Register</Link>
+                    {t('auth_page.no_account')} <Link href="/register">{t('auth_page.register_link')}</Link>
                 </div>
             </div>
         </div>

@@ -6,8 +6,10 @@ import Calendar from '../Calendar'; // Import Calendar
 import { services } from '@/lib/api';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
+import { useTranslation } from '@/i18n/client';
 
 const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workingDays, workingHours }) => {
+    const { t } = useTranslation('common');
     const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' | 'manual'
     const [loading, setLoading] = useState(false);
 
@@ -91,7 +93,7 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
 
     const handleBook = async () => {
         if (!date || !time) {
-            toast.error("Please select a date and time.");
+            toast.error(t('booking_modal.select_date_error'));
             return;
         }
 
@@ -107,11 +109,11 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                 note: note,
                 duration_minutes: duration
             });
-            toast.success('Booking Request Sent!');
+            toast.success(t('booking_modal.success'));
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error('Failed to book slot.');
+            toast.error(t('booking_modal.error'));
         } finally {
             setLoading(false);
         }
@@ -121,8 +123,8 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
         const h = Math.floor(mins / 60);
         const m = mins % 60;
         let text = '';
-        if (h > 0) text += `${h} hr${h > 1 ? 's' : ''}`;
-        if (m > 0) text += ` ${m} min`;
+        if (h > 0) text += `${h} ${t('booking_modal.hr')}`;
+        if (m > 0) text += ` ${m} ${t('booking_modal.min')}`;
         return text.trim();
     };
 
@@ -139,19 +141,19 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Book Appointment">
+        <Modal isOpen={isOpen} onClose={onClose} title={t('booking_modal.title')}>
             <div className={styles.tabs}>
                 <button
                     className={`${styles.tab} ${activeTab === 'calendar' ? styles.active : ''}`}
                     onClick={() => setActiveTab('calendar')}
                 >
-                    Calendar View
+                    {t('booking_modal.calendar_view')}
                 </button>
                 <button
                     className={`${styles.tab} ${activeTab === 'manual' ? styles.active : ''}`}
                     onClick={() => setActiveTab('manual')}
                 >
-                    Manual Input
+                    {t('booking_modal.manual_input')}
                 </button>
             </div>
 
@@ -159,7 +161,7 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                 {activeTab === 'calendar' && (
                     <div style={{ /* Removed max-height here to assume Modal handles scroll */ }}>
                         <p style={{ marginBottom: '10px', color: '#666', fontSize: '0.9rem' }}>
-                            Click or drag on the calendar to select a slot.
+                            {t('booking_modal.instruction')}
                         </p>
                         <Calendar
                             events={existingEvents}
@@ -174,7 +176,7 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                     <div>
                         <div className={styles.row} style={{ marginBottom: '20px' }}>
                             <div className={styles.formGroup}>
-                                <label>Date</label>
+                                <label>{t('booking_modal.date')}</label>
                                 <input
                                     type="date"
                                     className={styles.dateInput}
@@ -183,13 +185,13 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Time</label>
+                                <label>{t('booking_modal.time')}</label>
                                 <select
                                     className={styles.selectInput}
                                     value={time}
                                     onChange={(e) => setTime(e.target.value)}
                                 >
-                                    <option value="" disabled>Select Time</option>
+                                    <option value="" disabled>{t('booking_modal.select_time')}</option>
                                     {timeOptions.map(t => (
                                         <option key={t} value={t}>{t}</option>
                                     ))}
@@ -198,7 +200,7 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label>Duration</label>
+                            <label>{t('booking_modal.duration')}</label>
                             <select
                                 className={styles.selectInput}
                                 value={duration}
@@ -208,7 +210,7 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                                     const isInvalid = checkOverlap(mins);
                                     return (
                                         <option key={mins} value={mins} disabled={isInvalid}>
-                                            {formatDuration(mins)} {isInvalid ? '(Unavailable)' : ''}
+                                            {formatDuration(mins)} {isInvalid ? t('booking_modal.unavailable') : ''}
                                         </option>
                                     );
                                 })}
@@ -216,11 +218,11 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label>Note (Optional)</label>
+                            <label>{t('booking_modal.note')}</label>
                             <Input
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
-                                placeholder="Briefly describe your request..."
+                                placeholder={t('booking_modal.placeholder')}
                             />
                         </div>
                     </div>
@@ -228,14 +230,14 @@ const BookingModal = ({ isOpen, onClose, providerId, existingEvents = [], workin
             </div>
 
             <div className={styles.footer}>
-                <Button type="default" onClick={onClose}>Cancel</Button>
+                <Button type="default" onClick={onClose}>{t('booking_modal.cancel')}</Button>
                 <Button
                     type="primary"
                     loading={loading}
                     onClick={handleBook}
                     disabled={activeTab === 'calendar' || !date || !time}
                 >
-                    Confirm Booking
+                    {t('booking_modal.confirm')}
                 </Button>
             </div>
         </Modal>

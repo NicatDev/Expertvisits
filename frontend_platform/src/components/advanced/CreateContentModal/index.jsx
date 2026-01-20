@@ -5,8 +5,10 @@ import Input from '../../ui/Input';
 import { X, Plus, CheckCircle, Trash2, Image as ImageIcon, Upload } from 'lucide-react';
 import { toast } from 'react-toastify';
 import styles from './style.module.scss';
+import { useTranslation } from '@/i18n/client';
 
 export default function CreateContentModal({ isOpen, onClose, onSuccess, initialData = null, initialType = 'article' }) {
+    const { t } = useTranslation('common');
     const [activeTab, setActiveTab] = useState(initialType);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
@@ -165,16 +167,16 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                     <X size={24} color="#666" />
                 </button>
 
-                <h2>Create Content</h2>
+                <h2>{t('create_modal.title')}</h2>
 
                 <div className={styles.tabs}>
-                    {['article', 'quiz'].map(t => (
+                    {['article', 'quiz'].map(tabType => (
                         <button
-                            key={t}
-                            onClick={() => setActiveTab(t)}
-                            className={activeTab === t ? styles.active : ''}
+                            key={tabType}
+                            onClick={() => setActiveTab(tabType)}
+                            className={activeTab === tabType ? styles.active : ''}
                         >
-                            {t}
+                            {t(`create_modal.${tabType}_tab`)}
                         </button>
                     ))}
                 </div>
@@ -182,10 +184,10 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                 <div className={styles.formContent}>
                     {activeTab === 'article' && (
                         <>
-                            <Input label="Title" value={articleData.title} onChange={e => setArticleData({ ...articleData, title: e.target.value })} />
+                            <Input label={t('create_modal.post_title')} value={articleData.title} onChange={e => setArticleData({ ...articleData, title: e.target.value })} />
 
                             <div className={styles.fieldGroup}>
-                                <label>Cover Image</label>
+                                <label>{t('create_modal.cover_image')}</label>
                                 <div className={styles.uploadContainer} onClick={() => fileInputRef.current.click()}>
                                     {previewUrl ? (
                                         <div className={styles.previewImage}>
@@ -197,7 +199,7 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                                     ) : (
                                         <div className={styles.uploadTrigger}>
                                             <ImageIcon size={32} />
-                                            <span>Click to upload cover image</span>
+                                            <span>{t('create_modal.upload_placeholder')}</span>
                                         </div>
                                     )}
                                     <input
@@ -211,7 +213,7 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label>Content</label>
+                                <label>{t('create_modal.content')}</label>
                                 <textarea
                                     value={articleData.body}
                                     onChange={e => setArticleData({ ...articleData, body: e.target.value })}
@@ -222,13 +224,13 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
 
                     {activeTab === 'quiz' && (
                         <>
-                            <Input label="Quiz Title" value={quizData.title} onChange={e => setQuizData({ ...quizData, title: e.target.value })} />
+                            <Input label={t('create_modal.quiz_title')} value={quizData.title} onChange={e => setQuizData({ ...quizData, title: e.target.value })} />
 
                             <div className={styles.quizBuilder}>
                                 {quizData.questions.map((q, qIdx) => (
                                     <div key={qIdx} className={styles.questionCard}>
                                         <div className={styles.header}>
-                                            <span>Question {qIdx + 1}</span>
+                                            <span>{t('create_modal.question_label')} {qIdx + 1}</span>
                                             <button onClick={() => removeQuestion(qIdx)}><Trash2 size={16} /></button>
                                         </div>
                                         <Input placeholder="Enter question text..." value={q.text} onChange={e => updateQuestionText(qIdx, e.target.value)} />
@@ -244,27 +246,27 @@ export default function CreateContentModal({ isOpen, onClose, onSuccess, initial
                                                     </div>
                                                     <input
                                                         type="text"
-                                                        placeholder={`Option ${cIdx + 1}`}
+                                                        placeholder={`${t('create_modal.option_placeholder')} ${cIdx + 1}`}
                                                         value={c.text}
                                                         onChange={e => updateChoice(qIdx, cIdx, 'text', e.target.value)}
                                                     />
                                                     <button onClick={() => removeChoice(qIdx, cIdx)} className={styles.removeBtn}><X size={14} /></button>
                                                 </div>
                                             ))}
-                                            <Button type="text" size="small" onClick={() => addChoice(qIdx)}>+ Add Option</Button>
+                                            <Button type="text" size="small" onClick={() => addChoice(qIdx)}>{t('create_modal.add_option')}</Button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <Button type="dashed" onClick={addQuestion} style={{ marginTop: '10px' }}>+ Add Question</Button>
+                            <Button type="dashed" onClick={addQuestion} style={{ marginTop: '10px' }}>{t('create_modal.add_question')}</Button>
                         </>
                     )}
 
 
 
                     <div className={styles.actions}>
-                        <Button type="default" onClick={onClose}>Cancel</Button>
-                        <Button type="primary" onClick={handleSubmit} loading={loading}>Post</Button>
+                        <Button type="default" onClick={onClose}>{t('common.cancel')}</Button>
+                        <Button type="primary" onClick={handleSubmit} loading={loading}>{loading ? t('create_modal.posting') : t('create_modal.post_btn')}</Button>
                     </div>
                 </div>
             </div>

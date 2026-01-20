@@ -13,8 +13,10 @@ import ServiceDetailModal from '@/components/ui/ServiceDetailModal';
 import VacancyCard from '@/components/advanced/VacancyCard';
 import FeedItem from '@/components/advanced/FeedItem'; // Assuming we can reuse or mock for now
 import api from '@/lib/api/client'; // Direct API for feed if needed
+import { useTranslation } from '@/i18n/client';
 
 export default function CompanyDetailPage({ params }) {
+    const { t } = useTranslation('common');
     const resolvedParams = use(params);
     const slug = resolvedParams.slug;
 
@@ -59,7 +61,7 @@ export default function CompanyDetailPage({ params }) {
             // loadPosts(res.data.id); // Uncomment if posts are ready
         } catch (err) {
             console.error("Failed to load company", err);
-            setError("Company not found or access denied.");
+            setError(t('company_detail.not_found'));
         } finally {
             setLoading(false);
         }
@@ -142,7 +144,7 @@ export default function CompanyDetailPage({ params }) {
         }
     };
 
-    if (loading) return <div className={styles.loading}>Loading...</div>;
+    if (loading) return <div className={styles.loading}>{t('common.loading')}</div>;
     if (error) return <div className={styles.error}>{error}</div>;
     if (!company) return null;
 
@@ -171,7 +173,7 @@ export default function CompanyDetailPage({ params }) {
                             <div
                                 onClick={(e) => { e.stopPropagation(); fileInputRef.current.click(); }}
                                 style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.9)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#333' }}
-                                title="Edit Cover"
+                                title={t('company_detail.edit_cover')}
                             >
                                 <Edit2 size={16} />
                             </div>
@@ -181,13 +183,13 @@ export default function CompanyDetailPage({ params }) {
                                         e.stopPropagation();
                                         setConfirmationModal({
                                             isOpen: true,
-                                            title: "Delete Cover",
-                                            message: "Are you sure you want to delete the cover photo?",
+                                            title: t('company_detail.delete_cover'),
+                                            message: t('company_detail.delete_cover_confirm'),
                                             onConfirm: deleteCover
                                         });
                                     }}
                                     style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.9)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'red' }}
-                                    title="Delete Cover"
+                                    title={t('company_detail.delete_cover')}
                                 >
                                     <Trash2 size={16} />
                                 </div>
@@ -251,10 +253,10 @@ export default function CompanyDetailPage({ params }) {
                     <div className={styles.actions}>
                         {isOwner ? (
                             <Button variant="outline" onClick={handleEditCompany} icon={<Edit size={16} />}>
-                                Edit Company
+                                {t('company_detail.edit_company')}
                             </Button>
                         ) : (
-                            <Button variant="primary">Follow</Button>
+                            <Button variant="primary">{t('company_detail.follow')}</Button>
                         )}
                     </div>
                 </div>
@@ -262,10 +264,10 @@ export default function CompanyDetailPage({ params }) {
 
             {/* Tabs */}
             <div className={styles.tabs}>
-                <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
-                <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>Services</button>
-                <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>Vacancies</button>
-                <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Posts</button>
+                <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('company_detail.tabs.about')}</button>
+                <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>{t('company_detail.tabs.services')}</button>
+                <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
+                <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>{t('company_detail.tabs.posts')}</button>
             </div>
 
             {/* Content */}
@@ -275,18 +277,18 @@ export default function CompanyDetailPage({ params }) {
                     {/* Basic Info Block */}
                     <div className={styles.section}>
                         <div className={styles.sectionHeader}>
-                            <h2>Company Info</h2>
+                            <h2>{t('company_detail.info.title')}</h2>
                         </div>
                         <div className={styles.list}>
                             {company.summary && (
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>Summary</span>
+                                    <span className={styles.label}>{t('company_detail.info.summary')}</span>
                                     <div className={styles.value}>{company.summary}</div>
                                 </div>
                             )}
                             {company.website_url && (
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>Website</span>
+                                    <span className={styles.label}>{t('company_detail.info.website')}</span>
                                     <div className={styles.value}>
                                         <a href={company.website_url} target="_blank" rel="noreferrer" style={{ color: '#1890ff', textDecoration: 'none' }}>
                                             {company.website_url}
@@ -296,21 +298,21 @@ export default function CompanyDetailPage({ params }) {
                             )}
                             {isOwner && company.phone && (
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>Phone</span>
+                                    <span className={styles.label}>{t('company_detail.info.phone')}</span>
                                     <div className={styles.value}>{company.phone}</div>
                                 </div>
                             )}
                             <div className={styles.editableField}>
-                                <span className={styles.label}>Founded</span>
+                                <span className={styles.label}>{t('company_detail.info.founded')}</span>
                                 <div className={styles.value}>{company.founded_at ? new Date(company.founded_at).getFullYear() : 'N/A'}</div>
                             </div>
                             <div className={styles.editableField}>
-                                <span className={styles.label}>Size</span>
-                                <div className={styles.value}>{company.company_size || 'N/A'} employees</div>
+                                <span className={styles.label}>{t('company_detail.info.size')}</span>
+                                <div className={styles.value}>{company.company_size || 'N/A'} {t('company_detail.info.employees')}</div>
                             </div>
                             {company.email && (
                                 <div className={styles.editableField}>
-                                    <span className={styles.label}>Email</span>
+                                    <span className={styles.label}>{t('company_detail.info.email')}</span>
                                     <div className={styles.value}>{company.email}</div>
                                 </div>
                             )}
@@ -321,10 +323,10 @@ export default function CompanyDetailPage({ params }) {
                     {(company.who_we_are || isOwner) && (
                         <div className={styles.section}>
                             <div className={styles.sectionHeader}>
-                                <h2>Who We Are</h2>
+                                <h2>{t('company_detail.sections.who_we_are')}</h2>
                                 {isOwner && (
                                     <Button size="sm" variant="ghost" onClick={() => company.who_we_are ? handleEditSection(company.who_we_are, 'who-we-are') : handleAddSection('who-we-are')}>
-                                        {company.who_we_are ? <Edit size={16} /> : '+ Add'}
+                                        {company.who_we_are ? <Edit size={16} /> : t('company_detail.sections.add')}
                                     </Button>
                                 )}
                             </div>
@@ -335,7 +337,7 @@ export default function CompanyDetailPage({ params }) {
                                     <p>{company.who_we_are.description}</p>
                                 </div>
                             ) : (
-                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('who-we-are')}>Add "Who We Are" section</div>
+                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('who-we-are')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.who_we_are') })}</div>
                             )}
                         </div>
                     )}
@@ -344,10 +346,10 @@ export default function CompanyDetailPage({ params }) {
                     {(company.what_we_do || isOwner) && (
                         <div className={styles.section}>
                             <div className={styles.sectionHeader}>
-                                <h2>What We Do</h2>
+                                <h2>{t('company_detail.sections.what_we_do')}</h2>
                                 {isOwner && (
                                     <Button size="sm" variant="ghost" onClick={() => company.what_we_do ? handleEditSection(company.what_we_do, 'what-we-do') : handleAddSection('what-we-do')}>
-                                        {company.what_we_do ? <Edit size={16} /> : '+ Add'}
+                                        {company.what_we_do ? <Edit size={16} /> : t('company_detail.sections.add')}
                                     </Button>
                                 )}
                             </div>
@@ -358,7 +360,7 @@ export default function CompanyDetailPage({ params }) {
                                     <p>{company.what_we_do.description}</p>
                                 </div>
                             ) : (
-                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('what-we-do')}>Add "What We Do" section</div>
+                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('what-we-do')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.what_we_do') })}</div>
                             )}
                         </div>
                     )}
@@ -367,10 +369,10 @@ export default function CompanyDetailPage({ params }) {
                     {(company.our_values || isOwner) && (
                         <div className={styles.section}>
                             <div className={styles.sectionHeader}>
-                                <h2>Our Values</h2>
+                                <h2>{t('company_detail.sections.our_values')}</h2>
                                 {isOwner && (
                                     <Button size="sm" variant="ghost" onClick={() => company.our_values ? handleEditSection(company.our_values, 'our-values') : handleAddSection('our-values')}>
-                                        {company.our_values ? <Edit size={16} /> : '+ Add'}
+                                        {company.our_values ? <Edit size={16} /> : t('company_detail.sections.add')}
                                     </Button>
                                 )}
                             </div>
@@ -381,7 +383,7 @@ export default function CompanyDetailPage({ params }) {
                                     <p>{company.our_values.description}</p>
                                 </div>
                             ) : (
-                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('our-values')}>Add "Our Values" section</div>
+                                <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('our-values')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.our_values') })}</div>
                             )}
                         </div>
                     )}
@@ -394,10 +396,10 @@ export default function CompanyDetailPage({ params }) {
             {activeTab === 'services' && (
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
-                        <h2>Services</h2>
+                        <h2>{t('company_detail.services.title')}</h2>
                         {isOwner && (
                             <Button size="sm" variant="ghost" onClick={() => handleAddSection('services')}>
-                                + Add
+                                {t('company_detail.sections.add')}
                             </Button>
                         )}
                     </div>
@@ -409,37 +411,43 @@ export default function CompanyDetailPage({ params }) {
                                         <Button size="sm" variant="ghost" onClick={() => handleEditSection(service, 'services')}><Edit size={14} /></Button>
                                     </div>
                                 )}
-                                {service.image && <img src={service.image} alt={service.title} />}
+                                {service.image ? (
+                                    <img src={service.image} alt={service.title} />
+                                ) : (
+                                    <div className={styles.servicePlaceholder}>
+                                        {service.title?.charAt(0)}
+                                    </div>
+                                )}
                                 <h4>{service.title}</h4>
                                 <p>
                                     {service.description.length > 100
-                                        ? <>{service.description.substring(0, 100)}... <span style={{ color: '#1890ff', fontSize: '13px', fontWeight: '500' }}>Read More</span></>
+                                        ? <>{service.description.substring(0, 100)}... <span style={{ color: '#1890ff', fontSize: '13px', fontWeight: '500' }}>{t('company_detail.services.read_more')}</span></>
                                         : service.description}
                                 </p>
                             </div>
                         ))}
                     </div>
-                    {company.services?.length === 0 && !isOwner && <p style={{ color: '#999' }}>No services listed.</p>}
-                    {company.services?.length === 0 && isOwner && <p style={{ color: '#999' }}>Add your services here.</p>}
+                    {company.services?.length === 0 && !isOwner && <p style={{ color: '#999' }}>{t('company_detail.services.no_services')}</p>}
+                    {company.services?.length === 0 && isOwner && <p style={{ color: '#999' }}>{t('company_detail.services.add_hint')}</p>}
                 </div>
             )}
             {activeTab === 'vacancies' && (
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
-                        <h2>Open Positions</h2>
+                        <h2>{t('company_detail.vacancies.title')}</h2>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
                         {vacancies.map(v => (
                             <VacancyCard key={v.id} vacancy={v} />
                         ))}
-                        {vacancies.length === 0 && <p style={{ color: '#999' }}>No open vacancies.</p>}
+                        {vacancies.length === 0 && <p style={{ color: '#999' }}>{t('company_detail.vacancies.empty')}</p>}
                     </div>
                 </div>
             )}
 
             {activeTab === 'posts' && (
                 <div className={styles.section}>
-                    <p style={{ color: '#999', textAlign: 'center' }}>Company posts coming soon...</p>
+                    <p style={{ color: '#999', textAlign: 'center' }}>{t('company_detail.posts.coming_soon')}</p>
                 </div>
             )}
 
@@ -481,7 +489,7 @@ export default function CompanyDetailPage({ params }) {
                     backgroundColor: 'rgba(0,0,0,0.5)'
                 }} onClick={() => setActionModal({ isOpen: false, type: null })}>
                     <div style={{ background: 'white', borderRadius: '8px', width: '300px', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
-                        <div style={{ padding: '16px', borderBottom: '1px solid #eee', fontWeight: 'bold' }}>Update Company Logo</div>
+                        <div style={{ padding: '16px', borderBottom: '1px solid #eee', fontWeight: 'bold' }}>{t('company_detail.logo_modal.title')}</div>
                         <div
                             style={{ padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                             onClick={() => {
@@ -489,7 +497,7 @@ export default function CompanyDetailPage({ params }) {
                                 setActionModal({ isOpen: false, type: null });
                             }}
                         >
-                            <Edit2 size={16} /> Change Logo
+                            <Edit2 size={16} /> {t('company_detail.logo_modal.change')}
                         </div>
                         {company.logo && (
                             <div
@@ -497,18 +505,18 @@ export default function CompanyDetailPage({ params }) {
                                 onClick={() => {
                                     setActionModal({ isOpen: false, type: null });
                                     setConfirmationModal({
-                                        isOpen: true, title: "Delete Logo", message: "Are you sure you want to remove the logo?", onConfirm: deleteLogo
+                                        isOpen: true, title: t('company_detail.logo_modal.delete'), message: t('company_detail.logo_modal.delete_confirm'), onConfirm: deleteLogo
                                     });
                                 }}
                             >
-                                <Trash2 size={16} /> Remove Current Logo
+                                <Trash2 size={16} /> {t('company_detail.logo_modal.remove')}
                             </div>
                         )}
                         <div
                             style={{ padding: '12px 16px', cursor: 'pointer', borderTop: '1px solid #eee', textAlign: 'center', color: '#666' }}
                             onClick={() => setActionModal({ isOpen: false, type: null })}
                         >
-                            Cancel
+                            {t('company_detail.logo_modal.cancel')}
                         </div>
                     </div>
                 </div>

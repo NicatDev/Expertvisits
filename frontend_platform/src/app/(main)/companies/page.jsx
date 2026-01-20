@@ -8,6 +8,9 @@ import { Search, MapPin, Building, Globe, Plus, Users } from 'lucide-react';
 import styles from './Companies.module.scss';
 import Link from 'next/link';
 import { debounce } from 'lodash';
+import { useTranslation } from '@/i18n/client';
+import Pagination from '@/components/ui/Pagination';
+import RegisterCompanyModal from './components/RegisterCompanyModal';
 
 const CompanyLogo = ({ company }) => {
     const [imgError, setImgError] = useState(false);
@@ -29,10 +32,9 @@ const CompanyLogo = ({ company }) => {
         </Link>
     );
 };
-import Pagination from '@/components/ui/Pagination';
-import RegisterCompanyModal from './components/RegisterCompanyModal';
 
 export default function CompaniesPage() {
+    const { t } = useTranslation('common');
     const searchParams = useSearchParams();
     const router = useRouter();
     const { user } = useAuth();
@@ -87,7 +89,7 @@ export default function CompaniesPage() {
         if (currentSearch !== search) {
             // Only force update if we are not "ahead" ? 
             // Actually, if URL changes, we must sync. 
-            // If user typed "abc" (state) -> debounce -> URL "abc" -> Effect "abc". No change.
+            // If user typed "abc" (state) -> debounce -> URL "abc" -> Effect "abc". State becomes "ab". Correct.
             // If user typed "abc" -> clicked back -> URL "ab" -> Effect "ab". State becomes "ab". Correct.
             setSearch(currentSearch);
         }
@@ -140,12 +142,12 @@ export default function CompaniesPage() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <div>
-                    <h1>Discover Companies</h1>
-                    <p>Connect with industry leaders and innovators</p>
+                    <h1>{t('companies.title')}</h1>
+                    <p>{t('companies.subtitle')}</p>
                 </div>
                 {user && !user.company_slug && (
                     <Button onClick={() => setShowRegisterModal(true)}>
-                        <Plus size={18} /> Register Company
+                        <Plus size={18} /> {t('companies.register_company')}
                     </Button>
                 )}
             </div>
@@ -155,7 +157,7 @@ export default function CompaniesPage() {
                     <Search size={18} className={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search by name, industry..."
+                        placeholder={t('companies.search_placeholder')}
                         value={search}
                         onChange={onSearchInput}
                         className={styles.searchInput}
@@ -167,18 +169,18 @@ export default function CompaniesPage() {
                     value={companySize}
                     onChange={(e) => handleFilterChange('company_size', e.target.value)}
                 >
-                    <option value="">All Company Sizes</option>
-                    <option value="1-10">1-10 Employees</option>
-                    <option value="11-50">11-50 Employees</option>
-                    <option value="51-200">51-200 Employees</option>
-                    <option value="201-500">201-500 Employees</option>
-                    <option value="501-1000">501-1000 Employees</option>
-                    <option value="1000+">1000+ Employees</option>
+                    <option value="">{t('companies.all_sizes')}</option>
+                    <option value="1-10">1-10 {t('companies.employees')}</option>
+                    <option value="11-50">11-50 {t('companies.employees')}</option>
+                    <option value="51-200">51-200 {t('companies.employees')}</option>
+                    <option value="201-500">201-500 {t('companies.employees')}</option>
+                    <option value="501-1000">501-1000 {t('companies.employees')}</option>
+                    <option value="1000+">1000+ {t('companies.employees')}</option>
                 </select>
             </div>
 
             {loading ? (
-                <div className={styles.loading}>Loading companies...</div>
+                <div className={styles.loading}>{t('companies.loading')}</div>
             ) : (
                 <>
                     <div className={styles.grid}>
@@ -215,24 +217,23 @@ export default function CompaniesPage() {
                                     )}
                                     <div className={styles.metaItem}>
                                         <Users size={14} />
-                                        <span>{company.employees_count || '1-10'} Employees</span>
+                                        <span>{company.employees_count || '1-10'} {t('companies.employees')}</span>
                                         {/* Assume mock data or static for now if field missing */}
                                     </div>
                                 </div>
 
                                 <Link href={`/companies/${company.slug}`} className={styles.viewBtn}>
-                                    View Company
+                                    {t('companies.view_company')}
                                 </Link>
                             </div>
                         )) : (
                             <div className={styles.empty}>
                                 <Building size={48} />
-                                <h3>No companies found</h3>
-                                <p>Try adjusting your search terms.</p>
+                                <h3>{t('companies.empty.title')}</h3>
+                                <p>{t('companies.empty.subtitle')}</p>
                             </div>
                         )}
                     </div>
-
                     {companies.length > 0 && (
                         <Pagination
                             currentPage={page}

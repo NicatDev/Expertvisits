@@ -4,8 +4,10 @@ import Link from 'next/link';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
 import { Heart } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 
 const PopularArticles = () => {
+    const { t } = useTranslation('common');
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -36,12 +38,12 @@ const PopularArticles = () => {
         }
     };
 
-    if (loading) return <div className={styles.container}>Loading...</div>;
+    if (loading) return <div className={styles.container}>{t('widgets.loading')}</div>;
     if (articles.length === 0) return null;
 
     return (
         <div className={styles.container}>
-            <h3 className={styles.title}>Popular Articles</h3>
+            <h3 className={styles.title}>{t('widgets.popular_articles')}</h3>
             <div className={styles.list}>
                 {articles.map(article => (
                     <Link href={`/article/${article.slug}`} key={article.id} className={styles.item}>

@@ -8,8 +8,10 @@ import CommentsSection from '@/components/advanced/CommentsSection';
 import LikesModal from '@/components/advanced/LikesModal';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { useTranslation } from '@/i18n/client';
 
 export default function ClientPage() {
+    const { t, i18n } = useTranslation('common');
     // slug is passed from Server Component
     const params = useParams();
     const slug = params?.slug;
@@ -31,7 +33,7 @@ export default function ClientPage() {
             setArticle(data);
         } catch (err) {
             console.error(err);
-            toast.error("Failed to load article");
+            toast.error(t('article_page.load_error'));
         } finally {
             setLoading(false);
         }
@@ -39,7 +41,7 @@ export default function ClientPage() {
 
     const handleLike = async () => {
         if (!user) {
-            toast.error("Please login to like");
+            toast.error(t('feed_item.toast.login_like'));
             return;
         }
         const isLiked = article.is_liked;
@@ -55,13 +57,14 @@ export default function ClientPage() {
         } catch (err) {
             console.error(err);
             setArticle(prev => ({ ...prev, is_liked: isLiked, likes_count: prev.likes_count }));
+            toast.error(t('feed_item.toast.failed_like'));
         }
     };
 
     const handlePostComment = async () => {
         if (!user) {
             setCommentText('');
-            toast.error("Please login to comment");
+            toast.error(t('feed_item.toast.login_comment'));
             return;
         }
         if (!commentText.trim()) return;
@@ -73,19 +76,19 @@ export default function ClientPage() {
                 text: commentText
             });
             setCommentText(''); // Clear input
-            toast.success("Comment posted!");
+            toast.success(t('feed_item.toast.comment_posted'));
             setRefreshCommentsTrigger(prev => prev + 1); // Trigger refresh in CommentsSection
             setArticle(prev => ({ ...prev, comments_count: prev.comments_count + 1 }));
         } catch (err) {
             console.error(err);
-            toast.error("Failed to post comment");
+            toast.error(t('feed_item.toast.failed_comment'));
         }
     };
 
-    if (loading) return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading...</div>;
-    if (!article) return <div style={{ textAlign: 'center', marginTop: '50px' }}>Article not found.</div>;
+    if (loading) return <div style={{ textAlign: 'center', marginTop: '50px' }}>{t('common.loading')}</div>;
+    if (!article) return <div style={{ textAlign: 'center', marginTop: '50px' }}>{t('article_page.not_found')}</div>;
 
-    const formattedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+    const formattedDate = new Date(article.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'), {
         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
     });
 
@@ -94,7 +97,7 @@ export default function ClientPage() {
             <div className={styles.container}>
                 <div className={styles.backBtn} onClick={() => router.back()}>
                     <ChevronLeft size={20} />
-                    <span>Back</span>
+                    <span>{t('auth_page.back')}</span>
                 </div>
 
                 <header className={styles.header}>
@@ -131,12 +134,12 @@ export default function ClientPage() {
                             }}
                         >
                             <Heart size={20} fill={article.is_liked ? "#1890ff" : "none"} />
-                            <span>{article.likes_count || 0} Likes</span>
+                            <span>{t('article_page.likes_count', { count: article.likes_count || 0 })}</span>
                         </button>
 
                         <div style={{ display: 'flex', gap: '6px', alignItems: 'center', color: '#666' }}>
                             <MessageCircle size={20} />
-                            <span>{article.comments_count || 0} Comments</span>
+                            <span>{t('article_page.comments_count', { count: article.comments_count || 0 })}</span>
                         </div>
                     </div>
 
@@ -148,7 +151,7 @@ export default function ClientPage() {
                         <div style={{ flex: 1, position: 'relative' }}>
                             <input
                                 type="text"
-                                placeholder="Write a comment..."
+                                placeholder={t('feed_item.write_comment')}
                                 value={commentText}
                                 onChange={e => setCommentText(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && handlePostComment()}

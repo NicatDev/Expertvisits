@@ -9,8 +9,10 @@ import { notFound } from 'next/navigation';
 import { MapPin, Briefcase, DollarSign, Clock, Building, Calendar, Share2, CheckCircle } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
+import { useTranslation } from '@/i18n/client';
 
 export default function DetailClient({ vacancy }) {
+    const { t, i18n } = useTranslation('common');
     const { user, login } = useAuth();
     const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
     const [showApplyModal, setShowApplyModal] = useState(false);
@@ -31,7 +33,7 @@ export default function DetailClient({ vacancy }) {
 
     const handleApplyClick = () => {
         if (!user) {
-            toast.info("Please login to apply");
+            toast.info(t('vacancy_detail.toasts.login_apply'));
             login(); // Redirect or open login
             return;
         }
@@ -40,7 +42,19 @@ export default function DetailClient({ vacancy }) {
 
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
-        toast.success("Link copied to clipboard!");
+        toast.success(t('vacancy_detail.toasts.link_copied'));
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return 'N/A';
+        return new Date(dateStr).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'));
+    }
+
+    // Helper to translate enums safely
+    const translateEnum = (prefix, value) => {
+        if (!value) return '';
+        const key = value.replace('-', '_');
+        return t(`${prefix}.${key}`, { defaultValue: value });
     };
 
     if (!vacancy) return null;
@@ -67,17 +81,17 @@ export default function DetailClient({ vacancy }) {
                     <div className={styles.actions}>
                         {isApplied ? (
                             <Button variant="outline" className={styles.appliedBtn} disabled>
-                                <CheckCircle size={18} /> Applied
+                                <CheckCircle size={18} /> {t('vacancy_detail.applied')}
                             </Button>
                         ) : (
                             <Button size="lg" onClick={handleApplyClick} className={styles.applyBtn}>
-                                Apply Now
+                                {t('vacancy_detail.apply_now')}
                             </Button>
                         )}
 
                         <button className={styles.shareBtn} onClick={handleShare}>
                             <Share2 size={18} />
-                            <span>Share this job</span>
+                            <span>{t('vacancy_detail.share')}</span>
                         </button>
                     </div>
                 </div>
@@ -87,27 +101,26 @@ export default function DetailClient({ vacancy }) {
                 {/* Main Content: Description */}
                 <div className={styles.main}>
                     <div className={styles.section}>
-                        <h2>About the job</h2>
+                        <h2>{t('vacancy_detail.about')}</h2>
 
                         <div className={styles.datesRow}>
                             <div className={styles.dateItem}>
-                                <span className={styles.dateLabel}>Posted Date:</span>
-                                {/* Fix hydration: Use direct substring if ISO or suppress hydration warning. Better: just consistent formatting */}
-                                <span className={styles.dateValue}>{vacancy.posted_at ? new Date(vacancy.posted_at).toISOString().split('T')[0] : 'N/A'}</span>
+                                <span className={styles.dateLabel}>{t('vacancy_detail.posted_date')}:</span>
+                                <span className={styles.dateValue}>{formatDate(vacancy.posted_at)}</span>
                             </div>
                             <div className={styles.dateItem}>
-                                <span className={styles.dateLabel}>Deadline:</span>
-                                <span className={styles.dateValue}>{vacancy.expires_at ? new Date(vacancy.expires_at).toISOString().split('T')[0] : 'N/A'}</span>
+                                <span className={styles.dateLabel}>{t('vacancy_detail.deadline')}:</span>
+                                <span className={styles.dateValue}>{formatDate(vacancy.expires_at)}</span>
                             </div>
                         </div>
 
                         <div className={styles.descriptionBlock}>
-                            <h3>Description</h3>
+                            <h3>{t('vacancy_detail.description')}</h3>
                             <div className={styles.richText}>
                                 {vacancy.description ? (
                                     <p>{vacancy.description}</p>
                                 ) : (
-                                    <p>No detailed description provided for this vacancy.</p>
+                                    <p>{t('vacancy_detail.no_description')}</p>
                                 )}
                             </div>
                         </div>
@@ -124,40 +137,40 @@ export default function DetailClient({ vacancy }) {
                 {/* Sidebar: Job Overview / Details */}
                 <div className={styles.sidebar}>
                     <div className={styles.card}>
-                        <h3>Job Overview</h3>
+                        <h3>{t('vacancy_detail.overview')}</h3>
                         <ul className={styles.overviewList}>
                             <li>
                                 <MapPin size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Location</span>
+                                    <span className={styles.label}>{t('vacancy_detail.location')}</span>
                                     <span className={styles.value}>{vacancy.location}</span>
                                 </div>
                             </li>
                             <li>
                                 <DollarSign size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Salary</span>
+                                    <span className={styles.label}>{t('vacancy_detail.salary')}</span>
                                     <span className={styles.value}>{vacancy.salary_range || 'Competitive'}</span>
                                 </div>
                             </li>
                             <li>
                                 <Briefcase size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Job Type</span>
-                                    <span className={styles.value}>{vacancy.job_type}</span>
+                                    <span className={styles.label}>{t('vacancy_detail.job_type')}</span>
+                                    <span className={styles.value}>{translateEnum('vacancies', vacancy.job_type)}</span>
                                 </div>
                             </li>
                             <li>
                                 <Clock size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Work Mode</span>
-                                    <span className={styles.value}>{vacancy.work_mode}</span>
+                                    <span className={styles.label}>{t('vacancy_detail.work_mode')}</span>
+                                    <span className={styles.value}>{translateEnum('vacancies', vacancy.work_mode)}</span>
                                 </div>
                             </li>
                             <li>
                                 <Building size={20} className={styles.icon} />
                                 <div>
-                                    <span className={styles.label}>Industry</span>
+                                    <span className={styles.label}>{t('vacancy_detail.industry')}</span>
                                     <span className={styles.value}>{vacancy.sub_category?.name || 'Technology'}</span>
                                 </div>
                             </li>
@@ -180,6 +193,7 @@ export default function DetailClient({ vacancy }) {
 }
 
 function ApplicantsList({ vacancyId }) {
+    const { t, i18n } = useTranslation('common');
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -201,27 +215,27 @@ function ApplicantsList({ vacancyId }) {
     const handleStatusChange = async (appId, newStatus) => {
         try {
             await business.updateApplicationStatus(appId, newStatus);
-            toast.success(`Application ${newStatus}`);
+            toast.success(t('vacancy_detail.toasts.status_updated', { status: newStatus }));
             // Optimistic update
             setApplicants(prev => prev.map(app =>
                 app.id === appId ? { ...app, status: newStatus } : app
             ));
         } catch (err) {
             console.error("Failed to update status", err);
-            toast.error("Failed to update status");
+            toast.error(t('vacancy_detail.toasts.update_failed'));
         }
     };
 
-    if (loading) return <div className={styles.section} style={{ marginTop: 20 }}>Loading applicants...</div>;
+    if (loading) return <div className={styles.section} style={{ marginTop: 20 }}>{t('vacancy_detail.loading_applicants')}</div>;
 
     // Empty state
     if (applicants.length === 0) {
         return (
             <div className={styles.applicantsSection}>
-                <h3>Applicants</h3>
+                <h3>{t('vacancy_detail.applicants')}</h3>
                 <div className={styles.emptyApplicants}>
                     <div className={styles.emptyIcon}>📂</div>
-                    <p>No applications received yet.</p>
+                    <p>{t('vacancy_detail.no_applicants')}</p>
                 </div>
             </div>
         );
@@ -229,7 +243,7 @@ function ApplicantsList({ vacancyId }) {
 
     return (
         <div className={styles.applicantsSection}>
-            <h3>Applicants ({applicants.length})</h3>
+            <h3>{t('vacancy_detail.applicants')} ({applicants.length})</h3>
             <div className={styles.applicantsList}>
                 {applicants.map(app => (
                     <div key={app.id} className={styles.applicantCard}>
@@ -247,7 +261,7 @@ function ApplicantsList({ vacancyId }) {
                                         {app.applicant_first_name} {app.applicant_last_name}
                                     </a>
                                     <span className={styles.username}>@{app.applicant_username}</span>
-                                    <div className={styles.appliedDate}>Applied on {new Date(app.created_at).toLocaleDateString()}</div>
+                                    <div className={styles.appliedDate}>{t('vacancy_detail.applied')} {new Date(app.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'))}</div>
                                 </div>
                             </div>
                             <span className={`${styles.statusBadge} ${styles[app.status]}`}>
@@ -256,7 +270,7 @@ function ApplicantsList({ vacancyId }) {
                         </div>
 
                         <div className={styles.motivationSection}>
-                            <span className={styles.motivationLabel}>Motivation Note:</span>
+                            <span className={styles.motivationLabel}>{t('vacancy_detail.motivation')}:</span>
                             <div className={styles.motivationContent}>
                                 {app.motivation_letter}
                             </div>
@@ -265,10 +279,10 @@ function ApplicantsList({ vacancyId }) {
                         {app.status === 'pending' && (
                             <div className={styles.applicantActions}>
                                 <Button size="small" variant="outline" onClick={() => handleStatusChange(app.id, 'rejected')} className={styles.rejectBtn}>
-                                    Reject
+                                    {t('vacancy_detail.reject')}
                                 </Button>
                                 <Button size="small" onClick={() => handleStatusChange(app.id, 'accepted')} className={styles.acceptBtn}>
-                                    Accept
+                                    {t('vacancy_detail.accept')}
                                 </Button>
                             </div>
                         )}

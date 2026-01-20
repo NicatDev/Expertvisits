@@ -10,8 +10,17 @@ import { Search, Filter, Plus } from 'lucide-react';
 import styles from './vacancies.module.scss';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Pagination from '@/components/ui/Pagination';
+import { useTranslation } from '@/i18n/client';
 
 export default function VacanciesPage() {
+    const { t, ready } = useTranslation('common');
+
+    // Prevent hydration mismatch by ensuring translations are loaded
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const { user } = useAuth();
     const [vacancies, setVacancies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,16 +69,18 @@ export default function VacanciesPage() {
         fetchVacancies();
     }, [jobType, workMode, searchLocation, page]);
 
+    if (!mounted) return null;
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div>
-                    <h1>Vacancies</h1>
-                    <p>Find your dream job or internship</p>
+                    <h1>{t('vacancies.title')}</h1>
+                    <p>{t('vacancies.subtitle')}</p>
                 </div>
                 {user && (
                     <Button onClick={() => setShowAddModal(true)}>
-                        <Plus size={18} /> Post Vacancy
+                        <Plus size={18} /> {t('vacancies.post_vacancy')}
                     </Button>
                 )}
             </div>
@@ -79,7 +90,7 @@ export default function VacanciesPage() {
                     <Search size={18} className={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search by title, company..."
+                        placeholder={t('vacancies.search_placeholder')}
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         className={styles.searchInput}
@@ -90,7 +101,7 @@ export default function VacanciesPage() {
                     <LocationSelect
                         value={searchLocation}
                         onChange={val => { setSearchLocation(val); setPage(1); }}
-                        placeholder="Filter by City"
+                        placeholder={t('vacancies.filter_city')}
                     />
                 </div>
 
@@ -99,9 +110,9 @@ export default function VacanciesPage() {
                     value={jobType}
                     onChange={e => { setJobType(e.target.value); setPage(1); }}
                 >
-                    <option value="">All Job Types</option>
-                    <option value="full-time">Full-time</option>
-                    <option value="part-time">Part-time</option>
+                    <option value="">{t('vacancies.all_job_types')}</option>
+                    <option value="full-time">{t('vacancies.full_time')}</option>
+                    <option value="part-time">{t('vacancies.part_time')}</option>
                 </select>
 
                 <select
@@ -109,22 +120,22 @@ export default function VacanciesPage() {
                     value={workMode}
                     onChange={e => { setWorkMode(e.target.value); setPage(1); }}
                 >
-                    <option value="">All Work Modes</option>
-                    <option value="office">Office</option>
-                    <option value="remote">Remote</option>
-                    <option value="hybrid">Hybrid</option>
+                    <option value="">{t('vacancies.all_work_modes')}</option>
+                    <option value="office">{t('vacancies.office')}</option>
+                    <option value="remote">{t('vacancies.remote')}</option>
+                    <option value="hybrid">{t('vacancies.hybrid')}</option>
                 </select>
             </div>
 
             <div className={styles.grid}>
                 {loading ? (
-                    <div className={styles.loading}>Loading vacancies...</div>
+                    <div className={styles.loading}>{t('vacancies.loading')}</div>
                 ) : vacancies.length > 0 ? (
                     vacancies.map(v => (
                         <VacancyCard key={v.id} vacancy={v} />
                     ))
                 ) : (
-                    <div className={styles.empty}>No vacancies found matching your criteria.</div>
+                    <div className={styles.empty}>{t('vacancies.empty')}</div>
                 )}
             </div>
 

@@ -2,6 +2,23 @@
 
 ## 1. FRONTEND COMPONENT STRUCTURE (Next.js)
 AI must strictly follow this folder hierarchy for React components to ensure maintainability:
+
+components/ui/: Atomic, reusable, and stateless components.
+
+Examples: Button.jsx, Input.jsx, Select.jsx, Checkbox.jsx, Badge.jsx.
+
+components/advanced/: Complex components used across multiple pages.
+
+Examples: Navbar.jsx, CommentsSection.jsx, BookingCalendar.jsx, Sidebar.jsx, Footer.jsx.
+
+app/[page_name]/components/: Page-specific components used ONLY in that directory.
+
+Examples: JobFilters.jsx (inside app/vacancies/components/).
+
+Rule: Never place page-specific components in the global UI or Advanced folders.
+
+Component Packaging: Every component must have its own folder containing an index.js (or index.jsx) and a style.module.scss file for scoped styling.
+AI must strictly follow this folder hierarchy for React components to ensure maintainability:
 - **`components/ui/`**: Atomic, reusable, and stateless components. 
   - *Examples:* `Button.jsx`, `Input.jsx`, `Select.jsx`, `Checkbox.jsx`, `Badge.jsx`.
 - **`components/advanced/`**: Complex components used across multiple pages.
@@ -18,7 +35,17 @@ To prevent "fat" files and ensure scalability:
 - **Optimization**:
   - **MANDATORY**: Use `select_related` (for FK) and `prefetch_related` (for M2M/Generic) in all `get_queryset` methods.
   - Use `@action` decorators for custom endpoints within ViewSets.
+NO ModelViewSet: ModelViewSet usage is strictly forbidden.
 
+View Selection Logic:
+
+Standard CRUD: Use GenericAPIView subclasses (e.g., ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView).
+
+Complex Logic: Use APIView for advanced business logic, multi-step processes, or specialized workflows.
+
+Modular Views Directory: Each app must have an api/views/ directory. Views must be split into separate files by resource or domain.
+
+Examples: api/views/articles.py, api/views/feed.py, api/views/stats.py.
 ## 3. DESIGN SYSTEM & RESPONSIVENESS (SCSS)
 - **Backgrounds**: Global background: `#f5f5f5`. Section/Card background: `#ffffff`.
 - **Responsiveness**: Every UI element must support **Mobile, Tablet, and Desktop**. 

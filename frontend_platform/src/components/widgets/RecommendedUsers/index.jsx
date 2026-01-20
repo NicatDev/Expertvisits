@@ -6,8 +6,12 @@ import styles from './style.module.scss';
 import { User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { interactions } from '@/lib/api';
+import { useTranslation } from '@/i18n/client';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 const RecommendedUsers = () => {
+    const { t } = useTranslation('common');
+    const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -33,9 +37,9 @@ const RecommendedUsers = () => {
     };
 
     const handleFollow = async (user) => {
-        if (!user.is_following) {
-         toast.error("You must be logged in to follow users");   
-         return;
+        if (!currentUser) {
+            toast.error(t('widgets.login_to_follow'));
+            return;
         }
         try {
             if (user.is_following) {
@@ -50,12 +54,12 @@ const RecommendedUsers = () => {
         }
     };
 
-    if (loading) return <div className={styles.container}>Loading...</div>;
+    if (loading) return <div className={styles.container}>{t('widgets.loading')}</div>;
     if (users.length === 0) return null;
 
     return (
         <div className={styles.container}>
-            <h3 className={styles.title}>Recommended Users</h3>
+            <h3 className={styles.title}>{t('widgets.recommended_users')}</h3>
             <div className={styles.list}>
                 {users.map(user => (
                     <div key={user.id} className={styles.item}>
@@ -67,14 +71,14 @@ const RecommendedUsers = () => {
                                 {user.first_name} {user.last_name}
                             </Link>
                             <span className={styles.followers} style={{ color: '#999', fontSize: '12px' }}>
-                                {user.profession_sub_category?.profession || user.profession_sub_category?.name || 'User'}
+                                {user.profession_sub_category?.profession || user.profession_sub_category?.name || t('widgets.user_role')}
                             </span>
                         </div>
                         <button
                             className={`${styles.followBtn} ${user.is_following ? styles.following : ''}`}
                             onClick={() => handleFollow(user)}
                         >
-                            {user.is_following ? 'Unfollow' : 'Follow'}
+                            {user.is_following ? t('widgets.unfollow') : t('widgets.follow')}
                         </button>
                     </div>
                 ))}

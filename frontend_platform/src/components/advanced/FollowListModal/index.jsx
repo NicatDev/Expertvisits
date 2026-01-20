@@ -6,18 +6,13 @@ import { useAuth } from '@/lib/contexts/AuthContext'; // To check if 'me'
 import styles from './style.module.scss';
 import { User } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useTranslation } from '@/i18n/client';
 
 const FollowListModal = ({ isOpen, onClose, username, type }) => {
+    const { t } = useTranslation('common');
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const { user: currentUser } = useAuth();
-
-    // For local toggle updates
-    // In a real app we might need to know "am I following this user?" for every user in the list.
-    // However, the standard serializer does NOT include "is_following" status relative to me for every user returned in a list unless optimized.
-    // For now, if I view my own "Following", obviously I follow them.
-    // If I view my own "Followers", I might or might not follow them back.
-    // User requested "unfollow ede bilim" (be able to unfollow). This mostly applies to "Checking my Following list and removing someone".
 
     useEffect(() => {
         if (isOpen && username) {
@@ -37,7 +32,7 @@ const FollowListModal = ({ isOpen, onClose, username, type }) => {
             setUsers(res.data.results || res.data || []);
         } catch (err) {
             console.error(err);
-            toast.error("Failed to load list");
+            toast.error(t('follow_modal.load_failed'));
         } finally {
             setLoading(false);
         }
@@ -54,24 +49,24 @@ const FollowListModal = ({ isOpen, onClose, username, type }) => {
                     // But strictly speaking, it's no longer in "Following" list?
                     // Let's keep it in list but mark as not followed (so they can re-follow).
                 }
-                toast.success(`Unfollowed ${targetUser.username}`);
+                toast.success(`${t('follow_modal.unfollowed')} ${targetUser.username}`);
             } else {
                 await interactions.followUser(targetUser.username);
                 setUsers(prev => prev.map(u => u.id === targetUser.id ? { ...u, is_following: true } : u));
-                toast.success(`Followed ${targetUser.username}`);
+                toast.success(`${t('follow_modal.followed')} ${targetUser.username}`);
             }
         } catch (err) {
             console.error(err);
-            toast.error("Action failed");
+            toast.error(t('follow_modal.action_failed'));
         }
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={type === 'followers' ? 'Followers' : 'Following'}>
+        <Modal isOpen={isOpen} onClose={onClose} title={type === 'followers' ? t('follow_modal.followers') : t('follow_modal.following')}>
             <div className={styles.modalContent}>
-                {loading ? <p style={{ padding: '20px', textAlign: 'center' }}>Loading...</p> : (
+                {loading ? <p style={{ padding: '20px', textAlign: 'center' }}>{t('follow_modal.loading')}</p> : (
                     <>
-                        {users.length === 0 && <p style={{ padding: '20px', textAlign: 'center', color: '#888' }}>No users found.</p>}
+                        {users.length === 0 && <p style={{ padding: '20px', textAlign: 'center', color: '#888' }}>{t('follow_modal.no_users')}</p>}
                         {users.map(u => (
                             <div key={u.id} className={styles.userRow}>
                                 {u.avatar ? (
@@ -92,7 +87,7 @@ const FollowListModal = ({ isOpen, onClose, username, type }) => {
                                         className={styles.actionBtn}
                                         size="small"
                                     >
-                                        {u.is_following ? "Unfollow" : "Follow"}
+                                        {u.is_following ? t('follow_modal.unfollow') : t('follow_modal.follow')}
                                     </Button>
                                 )}
                             </div>
