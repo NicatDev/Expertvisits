@@ -1,0 +1,75 @@
+.container {
+    padding: 10px 0;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e6e6e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.details {
+    .name {
+        font-weight: 500;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .date {
+        font-size: 0.8rem;
+        color: #999;
+    }
+}
+
+.score {
+    font-weight: 600;
+    color: #1890ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

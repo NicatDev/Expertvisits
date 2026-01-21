@@ -6,6 +6,7 @@ import { profiles, content, accounts, interactions, services, business } from '@
 import api from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
+import { useTranslation } from '@/i18n/client';
 import styles from './profile.module.scss';
 import FeedItem from '@/components/advanced/FeedItem';
 import VacancyCard from '@/components/advanced/VacancyCard';
@@ -20,6 +21,7 @@ export default function PublicProfilePage() {
     const params = useParams();
     const { username } = params;
     const { user: currentUser } = useAuth();
+    const { t } = useTranslation('common');
 
     const [profile, setProfile] = useState(null);
     const [activeTab, setActiveTab] = useState('about');
@@ -209,9 +211,12 @@ export default function PublicProfilePage() {
     if (loading) return <div>Loading...</div>;
     if (!profile) return <div>User not found</div>;
 
+
+
+    // ...
+
     return (
         <div className={styles.container}>
-            {/* Header / Cover */}
             <div className={styles.header}>
                 <div className={styles.coverContainer}>
                     {profile.cover_image ? (
@@ -241,13 +246,13 @@ export default function PublicProfilePage() {
                                 style={{ cursor: 'pointer', fontWeight: 500 }}
                                 onClick={() => handleOpenFollow('followers')}
                             >
-                                <strong>{followersCount}</strong> followers
+                                <strong>{followersCount}</strong> {t('profile.followers', { defaultValue: 'Followers' })}
                             </span>
                             <span
                                 style={{ cursor: 'pointer', fontWeight: 500 }}
                                 onClick={() => handleOpenFollow('following')}
                             >
-                                <strong>{followingCount || 0}</strong> following
+                                <strong>{followingCount || 0}</strong> {t('profile.following', { defaultValue: 'Following' })}
                             </span>
                         </div>
                     </div>
@@ -259,10 +264,10 @@ export default function PublicProfilePage() {
                                     type={isFollowing ? "default" : "primary"}
                                     onClick={handleFollow}
                                 >
-                                    {isFollowing ? "Unfollow" : "Follow"}
+                                    {isFollowing ? t('public_profile.unfollow') : t('public_profile.follow')}
                                 </Button>
                                 <Button type="default" onClick={() => setIsBookingView(true)}>
-                                    Book Now
+                                    {t('public_profile.book_now')}
                                 </Button>
                             </>
                         )}
@@ -270,14 +275,14 @@ export default function PublicProfilePage() {
                 </div>
             </div>
 
-            {/* Tabs & Content or Booking View */}
+
             {
                 !isBookingView && (
                     <>
                         <div className={styles.tabs}>
-                            <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>About</button>
-                            <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>Paylaşımlar</button>
-                            <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>Vacancies</button>
+                            <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('public_profile.tabs.about')}</button>
+                            <button className={activeTab === 'posts' ? styles.activeTab : ''} onClick={() => setActiveTab('posts')}>{t('public_profile.tabs.posts')}</button>
+                            <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('public_profile.tabs.vacancies')}</button>
 
                         </div>
 
@@ -289,71 +294,71 @@ export default function PublicProfilePage() {
                                     {/* Info with Birthday */}
                                     <div className={styles.section}>
                                         <div className={styles.sectionHeader}>
-                                            <h2>Information</h2>
+                                            <h2>{t('public_profile.info_title')}</h2>
                                         </div>
                                         <div className={styles.list}>
                                             <div className={styles.editableField}>
-                                                <span className={styles.label}>FULL NAME</span>
+                                                <span className={styles.label}>{t('public_profile.labels.full_name')}</span>
                                                 <div className={styles.value}>{profile.first_name} {profile.last_name}</div>
                                             </div>
                                             <div className={styles.editableField}>
-                                                <span className={styles.label}>USERNAME</span>
+                                                <span className={styles.label}>{t('public_profile.labels.username')}</span>
                                                 <div className={styles.value}>@{profile.username}</div>
                                             </div>
                                             <div className={styles.editableField}>
-                                                <span className={styles.label}>BIRTHDAY</span>
+                                                <span className={styles.label}>{t('public_profile.labels.birthday')}</span>
                                                 <div className={styles.value}>
-                                                    <span style={{ color: profile.birth_day ? '#333' : '#999' }}>{profile.birth_day || 'Not set'}</span>
+                                                    <span style={{ color: profile.birth_day ? '#333' : '#999' }}>{profile.birth_day || t('public_profile.not_set')}</span>
                                                 </div>
                                             </div>
                                             <div className={styles.editableField}>
-                                                <span className={styles.label}>PROFESSION</span>
+                                                <span className={styles.label}>{t('public_profile.labels.profession')}</span>
                                                 <div className={styles.value}>
                                                     <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
-                                                        {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || 'Not set'}
+                                                        {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || t('public_profile.not_set')}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <Section title="Experience" items={experiences} renderItem={(item) => (
+                                    <Section title={t('public_profile.sections.experience')} items={experiences} renderItem={(item) => (
                                         <div className={styles.itemContent}>
                                             <h3>{item.position}</h3>
                                             <p>{item.company_name}</p>
-                                            <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                                            <span>{item.start_date} - {item.end_date || t('public_profile.present')}</span>
                                         </div>
-                                    )} />
+                                    )} t={t} />
 
-                                    <Section title="Education" items={educations} renderItem={(item) => (
+                                    <Section title={t('public_profile.sections.education')} items={educations} renderItem={(item) => (
                                         <div className={styles.itemContent}>
                                             <h3>{item.institution}</h3>
                                             <p>{item.degree_type_display || item.degree_type} in {item.field_of_study}</p>
-                                            <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                                            <span>{item.start_date} - {item.end_date || t('public_profile.present')}</span>
                                         </div>
-                                    )} />
+                                    )} t={t} />
 
-                                    <Section title="Skills" items={skills} renderItem={(item) => (
+                                    <Section title={t('public_profile.sections.skills')} items={skills} renderItem={(item) => (
                                         <div className={styles.itemContent}>
                                             <h3>{item.name}</h3>
                                             <span>{item.skill_type}</span>
                                         </div>
-                                    )} />
+                                    )} t={t} />
 
-                                    <Section title="Languages" items={languages} renderItem={(item) => (
+                                    <Section title={t('public_profile.sections.languages')} items={languages} renderItem={(item) => (
                                         <div className={styles.itemContent}>
                                             <h3>{item.name}</h3>
-                                            <span>Level: {item.level.toUpperCase()}</span>
+                                            <span>{t('public_profile.level')}: {item.level.toUpperCase()}</span>
                                         </div>
-                                    )} />
+                                    )} t={t} />
 
-                                    <Section title="Certificates" items={certificates} renderItem={(item) => (
+                                    <Section title={t('public_profile.sections.certificates')} items={certificates} renderItem={(item) => (
                                         <div className={styles.itemContent}>
                                             <h3>{item.name}</h3>
                                             <p>{item.issuing_organization}</p>
                                             <span>{item.issue_date}</span>
                                         </div>
-                                    )} />
+                                    )} t={t} />
 
                                 </div>
                             )}
@@ -361,16 +366,16 @@ export default function PublicProfilePage() {
                             {activeTab === 'posts' && (
                                 <div className={styles.tabContent}>
                                     <div className={styles.sectionHeader}>
-                                        <h3>Paylaşımlar</h3>
+                                        <h3>{t('public_profile.tabs.posts')}</h3>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            {['all', 'article', 'quiz'].map(ft => (
+                                            {['all', 'article', 'quiz', 'poll'].map(ft => (
                                                 <Button
                                                     key={ft}
                                                     size="small"
                                                     style={{ background: filterType === ft ? '#1890ff' : '#f0f0f0', color: filterType === ft ? '#fff' : '#333', border: 'none' }}
                                                     onClick={() => setFilterType(ft)}
                                                 >
-                                                    {ft.charAt(0).toUpperCase() + ft.slice(1)}s
+                                                    {t(`feed.${ft === 'all' ? 'all' : ft === 'article' ? 'article' : ft === 'quiz' ? 'quiz' : 'poll'}`)}
                                                 </Button>
                                             ))}
                                         </div>
@@ -384,7 +389,7 @@ export default function PublicProfilePage() {
                                             />
                                         ))
                                         }
-                                        {posts.length === 0 && !postsLoading && <p>This user hasn't shared anything yet.</p>}
+                                        {posts.length === 0 && !postsLoading && <p>{t('public_profile.no_posts')}</p>}
 
                                         {hasMorePosts && (
                                             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -393,7 +398,7 @@ export default function PublicProfilePage() {
                                                     loading={postsLoading}
                                                     onClick={() => loadUserContent(profile.id, postsPage + 1, filterType)}
                                                 >
-                                                    Load More
+                                                    {t('feed.load_more')}
                                                 </Button>
                                             </div>
                                         )}
@@ -405,12 +410,12 @@ export default function PublicProfilePage() {
 
                             {activeTab === 'vacancies' && (
                                 <div className={styles.section}>
-                                    <h3>Vacancies</h3>
+                                    <h3>{t('public_profile.tabs.vacancies')}</h3>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
                                         {vacancies.map(v => (
                                             <VacancyCard key={v.id} vacancy={v} />
                                         ))}
-                                        {vacancies.length === 0 && <p>Thinking about hiring? No vacancies here yet.</p>}
+                                        {vacancies.length === 0 && <p>{t('public_profile.no_vacancies')}</p>}
                                     </div>
                                 </div>
                             )}
@@ -418,39 +423,17 @@ export default function PublicProfilePage() {
                     </>
                 )
             }
-
-            {
-                isBookingView && (
-                    <BookingViewWrapper
-                        profile={profile}
-                        events={calendarEvents}
-                        onBack={() => setIsBookingView(false)}
-                        onBookingSuccess={() => {
-                            // Refresh events
-                            try {
-                                services.getEvents(profile.id).then(res => setCalendarEvents(res.data));
-                            } catch (e) { console.error(e); }
-                        }}
-                    />
-                )
-            }
-
-            {/* Booking Modal */}
-            {/* Booking Modal Removed */}
-            {/* <BookingModal ... /> */}
-
-            <FollowListModal
-                isOpen={showFollowModal}
-                onClose={() => setShowFollowModal(false)}
-                username={username}
-                type={followType}
-            />
-        </div >
+            {isBookingView && (
+                <BookingViewWrapper
+                    profile={profile}
+                    onClose={() => setIsBookingView(false)}
+                />
+            )}
+        </div>
     );
 }
 
-// Simple Read-Only Section
-const Section = ({ title, items, renderItem }) => (
+const Section = ({ title, items, renderItem, t }) => (
     <div className={styles.section}>
         <div className={styles.sectionHeader}>
             <h2>{title}</h2>
@@ -461,7 +444,7 @@ const Section = ({ title, items, renderItem }) => (
                     {renderItem(item)}
                 </div>
             ))}
-            {items.length === 0 && <p style={{ color: '#999', fontStyle: 'italic' }}>No {title.toLowerCase()} added.</p>}
+            {items.length === 0 && <p style={{ color: '#999', fontStyle: 'italic' }}>{t('public_profile.no_items')}</p>}
         </div>
     </div>
 );

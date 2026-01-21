@@ -6,17 +6,22 @@ import { toast } from 'react-toastify';
 import LikesModal from '../LikesModal';
 import CommentsSection from '../CommentsSection';
 import QuizModal from '../QuizModal';
-
-import CreateContentModal from '../CreateContentModal';
 import api from '@/lib/api/client';
 import { content } from '@/lib/api'; // Ensure content API is imported
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss'; // Import SCSS Module
 import EditArticleModal from '../EditArticleModal';
+import ParticipantsListModal from '../ParticipantsListModal';
+import Modal from '../../ui/Modal';
 import { useTranslation } from '@/i18n/client';
+import { formatDate } from '@/lib/utils/date';
+import PollCard from '../PollCard';
 
 const FeedItem = ({ item, onDelete }) => {
-    const { t } = useTranslation('common');
+    if (item.type === 'poll') {
+        return <PollCard poll={item} />;
+    }
+    const { t, i18n } = useTranslation('common');
     const { user } = useAuth();
 
 
@@ -28,12 +33,19 @@ const FeedItem = ({ item, onDelete }) => {
     // We update this 'localItem' when we refresh data
     const [localItem, setLocalItem] = useState(item);
 
+    React.useEffect(() => {
+        setLocalItem(item);
+        setLikesCount(item.likes_count || 0);
+        setCommentsCount(item.comments_count || 0);
+        setIsLiked(item.is_liked || false);
+    }, [item]);
+
     // Basic detection of type based on fields
     const isArticle = localItem.body !== undefined;
     const isQuiz = localItem.questions !== undefined;
 
     const [showLikesModal, setShowLikesModal] = useState(false);
-    const [showComments, setShowComments] = useState(false);
+    const [showComments, setShowComments] = useState(true);
     const [showQuizModal, setShowQuizModal] = useState(false);
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -41,6 +53,20 @@ const FeedItem = ({ item, onDelete }) => {
 
     const [commentText, setCommentText] = useState('');
     const [isLiked, setIsLiked] = useState(item.is_liked || false);
+
+    // Quiz Enhancement States
+    const [reviewData, setReviewData] = useState(null);
+    const [showParticipantsModal, setShowParticipantsModal] = useState(false);
+
+    const commentInputRef = React.useRef(null);
+
+    const handleCommentAction = () => {
+        setShowComments(true);
+        // Focus the input
+        setTimeout(() => {
+            commentInputRef.current?.focus();
+        }, 50);
+    };
 
     // Determine type string for API
     const typeStr = isQuiz ? 'quiz' : 'article';
@@ -133,14 +159,20 @@ const FeedItem = ({ item, onDelete }) => {
 
 
 
-    const handleDelete = async () => {
-        if (!window.confirm(t('feed_item.toast.delete_confirm'))) return;
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // ...
+
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = async () => {
         try {
             if (isArticle) await content.deleteArticle(localItem.slug);
             else if (isQuiz) await content.deleteQuiz(localItem.id);
 
-
             toast.success(t('feed_item.toast.deleted'));
+            setShowDeleteModal(false);
             if (onDelete) onDelete(localItem.id);
         } catch (err) {
             console.error(err);
@@ -148,6 +180,8 @@ const FeedItem = ({ item, onDelete }) => {
         }
     };
 
+
+    console.log(localItem)
     return (
         <div className={styles.feedItem}>
             {/* Header */}
@@ -174,7 +208,7 @@ const FeedItem = ({ item, onDelete }) => {
                         ) : (
                             <div className={styles.username}>{t('feed_item.unknown_user')}</div>
                         )}
-                        <div className={styles.date}>{new Date(localItem.created_at).toLocaleDateString()}</div>
+                        <div className={styles.date}>{formatDate(localItem.created_at, i18n.language)}</div>
                     </div>
                 </div>
                 {user?.username === localItem.author && (
@@ -193,7 +227,7 @@ const FeedItem = ({ item, onDelete }) => {
                                     </button>
                                 )}
                                 <button
-                                    onClick={() => { setShowMenu(false); handleDelete(); }}
+                                    onClick={() => { setShowMenu(false); handleDeleteClick(); }}
                                     style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: 'red' }}
                                 >
                                     <Trash2 size={16} /> {t('common.delete')}
@@ -219,16 +253,23 @@ const FeedItem = ({ item, onDelete }) => {
                                 {localItem.title}
                             </Link>
                         </h3>
-                        <p>
-                            {localItem.body.length > 250 ? (
-                                <>
-                                    {localItem.body.substring(0, 250)}...
-                                    <Link href={`/article/${localItem.slug}`} style={{ color: '#1890ff', marginLeft: '6px', fontWeight: '500' }}>
-                                        {t('feed_item.view_more')}
-                                    </Link>
-                                </>
-                            ) : localItem.body}
-                        </p>
+
+                        {/* Wait, directly setting innerHTML with truncated string is bad. 
+                            Better to render a sanitized Div with limited height. 
+                            Let's use a helper or just render full body with CSS line-clamp? 
+                            If I render full body with CSS line clamp, it handles HTML better. 
+                            But valid HTML structure might break flex/grid. 
+                            Let's try rendering full body but constrained.
+                        */}
+                        <div
+                            className={styles.articleBody}
+                            dangerouslySetInnerHTML={{ __html: localItem.body }}
+                        />
+                        {localItem.body.length > 300 && (
+                            <Link href={`/article/${localItem.slug}`} className={styles.readMore}>
+                                {t('feed_item.view_more')}
+                            </Link>
+                        )}
                     </>
                 )}
 
@@ -238,11 +279,38 @@ const FeedItem = ({ item, onDelete }) => {
                         <p>
                             {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0} {t('feed_item.participants_count')}
                         </p>
-                        {localItem.is_participated ? (
-                            <Button disabled icon={<CheckCircle size={16} />}>{t('feed_item.completed')}</Button>
-                        ) : (
-                            <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>{t('feed_item.start_quiz')}</Button>
-                        )}
+                        <div className={styles.quizActions} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                            {localItem.is_participated ? (
+                                <>
+                                    <Button
+                                        icon={<CheckCircle size={16} />}
+                                        onClick={async () => {
+                                            try {
+                                                const { data } = await content.getQuizResult(localItem.id);
+                                                setReviewData(data); // New state needed
+                                                setShowQuizModal(true);
+                                            } catch (e) {
+                                                console.error(e);
+                                                toast.error(t('feed_item.toast.failed_load_result'));
+                                            }
+                                        }}
+                                    >
+                                        {t('feed_item.view_results')}
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>{t('feed_item.start_quiz')}</Button>
+                            )}
+
+                            {user?.username === localItem.author && (
+                                <Button
+                                    variant="secondary" // Assuming variant exists or use style
+                                    onClick={() => setShowParticipantsModal(true)} // New state needed
+                                >
+                                    {t('feed_item.view_participants')}
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 )}
 
@@ -264,7 +332,7 @@ const FeedItem = ({ item, onDelete }) => {
                     </button>
 
                     <button
-                        onClick={() => setShowComments(!showComments)}
+                        onClick={handleCommentAction}
                     >
                         <MessageCircle size={18} />
                         <span>{t('feed_item.comment_action')}</span>
@@ -283,6 +351,7 @@ const FeedItem = ({ item, onDelete }) => {
                 </div>
                 <div className={styles.inputWrapper}>
                     <input
+                        ref={commentInputRef}
                         type="text"
                         placeholder={t('feed_item.write_comment')}
                         value={commentText}
@@ -306,9 +375,30 @@ const FeedItem = ({ item, onDelete }) => {
 
             <QuizModal
                 isOpen={showQuizModal}
-                onClose={() => setShowQuizModal(false)}
-                quiz={isQuiz ? item : null}
+                onClose={() => {
+                    setShowQuizModal(false);
+                    setReviewData(null); // Clear review data on close
+                }}
+                quiz={isQuiz ? (reviewData || item) : null} // Use reviewData if available (contains answers)
+                reviewMode={!!reviewData}
                 onSuccess={() => refreshItem()}
+            />
+
+            <ParticipantsListModal
+                isOpen={showParticipantsModal}
+                onClose={() => setShowParticipantsModal(false)}
+                quizId={localItem.id}
+                onSelectParticipant={async (userId) => {
+                    try {
+                        const { data } = await content.getQuizParticipantResult(localItem.id, userId);
+                        setReviewData(data);
+                        setShowParticipantsModal(false);
+                        setShowQuizModal(true);
+                    } catch (e) {
+                        console.error(e);
+                        toast.error("Failed to load participant result");
+                    }
+                }}
             />
 
             <EditArticleModal
@@ -320,25 +410,34 @@ const FeedItem = ({ item, onDelete }) => {
                 }}
             />
 
-            {/* Always rendered but controlled by internal state if necessary, 
-                actually CommentsSection fetches on mount. 
-                Optimized: Only mount if showComments OR we want to prefetch? 
-                User logic was "click to expand".
-                But we have "Latest comment" which is static.
-                Let's keep it mounted if we want to show it below, or just mount on click. 
-                Wait, current logic in index.jsx has it always there? 
-                No, logic was {showComments && ...} but user requested specific behavior. 
-                I'll stick to mount on showComments for performance.
-            */}
+            {/* Interactions */}
+            {showComments && (
+                <CommentsSection
+                    contentType={typeStr}
+                    objectId={localItem.id}
+                    refreshTrigger={commentsCount} // Allow refreshing when count changes
+                />
+            )}
 
-            <CommentsSection
-                contentType={typeStr}
-                objectId={localItem.id}
-                refreshTrigger={localItem.comments_count}
-                onCommentAdded={() => setCommentsCount(prev => prev + 1)}
-            // Pass styles or use its own? CommentsSection uses its own inline for now, 
-            // ideally refactor that too.
-            />
+
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title={t('profile.modals.delete_title')}
+                footer={
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <Button type="default" onClick={() => setShowDeleteModal(false)}>
+                            {t('common.cancel')}
+                        </Button>
+                        <Button type="primary" danger onClick={handleDeleteConfirm}>
+                            {t('common.delete')}
+                        </Button>
+                    </div>
+                }
+            >
+                <p>{t('feed_item.toast.delete_confirm')}</p>
+            </Modal>
 
         </div >
     );

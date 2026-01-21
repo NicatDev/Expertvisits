@@ -1,6 +1,8 @@
 from django.db import models
 from apps.accounts.models import User, SubCategory
+from apps.accounts.models import User, SubCategory
 from core.utils import custom_slugify
+from core.utils.images import compress_image
 
 from django.contrib.contenttypes.fields import GenericRelation
 from apps.interactions.models import Like, Comment
@@ -35,6 +37,15 @@ class Article(models.Model):
                 counter += 1
             
             self.slug = unique_slug
+            self.slug = unique_slug
+        
+        if self.pk:
+            old = Article.objects.filter(pk=self.pk).first()
+            if old and old.image != self.image:
+                compress_image(self.image)
+        else:
+            compress_image(self.image)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -74,3 +85,35 @@ class QuizAttempt(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+    def __str__(self):
+        return f"{self.user.username} attempt on {self.quiz.title}"
+
+
+class Poll(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='polls')
+    question = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = GenericRelation(Like)
+    comments = GenericRelation(Comment)
+
+    def __str__(self):
+        return self.question[:50]
+
+class PollOption(models.Model):
+    poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.text
+
+class PollVote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poll_votes')
+    poll = models.ForeignKey(Poll, related_name='votes', on_delete=models.CASCADE)
+    option = models.ForeignKey(PollOption, related_name='votes', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'poll') # One vote per user per poll
+
+    def __str__(self):
+        return f"{self.user.username} voted on {self.poll.id}"

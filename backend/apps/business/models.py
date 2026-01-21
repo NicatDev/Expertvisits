@@ -1,6 +1,8 @@
 from django.db import models
 from apps.accounts.models import User, SubCategory
+from apps.accounts.models import User, SubCategory
 from core.utils import custom_slugify
+from core.utils.images import compress_image
 
 class Company(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='company')
@@ -31,6 +33,18 @@ class Company(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = custom_slugify(self.name)
+        
+        if self.pk:
+            old = Company.objects.filter(pk=self.pk).first()
+            if old:
+                if old.logo != self.logo:
+                    compress_image(self.logo)
+                if old.cover_image != self.cover_image:
+                    compress_image(self.cover_image)
+        else:
+            compress_image(self.logo)
+            compress_image(self.cover_image)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -42,6 +56,15 @@ class CompanyNews(models.Model):
     image = models.ImageField(upload_to='company_news/', null=True, blank=True)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = CompanyNews.objects.filter(pk=self.pk).first()
+            if old and old.image != self.image:
+                compress_image(self.image)
+        else:
+            compress_image(self.image)
+        super().save(*args, **kwargs)
 
 class Vacancy(models.Model):
     LISTING_TYPE = [('job', 'Job'), ('internship', 'Internship')]
@@ -120,6 +143,24 @@ class WhoWeAre(models.Model):
     image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = WhoWeAre.objects.filter(pk=self.pk).first()
+            if old and old.image != self.image:
+                compress_image(self.image)
+        else:
+            compress_image(self.image)
+        super().save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = OurValues.objects.filter(pk=self.pk).first()
+            if old and old.image != self.image:
+                compress_image(self.image)
+        else:
+            compress_image(self.image)
+        super().save(*args, **kwargs)
+
 class WhatWeDo(models.Model):
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='what_we_do')
     title = models.CharField(max_length=255)
@@ -140,3 +181,12 @@ class CompanyService(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='company_services/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = CompanyService.objects.filter(pk=self.pk).first()
+            if old and old.image != self.image:
+                compress_image(self.image)
+        else:
+            compress_image(self.image)
+        super().save(*args, **kwargs)

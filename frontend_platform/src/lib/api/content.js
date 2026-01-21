@@ -25,5 +25,8 @@ export const content = {
     updateQuiz: (id, data) => api.patch(`content/quizzes/${id}/`, data),
     deleteQuiz: (id) => api.delete(`content/quizzes/${id}/`),
     submitQuiz: (id, answers) => api.post(`content/quizzes/${id}/submit/`, { answers }),
+    getQuizResult: (id) => api.get(`content/quizzes/${id}/result/`),
+    getQuizParticipants: (id) => api.get(`content/quizzes/${id}/participants/`),
+    getQuizParticipantResult: (id, userId) => api.get(`content/quizzes/${id}/participants/${userId}/`),
 
 };

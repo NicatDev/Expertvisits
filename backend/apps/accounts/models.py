@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from core.utils import custom_slugify
+from core.utils.images import compress_image
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -44,6 +45,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = User.objects.filter(pk=self.pk).first()
+            if old:
+                if old.avatar != self.avatar:
+                     compress_image(self.avatar)
+                if old.cover_image != self.cover_image:
+                     compress_image(self.cover_image)
+        else:
+             compress_image(self.avatar)
+             compress_image(self.cover_image)
+        super().save(*args, **kwargs)
 
 class VerificationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='verification_codes')

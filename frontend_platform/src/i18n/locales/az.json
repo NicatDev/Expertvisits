@@ -35,11 +35,19 @@
         "all": "Hamısı",
         "article": "Məqalə",
         "quiz": "Test",
+        "poll": "Sorğu",
         "latest": "Ən yeni",
         "popular": "Populyar",
         "no_results": "Nəticə tapılmadı.",
         "create_content": "Məzmun yarat",
-        "load_more": "Daha çox yüklə"
+        "load_more": "Daha çox yüklə",
+        "votes": "səs",
+        "voted": "Səs verildi",
+        "toast": {
+            "vote_success": "Səs qeydə alındı!",
+            "vote_failed": "Səsvermə uğursuz oldu",
+            "login_participate": "Səs vermək üçün daxil olun"
+        }
     },
     "feed_item": {
         "likes": "Bəyənmə",
@@ -65,8 +73,15 @@
             "already_participated": "Siz artıq bu kvizdə iştirak etmisiniz.",
             "delete_confirm": "Bu məzmunu silmək istədiyinizə əminsiniz?",
             "deleted": "Məzmun silindi.",
-            "failed_delete": "Silmək mümkün olmadı."
-        }
+            "failed_delete": "Silmək mümkün olmadı.",
+            "failed_load_result": "Nəticəni yükləmək mümkün olmadı"
+        },
+        "view_results": "Nəticəyə bax",
+        "view_participants": "İştirakçılara bax"
+    },
+    "participants_modal": {
+        "title": "İştirakçılar",
+        "no_participants": "Hələ iştirakçı yoxdur."
     },
     "auth_page": {
         "welcome_back": "Xoş Gəldiniz",
@@ -106,8 +121,15 @@
     },
     "create_modal": {
         "title": "Məzmun Yarat",
+        "choose_content_type": "Məzmun növünü seçin",
+        "create_article": "Məqalə Yarat",
+        "edit_article": "Məqaləyə Düzəliş Et",
+        "create_quiz": "Test Yarat",
+        "edit_quiz": "Testə Düzəliş Et",
         "article_tab": "Məqalə",
+        "article_desc": "Fikirlərinizi, biliklərinizi və hekayələrinizi məqalə olaraq paylaşın.",
         "quiz_tab": "Test",
+        "quiz_desc": "Sual-cavab vasitəsilə auditoriyanızla əlaqə qurun.",
         "post_title": "Başlıq",
         "cover_image": "Örtük Şəkli",
         "content": "Məzmun",
@@ -119,7 +141,17 @@
         "add_option": "+ Seçim Əlavə et",
         "add_question": "+ Sual Əlavə et",
         "post_btn": "Paylaş",
-        "posting": "Paylaşılır..."
+        "posting": "Paylaşılır...",
+        "create_poll": "Sorğu Yarat",
+        "poll_created": "Sorğu uğurla yaradıldı!",
+        "error": "Əməliyyat uğursuz oldu",
+        "poll_question": "Sual",
+        "poll_question_placeholder": "Sualınızı qeyd edin...",
+        "poll_options": "Seçimlər",
+        "option": "Seçim",
+        "max_options": "Maksimum 4 seçim icazəlidir",
+        "fill_required": "Zəhmət olmasa bütün xanaları doldurun",
+        "poll_tab": "Sorğu"
     },
     "edit_modal": {
         "title": "Məqaləyə Düzəliş Et",
@@ -183,6 +215,7 @@
         "birth_day": "Doğum tarixi",
         "city": "Şəhər",
         "profession": "Peşə",
+        "user_not_found": "İstifadəçi tapılmadı. Zəhmət olmasa daxil olun.",
         "delete_cover": "Örtük şəklini sil",
         "avatar": "Profil şəkli",
         "edit_avatar": "Profil şəklini dəyiş",
@@ -273,6 +306,19 @@
             "accept_btn": "Qəbul et",
             "confirm_cancel": "Bu görüşü ləğv etmək istədiyinizə əminsiniz?",
             "confirm_unblock": "Bu slotu blokdan çıxarmaq istədiyinizə əminsiniz?"
+        },
+        "vacancies": {
+            "title": "Vakansiyalarım",
+            "post_new": "Yeni Vakansiya",
+            "no_vacancies": "Vakansiya paylaşılmayıb.",
+            "delete_title": "Vakansiyanı sil",
+            "delete_message": "Bu vakansiyanı silmək istədiyinizə əminsiniz?",
+            "deleted_success": "Vakansiya silindi"
+        },
+        "applications": {
+            "title": "Müraciətlərim",
+            "no_applications": "Müraciət yoxdur.",
+            "applied_on": "Müraciət tarixi"
         }
     },
     "vacancy_detail": {
@@ -543,5 +589,40 @@
             "mismatch": "Şifrələr uyğun gəlmir",
             "error": "Şifrəni dəyişmək mümkün olmadı"
         }
+    },
+    "public_profile": {
+        "tabs": {
+            "about": "Haqqında",
+            "posts": "Paylaşımlar",
+            "vacancies": "Vakansiyalar"
+        },
+        "info_title": "Məlumat",
+        "labels": {
+            "full_name": "AD SOYAD",
+            "username": "İSTİFADƏÇİ ADI",
+            "birthday": "DOĞUM TARİXİ",
+            "profession": "PEŞƏ"
+        },
+        "not_set": "Qeyd olunmayıb",
+        "sections": {
+            "experience": "Təcrübə",
+            "education": "Təhsil",
+            "skills": "Bacarıqlar",
+            "languages": "Dillər",
+            "certificates": "Sertifikatlar"
+        },
+        "present": "Davam edir",
+        "level": "Səviyyə",
+        "no_posts": "Bu istifadəçi hələ heç nə paylaşmayıb.",
+        "no_vacancies": "Hələ vakansiya yoxdur.",
+        "no_items": "Hələ əlavə edilməyib.",
+        "book_now": "Randevu al",
+        "follow": "İzlə",
+        "unfollow": "İzləmə"
+    },
+    "application_status": {
+        "pending": "Gözləyir",
+        "accepted": "Qəbul edildi",
+        "rejected": "İmtina edildi"
     }
 }

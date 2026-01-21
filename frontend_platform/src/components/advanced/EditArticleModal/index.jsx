@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { content } from '@/lib/api';
 import Button from '../../ui/Button';
 import Input from '../../ui/Input';
 import { X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 
@@ -69,7 +71,7 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
         }
     };
 
-    return (
+    const modalContent = (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <button onClick={onClose} className={styles.closeBtn}>
@@ -84,6 +86,14 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                         value={data.title}
                         onChange={e => setData({ ...data, title: e.target.value })}
                     />
+
+                    <div className={styles.fieldGroup}>
+                        <label>{t('edit_modal.content')}</label>
+                        <RichTextEditor
+                            content={data.body}
+                            onChange={html => setData({ ...data, body: html })}
+                        />
+                    </div>
 
                     <div className={styles.fieldGroup}>
                         <label>{t('edit_modal.cover_image')}</label>
@@ -111,15 +121,6 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                         </div>
                     </div>
 
-                    <div className={styles.fieldGroup}>
-                        <label>{t('edit_modal.content')}</label>
-                        <textarea
-                            value={data.body}
-                            onChange={e => setData({ ...data, body: e.target.value })}
-                            className={styles.textarea}
-                        />
-                    </div>
-
                     <div className={styles.actions}>
                         <Button type="default" onClick={onClose}>{t('edit_modal.cancel')}</Button>
                         <Button type="primary" onClick={handleSubmit} loading={loading}>{t('edit_modal.save')}</Button>
@@ -128,4 +129,6 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
             </div>
         </div>
     );
+
+    return ReactDOM.createPortal(modalContent, document.body);
 }

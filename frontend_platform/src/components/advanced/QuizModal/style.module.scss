@@ -38,6 +38,12 @@
         color: #666;
         font-size: 14px;
     }
+
+    .reviewScore {
+        font-weight: 600;
+        color: #1890ff;
+        font-size: 16px;
+    }
 }
 
 .resultView {
@@ -90,6 +96,19 @@
                 input {
                     accent-color: #1890ff;
                 }
+            }
+
+            .correct {
+                background: #f6ffed;
+                border-color: #b7eb8f;
+                color: #389e0d;
+                font-weight: 500;
+            }
+
+            .incorrect {
+                background: #fff1f0;
+                border-color: #ffa39e;
+                color: #cf1322;
             }
         }
     }

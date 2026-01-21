@@ -10,8 +10,12 @@ import { toast } from 'react-toastify';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 
+import { formatDate } from '@/lib/utils/date';
+
 export default function ClientPage() {
     const { t, i18n } = useTranslation('common');
+    // ...
+    // ...
     // slug is passed from Server Component
     const params = useParams();
     const slug = params?.slug;
@@ -88,9 +92,7 @@ export default function ClientPage() {
     if (loading) return <div style={{ textAlign: 'center', marginTop: '50px' }}>{t('common.loading')}</div>;
     if (!article) return <div style={{ textAlign: 'center', marginTop: '50px' }}>{t('article_page.not_found')}</div>;
 
-    const formattedDate = new Date(article.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'), {
-        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
-    });
+    const formattedDate = formatDate(article.created_at, i18n.language);
 
     return (
         <div style={{ minHeight: '100vh', background: '#f5f5f5', padding: '24px' }}>
@@ -101,27 +103,37 @@ export default function ClientPage() {
                 </div>
 
                 <header className={styles.header}>
-                    <h1>{article.title}</h1>
-                    <div className={styles.meta}>
-                        <div className={styles.avatar}>
-                            <User size={24} color="#666" />
-                        </div>
-                        <div className={styles.info}>
-                            <span className={styles.author}>{article.author}</span>
-                            <span className={styles.date}>{formattedDate}</span>
+                    <div className={styles.metaWrapper}>
+                        <div className={styles.meta}>
+                            <div className={styles.avatar}>
+                                {article.author_avatar ? (
+                                    <img src={article.author_avatar} alt={article.author} />
+                                ) : (
+                                    <User size={18} color="#666" />
+                                )}
+                            </div>
+                            <div className={styles.info}>
+                                <span className={styles.author}>{article.author}</span>
+                                <span className={styles.dot}>•</span>
+                                <span className={styles.date}>{formattedDate}</span>
+                            </div>
                         </div>
                     </div>
+
+                    <h1 className={styles.title}>{article.title}</h1>
+                    <div className={styles.divider}></div>
                 </header>
 
                 {article.image && (
-                    <div className={styles.coverImage}>
+                    <div className={styles.featuredImage}>
                         <img src={article.image} alt={article.title} />
                     </div>
                 )}
 
-                <div className={styles.body}>
-                    {article.body}
-                </div>
+                <div
+                    className={styles.body}
+                    dangerouslySetInnerHTML={{ __html: article.body }}
+                />
 
                 {/* Actions Bar (Like, Comment) */}
                 <div className={styles.actions}>
@@ -137,10 +149,7 @@ export default function ClientPage() {
                             <span>{t('article_page.likes_count', { count: article.likes_count || 0 })}</span>
                         </button>
 
-                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', color: '#666' }}>
-                            <MessageCircle size={20} />
-                            <span>{t('article_page.comments_count', { count: article.comments_count || 0 })}</span>
-                        </div>
+                      
                     </div>
 
                     {/* Comment Input */}

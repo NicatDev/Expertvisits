@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { X, User } from 'lucide-react';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
@@ -31,7 +32,7 @@ const LikesModal = ({ isOpen, onClose, contentType, objectId }) => {
 
     if (!isOpen) return null;
 
-    return (
+    const modalContent = (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <div className={styles.header}>
@@ -58,6 +59,8 @@ const LikesModal = ({ isOpen, onClose, contentType, objectId }) => {
             </div>
         </div>
     );
+
+    return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default LikesModal;

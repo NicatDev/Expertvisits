@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/i18n/client';
 import Button from '@/components/ui/Button';
 import FeedItem from '@/components/advanced/FeedItem';
-import CreateContentModal from '@/components/advanced/CreateContentModal';
+import CreateArticleModal from '@/components/advanced/CreateArticleModal';
+import CreateQuizModal from '@/components/advanced/CreateQuizModal';
+import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import styles from '../profile.module.scss';
 import api from '@/lib/api/client';
 import { toast } from 'react-toastify';
@@ -14,7 +16,11 @@ const PostsTab = ({ isOwner, profile, onRefreshProfile }) => { // onRefreshProfi
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [filterType, setFilterType] = useState('all');
-    const [showCreateModal, setShowCreateModal] = useState(false);
+
+    // Modals
+    const [showCreateModal, setShowCreateModal] = useState(false); // Selection Modal
+    const [showArticleModal, setShowArticleModal] = useState(false);
+    const [showQuizModal, setShowQuizModal] = useState(false);
 
     useEffect(() => {
         loadUserContent(1, filterType, true);
@@ -101,15 +107,35 @@ const PostsTab = ({ isOwner, profile, onRefreshProfile }) => { // onRefreshProfi
             </div>
 
             {isOwner && (
-                <CreateContentModal
-                    isOpen={showCreateModal}
-                    onClose={() => setShowCreateModal(false)}
-                    onSuccess={() => {
-                        loadUserContent(1, filterType, true);
-                        if (onRefreshProfile) onRefreshProfile();
-                        toast.success(t('profile.content.created_success'));
-                    }}
-                />
+                <>
+                    <ContentSelectionModal
+                        isOpen={showCreateModal}
+                        onClose={() => setShowCreateModal(false)}
+                        onSelect={(type) => {
+                            setShowCreateModal(false);
+                            if (type === 'article') setShowArticleModal(true);
+                            if (type === 'quiz') setShowQuizModal(true);
+                        }}
+                    />
+                    <CreateArticleModal
+                        isOpen={showArticleModal}
+                        onClose={() => setShowArticleModal(false)}
+                        onSuccess={() => {
+                            loadUserContent(1, 'article', true);
+                            if (onRefreshProfile) onRefreshProfile();
+                            toast.success(t('profile.content.created_success'));
+                        }}
+                    />
+                    <CreateQuizModal
+                        isOpen={showQuizModal}
+                        onClose={() => setShowQuizModal(false)}
+                        onSuccess={() => {
+                            loadUserContent(1, 'quiz', true);
+                            if (onRefreshProfile) onRefreshProfile();
+                            toast.success(t('profile.content.created_success'));
+                        }}
+                    />
+                </>
             )}
         </div>
     );

@@ -41,6 +41,12 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
         model = Article
         fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'author', 'author_avatar', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
 
+    def validate_body(self, value):
+        import bleach
+        allowed_tags = ['h2', 'h3', 'h4', 'p', 'b', 'strong', 'i', 'em', 'u', 'br']
+        cleaned_body = bleach.clean(value, tags=allowed_tags, strip=True)
+        return cleaned_body
+
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
@@ -92,3 +98,123 @@ class QuizDetailSerializer(QuizSerializer):
     pass
 
 
+# We need to import QuizAttempt inside method or at top if circular import avoided
+from apps.content.models import QuizAttempt
+
+class QuizAttemptSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    percentage = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuizAttempt
+        fields = ['id', 'score', 'created_at', 'user', 'answers_json', 'percentage']
+
+    def get_user(self, obj):
+        return {
+            "id": obj.user.id,
+            "username": obj.user.username,
+            "full_name": obj.user.get_full_name(),
+            "avatar": obj.user.avatar.url if obj.user.avatar else None
+        }
+
+    def get_percentage(self, obj):
+        total = obj.quiz.questions.count()
+        if total == 0:
+            return 0
+        return round((obj.score / total) * 100)
+
+class ChoiceReviewSerializer(serializers.ModelSerializer):
+    """Exposes is_correct for review purposes"""
+    class Meta:
+        model = Choice
+        fields = ['id', 'text', 'is_correct']
+
+class QuestionReviewSerializer(serializers.ModelSerializer):
+    choices = ChoiceReviewSerializer(many=True)
+    
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'choices']
+
+class QuizReviewSerializer(serializers.ModelSerializer):
+    """Serializer for reviewing a quiz attempt (includes correct answers)"""
+    questions = QuestionReviewSerializer(many=True)
+    user_attempt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        fields = ['id', 'title', 'questions', 'user_attempt']
+
+    def get_user_attempt(self, obj):
+        # We expect 'attempt' to be passed in context or attached to obj
+        attempt = self.context.get('attempt')
+        if attempt:
+            return QuizAttemptSerializer(attempt).data
+        return None
+
+
+
+from apps.content.models import Poll, PollVote, PollOption
+
+class PollOptionSerializer(serializers.ModelSerializer):
+    percentage = serializers.SerializerMethodField()
+    is_voted = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PollOption
+        fields = ['id', 'text', 'percentage', 'is_voted']
+
+    def get_percentage(self, obj):
+        total_votes = obj.poll.votes.count()
+        if total_votes == 0:
+            return 0
+        return round((obj.votes.count() / total_votes) * 100)
+
+    def get_is_voted(self, obj):
+        user = self.context.get('request').user if 'request' in self.context else None
+        if user and user.is_authenticated:
+             return obj.votes.filter(user=user).exists()
+        return False
+
+
+class PollSerializer(serializers.ModelSerializer, ContentSerializerMixin):
+    author = serializers.StringRelatedField(read_only=True)
+    options = PollOptionSerializer(many=True, read_only=True)
+    total_votes = serializers.SerializerMethodField()
+    user_vote = serializers.SerializerMethodField()
+    likes_count = serializers.IntegerField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Poll
+        fields = ['id', 'question', 'options', 'author', 'author_avatar', 'created_at', 'total_votes', 'user_vote', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+
+    def get_total_votes(self, obj):
+        return obj.votes.count()
+
+    def get_user_vote(self, obj):
+        user = self.context.get('request').user if 'request' in self.context else None
+        if user and user.is_authenticated:
+            vote = obj.votes.filter(user=user).first()
+            if vote:
+                return vote.option.id
+        return None
+
+class PollCreateSerializer(serializers.ModelSerializer):
+    options = serializers.ListField(child=serializers.CharField(), write_only=True)
+
+    class Meta:
+        model = Poll
+        fields = ['id', 'question', 'options']
+
+    def create(self, validated_data):
+        options_data = validated_data.pop('options')
+        poll = Poll.objects.create(**validated_data)
+        for option_text in options_data:
+            PollOption.objects.create(poll=poll, text=option_text)
+        return poll
+
+class PollVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PollVote
+        fields = ['id', 'option']

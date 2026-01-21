@@ -39,7 +39,14 @@
         "popular": "Популярное",
         "no_results": "Ничего не найдено.",
         "create_content": "Создать",
-        "load_more": "Загрузить еще"
+        "load_more": "Загрузить еще",
+        "votes": "голосов",
+        "voted": "Проголосовано",
+        "toast": {
+            "vote_success": "Ваш голос учтен!",
+            "vote_failed": "Ошибка голосования",
+            "login_participate": "Войдите, чтобы проголосовать"
+        }
     },
     "feed_item": {
         "likes": "Лайков",
@@ -65,8 +72,15 @@
             "already_participated": "Вы уже прошли этот опрос.",
             "delete_confirm": "Вы уверены, что хотите удалить этот контент?",
             "deleted": "Контент удален.",
-            "failed_delete": "Не удалось удалить."
-        }
+            "failed_delete": "Не удалось удалить.",
+            "failed_load_result": "Не удалось загрузить результат"
+        },
+        "view_results": "Посмотреть результаты",
+        "view_participants": "Посмотреть участников"
+    },
+    "participants_modal": {
+        "title": "Участники",
+        "no_participants": "Пока нет участников."
     },
     "auth_page": {
         "welcome_back": "С возвращением",
@@ -106,8 +120,15 @@
     },
     "create_modal": {
         "title": "Создать контент",
+        "choose_content_type": "Выберите тип контента",
+        "create_article": "Создать статью",
+        "edit_article": "Редактировать статью",
+        "create_quiz": "Создать опрос",
+        "edit_quiz": "Редактировать опрос",
         "article_tab": "Статья",
+        "article_desc": "Поделитесь своими мыслями, знаниями и историями в статье.",
         "quiz_tab": "Опрос",
+        "quiz_desc": "Взаимодействуйте с аудиторией через вопросы и ответы.",
         "post_title": "Заголовок",
         "cover_image": "Обложка",
         "content": "Содержание",
@@ -119,7 +140,18 @@
         "add_option": "+ Добавить вариант",
         "add_question": "+ Добавить вопрос",
         "post_btn": "Опубликовать",
-        "posting": "Публикация..."
+        "posting": "Публикация...",
+        "create_poll": "Создать опрос",
+        "poll_created": "Опрос успешно создан!",
+        "error": "Ошибка операции",
+        "poll_question": "Вопрос",
+        "poll_question_placeholder": "Задайте вопрос...",
+        "poll_options": "Варианты",
+        "option": "Вариант",
+        "add_option": "Добавить вариант",
+        "max_options": "Максимум 4 варианта",
+        "fill_required": "Пожалуйста, заполните все поля",
+        "poll_tab": "Опрос"
     },
     "edit_modal": {
         "title": "Редактировать статью",
@@ -292,20 +324,20 @@
             "accept_btn": "Принять",
             "confirm_cancel": "Вы уверены, что хотите отменить эту встречу?",
             "confirm_unblock": "Вы уверены, что хотите разблокировать этот слот?"
+        },
+        "vacancies": {
+            "title": "Мои вакансии",
+            "post_new": "Разместить новую",
+            "no_vacancies": "Нет размещенных вакансий.",
+            "delete_title": "Удалить вакансию",
+            "delete_message": "Вы уверены, что хотите удалить эту вакансию?",
+            "deleted_success": "Вакансия удалена"
+        },
+        "applications": {
+            "title": "Мои отклики",
+            "no_applications": "Нет отправленных откликов.",
+            "applied_on": "Отклик отправлен"
         }
-    },
-    "vacancies": {
-        "title": "Мои вакансии",
-        "post_new": "Разместить новую",
-        "no_vacancies": "Нет размещенных вакансий.",
-        "delete_title": "Удалить вакансию",
-        "delete_message": "Вы уверены, что хотите удалить эту вакансию?",
-        "deleted_success": "Вакансия удалена"
-    },
-    "applications": {
-        "title": "Мои отклики",
-        "no_applications": "Нет отправленных откликов.",
-        "applied_on": "Отклик отправлен"
     },
     "companies": {
         "title": "Каталог компаний",

@@ -1,0 +1,56 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal {
+    background: #fff;
+    width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+
+    .closeBtn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    h2 {
+        margin-bottom: 24px;
+    }
+}
+
+.formContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .fieldGroup {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+    }
+}
+
+.actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}

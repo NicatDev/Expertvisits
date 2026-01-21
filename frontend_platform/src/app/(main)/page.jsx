@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { content } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import FeedItem from '@/components/advanced/FeedItem';
-import CreateContentModal from '@/components/advanced/CreateContentModal';
+import CreateArticleModal from '@/components/advanced/CreateArticleModal';
+import CreateQuizModal from '@/components/advanced/CreateQuizModal';
+import CreatePollModal from '@/components/advanced/CreatePollModal';
+import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
@@ -17,7 +20,12 @@ export default function HomePage() {
     const { user } = useAuth();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showCreateModal, setShowCreateModal] = useState(false);
+
+    // Modals
+    const [showCreateModal, setShowCreateModal] = useState(false); // Selection
+    const [showArticleModal, setShowArticleModal] = useState(false);
+    const [showPollModal, setShowPollModal] = useState(false);
+    const [showQuizModal, setShowQuizModal] = useState(false);
 
     // Filters & Search
     const [filterType, setFilterType] = useState('all'); // article, quiz
@@ -207,11 +215,41 @@ export default function HomePage() {
 
             </aside>
 
-            <CreateContentModal
+            <ContentSelectionModal
                 isOpen={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
+                onSelect={(type) => {
+                    setShowCreateModal(false);
+                    if (type === 'article') {
+                        setShowArticleModal(true);
+                    }
+                    if (type === 'poll') {
+                        setShowPollModal(true);
+                    }
+                    if (type === 'quiz') setShowQuizModal(true);
+                }}
+            />
+            <CreateArticleModal
+                isOpen={showArticleModal}
+                onClose={() => setShowArticleModal(false)}
                 onSuccess={() => {
-                    setFilterType('article'); // Reset to see the new post if it was an article
+                    setFilterType('article'); // Or current tab? Maybe keep as is, user will likely want to see what they created.
+                    loadFeed(1, true);
+                }}
+            />
+            <CreatePollModal
+                isOpen={showPollModal}
+                onClose={() => setShowPollModal(false)}
+                onSuccess={() => {
+                    setFilterType('poll');
+                    loadFeed(1, true);
+                }}
+            />
+            <CreateQuizModal
+                isOpen={showQuizModal}
+                onClose={() => setShowQuizModal(false)}
+                onSuccess={() => {
+                    setFilterType('quiz');
                     loadFeed(1, true);
                 }}
             />

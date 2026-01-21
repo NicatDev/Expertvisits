@@ -29,8 +29,7 @@ const Button = ({
             disabled={loading || props.disabled}
             {...props}
         >
-            {loading ? <span className={styles.spinner}></span> : icon}
-            {children}
+            {loading ? <span className={styles.spinner}></span> : <>{icon} {children}</>}
         </button>
     );
 };

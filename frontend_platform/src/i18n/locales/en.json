@@ -35,11 +35,19 @@
         "all": "All",
         "article": "Article",
         "quiz": "Quiz",
+        "poll": "Poll",
         "latest": "Latest",
         "popular": "Popular",
         "no_results": "No results found.",
         "create_content": "Create content",
-        "load_more": "Load more"
+        "load_more": "Load more",
+        "votes": "votes",
+        "voted": "Voted",
+        "toast": {
+            "vote_success": "Vote recorded!",
+            "vote_failed": "Failed to vote",
+            "login_participate": "Please login to vote"
+        }
     },
     "feed_item": {
         "likes": "Likes",
@@ -65,8 +73,15 @@
             "already_participated": "You have already participated in this quiz.",
             "delete_confirm": "Are you sure you want to delete this content?",
             "deleted": "Content deleted.",
-            "failed_delete": "Failed to delete."
-        }
+            "failed_delete": "Failed to delete.",
+            "failed_load_result": "Failed to load result"
+        },
+        "view_results": "View Results",
+        "view_participants": "View Participants"
+    },
+    "participants_modal": {
+        "title": "Participants",
+        "no_participants": "No participants yet."
     },
     "auth_page": {
         "welcome_back": "Welcome Back",
@@ -92,6 +107,8 @@
         "verify_btn": "Verify",
         "resend_code": "Resend Code",
         "next": "Next",
+        "select_topics_desc": "Select at least 1 topic to personalize your feed.",
+        "code_sent_desc": "We sent a 6-digit code to your email.",
         "back": "Back",
         "no_account": "Don't have an account?",
         "have_account": "Already have an account?",
@@ -104,8 +121,15 @@
     },
     "create_modal": {
         "title": "Create Content",
+        "choose_content_type": "Choose Content Type",
+        "create_article": "Create Article",
+        "edit_article": "Edit Article",
+        "create_quiz": "Create Quiz",
+        "edit_quiz": "Edit Quiz",
         "article_tab": "Article",
+        "article_desc": "Share your thoughts, knowledge, and stories in a long-form article.",
         "quiz_tab": "Quiz",
+        "quiz_desc": "Engage directly with Q&A.",
         "post_title": "Title",
         "cover_image": "Cover Image",
         "content": "Content",
@@ -117,7 +141,18 @@
         "add_option": "+ Add Option",
         "add_question": "+ Add Question",
         "post_btn": "Post",
-        "posting": "Posting..."
+        "posting": "Posting...",
+        "create_poll": "Create Poll",
+        "poll_created": "Poll created successfully!",
+        "error": "Operation failed",
+        "poll_question": "Question",
+        "poll_question_placeholder": "Ask a question...",
+        "poll_options": "Options",
+        "option": "Option",
+        "add_option": "Add Option",
+        "max_options": "Max 4 options allowed",
+        "fill_required": "Please fill all fields",
+        "poll_tab": "Poll"
     },
     "edit_modal": {
         "title": "Edit Article",
@@ -174,10 +209,6 @@
             "add": "Add",
             "no_items": "No items added."
         },
-        "section_helper": {
-            "add": "Add",
-            "no_items": "No items added."
-        },
         "first_name": "First Name",
         "last_name": "Last Name",
         "username": "Username",
@@ -185,6 +216,7 @@
         "birth_day": "Birth Date",
         "city": "City",
         "profession": "Profession",
+        "user_not_found": "User not found. Please login.",
         "delete_cover": "Delete Cover",
         "avatar": "Avatar",
         "edit_avatar": "Edit Avatar",
@@ -275,20 +307,20 @@
             "accept_btn": "Accept",
             "confirm_cancel": "Are you sure you want to cancel this booking?",
             "confirm_unblock": "Are you sure you want to unblock this slot?"
+        },
+        "vacancies": {
+            "title": "My Vacancies",
+            "post_new": "Post New",
+            "no_vacancies": "No vacancies posted.",
+            "delete_title": "Delete Vacancy",
+            "delete_message": "Are you sure you want to delete this vacancy?",
+            "deleted_success": "Vacancy deleted"
+        },
+        "applications": {
+            "title": "My Applications",
+            "no_applications": "No applications sent.",
+            "applied_on": "Applied on"
         }
-    },
-    "vacancies": {
-        "title": "My Vacancies",
-        "post_new": "Post New",
-        "no_vacancies": "No vacancies posted.",
-        "delete_title": "Delete Vacancy",
-        "delete_message": "Are you sure you want to delete this vacancy?",
-        "deleted_success": "Vacancy deleted"
-    },
-    "applications": {
-        "title": "My Applications",
-        "no_applications": "No applications sent.",
-        "applied_on": "Applied on"
     },
     "days": {
         "Monday": "Monday",
@@ -580,5 +612,40 @@
                 "creating": "Creating..."
             }
         }
+    },
+    "public_profile": {
+        "tabs": {
+            "about": "About",
+            "posts": "Posts",
+            "vacancies": "Vacancies"
+        },
+        "info_title": "Information",
+        "labels": {
+            "full_name": "FULL NAME",
+            "username": "USERNAME",
+            "birthday": "BIRTHDAY",
+            "profession": "PROFESSION"
+        },
+        "not_set": "Not set",
+        "sections": {
+            "experience": "Experience",
+            "education": "Education",
+            "skills": "Skills",
+            "languages": "Languages",
+            "certificates": "Certificates"
+        },
+        "present": "Present",
+        "level": "Level",
+        "no_posts": "This user hasn't shared anything yet.",
+        "no_vacancies": "No vacancies here yet.",
+        "no_items": "Not added yet.",
+        "book_now": "Book Now",
+        "follow": "Follow",
+        "unfollow": "Unfollow"
+    },
+    "application_status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
     }
 }

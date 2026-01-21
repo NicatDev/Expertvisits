@@ -28,7 +28,7 @@ const ApplicationsTab = ({ applications }) => {
                                 color: app.status === 'accepted' ? '#52c41a' : app.status === 'rejected' ? '#f5222d' : '#faad14',
                                 border: `1px solid ${app.status === 'accepted' ? '#b7eb8f' : app.status === 'rejected' ? '#ffa39e' : '#ffe58f'}`
                             }}>
-                                {app.status.toUpperCase()}
+                                {t(`application_status.${app.status}`)}
                             </div>
                         </div>
                     ))

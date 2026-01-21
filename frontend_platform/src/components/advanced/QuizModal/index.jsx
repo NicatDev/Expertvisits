@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import Button from '../../ui/Button';
 import { X } from 'lucide-react';
 import api from '@/lib/api/client';
@@ -6,15 +7,19 @@ import { toast } from 'react-toastify';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 
-export default function QuizModal({ isOpen, onClose, quiz, onSuccess }) {
+export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode = false }) {
     const { t } = useTranslation('common');
-    const [answers, setAnswers] = useState({}); // { questionId: choiceId }
-    const [result, setResult] = useState(null); // { score, total }
+    const [answers, setAnswers] = useState(reviewMode ? quiz?.user_attempt?.answers_json || {} : {});
+    const [result, setResult] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // If reviewMode, quiz prop contains user_attempt and is_correct flags on choice
+    const attempt = reviewMode ? quiz.user_attempt : null;
 
     if (!isOpen || !quiz) return null;
 
     const handleSelect = (qId, cId) => {
+        if (reviewMode) return;
         setAnswers(prev => ({ ...prev, [qId]: cId }));
     };
 
@@ -35,7 +40,18 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess }) {
         }
     };
 
-    return (
+    // Calculate class for option in review mode
+    const getOptionClass = (qId, cId, isCorrect) => {
+        if (!reviewMode) return answers[qId] == cId ? styles.selected : '';
+
+        const userSelected = answers[qId] == cId || (attempt?.answers_json?.[qId] == cId);
+
+        if (isCorrect) return styles.correct; // Show green for correct answer always
+        if (userSelected && !isCorrect) return styles.incorrect; // Show red if user picked wrong
+        return '';
+    };
+
+    const modalContent = (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <button onClick={onClose} className={styles.closeBtn}>
@@ -44,10 +60,16 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess }) {
 
                 <h2>{quiz.title}</h2>
                 <div className={styles.meta}>
-                    {result ? `${t('quiz_modal.score')}: ${result.score} / ${result.total}` : `${quiz.questions.length} ${t('quiz_modal.questions')}`}
+                    {reviewMode ? (
+                        <span className={styles.reviewScore}>
+                            {t('quiz_modal.score')}: {attempt?.percentage}%
+                        </span>
+                    ) : (
+                        result ? `${t('quiz_modal.score')}: ${result.score} / ${result.total}` : `${quiz.questions.length} ${t('quiz_modal.questions')}`
+                    )}
                 </div>
 
-                {result ? (
+                {result && !reviewMode ? (
                     <div className={styles.resultView}>
                         <div className={styles.score}>
                             {Math.round((result.score / result.total) * 100)}%
@@ -67,14 +89,15 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess }) {
                                         {q.choices.map(c => (
                                             <label
                                                 key={c.id}
-                                                className={answers[q.id] == c.id ? styles.selected : ''}
+                                                className={getOptionClass(q.id, c.id, c.is_correct)}
                                             >
                                                 <input
                                                     type="radio"
                                                     name={`q-${q.id}`}
                                                     value={c.id}
-                                                    checked={answers[q.id] == c.id}
+                                                    checked={reviewMode ? (answers[q.id] == c.id || attempt?.answers_json?.[q.id] == c.id) : (answers[q.id] == c.id)}
                                                     onChange={() => handleSelect(q.id, c.id)}
+                                                    disabled={reviewMode}
                                                 />
                                                 <span>{c.text}</span>
                                             </label>
@@ -84,14 +107,19 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess }) {
                             ))}
                         </div>
 
-                        <div className={styles.footer}>
-                            <Button onClick={handleSubmit} disabled={submitting || Object.keys(answers).length < quiz.questions.length}>
-                                {submitting ? t('quiz_modal.submitting') : t('quiz_modal.submit')}
-                            </Button>
-                        </div>
+                        {!reviewMode && (
+                            <div className={styles.footer}>
+                                <Button onClick={handleSubmit} disabled={submitting || Object.keys(answers).length < quiz.questions.length}>
+                                    {submitting ? t('quiz_modal.submitting') : t('quiz_modal.submit')}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
         </div>
     );
+
+    // Use createPortal to render outside of the transform context
+    return ReactDOM.createPortal(modalContent, document.body);
 }
