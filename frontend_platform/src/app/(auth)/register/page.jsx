@@ -12,6 +12,7 @@ import SearchableSelect from '@/components/ui/SearchableSelect';
 import styles from '../auth.module.scss';
 import { ChevronRight, Check, AlertCircle } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
 
 export default function RegisterPage() {
     const { t } = useTranslation('common');
@@ -160,95 +161,106 @@ export default function RegisterPage() {
                 </h1>
 
                 {step === 1 && (
-                    <form onSubmit={handleNext} className={styles.form}>
-                        {/* Personal Information */}
-                        <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>{t('auth_page.personal_info')}</h3>
-                            <div className={styles.grid}>
-                                <div className={styles.field}>
-                                    <Input label={t('auth_page.first_name')} name="first_name" placeholder="John" value={formData.first_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
-                                </div>
-                                <div className={styles.field}>
-                                    <Input label={t('auth_page.last_name')} name="last_name" placeholder="Doe" value={formData.last_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
-                                </div>
-                            </div>
-                            <div className={styles.field}>
-                                <Input label={t('auth_page.username')} name="username" placeholder="johndoe" value={formData.username} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
-                            </div>
-                            <div className={styles.grid}>
-                                <div className={styles.field}>
-                                    <Input label={t('auth_page.phone')} name="phone_number" placeholder="+994 50 123 45 67 (Optional)" value={formData.phone_number} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
-                                </div>
-                                <div className={styles.field}>
-                                    <Input label={t('auth_page.birth_date')} name="birth_day" type="date" placeholder="DD.MM.YYYY" value={formData.birth_day} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
-                                </div>
-                            </div>
+                    <>
+                        <GoogleAuthButton mode="signup" />
+
+                        <div style={{ margin: '24px 0', textAlign: 'center', position: 'relative' }}>
+                            <span style={{ padding: '0 10px', position: 'relative', zIndex: 1, color: '#999', fontSize: '14px', backgroundColor: '#fff' }}>
+                                {t('auth_page.or') || 'OR'}
+                            </span>
+                            <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: '#e5e7eb', zIndex: 0 }}></div>
                         </div>
 
-                        {/* Professional Details */}
-                        <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>{t('auth_page.professional_details')}</h3>
-                            <div className={styles.grid}>
-                                <div className={styles.field}>
-                                    <label>{t('auth_page.city')}</label>
-                                    <LocationSelect
-                                        value={formData.city}
-                                        onChange={val => setFormData(prev => ({ ...prev, city: val }))}
-                                        placeholder={t('auth_page.select_city')}
-                                    />
+                        <form onSubmit={handleNext} className={styles.form}>
+                            {/* Personal Information */}
+                            <div className={styles.section}>
+                                <h3 className={styles.sectionTitle}>{t('auth_page.personal_info')}</h3>
+                                <div className={styles.grid}>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.first_name')} name="first_name" placeholder="John" value={formData.first_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.last_name')} name="last_name" placeholder="Doe" value={formData.last_name} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
                                 </div>
                                 <div className={styles.field}>
-                                    <label>{t('auth_page.profession')}</label>
-                                    <SearchableSelect
-                                        options={categories}
-                                        value={professionId}
-                                        onChange={(val) => setProfessionId(val)}
-                                        groupBy="subcategories"
-                                        labelKey="name"
-                                        valueKey="id"
-                                        placeholder={t('auth_page.select_profession')}
-                                    />
+                                    <Input label={t('auth_page.username')} name="username" placeholder="johndoe" value={formData.username} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                                <div className={styles.grid}>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.phone')} name="phone_number" placeholder="+994 50 123 45 67 (Optional)" value={formData.phone_number} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.birth_date')} name="birth_day" type="date" placeholder="DD.MM.YYYY" value={formData.birth_day} onChange={handleChange} wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Account Security */}
-                        <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>{t('auth_page.security')}</h3>
-                            <div className={styles.field}>
-                                <Input label={t('auth_page.email')} name="email" type="email" placeholder="example@mail.com" value={formData.email} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
-                            </div>
-                            <div className={styles.grid}>
-                                <div className={styles.field}>
-                                    <Input label={t('auth_page.password')} name="password" type="password" placeholder="********" value={formData.password} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                            {/* Professional Details */}
+                            <div className={styles.section}>
+                                <h3 className={styles.sectionTitle}>{t('auth_page.professional_details')}</h3>
+                                <div className={styles.grid}>
+                                    <div className={styles.field}>
+                                        <label>{t('auth_page.city')}</label>
+                                        <LocationSelect
+                                            value={formData.city}
+                                            onChange={val => setFormData(prev => ({ ...prev, city: val }))}
+                                            placeholder={t('auth_page.select_city')}
+                                        />
+                                    </div>
+                                    <div className={styles.field}>
+                                        <label>{t('auth_page.profession')}</label>
+                                        <SearchableSelect
+                                            options={categories}
+                                            value={professionId}
+                                            onChange={(val) => setProfessionId(val)}
+                                            groupBy="subcategories"
+                                            labelKey="name"
+                                            valueKey="id"
+                                            placeholder={t('auth_page.select_profession')}
+                                        />
+                                    </div>
                                 </div>
+                            </div>
+
+                            {/* Account Security */}
+                            <div className={styles.section}>
+                                <h3 className={styles.sectionTitle}>{t('auth_page.security')}</h3>
                                 <div className={styles.field}>
-                                    <Input label={t('auth_page.confirm_password')} name="confirmPassword" type="password" placeholder="********" value={formData.confirmPassword} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    <Input label={t('auth_page.email')} name="email" type="email" placeholder="example@mail.com" value={formData.email} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                </div>
+                                <div className={styles.grid}>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.password')} name="password" type="password" placeholder="********" value={formData.password} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
+                                    <div className={styles.field}>
+                                        <Input label={t('auth_page.confirm_password')} name="confirmPassword" type="password" placeholder="********" value={formData.confirmPassword} onChange={handleChange} required wrapperStyle={{ marginBottom: 0 }} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {error && (
-                            <div style={{
-                                backgroundColor: '#fff2f0',
-                                border: '1px solid #ffccc7',
-                                borderRadius: '8px',
-                                padding: '12px',
-                                color: '#ff4d4f',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px'
-                            }}>
-                                <AlertCircle size={18} />
-                                <span>{error}</span>
-                            </div>
-                        )}
+                            {error && (
+                                <div style={{
+                                    backgroundColor: '#fff2f0',
+                                    border: '1px solid #ffccc7',
+                                    borderRadius: '8px',
+                                    padding: '12px',
+                                    color: '#ff4d4f',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '14px'
+                                }}>
+                                    <AlertCircle size={18} />
+                                    <span>{error}</span>
+                                </div>
+                            )}
 
-                        <Button type="primary" htmlType="submit" block>
-                            {t('auth_page.next')} <ChevronRight size={16} />
-                        </Button>
-                    </form>
+                            <Button type="primary" htmlType="submit" block>
+                                {t('auth_page.next')} <ChevronRight size={16} />
+                            </Button>
+                        </form>
+                    </>
                 )}
 
                 {step === 2 && (

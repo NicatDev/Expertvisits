@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import styles from '../auth.module.scss';
 import { useTranslation } from '@/i18n/client';
+import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
 
 export default function LoginPage() {
     const { t } = useTranslation('common');
@@ -62,6 +63,15 @@ export default function LoginPage() {
                         {loading ? t('auth_page.logging_in') : t('auth_page.login_btn')}
                     </Button>
                 </form>
+
+                <div style={{ margin: '20px 0', textAlign: 'center', position: 'relative' }}>
+                    <span style={{ padding: '0 10px', position: 'relative', zIndex: 1, color: '#999', fontSize: '14px', backgroundColor: '#fff' }}>
+                        {t('auth_page.or') || 'OR'}
+                    </span>
+                    <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: '#e5e7eb', zIndex: 0 }}></div>
+                </div>
+
+                <GoogleAuthButton mode="login" />
                 <div className={styles.footer}>
                     {t('auth_page.no_account')} <Link href="/register">{t('auth_page.register_link')}</Link>
                 </div>

@@ -3,6 +3,7 @@ import "../styles/globals.scss";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning={true}>
-        <AuthProvider>
-          {children}
-          <ToastContainer />
-        </AuthProvider>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+          <AuthProvider>
+            {children}
+            <ToastContainer />
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

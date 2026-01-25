@@ -10,9 +10,10 @@ import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
-import { Search } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, ChevronDown } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
+import NoContent from '@/components/ui/NoContent';
 import { useTranslation } from '@/i18n/client';
 
 export default function HomePage() {
@@ -30,6 +31,9 @@ export default function HomePage() {
     // Filters & Search
     const [filterType, setFilterType] = useState('all'); // article, quiz
     const [ordering, setOrdering] = useState('created_at'); // created_at, popularity
+    const [scope, setScope] = useState('all'); // all, following
+    const [showFilters, setShowFilters] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -49,7 +53,7 @@ export default function HomePage() {
     // Fetch Trigger (Reset)
     useEffect(() => {
         loadFeed(1, true);
-    }, [filterType, ordering, debouncedSearch]);
+    }, [filterType, ordering, scope, debouncedSearch]);
 
     const loadFeed = async (pageNo = 1, reset = false) => {
         if (reset) {
@@ -68,6 +72,7 @@ export default function HomePage() {
             const params = {
                 type: filterType,
                 ordering: ordering,
+                scope: scope,
                 search: debouncedSearch,
                 page: pageNo,
                 limit: 10
@@ -141,7 +146,7 @@ export default function HomePage() {
                     <div className={styles.leftGroup}>
                         {/* Filters */}
                         <div className={styles.filters}>
-                            {['all', 'article', 'quiz'].map(type => (
+                            {['all', 'article', 'quiz', 'poll'].map(type => (
                                 <button
                                     key={type}
                                     onClick={() => setFilterType(type)}
@@ -164,14 +169,93 @@ export default function HomePage() {
                         </div>
                     </div>
 
-                    {/* Ordering */}
-                    <select
-                        value={ordering}
-                        onChange={(e) => setOrdering(e.target.value)}
-                    >
-                        <option value="created_at">{t('feed.latest')}</option>
-                        <option value="popularity">{t('feed.popular')}</option>
-                    </select>
+                    {/* Ordering & Scope (More Options) */}
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            className={styles.filterBtn}
+                            onClick={() => setShowFilters(!showFilters)}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '8px',
+                                padding: '8px 12px', borderRadius: '8px', border: '1px solid #ddd',
+                                background: '#fff', cursor: 'pointer'
+                            }}
+                        >
+                            <SlidersHorizontal size={16} />
+                            <span style={{ fontSize: '14px', fontWeight: 500 }}>{t('common.filter', { defaultValue: 'Filters' })}</span>
+                        </button>
+
+                        {showFilters && (
+                            <div style={{
+                                position: 'absolute', top: '100%', right: 0, marginTop: '8px',
+                                background: '#fff', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                padding: '16px', minWidth: '220px', zIndex: 10, border: '1px solid #eee'
+                            }}>
+                                {/* View Mode */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', textTransform: 'uppercase', color: '#999' }}>{t('feed.view_mode')}</h4>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                                            <input
+                                                type="radio"
+                                                name="scope"
+                                                checked={scope === 'all'}
+                                                onChange={() => { setScope('all'); setShowFilters(false); }}
+                                            />
+                                            {t('feed.view_all')}
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                                            <input
+                                                type="radio"
+                                                name="scope"
+                                                checked={scope === 'following'}
+                                                onChange={() => {
+                                                    if (!user) { toast.info('Please login'); return; }
+                                                    setScope('following');
+                                                    setShowFilters(false);
+                                                }}
+                                            />
+                                            {t('feed.view_following')}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Divider */}
+                                <div style={{ height: '1px', background: '#eee', margin: '0 -16px 16px -16px' }} />
+
+                                {/* Sort By */}
+                                <div>
+                                    <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', textTransform: 'uppercase', color: '#999' }}>{t('feed.sort_by')}</h4>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                                            <input
+                                                type="radio"
+                                                name="ordering"
+                                                checked={ordering === 'created_at'}
+                                                onChange={() => { setOrdering('created_at'); setShowFilters(false); }}
+                                            />
+                                            {t('feed.latest')}
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                                            <input
+                                                type="radio"
+                                                name="ordering"
+                                                checked={ordering === 'popularity'}
+                                                onChange={() => { setOrdering('popularity'); setShowFilters(false); }}
+                                            />
+                                            {t('feed.popular')}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {/* Overlay to close */}
+                        {showFilters && (
+                            <div
+                                style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9 }}
+                                onClick={() => setShowFilters(false)}
+                            />
+                        )}
+                    </div>
                 </div>
 
                 {/* Feed Content */}
@@ -185,7 +269,7 @@ export default function HomePage() {
                             <FeedItem key={`${article.type || 'article'}-${article.id}`} item={article} />
                         )) : (
                             <div className={styles.emptyState}>
-                                <p>{t('feed.no_results')}</p>
+                                <NoContent message={t('feed.no_results')} />
                                 <Button type="link" onClick={handleCreateClick}>{t('feed.create_content')}</Button>
                             </div>
                         )}

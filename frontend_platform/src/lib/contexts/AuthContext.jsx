@@ -61,6 +61,13 @@ export const AuthProvider = ({ children }) => {
         router.push('/login');
     };
 
+    const loginWithTokens = (access, refresh, userData) => {
+        localStorage.setItem('accessToken', access);
+        localStorage.setItem('refreshToken', refresh);
+        setUser(userData);
+        router.refresh();
+    };
+
     const refreshUser = async () => {
         const token = localStorage.getItem('accessToken');
         if (token) {
@@ -74,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, logout, loading, refreshUser }}>
+        <AuthContext.Provider value={{ user, setUser, login, loginWithTokens, logout, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

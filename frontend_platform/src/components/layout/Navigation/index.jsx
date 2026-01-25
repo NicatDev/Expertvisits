@@ -29,6 +29,7 @@ const Navigation = () => {
                 {/* Center: Desktop Menu */}
                 <div className={styles.centerMenu}>
                     <Link href="/" className={styles.navLink} suppressHydrationWarning>{t('nav.home')}</Link>
+                    <Link href="/experts" className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
                     <Link href="/vacancies" className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                     <Link href="/companies" className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
                 </div>
@@ -65,6 +66,7 @@ const Navigation = () => {
                                 {user ? (
                                     <>
                                         <button onClick={() => router.push('/profile')} suppressHydrationWarning>{t('nav.profile')}</button>
+                                        <button onClick={() => router.push('/settings')} suppressHydrationWarning>{t('nav.settings')}</button>
                                         <button onClick={logout} style={{ color: 'red' }} suppressHydrationWarning>{t('auth.logout')}</button>
                                     </>
                                 ) : (
@@ -85,14 +87,16 @@ const Navigation = () => {
             </div>
 
             {/* Mobile Menu Overlay */}
-            {isMenuOpen && (
-                <div className={styles.mobileMenu}>
-                    <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
-                    <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
-                    <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
-                </div>
-            )}
-        </nav>
+            {
+                isMenuOpen && (
+                    <div className={styles.mobileMenu}>
+                        <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
+                        <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
+                        <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
+                    </div>
+                )
+            }
+        </nav >
     );
 };
 

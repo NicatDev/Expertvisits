@@ -81,10 +81,13 @@ export const EducationModal = ({ isOpen, onClose, initialData, onSave }) => {
                     value={formData.degree_type}
                     onChange={e => setFormData({ ...formData, degree_type: e.target.value })}
                 >
-                    <option value="bachelor">Bakalavr</option>
-                    <option value="master">Magistr</option>
-                    <option value="doctorate">Doktorantura</option>
-                    <option value="certification">Təhsil Artırma/Sertifikat</option>
+                    <option value="secondary">{t('profile_modals.education.secondary')}</option>
+                    <option value="full_secondary">{t('profile_modals.education.full_secondary')}</option>
+                    <option value="vocational">{t('profile_modals.education.vocational')}</option>
+                    <option value="bachelor">{t('profile_modals.education.bachelor')}</option>
+                    <option value="master">{t('profile_modals.education.master')}</option>
+                    <option value="doctorate">{t('profile_modals.education.doctorate')}</option>
+                    <option value="certification">{t('profile_modals.education.certification')}</option>
                 </select>
             </div>
             <Input label={t('profile_modals.education.institution')} value={formData.institution} onChange={e => setFormData({ ...formData, institution: e.target.value })} required />

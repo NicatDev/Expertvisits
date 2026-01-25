@@ -7,6 +7,7 @@ import styles from './style.module.scss';
 import { User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
+import Link from 'next/link';
 
 const FollowListModal = ({ isOpen, onClose, username, type }) => {
     const { t } = useTranslation('common');
@@ -69,17 +70,19 @@ const FollowListModal = ({ isOpen, onClose, username, type }) => {
                         {users.length === 0 && <p style={{ padding: '20px', textAlign: 'center', color: '#888' }}>{t('follow_modal.no_users')}</p>}
                         {users.map(u => (
                             <div key={u.id} className={styles.userRow}>
-                                {u.avatar ? (
-                                    <img src={u.avatar} className={styles.avatar} alt={u.username} />
-                                ) : (
-                                    <div className={styles.avatar} style={{ background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <User size={20} color="#888" />
+                                <Link href={`/user/${u.username}`} onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, textDecoration: 'none', color: 'inherit' }}>
+                                    {u.avatar ? (
+                                        <img src={u.avatar} className={styles.avatar} alt={u.username} />
+                                    ) : (
+                                        <div className={styles.avatar} style={{ background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <User size={20} color="#888" />
+                                        </div>
+                                    )}
+                                    <div className={styles.userInfo}>
+                                        <h4>{u.first_name} {u.last_name}</h4>
+                                        <span>@{u.username}</span>
                                     </div>
-                                )}
-                                <div className={styles.userInfo}>
-                                    <h4>{u.first_name} {u.last_name}</h4>
-                                    <span>@{u.username}</span>
-                                </div>
+                                </Link>
                                 {currentUser && currentUser.username !== u.username && (
                                     <Button
                                         type={u.is_following ? "default" : "primary"}

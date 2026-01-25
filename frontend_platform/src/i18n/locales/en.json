@@ -17,12 +17,40 @@
         "explore": "Explore",
         "notifications": "Notifications",
         "messages": "Messages",
-        "profile": "Profile"
+        "profile": "Profile",
+        "settings": "Settings",
+        "experts": "Experts"
     },
     "auth": {
         "login": "Login",
         "register": "Register",
         "logout": "Logout"
+    },
+    "settings": {
+        "tabs": {
+            "general": "General",
+            "security": "Security",
+            "notifications": "Notifications",
+            "language": "Language"
+        },
+        "placeholder": "Settings section for:",
+        "updated": "Settings updated",
+        "update_failed": "Failed to update",
+        "is_searchable": "Show in search results",
+        "is_searchable_desc": "Other users will be able to find you in search.",
+        "show_phone_number": "Show phone number",
+        "show_phone_number_desc": "Your phone number will be visible to everyone on your profile.",
+        "notify_email_general": "Email notifications",
+        "notify_email_general_desc": "Receive general system notifications via email.",
+        "notify_meeting_reminder_1h": "Meeting reminder (1 hour before)",
+        "notify_meeting_reminder_1h_desc": "Receive an email notification 1 hour before the meeting.",
+        "notify_meeting_reminder_15m": "Meeting reminder (15 mins before)",
+        "notify_meeting_reminder_15m_desc": "Receive an email notification 15 minutes before the meeting.",
+        "notify_new_follower": "New follower notifications",
+        "notify_new_follower_desc": "Receive an email notification when someone follows you.",
+        "notify_updates": "News and updates",
+        "notify_updates_desc": "Receive news about platform updates.",
+        "language_desc": "Language settings are managed via the top bar."
     },
     "article_page": {
         "load_error": "Failed to load article",
@@ -38,6 +66,10 @@
         "poll": "Poll",
         "latest": "Latest",
         "popular": "Popular",
+        "view_all": "All Posts",
+        "view_following": "Following",
+        "sort_by": "Sort By",
+        "view_mode": "View Mode",
         "no_results": "No results found.",
         "create_content": "Create content",
         "load_more": "Load more",
@@ -152,7 +184,8 @@
         "add_option": "Add Option",
         "max_options": "Max 4 options allowed",
         "fill_required": "Please fill all fields",
-        "poll_tab": "Poll"
+        "poll_tab": "Poll",
+        "poll_desc": "Gather opinions quickly."
     },
     "edit_modal": {
         "title": "Edit Article",
@@ -212,6 +245,7 @@
         "first_name": "First Name",
         "last_name": "Last Name",
         "username": "Username",
+        "email": "Email",
         "phone_number": "Phone Number",
         "birth_day": "Birth Date",
         "city": "City",
@@ -220,6 +254,14 @@
         "delete_cover": "Delete Cover",
         "avatar": "Avatar",
         "edit_avatar": "Edit Avatar",
+        "avatar_modal": {
+            "title": "Update Profile Picture",
+            "change": "Change Photo",
+            "remove": "Remove Current Photo",
+            "delete_title": "Delete Avatar",
+            "delete_message": "Are you sure you want to remove your profile picture?",
+            "cancel": "Cancel"
+        },
         "followers": "followers",
         "following": "following",
         "change_password": "Change Password",
@@ -240,6 +282,13 @@
             "certificates": "Certificates"
         },
         "level": "Level",
+        "open_to": "Open to Work",
+        "open_to_roles": {
+            "teacher": "Teacher",
+            "mentor": "Mentor",
+            "freelance": "Freelance",
+            "long_term": "Long-term work"
+        },
         "filters": {
             "all": "All",
             "articles": "Articles",
@@ -252,7 +301,12 @@
             "failed_delete": "Failed to delete",
             "failed_update": "Failed to update",
             "availability_saved": "Availability settings saved successfully!",
-            "password_changed": "Password changed successfully"
+            "password_changed": "Password changed successfully",
+            "time_blocked_success": "Time blocked successfully!",
+            "block_failed": "Failed to block time. Check for overlaps.",
+            "select_date_time": "Please select date and time",
+            "overlap_error": "Selected time overlaps with an existing booking or busy slot.",
+            "updated": "Updated successfully"
         },
         "modals": {
             "reject_title": "Reject Request",
@@ -320,6 +374,11 @@
             "title": "My Applications",
             "no_applications": "No applications sent.",
             "applied_on": "Applied on"
+        },
+        "content": {
+            "title": "Content",
+            "no_content": "No content.",
+            "add_content": "Add Content"
         }
     },
     "days": {
@@ -330,14 +389,6 @@
         "Friday": "Friday",
         "Saturday": "Saturday",
         "Sunday": "Sunday"
-    },
-    "avatar_modal": {
-        "title": "Update Profile Picture",
-        "change": "Change Photo",
-        "remove": "Remove Current Photo",
-        "delete_title": "Delete Avatar",
-        "delete_message": "Are you sure you want to remove your profile picture?",
-        "cancel": "Cancel"
     },
     "content": {
         "add_content": "Add Content",
@@ -392,6 +443,13 @@
             "edit": "Edit Education",
             "add": "Add Education",
             "degree": "Degree Type",
+            "secondary": "Secondary Education",
+            "full_secondary": "Full Secondary Education",
+            "vocational": "Vocational Education",
+            "bachelor": "Bachelor",
+            "master": "Master",
+            "doctorate": "Doctorate",
+            "certification": "Certification",
             "institution": "Institution",
             "field": "Field of Study",
             "start": "Start Date",
@@ -647,5 +705,32 @@
         "pending": "Pending",
         "accepted": "Accepted",
         "rejected": "Rejected"
+    },
+    "experts": {
+        "title": "Find Experts",
+        "subtitle": "Connect with professionals across various fields",
+        "auth_required_title": "Authentication Required",
+        "auth_required_desc": "Please log in to search and connect with experts.",
+        "login_to_continue": "Log In",
+        "filters": {
+            "title": "Search Filters",
+            "search": "Name or Surname",
+            "search_placeholder": "Search...",
+            "skill": "Skills",
+            "hard_skills": "Hard Skills",
+            "soft_skills": "Soft Skills",
+            "skill_placeholder": "Ex: Design, Python...",
+            "degree": "Education Degree",
+            "all_degrees": "All Degrees",
+            "location": "Location",
+            "location_placeholder": "City...",
+            "clear": "Clear Filters"
+        },
+        "search_btn": "Search",
+        "no_results": "No results found",
+        "no_results_desc": "No experts found matching your criteria.",
+        "load_more": "Load More",
+        "spam_warning": "Warning: Browsing users without search filters is limited to prevent spam. Please verify your search criteria.",
+        "view_profile": "View Profile"
     }
 }

@@ -20,10 +20,14 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticatedOrReadOnly()]
 
     def get_queryset(self):
-        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company').annotate(
+        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company', 'educations', 'skills').annotate(
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
-        )
+        ).order_by('-date_joined')
+        
+        # Standard search handling via filter_backends
+
+
         if self.request.user.is_authenticated:
             queryset = queryset.exclude(id=self.request.user.id)
             queryset = queryset.annotate(
@@ -34,7 +38,37 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                     )
                 )
             )
-        return queryset
+
+        # Custom Filters
+        from django.db.models import Q
+        params = self.request.query_params
+
+        # Skills (Strict AND logic - user must have ALL selected skills)
+        # Support both 'key' and 'key[]' formats
+        hard_skills = params.getlist('hard_skills') or params.getlist('hard_skills[]')
+        if hard_skills:
+            for skill in hard_skills:
+                queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='hard')
+
+        soft_skills = params.getlist('soft_skills') or params.getlist('soft_skills[]')
+        if soft_skills:
+            for skill in soft_skills:
+                queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='soft')
+
+        # Locations (OR logic - user can be in any of the selected cities)
+        locations = params.getlist('locations') or params.getlist('locations[]')
+        if locations:
+            location_q = Q()
+            for loc in locations:
+                location_q |= Q(city__icontains=loc)
+            queryset = queryset.filter(location_q)
+
+        # Degree (Simple filter)
+        degree = params.get('degree')
+        if degree:
+            queryset = queryset.filter(educations__degree_type=degree).distinct()
+
+        return queryset.distinct()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

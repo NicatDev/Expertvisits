@@ -16,6 +16,9 @@ class Education(models.Model):
         ('bachelor', 'Bakalavr'),
         ('master', 'Magistr'),
         ('doctorate', 'Doktorantura'),
+        ('secondary', 'Orta'),
+        ('full_secondary', 'Tam orta'),
+        ('vocational', 'Peşə təhsili'),
         ('certification', 'Təhsil Artırma/Sertifikat')
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='educations')

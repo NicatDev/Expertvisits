@@ -42,14 +42,16 @@ class BookingEventsAPIView(APIView):
             
             if is_my_booking:
                 if b.status == 'pending':
-                    other_party = b.provider if b.customer == request.user else b.customer
-                    title = f"Pending Request with {other_party.first_name}"
                     color = '#faad14' # Yellow/Orange
                 else:
-                    # Confirmed
-                    other_party = b.provider if b.customer == request.user else b.customer
-                    title = f"Meeting with {other_party.first_name}"
                     color = '#52c41a' # Green
+
+                if b.customer == request.user:
+                    # I sent the request
+                    title = f"From: Me To: {b.provider.first_name} {b.provider.last_name}"
+                else:
+                    # I received the request
+                    title = f"From: {b.customer.first_name} {b.customer.last_name} To: Me"
             elif is_owner:
                  # Provider viewing own calendar (Private View logic fallback if needed, though usually covered by is_my_booking)
                  # Wait, if I am the provider, is_my_booking is True. So this elif might be redundant or for specific edge cases.
@@ -66,6 +68,8 @@ class BookingEventsAPIView(APIView):
                  title = "Blocked"
                  color = '#595959' # Dark Grey
 
+            is_incoming = (b.customer != request.user)
+
             events.append({
                 'id': b.id,
                 'title': title,
@@ -75,7 +79,9 @@ class BookingEventsAPIView(APIView):
                 'borderColor': color,
                 'extendedProps': {
                     'status': b.status,
-                    'note': b.note
+                    'note': b.note,
+                    'is_incoming': is_incoming,
+                    'customer': b.customer_id # useful if needed
                 }
             })
             

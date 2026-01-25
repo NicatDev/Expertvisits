@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,12 +8,13 @@ import interactionPlugin from '@fullcalendar/interaction';
 import styles from './style.module.scss';
 
 const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHours }) => {
+    const { i18n } = useTranslation();
 
     // Construct businessHours object if constraints are provided
     const businessHours = (workingDays && workingHours) ? {
         daysOfWeek: workingDays, // [1, 2, 3, 4, 5]
         startTime: workingHours.start || '09:00',
-        endTime: workingHours.end || '17:00'
+        endTime: workingHours.end || '18:00'
     } : undefined;
 
     return (
@@ -25,6 +27,7 @@ const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHour
                     center: 'title',
                     right: '' // Removed dayGridMonth, timeGridDay
                 }}
+                locale={i18n.language}
                 selectable={true}
                 selectMirror={true}
                 dayMaxEvents={true}
@@ -33,8 +36,8 @@ const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHour
                 select={onDateSelect}
                 eventClick={onEventClick}
                 height="auto"
-                slotMinTime="08:00:00"
-                slotMaxTime="20:00:00"
+                slotMinTime={workingHours?.start ? `${workingHours.start}:00` : "09:00:00"}
+                slotMaxTime={workingHours?.end ? `${workingHours.end}:00` : "18:00:00"}
                 allDaySlot={false}
 
                 // Availability Constraints
@@ -54,6 +57,7 @@ const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHour
                     minute: '2-digit',
                     hour12: false
                 }}
+                displayEventTime={false}
 
                 // Event Application Colors (Dark Green BG, White Text) - Defaults if not provided by event
                 eventBackgroundColor="#389e0d"

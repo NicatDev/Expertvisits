@@ -32,7 +32,9 @@ class UserSerializer(serializers.ModelSerializer):
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
     is_following = serializers.BooleanField(read_only=True, required=False)
+    is_following = serializers.BooleanField(read_only=True, required=False)
     company_slug = serializers.SerializerMethodField()
+    highest_education = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -41,7 +43,12 @@ class UserSerializer(serializers.ModelSerializer):
             'phone_number', 'birth_day', 'city', 'interests', 'avatar', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
-            'followers_count', 'following_count', 'is_following', 'company_slug'
+            'followers_count', 'following_count', 'is_following', 'company_slug',
+            'highest_education',
+            'open_to',
+            'is_searchable', 'show_phone_number', 'notify_email_general',
+            'notify_meeting_reminder_1h', 'notify_meeting_reminder_15m',
+            'notify_new_follower', 'notify_updates'
         ]
         # read_only_fields = ['username', 'email'] # Username/Email handled by default logic? 
         # Wait, RegisterSerializer usually handles creation, so fields should be writable.
@@ -85,3 +92,49 @@ class UserSerializer(serializers.ModelSerializer):
             return obj.company.slug
         except:
             return None
+
+    def get_highest_education(self, obj):
+        educations = obj.educations.all()
+        if not educations:
+            return None
+        
+        # Rank degrees
+        ranks = {
+            'doctorate': 6,
+            'master': 5,
+            'bachelor': 4,
+            'full_secondary': 3,
+            'secondary': 2,
+            'vocational': 1,
+            'certification': 0
+        }
+        
+        highest = None
+        max_rank = -1
+        
+        for edu in educations:
+            rank = ranks.get(edu.degree_type, -1)
+            if rank > max_rank:
+                max_rank = rank
+                highest = edu
+        
+        if highest:
+            # Need to get display value manually or from choice list if possible. 
+            # Easiest is to return the object details or just the type/display.
+            # Returning display string.
+            return highest.get_degree_type_display()
+        return None
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        # Hide phone number if show_phone_number is False and requester is not the owner
+        if not instance.show_phone_number:
+            if request and request.user != instance:
+                ret.pop('phone_number', None)
+            elif not request: # Case where request is missing? Assume hide? Or internal?
+                # Usually keep if internal
+                pass
+        
+        return ret

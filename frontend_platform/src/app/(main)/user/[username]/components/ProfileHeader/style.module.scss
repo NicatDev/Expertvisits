@@ -1,0 +1,112 @@
+@import '../../../../../../styles/variables.scss';
+@import '../../../../../../styles/mixins.scss';
+
+.container {
+    // max-width: 900px; 
+    // margin: 0 auto;
+    // Container width managed by main page layout
+}
+
+.header {
+    background: #fff;
+    border-radius: $border-radius-base;
+    overflow: hidden;
+    margin-bottom: $spacing-lg;
+    box-shadow: $box-shadow-base;
+}
+
+.coverContainer {
+    position: relative;
+    height: 200px;
+    background-color: #f0f2f5;
+    overflow: hidden;
+}
+
+.defaultCover {
+    width: 100%;
+    height: 100%;
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info {
+    padding: $spacing-lg;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: 10px 10px;
+
+
+    @include mobile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-top: 10px;
+    }
+}
+
+.avatarContainer {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #fff;
+    flex-shrink: 0;
+    z-index: 5;
+
+    @include mobile {
+        position: relative;
+        top: -40px;
+        left: auto;
+        margin-bottom: -30px;
+    }
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+}
+
+.names {
+    flex: 1;
+    margin-bottom: $spacing-sm;
+    // margin-left: 100px; // Offset for avatar removed since avatar is static position now
+
+    @include mobile {
+        margin-left: 0;
+    }
+
+    h1 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+}
+
+.subtitle {
+    color: $text-secondary;
+    font-size: 16px;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-md;
+    align-items: center;
+}

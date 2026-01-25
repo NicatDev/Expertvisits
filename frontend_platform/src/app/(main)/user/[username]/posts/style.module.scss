@@ -1,0 +1,44 @@
+@import '../../../../../styles/variables.scss';
+
+.container {
+    // background: #fff;
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+
+    h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+}
+
+.filterBtn {
+    background: #f0f0f0;
+    color: #333;
+    border: none;
+
+    &:hover {
+        background: darken(#f0f0f0, 5%);
+    }
+}
+
+.activeFilter {
+    background: $primary-color !important;
+    color: #fff !important;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

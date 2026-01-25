@@ -24,6 +24,8 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         role = self.request.query_params.get('role', 'customer')
         if role == 'provider':
             qs = qs.filter(provider=user)
+        elif role == 'any':
+            qs = qs.filter(models.Q(provider=user) | models.Q(customer=user))
         else:
             qs = qs.filter(customer=user)
         
@@ -32,6 +34,15 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         if status_param:
             statuses = status_param.split(',')
             qs = qs.filter(status__in=statuses)
+
+        # Date Filter (min_date) - ISO format expected
+        min_date_str = self.request.query_params.get('min_date')
+        if min_date_str:
+            try:
+                min_date = datetime.datetime.fromisoformat(min_date_str.replace('Z', '+00:00'))
+                qs = qs.filter(requested_datetime__gte=min_date)
+            except ValueError:
+                pass # Ignore invalid date format
             
         # Exclude Self (Self-bookings)
         exclude_self = self.request.query_params.get('exclude_self')

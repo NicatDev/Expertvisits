@@ -5,7 +5,7 @@ import Input from '@/components/ui/Input';
 import { X } from 'lucide-react';
 import { services } from '@/lib/api';
 
-const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events, workingDays, workingHours, onSuccess }) => {
+const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events = [], workingDays, workingHours, onSuccess }) => {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [duration, setDuration] = useState(30);

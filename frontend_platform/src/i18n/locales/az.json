@@ -17,12 +17,40 @@
         "explore": "Kəşf et",
         "notifications": "Bildirişlər",
         "messages": "Mesajlar",
-        "profile": "Profil"
+        "profile": "Profil",
+        "settings": "Tənzimləmələr",
+        "experts": "Ekspertlər"
     },
     "auth": {
         "login": "Daxil ol",
         "register": "Qeydiyyat",
         "logout": "Çıxış"
+    },
+    "settings": {
+        "tabs": {
+            "general": "Ümumi",
+            "security": "Təhlükəsizlik",
+            "notifications": "Bildirişlər",
+            "language": "Dil"
+        },
+        "placeholder": "Tənzimləmə bölməsi:",
+        "updated": "Tənzimləmələr yeniləndi",
+        "update_failed": "Yeniləmə uğursuz oldu",
+        "is_searchable": "Axtarış nəticələrində göstər",
+        "is_searchable_desc": "Digər istifadəçilər sizi axtarışda tapa biləcəklər.",
+        "show_phone_number": "Telefon nömrəsini göstər",
+        "show_phone_number_desc": "Telefon nömrəniz profilinizdə hər kəsə görünəcək.",
+        "notify_email_general": "E-poçt bildirişləri",
+        "notify_email_general_desc": "Ümumi sistem bildirişlərini e-poçt vasitəsilə alın.",
+        "notify_meeting_reminder_1h": "Görüş xatırlatması (1 saat əvvəl)",
+        "notify_meeting_reminder_1h_desc": "Görüşə 1 saat qalmış e-poçt bildirişi alın.",
+        "notify_meeting_reminder_15m": "Görüş xatırlatması (15 dəqiqə əvvəl)",
+        "notify_meeting_reminder_15m_desc": "Görüşə 15 dəqiqə qalmış e-poçt bildirişi alın.",
+        "notify_new_follower": "Yeni izləyici bildirişləri",
+        "notify_new_follower_desc": "Biri sizi izlədikdə e-poçt bildirişi alın.",
+        "notify_updates": "Yeniliklər və xəbərlər",
+        "notify_updates_desc": "Platforma yenilikləri haqqında məlumat alın.",
+        "language_desc": "Dil tənzimləmələri yuxarı paneldən idarə olunur."
     },
     "article_page": {
         "load_error": "Məqaləni yükləmək mümkün olmadı",
@@ -38,6 +66,10 @@
         "poll": "Sorğu",
         "latest": "Ən yeni",
         "popular": "Populyar",
+        "view_all": "Bütün paylaşımlar",
+        "view_following": "İzlədiklərim",
+        "sort_by": "Sıralama",
+        "view_mode": "Görünüş",
         "no_results": "Nəticə tapılmadı.",
         "create_content": "Məzmun yarat",
         "load_more": "Daha çox yüklə",
@@ -91,6 +123,7 @@
         "logging_in": "Giriş edilir...",
         "no_account": "Hesabınız yoxdur?",
         "register_link": "Qeydiyyatdan keçin",
+        "login_link": "Daxil ol",
         "join_title": "Bizə Qoşulun",
         "interests_title": "Maraqlarınızı seçin",
         "verify_title": "E-poçtu təsdiqləyin",
@@ -151,7 +184,8 @@
         "option": "Seçim",
         "max_options": "Maksimum 4 seçim icazəlidir",
         "fill_required": "Zəhmət olmasa bütün xanaları doldurun",
-        "poll_tab": "Sorğu"
+        "poll_tab": "Sorğu",
+        "poll_desc": "Rəyləri tez toplayın."
     },
     "edit_modal": {
         "title": "Məqaləyə Düzəliş Et",
@@ -211,14 +245,24 @@
         "first_name": "Ad",
         "last_name": "Soyad",
         "username": "İstifadəçi adı",
+        "email": "E-poçt",
         "phone_number": "Telefon nömrəsi",
         "birth_day": "Doğum tarixi",
         "city": "Şəhər",
         "profession": "Peşə",
+        "select_profession": "Peşə seçin",
         "user_not_found": "İstifadəçi tapılmadı. Zəhmət olmasa daxil olun.",
         "delete_cover": "Örtük şəklini sil",
         "avatar": "Profil şəkli",
         "edit_avatar": "Profil şəklini dəyiş",
+        "avatar_modal": {
+            "title": "Profil Şəklini Yenilə",
+            "change": "Şəkli Dəyiş",
+            "remove": "Cari Şəkli Sil",
+            "delete_title": "Avatarı Sil",
+            "delete_message": "Profil şəklinizi silmək istədiyinizə əminsiniz?",
+            "cancel": "Ləğv et"
+        },
         "followers": "izləyici",
         "following": "izləyir",
         "change_password": "Şifrəni dəyiş",
@@ -239,6 +283,13 @@
             "certificates": "Sertifikatlar"
         },
         "level": "Səviyyə",
+        "open_to": "İşə Açıqdır",
+        "open_to_roles": {
+            "teacher": "Müəllim",
+            "mentor": "Mentor",
+            "freelance": "Frilans",
+            "long_term": "Uzun müddətli iş"
+        },
         "filters": {
             "all": "Hamısı",
             "articles": "Məqalələr",
@@ -251,7 +302,12 @@
             "failed_delete": "Silinmə uğursuz oldu",
             "failed_update": "Yenilənmə uğursuz oldu",
             "availability_saved": "Parametrlər saxlanıldı",
-            "password_changed": "Şifrə uğurla dəyişdirildi"
+            "password_changed": "Şifrə uğurla dəyişdirildi",
+            "time_blocked_success": "Vaxt uğurla bloklandı!",
+            "block_failed": "Vaxtı bloklamaq mümkün olmadı. Kəsişmələri yoxlayın.",
+            "select_date_time": "Zəhmət olmasa tarix və vaxt seçin",
+            "overlap_error": "Seçilmiş vaxt mövcud rezervasiya və ya məşğul slotla kəsişir.",
+            "updated": "Uğurla yeniləndi"
         },
         "modals": {
             "reject_title": "Sorğunu Rədd Et",
@@ -276,6 +332,7 @@
             "availability": "İş saatları",
             "calendar": "Təqvim",
             "requests": "Sorğular",
+            "meetings": "Görüşlərim",
             "settings_title": "İş saatları parametrləri",
             "save_changes": "Yadda saxla",
             "accept_bookings": "Randevuları qəbul et",
@@ -319,6 +376,12 @@
             "title": "Müraciətlərim",
             "no_applications": "Müraciət yoxdur.",
             "applied_on": "Müraciət tarixi"
+        },
+        "content": {
+            "title": "Məzmun",
+            "no_content": "Məzmun yoxdur.",
+            "add_content": "Məzmun əlavə et",
+            "created_success": "Məzmun uğurla yaradıldı"
         }
     },
     "vacancy_detail": {
@@ -556,6 +619,13 @@
             "edit": "Təhsili redaktə et",
             "add": "Təhsil əlavə et",
             "degree": "Dərəcə",
+            "secondary": "Orta təhsil",
+            "full_secondary": "Tam orta təhsil",
+            "vocational": "Peşə təhsili",
+            "bachelor": "Bakalavr",
+            "master": "Magistr",
+            "doctorate": "Doktorantura",
+            "certification": "Təhsil Artırma/Sertifikat",
             "institution": "Təhsil müəssisəsi",
             "field": "İxtisas",
             "start": "Başlanğıc tarixi",
@@ -624,5 +694,32 @@
         "pending": "Gözləyir",
         "accepted": "Qəbul edildi",
         "rejected": "İmtina edildi"
+    },
+    "experts": {
+        "title": "Ekspertləri Tapın",
+        "subtitle": "Müxtəlif sahələrdə peşəkarlarla əlaqə qurun",
+        "auth_required_title": "Daxil olmalısınız",
+        "auth_required_desc": "Ekspertləri axtarmaq və əlaqə qurmaq üçün hesabınıza daxil olun.",
+        "login_to_continue": "Daxil ol",
+        "filters": {
+            "title": "Axtarış filtrləri",
+            "search": "Ad və ya Soyad",
+            "search_placeholder": "Axtarış...",
+            "skill": "Bacarıqlar (Skills)",
+            "hard_skills": "Hard Skills (Texniki)",
+            "soft_skills": "Soft Skills (Yumşaq)",
+            "skill_placeholder": "Məs: Dizayn, Python...",
+            "degree": "Təhsil dərəcəsi",
+            "all_degrees": "Bütün dərəcələr",
+            "location": "Məkan",
+            "location_placeholder": "Şəhər...",
+            "clear": "Təmizlə"
+        },
+        "search_btn": "Axtar",
+        "no_results": "Nəticə tapılmadı",
+        "no_results_desc": "Axtarış kriteriyalarınıza uyğun ekspert tapılmadı.",
+        "load_more": "Daha çox",
+        "spam_warning": "Diqqət: Spamların qarşısını almaq üçün axtarış etmədən istifadəçilərə baxmaq limitlidir. Zəhmət olmasa axtarış edin.",
+        "view_profile": "Profilə bax"
     }
 }

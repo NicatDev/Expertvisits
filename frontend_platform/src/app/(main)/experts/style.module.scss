@@ -1,0 +1,106 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/mixins.scss';
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mobile {
+        padding: 16px;
+    }
+}
+
+.header {
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #111;
+    }
+
+    p {
+        color: #666;
+    }
+}
+
+.mainLayout {
+    display: flex;
+    gap: 30px;
+
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+.sidebar {
+    width: 300px;
+    flex-shrink: 0;
+
+    @include mobile {
+        width: 100%;
+    }
+}
+
+.content {
+    flex: 1;
+}
+
+.authWarning {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: $box-shadow-base;
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 16px;
+        color: #333;
+    }
+
+    p {
+        color: #666;
+        margin-bottom: 24px;
+    }
+}
+
+.loginBtn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: $primary-color;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+
+    &:hover {
+        background: $primary-hover;
+    }
+}
+
+.loadMore {
+    display: block;
+    margin: 40px auto;
+    padding: 12px 30px;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        color: $primary-color;
+    }
+}

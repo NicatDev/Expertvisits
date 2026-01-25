@@ -6,6 +6,7 @@ from .views.users import (
 from .views.categories import CategoryListAPIView, CategoryDetailAPIView
 from .views.auth import VerifyEmailAPIView, CheckAvailabilityAPIView, ResendCodeAPIView, SetPasswordAPIView
 from .views.profiles import UserProfileDetailsAPIView
+from .views.google import GoogleAuthView
 
 urlpatterns = [
     # User actions (must be before detail view to avoid conflict with username capture)
@@ -31,4 +32,5 @@ urlpatterns = [
     # Auth & Profile
     path('verify-email/', VerifyEmailAPIView.as_view(), name='verify-email'),
     path('profile-details/', UserProfileDetailsAPIView.as_view(), name='profile-details'),
+    path('google/', GoogleAuthView.as_view(), name='google-auth'),
 ]

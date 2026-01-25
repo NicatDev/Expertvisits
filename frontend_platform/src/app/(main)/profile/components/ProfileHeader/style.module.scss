@@ -1,0 +1,153 @@
+@import '../../../../../styles/variables.scss';
+@import '../../../../../styles/mixins.scss';
+
+.header {
+    background: #fff;
+    border-radius: $border-radius-base;
+    overflow: hidden;
+    margin-bottom: $spacing-lg;
+    box-shadow: $box-shadow-base;
+}
+
+.coverContainer {
+    position: relative;
+    height: 200px;
+    background-color: #f0f2f5;
+    overflow: hidden;
+
+    &:hover .editOverlay {
+        opacity: 1;
+    }
+}
+
+.defaultCover {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
+    /* Blue -> Light Blue */
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.editOverlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
+    transition: all 0.3s;
+    font-size: 14px;
+    z-index: 10;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.8);
+        opacity: 1;
+    }
+}
+
+.info {
+    padding: $spacing-lg;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: $spacing-lg;
+    padding: 10px 24px;
+
+    @include mobile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+.avatarContainer {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+    margin-right: 20px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    z-index: 5;
+
+    &:hover .avatarOverlay {
+        opacity: 1;
+    }
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.avatarOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0.7;
+    transition: all 0.3s;
+    border-radius: 50%;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 1;
+    }
+}
+
+.avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    background: #e6f7ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1890ff;
+    border: 3px solid #fff;
+}
+
+.names {
+    flex: 1;
+    margin-bottom: $spacing-sm;
+
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+}
+
+.subtitle {
+    color: $text-secondary;
+    font-size: 16px;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-bottom: $spacing-sm;
+}

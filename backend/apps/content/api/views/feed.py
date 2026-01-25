@@ -23,6 +23,7 @@ class FeedAPIView(APIView):
                 comments_count=Count('comments', distinct=True)
             )
             quizzes = Quiz.objects.prefetch_related('questions__choices').annotate(
+                likes_count=Count('likes', distinct=True),
                 comments_count=Count('comments', distinct=True)
             )
             polls = Poll.objects.prefetch_related('options', 'votes').annotate(
@@ -31,6 +32,13 @@ class FeedAPIView(APIView):
             )
 
             
+            scope_param = request.query_params.get('scope', 'all')
+            if scope_param == 'following' and request.user.is_authenticated:
+                following_ids = request.user.following.values_list('id', flat=True)
+                articles = articles.filter(author__in=following_ids)
+                quizzes = quizzes.filter(author__in=following_ids)
+                polls = polls.filter(author__in=following_ids)
+
             if search_query:
                 articles = articles.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
                 quizzes = quizzes.filter(title__icontains=search_query)
@@ -75,6 +83,7 @@ class FeedAPIView(APIView):
             serializer_cls = None
             
             if type_param == 'quiz':
+                queryset = Quiz.objects.prefetch_related('questions__choices')
                 if search_query: queryset = queryset.filter(title__icontains=search_query)
                 serializer_cls = QuizSerializer
             
@@ -87,6 +96,10 @@ class FeedAPIView(APIView):
                 queryset = Article.objects.select_related('author', 'sub_category')
                 if search_query: queryset = queryset.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
                 serializer_cls = ArticleSerializer
+
+            scope_param = request.query_params.get('scope', 'all')
+            if scope_param == 'following' and request.user.is_authenticated:
+                queryset = queryset.filter(author__in=request.user.following.values_list('id', flat=True))
 
             queryset = queryset.annotate(
                 likes_count=Count('likes', distinct=True),
@@ -247,7 +260,38 @@ class UserFeedAPIView(APIView):
             return Response({'results': results, 'count': count})
         
         else:
-             # Single type logic
-             # ...
-             # Minimal implementation for now to save space, assuming pattern is clear
-             return Response({'results': [], 'count': 0})
+            queryset = None
+            serializer_cls = None
+            
+            if type_param == 'quiz':
+                queryset = Quiz.objects.filter(author=user).prefetch_related('questions__choices')
+                if search_query: queryset = queryset.filter(title__icontains=search_query)
+                serializer_cls = QuizSerializer
+            
+            elif type_param == 'poll':
+                queryset = Poll.objects.filter(author=user).prefetch_related('options', 'votes')
+                if search_query: queryset = queryset.filter(question__icontains=search_query)
+                serializer_cls = PollSerializer
+
+            else: # article
+                queryset = Article.objects.filter(author=user).select_related('author', 'sub_category')
+                if search_query: queryset = queryset.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
+                serializer_cls = ArticleSerializer
+
+            queryset = queryset.annotate(
+                likes_count=Count('likes', distinct=True),
+                comments_count=Count('comments', distinct=True)
+            ).order_by('-created_at')
+            
+            count = queryset.count()
+            start = (page - 1) * limit
+            end = start + limit
+            items = queryset[start:end]
+            
+            data = serializer_cls(items, many=True, context={'request': request}).data
+            
+            # Inject Type
+            for item in data:
+                item['type'] = type_param
+            
+            return Response({'results': data, 'count': count})

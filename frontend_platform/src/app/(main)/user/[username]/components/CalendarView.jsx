@@ -51,6 +51,7 @@ const CalendarView = ({ events, onDateSelect, workingHours, workingDays }) => {
                 slotDuration="00:30:00"
                 slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                 eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+                displayEventTime={false}
                 height="auto"
                 slotMinTime={slotMin}
                 slotMaxTime={slotMax}

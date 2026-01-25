@@ -1,0 +1,97 @@
+@import '../../../../styles/variables.scss';
+
+.container {
+    // padding: $spacing-lg;
+    // background: #fff;
+    border-radius: 8px;
+}
+
+.section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid #f0f0f0;
+    // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    h3 {
+        margin-bottom: 12px;
+    }
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 12px;
+
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        background: #fafafa;
+    }
+}
+
+.itemContent {
+    h3 {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        margin: 0 0 4px 0;
+    }
+
+    p {
+        color: #666;
+        font-size: 14px;
+        margin: 0 0 4px 0;
+    }
+
+    span {
+        color: #999;
+        font-size: 12px;
+    }
+}
+
+.editableField {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    .label {
+        color: #666;
+        width: 120px;
+        font-weight: 500;
+    }
+
+    .value {
+        flex: 1;
+        color: #333;
+    }
+}

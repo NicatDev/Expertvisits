@@ -43,6 +43,20 @@ class User(AbstractUser):
     birth_day = models.DateField(null=True, blank=True)
     city = models.CharField(max_length=100, blank=True, null=True)
 
+    def default_open_to():
+        return ["freelance"]
+
+    open_to = models.JSONField(default=default_open_to, blank=True)
+
+    # Settings / Preferences
+    is_searchable = models.BooleanField(default=True)
+    show_phone_number = models.BooleanField(default=False)
+    notify_email_general = models.BooleanField(default=False)
+    notify_meeting_reminder_1h = models.BooleanField(default=False)
+    notify_meeting_reminder_15m = models.BooleanField(default=False)
+    notify_new_follower = models.BooleanField(default=False)
+    notify_updates = models.BooleanField(default=False)
+
     def __str__(self):
         return self.username
 

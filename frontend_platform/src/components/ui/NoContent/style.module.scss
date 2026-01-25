@@ -1,0 +1,39 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px dashed #e5e7eb;
+    margin: 20px 0;
+
+    &.small {
+        padding: 20px;
+        margin: 10px 0;
+
+        .icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+    }
+
+    .icon {
+        margin-bottom: 12px;
+        opacity: 0.5;
+        color: #6b7280;
+    }
+
+    p {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+    }
+}
