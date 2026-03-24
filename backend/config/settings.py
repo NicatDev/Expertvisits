@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.interactions',
     'apps.business',
     'apps.services',
+    'apps.websites',
 ]
 
 MIDDLEWARE = [

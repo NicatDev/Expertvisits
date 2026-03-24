@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/business/', include('apps.business.api.urls')),
     path('api/services/', include('apps.services.api.urls')),
     path('api/interactions/', include('apps.interactions.api.urls')),
+    path('api/websites/', include('apps.websites.urls')),
 ]
 
 if settings.DEBUG:

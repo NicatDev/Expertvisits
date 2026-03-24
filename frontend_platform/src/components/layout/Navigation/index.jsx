@@ -66,7 +66,7 @@ const Navigation = () => {
                                 {user ? (
                                     <>
                                         <button onClick={() => router.push('/profile')} suppressHydrationWarning>{t('nav.profile')}</button>
-                                        <button onClick={() => router.push('/settings')} suppressHydrationWarning>{t('nav.settings')}</button>
+                                        {/* <button onClick={() => router.push('/settings')} suppressHydrationWarning>{t('nav.settings')}</button> */}
                                         <button onClick={logout} style={{ color: 'red' }} suppressHydrationWarning>{t('auth.logout')}</button>
                                     </>
                                 ) : (
