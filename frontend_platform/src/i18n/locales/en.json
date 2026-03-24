@@ -235,6 +235,8 @@
         "follow": "Follow",
         "unfollow": "Unfollow",
         "login_to_follow": "You must be logged in to follow users",
+        "promo_label": "Promote",
+        "promo_title": "Create your own website",
         "user_role": "User"
     },
     "profile": {
@@ -667,7 +669,34 @@
                 "logo": "Logo",
                 "upload_logo": "Upload Logo",
                 "no_logo": "No Logo",
-                "creating": "Creating..."
+                "creating": "Creating...",
+                "success": {
+                    "posted": "Company successfully registered!"
+                },
+                "errors": {
+                    "save_failed": "Failed to create company."
+                }
+            }
+        },
+        "edit_modal": {
+            "title": "Edit Company",
+            "tabs": {
+                "general": "General",
+                "contact": "Contact",
+                "media": "Media",
+                "social": "Social"
+            },
+            "form": {
+                "summary_placeholder": "Short summary about company...",
+                "phone_hint": "Visible only to you",
+                "change_logo": "Change Logo",
+                "upload_logo": "Upload Logo",
+                "change_cover": "Change Cover",
+                "upload_cover": "Upload Cover",
+                "saving": "Saving...",
+                "save_changes": "Save Changes",
+                "success": "Company profile updated successfully!",
+                "error": "Failed to update company"
             }
         }
     },
@@ -699,7 +728,11 @@
         "no_items": "Not added yet.",
         "book_now": "Book Now",
         "follow": "Follow",
-        "unfollow": "Unfollow"
+        "unfollow": "Unfollow",
+        "back_to_profile": "Back to profile",
+        "book_a_session": "Book a Session",
+        "select_slot_instruction": "Select a slot on the calendar or create a manual booking.",
+        "manual_booking": "Manual booking"
     },
     "application_status": {
         "pending": "Pending",
@@ -732,5 +765,12 @@
         "load_more": "Load More",
         "spam_warning": "Warning: Browsing users without search filters is limited to prevent spam. Please verify your search criteria.",
         "view_profile": "View Profile"
+    },
+    "google_auth": {
+        "login_success": "Successfully logged in!",
+        "register_success": "Successfully registered!",
+        "failed": "Google Auth Failed",
+        "sign_in": "Sign in with Google",
+        "sign_up": "Sign up with Google"
     }
 }

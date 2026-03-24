@@ -6,8 +6,10 @@ import api from '@/lib/api/client';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslation } from '@/i18n/client';
 
 export default function GoogleAuthButton({ mode = 'login', className }) {
+    const { t } = useTranslation('common');
     const { loginWithTokens } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -21,18 +23,18 @@ export default function GoogleAuthButton({ mode = 'login', className }) {
 
             if (res.data) {
                 loginWithTokens(res.data.access, res.data.refresh, res.data.user);
-                toast.success(mode === 'login' ? 'Successfully logged in!' : 'Successfully registered!');
+                toast.success(mode === 'login' ? t('google_auth.login_success') : t('google_auth.register_success'));
                 router.push(redirectUrl);
             }
         } catch (err) {
             console.error(err);
-            toast.error("Google Auth Failed");
+            toast.error(t('google_auth.failed'));
         }
     };
 
     const loginGoogle = useGoogleLogin({
         onSuccess: handleSuccess,
-        onError: () => toast.error('Google Login Failed'),
+        onError: () => toast.error(t('google_auth.failed')),
     });
 
     return (
@@ -47,7 +49,7 @@ export default function GoogleAuthButton({ mode = 'login', className }) {
                 <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
             </svg>
-            <span>{mode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}</span>
+            <span>{mode === 'login' ? t('google_auth.sign_in') : t('google_auth.sign_up')}</span>
         </button>
     )
 }

@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { Search, SlidersHorizontal, Check, ChevronDown } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
+import PromoBanner from '@/components/widgets/PromoBanner';
 import NoContent from '@/components/ui/NoContent';
 import { useTranslation } from '@/i18n/client';
 
@@ -127,6 +128,9 @@ export default function HomePage() {
             <aside>
                 {/* 1. Recommended Users */}
                 <RecommendedUsers />
+
+                {/* 2. Promo Banner */}
+                <PromoBanner />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}
 

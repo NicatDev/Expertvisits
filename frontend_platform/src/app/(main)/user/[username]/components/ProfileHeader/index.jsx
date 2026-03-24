@@ -106,7 +106,7 @@ const ProfileHeader = () => {
                 <BookingViewWrapper
                     profile={profile}
                     events={calendarEvents}
-                    onClose={() => setIsBookingView(false)}
+                    onBack={() => setIsBookingView(false)}
                     onBookingSuccess={() => loadEvents()} // Reload events
                 />
             )}

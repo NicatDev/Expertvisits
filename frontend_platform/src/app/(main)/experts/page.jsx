@@ -8,6 +8,7 @@ import UsersList from './components/UsersList';
 import api from '@/lib/api/client';
 import Link from 'next/link';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
+import Pagination from '@/components/ui/Pagination';
 
 export default function ExpertsPage() {
     const { t } = useTranslation('common');
@@ -26,28 +27,20 @@ export default function ExpertsPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(false);
-    const [searched, setSearched] = useState(false); // Track if user performed a specific filter search
+    const [totalCount, setTotalCount] = useState(0);
+    const [searched, setSearched] = useState(false);
 
     // Fetch users
-    const fetchUsers = async (reset = false) => {
+    const fetchUsers = async () => {
         setLoading(true);
         try {
             const params = {
-                page: reset ? 1 : page,
+                page,
                 ...filters
             };
             const res = await api.get('accounts/users/', { params });
-
-            if (reset) {
-                setUsers(res.data || []);
-            } else {
-                setUsers(prev => [...prev, ...res.data.results || []]);
-            }
-            setHasMore(!!res.data.next);
-            if (!reset) setPage(prev => prev + 1);
-            else setPage(2);
-
+            setUsers(res.data.results || res.data);
+            setTotalCount(res.data.count || (res.data.results || res.data).length);
         } catch (err) {
             console.error(err);
         } finally {
@@ -56,12 +49,13 @@ export default function ExpertsPage() {
     };
 
     useEffect(() => {
-        fetchUsers(true);
-    }, []); // Initial load (6 random/recent)
+        fetchUsers();
+    }, [page]);
 
     const handleSearch = () => {
         setSearched(true);
-        fetchUsers(true);
+        if (page === 1) fetchUsers();
+        else setPage(1);
     };
 
     const handleLoadMore = () => {
@@ -98,15 +92,14 @@ export default function ExpertsPage() {
                 </div>
                 <div className={styles.content}>
                     <UsersList users={users} loading={loading} />
-                    {hasMore && (
-                        <button
-                            className={styles.loadMore}
-                            onClick={handleLoadMore}
-                            disabled={loading}
-                        >
-                            {loading ? t('common.loading') : t('experts.load_more')}
-                        </button>
-                    )}
+                    <Pagination
+                        currentPage={page}
+                        totalCount={totalCount}
+                        pageSize={10}
+                        onPageChange={setPage}
+                        alwaysShow={true}
+                        className={styles.pagination}
+                    />
                 </div>
             </div>
         </div>

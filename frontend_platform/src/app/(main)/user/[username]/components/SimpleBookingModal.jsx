@@ -3,9 +3,11 @@ import { toast } from 'react-toastify';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { X } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 import { services } from '@/lib/api';
 
 const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events = [], workingDays, workingHours, onSuccess }) => {
+    const { t } = useTranslation('common');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [duration, setDuration] = useState(30);
@@ -148,55 +150,55 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
         }}>
             <div style={{ background: '#fff', borderRadius: '8px', padding: '20px', width: '400px', maxWidth: '90%' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                    <h3 style={{ margin: 0 }}>Confirm Booking</h3>
+                    <h3 style={{ margin: 0 }}>{t('booking_modal.confirm')}</h3>
                     <X size={20} style={{ cursor: 'pointer' }} onClick={onClose} />
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Date</label>
+                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.date')}</label>
                         <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Time</label>
+                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.time')}</label>
                         <Input type="time" value={time} onChange={e => setTime(e.target.value)} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Duration</label>
+                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.duration')}</label>
                         <select
                             value={duration}
                             onChange={e => setDuration(Number(e.target.value))}
                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #d9d9d9' }}
                         >
-                            <option value={30}>30 Minutes</option>
-                            <option value={60}>60 Minutes (1 hour)</option>
-                            <option value={90}>90 Minutes (1.5 hours)</option>
-                            <option value={120}>120 Minutes (2 hours)</option>
-                            <option value={150}>150 Minutes (2.5 hours)</option>
-                            <option value={180}>180 Minutes (3 hours)</option>
-                            <option value={210}>210 Minutes (3.5 hours)</option>
-                            <option value={240}>240 Minutes (4 hours)</option>
-                            <option value={270}>270 Minutes (4.5 hours)</option>
-                            <option value={300}>300 Minutes (5 hours)</option>
-                            <option value={330}>330 Minutes (5.5 hours)</option>
-                            <option value={360}>360 Minutes (6 hours)</option>
+                            <option value={30}>30 {t('booking_modal.min')}</option>
+                            <option value={60}>60 {t('booking_modal.min')} (1 {t('booking_modal.hr')})</option>
+                            <option value={90}>90 {t('booking_modal.min')} (1.5 {t('booking_modal.hr')})</option>
+                            <option value={120}>120 {t('booking_modal.min')} (2 {t('booking_modal.hr')})</option>
+                            <option value={150}>150 {t('booking_modal.min')} (2.5 {t('booking_modal.hr')})</option>
+                            <option value={180}>180 {t('booking_modal.min')} (3 {t('booking_modal.hr')})</option>
+                            <option value={210}>210 {t('booking_modal.min')} (3.5 {t('booking_modal.hr')})</option>
+                            <option value={240}>240 {t('booking_modal.min')} (4 {t('booking_modal.hr')})</option>
+                            <option value={270}>270 {t('booking_modal.min')} (4.5 {t('booking_modal.hr')})</option>
+                            <option value={300}>300 {t('booking_modal.min')} (5 {t('booking_modal.hr')})</option>
+                            <option value={330}>330 {t('booking_modal.min')} (5.5 {t('booking_modal.hr')})</option>
+                            <option value={360}>360 {t('booking_modal.min')} (6 {t('booking_modal.hr')})</option>
                         </select>
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Note (Optional)</label>
+                        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.note')}</label>
                         <textarea
                             rows={3}
                             value={note}
                             onChange={e => setNote(e.target.value)}
                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #d9d9d9', resize: 'vertical' }}
-                            placeholder="Briefly describe your request..."
+                            placeholder={t('booking_modal.placeholder')}
                         />
                     </div>
                 </div>
 
                 <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                    <Button type="default" onClick={onClose}>Cancel</Button>
-                    <Button type="primary" onClick={handleConfirm} loading={loading}>Confirm Booking</Button>
+                    <Button type="default" onClick={onClose}>{t('booking_modal.cancel')}</Button>
+                    <Button type="primary" onClick={handleConfirm} loading={loading}>{t('booking_modal.confirm')}</Button>
                 </div>
             </div>
         </div>

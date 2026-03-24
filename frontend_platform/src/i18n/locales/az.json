@@ -235,6 +235,9 @@
         "follow": "İzlə",
         "unfollow": "İzləmə",
         "login_to_follow": "İzləmək üçün daxil olun",
+        "view_profile": "Profilə Bax",
+        "promo_label": "Hədiyyə",
+        "promo_title": "Öz vebsaytını yarat",
         "user_role": "İstifadəçi"
     },
     "profile": {
@@ -547,7 +550,7 @@
             "subtitle": "Axtarış parametrlərini dəyişərək yoxlayın."
         },
         "modal": {
-            "title": "Şirkət Qeydiyyatı",
+            "title": "Qeydiyyatdan keç",
             "checking": "Uyğunluq yoxlanılır...",
             "eligibility_failed": "Uyğunluq Yoxlanışı Uğursuz Oldu",
             "eligibility_desc": "Ekspertizanızı təsdiqləmək və keyfiyyəti təmin etmək üçün şirkət səhifəsi yaratmazdan əvvəl ən azı 3 məqalə dərc etməlisiniz.",
@@ -568,7 +571,34 @@
                 "logo": "Logo",
                 "upload_logo": "Logo Yüklə",
                 "no_logo": "Logo Yoxdur",
-                "creating": "Yaradılır..."
+                "creating": "Yaradılır...",
+                "success": {
+                    "posted": "Şirkət uğurla qeydiyyatdan keçirildi!"
+                },
+                "errors": {
+                    "save_failed": "Şirkət qeydiyyatı zamanı xəta baş verdi."
+                }
+            }
+        },
+        "edit_modal": {
+            "title": "Şirkəti Redaktə Et",
+            "tabs": {
+                "general": "Ümumi",
+                "contact": "Əlaqə",
+                "media": "Media",
+                "social": "Sosial"
+            },
+            "form": {
+                "summary_placeholder": "Şirkət haqqında qısa məlumat...",
+                "phone_hint": "Yalnız sizə görünür",
+                "change_logo": "Loqonu dəyiş",
+                "upload_logo": "Loqo yüklə",
+                "change_cover": "Örtüyü dəyiş",
+                "upload_cover": "Örtük yüklə",
+                "saving": "Yadda saxlanılır...",
+                "save_changes": "Dəyişiklikləri yadda saxla",
+                "success": "Şirkət profili uğurla yeniləndi!",
+                "error": "Yenilənmə uğursuz oldu"
             }
         }
     },
@@ -688,7 +718,11 @@
         "no_items": "Hələ əlavə edilməyib.",
         "book_now": "Randevu al",
         "follow": "İzlə",
-        "unfollow": "İzləmə"
+        "unfollow": "İzləmə",
+        "back_to_profile": "Profilə qayıt",
+        "book_a_session": "Sessiya sifariş et",
+        "select_slot_instruction": "Təqvimdə vaxt seçin və ya manual sifariş yaradın.",
+        "manual_booking": "Manual sifariş"
     },
     "application_status": {
         "pending": "Gözləyir",
@@ -721,5 +755,12 @@
         "load_more": "Daha çox",
         "spam_warning": "Diqqət: Spamların qarşısını almaq üçün axtarış etmədən istifadəçilərə baxmaq limitlidir. Zəhmət olmasa axtarış edin.",
         "view_profile": "Profilə bax"
+    },
+    "google_auth": {
+        "login_success": "Uğurla giriş edildi!",
+        "register_success": "Uğurla qeydiyyatdan keçildi!",
+        "failed": "Google ilə giriş uğursuz oldu",
+        "sign_in": "Google ilə daxil ol",
+        "sign_up": "Google ilə qeydiyyatdan keç"
     }
 }

@@ -183,7 +183,23 @@ $modal-z-index: 1000;
             border-color: $primary-color;
             box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
         }
+
+        &.error {
+            border-color: #f5222d;
+            background-color: #fff1f0;
+
+            &:focus {
+                box-shadow: 0 0 0 2px rgba(#f5222d, 0.1);
+            }
+        }
     }
+}
+
+.errorMessage {
+    color: #f5222d;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
 }
 
 .imageUpload {

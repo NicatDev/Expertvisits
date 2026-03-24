@@ -146,6 +146,7 @@ export default function VacanciesPage() {
                 totalCount={totalCount}
                 pageSize={10}
                 onPageChange={page => setPage(page)}
+                alwaysShow={true}
             />
 
             <AddVacancyModal

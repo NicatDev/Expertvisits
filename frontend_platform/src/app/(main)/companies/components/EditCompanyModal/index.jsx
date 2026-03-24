@@ -5,8 +5,10 @@ import Button from '@/components/ui/Button';
 import { X, Upload } from 'lucide-react';
 import styles from './styles.module.scss';
 import { business } from '@/lib/api';
+import { useTranslation } from '@/i18n/client';
 
 export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }) {
+    const { t } = useTranslation('common');
     const [formData, setFormData] = useState({});
     const [activeTab, setActiveTab] = useState('general');
     const [logoPreview, setLogoPreview] = useState(null);
@@ -98,12 +100,12 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
 
         try {
             await business.updateCompany(company.slug, data);
-            toast.success("Company profile updated successfully!");
+            toast.success(t('companies.edit_modal.form.success'));
             onSuccess();
             onClose();
         } catch (error) {
             console.error("Failed to update company", error);
-            const msg = error.response?.data?.detail || "Failed to update company";
+            const msg = error.response?.data?.detail || t('companies.edit_modal.form.error');
             toast.error(msg);
         } finally {
             setLoading(false);
@@ -113,17 +115,17 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
     if (!isOpen) return null;
 
     const tabs = [
-        { id: 'general', label: 'General' },
-        { id: 'contact', label: 'Contact' },
-        { id: 'media', label: 'Media' },
-        { id: 'social', label: 'Social' }
+        { id: 'general', label: t('companies.edit_modal.tabs.general') },
+        { id: 'contact', label: t('companies.edit_modal.tabs.contact') },
+        { id: 'media', label: t('companies.edit_modal.tabs.media') },
+        { id: 'social', label: t('companies.edit_modal.tabs.social') }
     ];
 
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h2>Edit Company</h2>
+                    <h2>{t('companies.edit_modal.title')}</h2>
                     <button onClick={onClose} className={styles.closeBtn}><X size={24} /></button>
                 </div>
 
@@ -144,29 +146,29 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                     {activeTab === 'general' && (
                         <>
                             <div className={styles.field}>
-                                <label>Company Name</label>
+                                <label>{t('companies.modal.form.name')}</label>
                                 <input name="name" value={formData.name || ''} onChange={handleChange} required />
                             </div>
 
                             <div className={styles.field}>
-                                <label>Summary</label>
-                                <textarea name="summary" rows={4} value={formData.summary || ''} onChange={handleChange} required placeholder="Short summary about company..." />
+                                <label>{t('companies.modal.form.summary')}</label>
+                                <textarea name="summary" rows={4} value={formData.summary || ''} onChange={handleChange} required placeholder={t('companies.edit_modal.form.summary_placeholder')} />
                             </div>
 
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <label>Founded Date</label>
+                                    <label>{t('companies.modal.form.founded')}</label>
                                     <input type="date" name="founded_at" value={formData.founded_at || ''} onChange={handleChange} required />
                                 </div>
                                 <div className={styles.field}>
-                                    <label>Company Size</label>
+                                    <label>{t('companies.modal.form.size')}</label>
                                     <select name="company_size" value={formData.company_size || '1-10'} onChange={handleChange} required>
-                                        <option value="1-10">1-10 Employees</option>
-                                        <option value="11-50">11-50 Employees</option>
-                                        <option value="51-200">51-200 Employees</option>
-                                        <option value="201-500">201-500 Employees</option>
-                                        <option value="501-1000">501-1000 Employees</option>
-                                        <option value="1000+">1000+ Employees</option>
+                                        <option value="1-10">1-10 {t('companies.employees')}</option>
+                                        <option value="11-50">11-50 {t('companies.employees')}</option>
+                                        <option value="51-200">51-200 {t('companies.employees')}</option>
+                                        <option value="201-500">201-500 {t('companies.employees')}</option>
+                                        <option value="501-1000">501-1000 {t('companies.employees')}</option>
+                                        <option value="1000+">1000+ {t('companies.employees')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -177,17 +179,17 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                         <>
                             <div className={styles.grid}>
                                 <div className={styles.field}>
-                                    <label>Email</label>
+                                    <label>{t('companies.modal.form.email')}</label>
                                     <input type="email" name="email" value={formData.email || ''} onChange={handleChange} required />
                                 </div>
                                 <div className={styles.field}>
-                                    <label>Phone</label>
+                                    <label>{t('companies.modal.form.phone')}</label>
                                     <input name="phone" value={formData.phone || ''} onChange={handleChange} placeholder="+994..." />
-                                    <small style={{ color: '#999', fontSize: '11px' }}>Visible only to you</small>
+                                    <small style={{ color: '#999', fontSize: '11px' }}>{t('companies.edit_modal.form.phone_hint')}</small>
                                 </div>
                             </div>
                             <div className={styles.field}>
-                                <label>Address</label>
+                                <label>{t('companies.modal.form.address')}</label>
                                 <input name="address" value={formData.address || ''} onChange={handleChange} />
                             </div>
                         </>
@@ -196,7 +198,7 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                     {activeTab === 'media' && (
                         <>
                             <div className={styles.field}>
-                                <label>Logo</label>
+                                <label>{t('companies.modal.form.logo')}</label>
                                 <div className={styles.imageUpload}>
                                     {logoPreview && (
                                         <div className={styles.previewContainer}>
@@ -207,14 +209,14 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                                         </div>
                                     )}
                                     <label className={styles.uploadBtn}>
-                                        <Upload size={18} /> {logoPreview ? 'Change Logo' : 'Upload Logo'}
+                                        <Upload size={18} /> {logoPreview ? t('companies.edit_modal.form.change_logo') : t('companies.edit_modal.form.upload_logo')}
                                         <input type="file" onChange={(e) => handleFileChange(e, 'logo')} accept="image/*" hidden />
                                     </label>
                                 </div>
                             </div>
 
                             <div className={styles.field}>
-                                <label>Cover Image</label>
+                                <label>{t('company_detail.edit_cover')}</label>
                                 <div className={styles.imageUpload}>
                                     {coverPreview && (
                                         <div className={styles.previewContainer}>
@@ -225,7 +227,7 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                                         </div>
                                     )}
                                     <label className={styles.uploadBtn}>
-                                        <Upload size={18} /> {coverPreview ? 'Change Cover' : 'Upload Cover'}
+                                        <Upload size={18} /> {coverPreview ? t('companies.edit_modal.form.change_cover') : t('companies.edit_modal.form.upload_cover')}
                                         <input type="file" onChange={(e) => handleFileChange(e, 'cover_image')} accept="image/*" hidden />
                                     </label>
                                 </div>
@@ -236,7 +238,7 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                     {activeTab === 'social' && (
                         <>
                             <div className={styles.field}>
-                                <label>Website URL</label>
+                                <label>{t('companies.modal.form.website')}</label>
                                 <input name="website_url" value={formData.website_url || ''} onChange={handleChange} placeholder="https://..." />
                             </div>
                             <div className={styles.grid}>
@@ -257,8 +259,8 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                     )}
 
                     <div className={styles.actions}>
-                        <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-                        <Button htmlType="submit" type="primary" disabled={loading}>{loading ? 'Saving...' : 'Save Changes'}</Button>
+                        <Button type="button" variant="ghost" onClick={onClose}>{t('common.cancel')}</Button>
+                        <Button htmlType="submit" type="primary" disabled={loading}>{loading ? t('companies.edit_modal.form.saving') : t('companies.edit_modal.form.save_changes')}</Button>
                     </div>
                 </form>
             </div >

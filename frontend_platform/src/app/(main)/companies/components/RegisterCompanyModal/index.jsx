@@ -6,6 +6,7 @@ import styles from './styles.module.scss';
 import { business, content } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/i18n/client';
+import { toast } from 'react-toastify';
 
 export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
     const { t } = useTranslation('common');
@@ -13,6 +14,7 @@ export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
     const [step, setStep] = useState('loading'); // loading, check_failed, form
     const [articleCount, setArticleCount] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     // Form State
     const [formData, setFormData] = useState({
@@ -75,10 +77,15 @@ export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
 
         try {
             await business.createCompany(data);
+            toast.success(t('companies.modal.form.success.posted'));
             onSuccess();
             onClose();
         } catch (error) {
             console.error("Failed to create company", error);
+            if (error.response?.data) {
+                setErrors(error.response.data);
+            }
+            toast.error(t('companies.modal.form.errors.save_failed'));
         } finally {
             setLoading(false);
         }
@@ -134,22 +141,54 @@ export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
 
                         <div className={styles.field}>
                             <label>{t('companies.modal.form.name')} *</label>
-                            <input name="name" value={formData.name} onChange={handleChange} required placeholder="e.g. Acme Corp" />
+                            <input
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g. Acme Corp"
+                                className={errors.name ? styles.error : ''}
+                            />
+                            {errors.name && <span className={styles.errorMessage}>{errors.name[0]}</span>}
                         </div>
 
                         <div className={styles.field}>
                             <label>{t('companies.modal.form.summary')} *</label>
-                            <textarea name="summary" rows={3} value={formData.summary} onChange={handleChange} required placeholder="..." />
+                            <textarea
+                                name="summary"
+                                rows={3}
+                                value={formData.summary}
+                                onChange={handleChange}
+                                required
+                                placeholder="..."
+                                className={errors.summary ? styles.error : ''}
+                            />
+                            {errors.summary && <span className={styles.errorMessage}>{errors.summary[0]}</span>}
                         </div>
 
                         <div className={styles.grid}>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.founded')} *</label>
-                                <input type="date" name="founded_at" value={formData.founded_at} onChange={handleChange} required />
+                                <input
+                                    type="date"
+                                    name="founded_at"
+                                    value={formData.founded_at}
+                                    onChange={handleChange}
+                                    required
+                                    className={errors.founded_at ? styles.error : ''}
+                                />
+                                {errors.founded_at && <span className={styles.errorMessage}>{errors.founded_at[0]}</span>}
                             </div>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.size')} *</label>
-                                <select name="company_size" value={formData.company_size} onChange={handleChange} required style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', backgroundColor: '#fff' }}>
+                                <select
+                                    name="company_size"
+                                    value={formData.company_size}
+                                    onChange={handleChange}
+                                    required
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', backgroundColor: '#fff' }}
+                                    className={errors.company_size ? styles.error : ''}
+                                >
                                     <option value="1-10">1-10 {t('companies.employees')}</option>
                                     <option value="11-50">11-50 {t('companies.employees')}</option>
                                     <option value="51-200">51-200 {t('companies.employees')}</option>
@@ -157,28 +196,59 @@ export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
                                     <option value="501-1000">501-1000 {t('companies.employees')}</option>
                                     <option value="1000+">1000+ {t('companies.employees')}</option>
                                 </select>
+                                {errors.company_size && <span className={styles.errorMessage}>{errors.company_size[0]}</span>}
                             </div>
                         </div>
 
                         <div className={styles.grid}>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.email')} *</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="contact@company.com" />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="contact@company.com"
+                                    className={errors.email ? styles.error : ''}
+                                />
+                                {errors.email && <span className={styles.errorMessage}>{errors.email[0]}</span>}
                             </div>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.phone')}</label>
-                                <input name="phone" value={formData.phone} onChange={handleChange} placeholder="+123..." />
+                                <input
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    placeholder="+123..."
+                                    className={errors.phone ? styles.error : ''}
+                                />
+                                {errors.phone && <span className={styles.errorMessage}>{errors.phone[0]}</span>}
                             </div>
                         </div>
 
                         <div className={styles.grid}>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.address')}</label>
-                                <input name="address" value={formData.address} onChange={handleChange} placeholder="City, Country" />
+                                <input
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                    placeholder="City, Country"
+                                    className={errors.address ? styles.error : ''}
+                                />
+                                {errors.address && <span className={styles.errorMessage}>{errors.address[0]}</span>}
                             </div>
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.website')}</label>
-                                <input name="website_url" value={formData.website_url} onChange={handleChange} placeholder="https://..." />
+                                <input
+                                    name="website_url"
+                                    value={formData.website_url}
+                                    onChange={handleChange}
+                                    placeholder="https://..."
+                                    className={errors.website_url ? styles.error : ''}
+                                />
+                                {errors.website_url && <span className={styles.errorMessage}>{errors.website_url[0]}</span>}
                             </div>
                         </div>
 
@@ -190,11 +260,12 @@ export default function RegisterCompanyModal({ isOpen, onClose, onSuccess }) {
                                 ) : (
                                     <div className={styles.placeholderLogo}>{t('companies.modal.form.no_logo')}</div>
                                 )}
-                                <label className={styles.uploadBtn}>
+                                <label className={`${styles.uploadBtn} ${errors.logo ? styles.error : ''}`}>
                                     <Upload size={18} /> {t('companies.modal.form.upload_logo')}
                                     <input type="file" onChange={handleFileChange} accept="image/*" hidden required />
                                 </label>
                             </div>
+                            {errors.logo && <span className={styles.errorMessage}>{errors.logo[0]}</span>}
                         </div>
 
                         <div className={styles.actions}>

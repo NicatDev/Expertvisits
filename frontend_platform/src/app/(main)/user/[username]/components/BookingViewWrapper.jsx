@@ -4,8 +4,10 @@ import CalendarView from './CalendarView';
 import SimpleBookingModal from './SimpleBookingModal';
 import Modal from '@/components/ui/Modal';
 import { ArrowLeft, Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 
 const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
+    const { t } = useTranslation('common');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null); // { dateStr: string } or null
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
@@ -42,17 +44,17 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                 <div>
                     <Button type="text" onClick={onBack} style={{ paddingLeft: 0, color: '#666' }}>
                         <ArrowLeft size={16} style={{ marginRight: '8px' }} />
-                        Back to Profile
+                        {t('public_profile.back_to_profile')}
                     </Button>
-                    <h2 style={{ marginTop: '8px', marginBottom: '4px' }}>Book a Session</h2>
+                    <h2 style={{ marginTop: '8px', marginBottom: '4px' }}>{t('public_profile.book_a_session')}</h2>
                     <p style={{ color: '#666', margin: 0, fontSize: '0.95rem' }}>
-                        Select a slot on the calendar or create a manual booking.
+                        {t('public_profile.select_slot_instruction')}
                     </p>
                 </div>
 
                 <Button type="primary" onClick={handleManualBooking}>
                     <Plus size={16} style={{ marginRight: '8px' }} />
-                    Manual Booking
+                    {t('public_profile.manual_booking')}
                 </Button>
             </div>
 
