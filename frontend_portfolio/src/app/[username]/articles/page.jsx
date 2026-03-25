@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 
 export const metadata = {
     title: "Articles | Portfolio",
+    robots: {
+        index: false,
+        follow: false,
+    }
 };
 
 export default async function UserArticlesPage({ params }) {
@@ -18,7 +22,7 @@ export default async function UserArticlesPage({ params }) {
 
     if (!user) return notFound();
 
-    const TemplateArticles = getTemplateArticles(user.template);
+    const TemplateArticles = getTemplateArticles(user.template_id);
 
     return <TemplateArticles user={user} />;
 }

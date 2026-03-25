@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
     const { username, articleSlug } = await params;
-
     return {
-        title: `Article | ${username}`,
+        title: "Article | Portfolio",
+        robots: {
+            index: false,
+            follow: false,
+        }
     };
 }
 
@@ -22,7 +25,7 @@ export default async function UserArticleDetailPage({ params }) {
 
     if (!user) return notFound();
 
-    const TemplateArticleDetail = getTemplateArticleDetail(user.template);
+    const TemplateArticleDetail = getTemplateArticleDetail(user.template_id);
 
     return <TemplateArticleDetail user={user} slug={articleSlug} />;
 }

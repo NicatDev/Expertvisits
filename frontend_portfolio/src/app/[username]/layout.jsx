@@ -34,7 +34,7 @@ export default async function UserLayout({ children, params }) {
         return notFound();
     }
 
-    const TemplateLayout = getTemplateLayout(user.template);
+    const TemplateLayout = getTemplateLayout(user.template_id);
 
     // Render the selected template's layout wrapper around the specific page content
     return (

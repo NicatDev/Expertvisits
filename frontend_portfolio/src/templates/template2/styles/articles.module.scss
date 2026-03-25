@@ -1,0 +1,48 @@
+// Template 2 Articles List - Light & Minimalist
+.articlesContainer {
+    max-width: 1200px; padding: 40px 24px 80px; margin: 0 auto;
+}
+.header {
+    display: flex; flex-direction: column; gap: 24px; margin-bottom: 50px;
+    h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; color: #111827; letter-spacing: -1px; margin: 0;
+        span { color: #6366f1; }
+    }
+    @media (min-width: 768px) { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+.searchForm {
+    display: flex; gap: 12px; width: 100%; max-width: 400px;
+}
+.searchInputWrapper {
+    position: relative; flex: 1;
+    .searchIcon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+    .searchInput {
+        width: 100%; padding: 14px 16px 14px 44px; border-radius: 12px;
+        background: #fff; border: 1px solid #e5e7eb; color: #111827; font-size: 1rem;
+        transition: all 0.2s;
+        &:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+    }
+}
+.searchButton {
+    padding: 0 24px; background: #111827; color: #fff; border: none; border-radius: 12px;
+    font-weight: 600; cursor: pointer; transition: background 0.2s;
+    &:hover { background: #374151; }
+}
+.articlesGrid { display: grid; grid-template-columns: 1fr; gap: 32px; @media (min-width: 768px) { grid-template-columns: repeat(2, 1fr); } @media (min-width: 1024px) { grid-template-columns: repeat(3, 1fr); } }
+.articleCard {
+    display: flex; flex-direction: column; background: #fff; border-radius: 24px; overflow: hidden;
+    text-decoration: none; border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    &:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-color: rgba(99,102,241,0.2); .thumbnail { transform: scale(1.05); } }
+}
+.thumbnailWrapper { width: 100%; height: 220px; overflow: hidden; position: relative; background: #f3f4f6; }
+.thumbnail { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.cardContent { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+.cardTitle { font-size: 1.25rem; font-weight: 800; color: #111827; margin: 0 0 12px 0; line-height: 1.4; }
+.cardExcerpt { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 24px; flex: 1; }
+.cardMeta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+.metaItem { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #6b7280; font-weight: 600; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 60px; }
+.pageButton { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; color: #111827; font-weight: 600; cursor: pointer; transition: all 0.2s; &:disabled { opacity: 0.5; cursor: not-allowed; } &:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; } }
+.pageInfo { font-weight: 600; color: #4b5563; }
+.loadingState, .emptyState { text-align: center; padding: 120px 20px; font-size: 1.2rem; color: #6b7280; font-weight: 500; }

@@ -1,8 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Mail, MapPin, Briefcase, Calendar } from 'lucide-react';
+import { Mail, MapPin, Briefcase, GraduationCap, ArrowRight, Book, ShieldCheck, Cpu, Users } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 import styles from '../styles/home.module.scss';
 import t1Styles from '../styles/template1.module.scss';
 
@@ -15,144 +16,240 @@ export default function Home({ user }) {
     const skills = user.skills || [];
     const languages = user.languages || [];
     const certificates = user.certificates || [];
+    const { t } = useTranslation();
+    const [isMounted, setIsMounted] = useState(false);
     
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
-    const hasBanner = !!user.banner;
+
+    // Optional hover effect tracking for glassy cards
+    useEffect(() => {
+        setIsMounted(true);
+        const handleMouseMove = e => {
+            const cards = document.querySelectorAll(`.${styles.glassCard}`);
+            for (const card of cards) {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            }
+        };
+        
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    // Split skills
+    const hardSkills = skills.filter(s => String(s.skill_type).toLowerCase() === 'hard' || String(s.skill_type).toLowerCase().includes('hard'));
+    const softSkills = skills.filter(s => String(s.skill_type).toLowerCase() === 'soft' || String(s.skill_type).toLowerCase().includes('soft'));
+    const otherSkills = skills.filter(s => !String(s.skill_type).toLowerCase().includes('hard') && !String(s.skill_type).toLowerCase().includes('soft'));
+
+    // Combine remaining skills into hard skills visually if no clear hard/soft boundaries exist
+    const displayHardSkills = [...hardSkills, ...otherSkills];
+    
+    let sectionIndex = 1;
+
+    if (!isMounted) return null;
 
     return (
-        <div className={t1Styles.pageContainer}>
+        <div className={styles.pageContainer}>
+            <div className={styles.glowBlob}></div>
+
             {/* Hero Section */}
             <section className={styles.heroSection}>
-                <div 
-                    className={`${styles.banner} ${!hasBanner ? styles.gradientBanner : ''}`}
-                    style={hasBanner ? { backgroundImage: `url(${user.banner})` } : {}}
-                />
-                
-                <div className={styles.profileMeta}>
-                    <div className={styles.avatarWrapper}>
-                        {profile.avatar ? (
-                            <Image src={profile.avatar} alt={fullName} width={140} height={140} className={styles.avatar} />
-                        ) : (
-                            <div className={styles.avatarPlaceholder}>
-                                {fullName?.charAt(0)}
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div className={styles.heroInfo}>
-                        <h1 className={styles.name}>{fullName}</h1>
-                        {profile.profession_sub_category && (
-                            <h2 className={styles.profession}>{profile.profession_sub_category.name}</h2>
-                        )}
-                        <div className={styles.quickInfo}>
-                            {profile.city && (
-                                <span className={styles.infoBadge}><MapPin size={16} /> {profile.city}</span>
-                            )}
-                            {profile.email && (
-                                <span className={styles.infoBadge}><Mail size={16} /> {profile.email}</span>
-                            )}
+                <div className={styles.avatarWrapper}>
+                    {profile.avatar ? (
+                        <Image src={profile.avatar} alt={fullName} width={130} height={130} className={styles.avatar} />
+                    ) : (
+                        <div className={styles.avatarPlaceholder}>
+                            {fullName?.charAt(0)}
                         </div>
+                    )}
+                </div>
+                
+                <div className={styles.heroContent}>
+                    <span className={styles.greeting}>{t('portfolio.hello')}</span>
+                    <h1 className={styles.name}>{fullName}</h1>
+                    
+                    {profile.profession_sub_category && (
+                        <h2 className={styles.profession}>
+                        <span>{profile.profession_sub_category.profession}</span>
+                        </h2>
+                    )}
+                    
+                    <div className={styles.heroActions}>
+                        <a href="#about" className={styles.primaryBtn}>
+                            {t('portfolio.viewWork')} <ArrowRight size={18} />
+                        </a>
+                        {profile.email && (
+                            <a href={`mailto:${profile.email}`} className={styles.secondaryBtn}>
+                                <Mail size={18} /> {t('portfolio.contactMe')}
+                            </a>
+                        )}
                     </div>
                 </div>
             </section>
 
-            <div className={styles.contentGrid}>
-                {/* Left Column (Summary + Timeline) */}
-                <div className={styles.mainColumn}>
-                    {profile.summary && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>About Me</h3>
-                            <p className={styles.summaryText}>{profile.summary}</p>
-                        </section>
-                    )}
+            {/* About Section */}
+            {profile.summary && (
+                <section id="about" className={styles.section}>
+                    <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.aboutMe')}
+                        </h2>
+                    </div>
+                    <div className={styles.aboutContent}>
+                        <p>{profile.summary}</p>
+                    </div>
+                </section>
+            )}
 
-                    {experiences.length > 0 && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>Experience</h3>
-                            <div className={styles.timeline}>
-                                {experiences.map((exp, idx) => (
-                                    <div key={exp.id || idx} className={styles.timelineItem}>
-                                        <div className={styles.timelineIcon}><Briefcase size={16} /></div>
-                                        <div className={styles.timelineContent}>
-                                            <h4>{exp.position}</h4>
-                                            <h5>{exp.company_name}</h5>
-                                            <span className={styles.date}>
-                                                {new Date(exp.start_date).getFullYear()} - 
-                                                {!exp.end_date ? ' Present' : ` ${new Date(exp.end_date).getFullYear()}`}
-                                            </span>
-                                            {exp.description && <p>{exp.description}</p>}
-                                        </div>
+            {/* Experience Section */}
+            {experiences.length > 0 && (
+                <section id="experience" className={styles.section}>
+                     <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.experience')}
+                        </h2>
+                    </div>
+                    <div className={styles.timelineWrapper}>
+                        <div>
+                            {experiences.map((exp, idx) => (
+                                <div key={exp.id || idx} className={styles.timelineItem}>
+                                    <div className={styles.dateBadge}>
+                                        {new Date(exp.start_date).getFullYear()} - 
+                                        {!exp.end_date ? ` ${t('portfolio.present')}` : ` ${new Date(exp.end_date).getFullYear()}`}
                                     </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
+                                    <h4>{exp.position}</h4>
+                                    <h5>{exp.company_name}</h5>
+                                    {exp.description && <p>{exp.description}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
-                    {educations.length > 0 && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>Education</h3>
-                            <div className={styles.timeline}>
-                                {educations.map((edu, idx) => (
-                                    <div key={edu.id || idx} className={styles.timelineItem}>
-                                        <div className={styles.timelineIcon}><Calendar size={16} /></div>
-                                        <div className={styles.timelineContent}>
-                                            <h4>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} in {edu.field_of_study}</h4>
-                                            <h5>{edu.institution}</h5>
-                                            <span className={styles.date}>
-                                                {new Date(edu.start_date).getFullYear()} - 
-                                                {!edu.end_date ? ' Present' : ` ${new Date(edu.end_date).getFullYear()}`}
-                                            </span>
-                                            {edu.description && <p>{edu.description}</p>}
-                                        </div>
+            {/* Education Section */}
+            {educations.length > 0 && (
+                <section id="education" className={styles.section}>
+                     <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.education')}
+                        </h2>
+                    </div>
+                    <div className={styles.timelineWrapper}>
+                        <div>
+                            {educations.map((edu, idx) => (
+                                <div key={edu.id || idx} className={styles.timelineItem}>
+                                    <div className={styles.dateBadge}>
+                                        {new Date(edu.start_date).getFullYear()} - 
+                                        {!edu.end_date ? ` ${t('portfolio.present')}` : ` ${new Date(edu.end_date).getFullYear()}`}
                                     </div>
-                                ))}
+                                    <h4>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} {t('portfolio.degreeIn')} {edu.field_of_study}</h4>
+                                    <h5>{edu.institution}</h5>
+                                    {edu.description && <p>{edu.description}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Hard Skills Section */}
+            {displayHardSkills.length > 0 && (
+                <section id="hard-skills" className={styles.section}>
+                    <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.hardSkills')}
+                        </h2>
+                    </div>
+                    <div className={styles.skillsWrapper}>
+                        {displayHardSkills.map((skill, idx) => (
+                            <div key={skill.id || idx} className={styles.skillBadge}>
+                                <Cpu size={16} style={{display: 'inline', marginRight: '6px', verticalAlign: '-3px', opacity: 0.6}} />
+                                {skill.name}
                             </div>
-                        </section>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Soft Skills Section */}
+            {softSkills.length > 0 && (
+                <section id="soft-skills" className={styles.section}>
+                    <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.softSkills')}
+                        </h2>
+                    </div>
+                    <div className={styles.skillsWrapper}>
+                        {softSkills.map((skill, idx) => (
+                            <div key={skill.id || idx} className={styles.skillBadge}>
+                                <Users size={16} style={{display: 'inline', marginRight: '6px', verticalAlign: '-3px', opacity: 0.6}} />
+                                {skill.name}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Certificates Section */}
+            {certificates.length > 0 && (
+                <section id="certificates" className={styles.section}>
+                    <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.certificates')}
+                        </h2>
+                    </div>
+                    <div className={styles.cardsGrid}>
+                        {certificates.map((cert, idx) => (
+                            <div key={cert.id || idx} className={styles.glassCard}>
+                                <h4>{cert.name}</h4>
+                                <p><ShieldCheck size={14} style={{display: 'inline', marginRight: '4px'}}/> {cert.issuing_organization || cert.organization}</p>
+                                {cert.issue_date && (
+                                    <span className={styles.dateInfo}>{t('portfolio.issued')} {new Date(cert.issue_date).getFullYear()}</span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Languages Section */}
+            {languages.length > 0 && (
+                <section id="languages" className={styles.section}>
+                    <div className={styles.titleWrapperLeft}>
+                        <h2 className={styles.sectionTitle}>
+                            <span>0{sectionIndex++} /</span> {t('portfolio.languages')}
+                        </h2>
+                    </div>
+                    <div className={styles.cardsGrid}>
+                        {languages.map((lng, idx) => (
+                            <div key={lng.id || idx} className={styles.glassCard}>
+                                <h4>{lng.language || lng.name} <span className={styles.levelBadge}>{lng.proficiency?.replace('_', ' ') || lng.level_display}</span></h4>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* CTA Section */}
+            <section className={styles.contactSection}>
+                <h2 className={styles.megaText}>{t('portfolio.readyToCollaborate')} <br/><span>{t('portfolio.readyToCollaborateSpan')}</span></h2>
+                {profile.email && (
+                    <a href={`mailto:${profile.email}`} className={styles.emailLink}>
+                        {profile.email} ↗
+                    </a>
+                )}
+                
+                <div className={styles.copyright}>
+                    <p>© {new Date().getFullYear()} {fullName}. {t('portfolio.allRightsReserved')}</p>
+                    {profile.city && (
+                        <div className={styles.location}><MapPin size={18} /> {profile.city}</div>
                     )}
                 </div>
-
-                {/* Right Column (Skills, Languages, Certificates) */}
-                <div className={styles.sideColumn}>
-                    {skills.length > 0 && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>Skills</h3>
-                            <div className={styles.pillsList}>
-                                {skills.map((skill, idx) => (
-                                    <span key={skill.id || idx} className={styles.pill}>{skill.name}</span>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-
-                    {languages.length > 0 && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>Languages</h3>
-                            <ul className={styles.simpleList}>
-                                {languages.map((lng, idx) => (
-                                    <li key={lng.id || idx}>
-                                        <span className={styles.listTag}>{lng.language}</span>
-                                        <span className={styles.listLevel}>{lng.proficiency?.replace('_', ' ')}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </section>
-                    )}
-
-                    {certificates.length > 0 && (
-                        <section className={styles.card}>
-                            <h3 className={styles.cardTitle}>Certificates</h3>
-                            <ul className={styles.simpleList}>
-                                {certificates.map((cert, idx) => (
-                                    <li key={cert.id || idx}>
-                                        <span className={styles.listTag}>{cert.name}</span>
-                                        <span className={styles.listLevel}>{cert.organization}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </section>
-                    )}
-                </div>
-            </div>
+            </section>
         </div>
     );
 }

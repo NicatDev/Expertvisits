@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Calendar, User as UserIcon, Tag } from 'lucide-react';
+import { Calendar, User as UserIcon, Tag } from 'lucide-react';
 import { getArticleDetail } from '@/lib/api/portfolio';
 import { useTranslation } from '@/i18n/client';
-import t1Styles from '../styles/template1.module.scss';
+import t2Styles from '../styles/template2.module.scss';
 import styles from '../styles/article-detail.module.scss';
 
 export default function ArticleDetail({ user, slug }) {
@@ -19,9 +18,7 @@ export default function ArticleDetail({ user, slug }) {
         setIsMounted(true);
         const fetchArticle = async () => {
             try {
-                const passedUsername = user?.user?.username || user?.username;
                 if (!passedUsername) return;
-                
                 const response = await getArticleDetail(passedUsername, slug);
                 setArticle(response);
             } catch (error) {
@@ -31,11 +28,13 @@ export default function ArticleDetail({ user, slug }) {
             }
         };
         fetchArticle();
-    }, [slug]);
+    }, [slug, passedUsername]);
+
+    if (!isMounted) return null;
 
     if (loading) {
         return (
-            <div className={t1Styles.pageContainer}>
+            <div className={t2Styles.pageContainer}>
                 <div className={styles.loadingState}>{t('portfolio.loadingArticle')}</div>
             </div>
         );
@@ -43,7 +42,7 @@ export default function ArticleDetail({ user, slug }) {
 
     if (!article) {
         return (
-            <div className={t1Styles.pageContainer}>
+            <div className={t2Styles.pageContainer}>
                 <div className={styles.emptyState}>{t('portfolio.articleNotFound')}</div>
             </div>
         );
@@ -52,8 +51,6 @@ export default function ArticleDetail({ user, slug }) {
     const createMarkup = (htmlContent) => {
         return { __html: htmlContent };
     };
-
-    if (!isMounted) return null;
 
     return (
         <article className={styles.articlePage}>
@@ -65,7 +62,7 @@ export default function ArticleDetail({ user, slug }) {
                     <div className={styles.metaInfo}>
                         <span className={styles.metaItem}>
                             <UserIcon size={16} />
-                            {article.author?.first_name || article.author?.username || user?.username}
+                            {article.author?.first_name || article.author?.username || passedUsername}
                         </span>
                         <span className={styles.metaItem}>
                             <Calendar size={16} />

@@ -26,8 +26,29 @@ const ProfileHeader = ({
     const [actionModal, setActionModal] = React.useState({ isOpen: false, type: null });
     const [confirmationModal, setConfirmationModal] = React.useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
 
+    const [templateModalOpen, setTemplateModalOpen] = React.useState(false);
+    const [websiteData, setWebsiteData] = React.useState(null);
+
+    React.useEffect(() => {
+        if (onUpdateProfile) {
+            import('@/lib/api/websites').then(({ websites_api }) => {
+                websites_api.getTemplate().then(res => setWebsiteData(res.data)).catch(console.error);
+            });
+        }
+    }, [onUpdateProfile, templateModalOpen]);
+
     return (
         <div className={styles.header}>
+            {templateModalOpen && (
+                <div style={{ position: 'fixed', zIndex: 1000000 }}>
+                    <React.Suspense fallback={null}>
+                        {React.createElement(
+                            React.lazy(() => import('@/components/widgets/PromoBanner/TemplateSelectionModal')),
+                            { isOpen: templateModalOpen, onClose: () => setTemplateModalOpen(false) }
+                        )}
+                    </React.Suspense>
+                </div>
+            )}
             {/* Confirmation Modal */}
             {confirmationModal.isOpen && (
                 <div style={{
@@ -93,6 +114,24 @@ const ProfileHeader = ({
             )}
 
             <div className={styles.coverContainer}>
+                {onUpdateProfile && (
+                    <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 20, display: 'flex', gap: '12px' }}>
+                        {websiteData?.is_active && (
+                            <a href={`http://192.168.0.187:3001/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                                <Button type="default" style={{ background: 'rgba(255,255,255,0.9)', color: '#111', fontWeight: 600, border: 'none', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
+                                    {t('widgets.visit_website') || 'Vebsayta Keçid Et'}
+                                </Button>
+                            </a>
+                        )}
+                        <Button 
+                            type="primary" 
+                            onClick={(e) => { e.stopPropagation(); setTemplateModalOpen(true); }}
+                            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: '#fff', border: 'none', fontWeight: 600, boxShadow: '0 4px 15px rgba(99,102,241,0.3)' }}
+                        >
+                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Vebsaytı İdarə Et') : (t('widgets.create_website') || 'Vebsayt Yarat')}
+                        </Button>
+                    </div>
+                )}
                 {profile.cover_image ? (
                     <img src={profile.cover_image} className={styles.coverImage} alt="Cover" />
                 ) : (

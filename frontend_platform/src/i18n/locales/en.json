@@ -237,7 +237,20 @@
         "login_to_follow": "You must be logged in to follow users",
         "promo_label": "Promote",
         "promo_title": "Create your own website",
-        "user_role": "User"
+        "user_role": "User",
+        "create_website_modal_title": "Create your Portfolio",
+        "select_template": "Select a template:",
+        "template1_name": "Dark Modern",
+        "template2_name": "Light Interactive",
+        "save_template": "Save template",
+        "saving": "Saving...",
+        "success_msg": "Template saved successfully!",
+        "contact_disclaimer": "Please note: Information displayed on your website, including contact details, is taken from your main profile. Edit your profile to update the information. This service is completely free, and you can change the template at any time.",
+        "manage_website": "Manage Website",
+        "create_website": "My Website",
+        "visit_website": "Visit Website",
+        "deactivate_website": "Cancel Website",
+        "deactivate_success_msg": "Your website has been successfully deactivated."
     },
     "profile": {
         "section_helper": {

@@ -125,7 +125,7 @@ export default function HomePage() {
     return (
         <div className={styles.container}>
             {/* Left Sidebar: Recommended Users & Custom Stats */}
-            <aside>
+            <aside className={styles.leftSidebar}>
                 {/* 1. Recommended Users */}
                 <RecommendedUsers />
 
@@ -137,7 +137,7 @@ export default function HomePage() {
             </aside>
 
             {/* Center: Feed */}
-            <section>
+            <section className={styles.mainFeed}>
                 {/* 1. Create Post Section (Moved Top) */}
                 <div className={styles.createBox} onClick={handleCreateClick}>
                     <div className={styles.placeholderInput}>
@@ -293,7 +293,7 @@ export default function HomePage() {
             </section>
 
             {/* Right Sidebar: Popular Articles */}
-            <aside>
+            <aside className={styles.rightSidebar}>
                 <PopularArticles />
 
                 {/* Keeping Trending if user wants, or remove? User: "Sag sidebarda en popular 3 meqale olsun". 

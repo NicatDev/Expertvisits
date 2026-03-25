@@ -1,154 +1,116 @@
-/* =============================================
-   Template 2 – Portfolio Styles (Skeleton)
-   ============================================= */
-
-.template2 {
+// Template 2 Core Styles - Light, Premium Bento Box Modern
+.templateRoot {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #fafafa;
+    color: #111827;
+    font-family: inherit;
 }
 
-.main {
+.mainContent {
     flex: 1;
+    padding-top: 80px; 
 }
 
-/* ---- Navbar ---- */
+// Navbar
 .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 80px;
+    z-index: 1000;
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.4s ease;
+
+    &.scrolled {
+        background-color: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    }
 }
 
-.navbarContainer {
+.navContainer {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 16px 24px;
+    padding: 0 24px;
+    height: 100%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
-.navbarLogo {
-    font-size: 1.25rem;
-    font-weight: 700;
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    
+    span { color: #6366f1; }
 }
 
-.navbarLinks {
-    display: flex;
-    gap: 24px;
-    list-style: none;
+.desktopNav {
+    display: none;
+    gap: 40px;
+    @media (min-width: 768px) { display: flex; }
+}
 
-    li a {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #6b7280;
-        transition: color 0.2s;
+.navLink {
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
 
-        &:hover {
-            color: #111827;
+    &:hover { color: #111827; }
+
+    &.active {
+        color: #111827;
+        font-weight: 700;
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -6px; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 3px;
+            background-color: #6366f1;
+            border-radius: 4px;
         }
     }
 }
 
-/* ---- Hero ---- */
-.hero {
-    padding: 80px 24px;
-    text-align: center;
+// lang switchers, mobile menus
+.mobileMenuButton {
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; color: #111827; cursor: pointer;
+    @media (min-width: 768px) { display: none; }
 }
 
-.heroContainer {
-    max-width: 800px;
-    margin: 0 auto;
+.mobileNav {
+    position: absolute; top: 80px; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 24px; display: flex; flex-direction: column; gap: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    @media (min-width: 768px) { display: none; }
 }
 
-.heroTitle {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 16px;
+.mobileNavLink {
+    text-decoration: none; color: #4b5563; font-size: 1.2rem;
+    font-weight: 500; padding: 10px 0;
+    &:hover, &.active { color: #111827; }
 }
 
-.heroSubtitle {
-    font-size: 1.25rem;
-    color: #6b7280;
+.pageContainer {
+    max-width: 1200px; margin: 0 auto; padding: 40px 24px;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-/* ---- Section Title ---- */
-.sectionTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-}
-
-/* ---- About ---- */
-.about {
-    padding: 64px 24px;
-}
-
-.aboutContainer {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.aboutText {
-    font-size: 1rem;
-    color: #4b5563;
-    line-height: 1.8;
-}
-
-/* ---- Projects ---- */
-.projects {
-    padding: 64px 24px;
-    background: #f9fafb;
-}
-
-.projectsContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.projectsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-}
-
-.projectCard {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    border: 1px solid #e5e7eb;
-
-    h3 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    p {
-        font-size: 0.9rem;
-        color: #6b7280;
-    }
-}
-
-.emptyText {
-    font-size: 1rem;
-    color: #9ca3af;
-    text-align: center;
-    padding: 40px 0;
-}
-
-/* ---- Footer ---- */
-.footer {
-    background: #111827;
-    color: #9ca3af;
-    padding: 24px;
-}
-
-.footerContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 0.875rem;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

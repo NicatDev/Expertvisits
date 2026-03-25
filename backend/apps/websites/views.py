@@ -57,6 +57,27 @@ class UserArticlesPublicListView(generics.ListAPIView):
         ).select_related('author').order_by('-created_at')
 
 
+class UserArticlePublicDetailView(generics.RetrieveAPIView):
+    """
+    Public API to retrieve a single article for a user's portfolio.
+    Requires username and article slug.
+    """
+    serializer_class = ArticlePublicSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        website = get_object_or_404(
+            UserWebsite.objects.select_related('user'),
+            user__username=username,
+            is_active=True,
+            is_deleted=False
+        )
+        return Article.objects.filter(author=website.user).select_related('author')
+
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -70,12 +91,6 @@ class UserWebsiteContactAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, username):
-        website = get_object_or_404(
-            UserWebsite.objects.select_related('user'),
-            user__username=username,
-            is_active=True,
-            is_deleted=False
-        )
 
         name = request.data.get('name')
         email = request.data.get('email')
@@ -99,7 +114,7 @@ class UserWebsiteContactAPIView(APIView):
                 subject=email_subject,
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[website.user.email],
+                recipient_list=[email],
                 fail_silently=False,
             )
             return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)
@@ -108,3 +123,45 @@ class UserWebsiteContactAPIView(APIView):
                 {"detail": "Failed to send email. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+from rest_framework.permissions import IsAuthenticated
+
+class UserWebsiteManageAPIView(APIView):
+    """
+    API for authenticated user to manage their own portfolio website.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            website = UserWebsite.objects.get(user=request.user)
+            return Response({"template_id": website.template_id, "is_active": website.is_active}, status=status.HTTP_200_OK)
+        except UserWebsite.DoesNotExist:
+            return Response({"template_id": None, "is_active": False}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        template_id = request.data.get('template_id')
+        if not template_id:
+            return Response({"detail": "template_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        website, created = UserWebsite.objects.get_or_create(
+            user=request.user,
+            defaults={'template_id': template_id, 'is_active': True}
+        )
+        if not created:
+            website.template_id = template_id
+            website.is_active = True
+            website.is_deleted = False
+            website.save()
+
+        return Response({"detail": "Portfolio website saved successfully."}, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        try:
+            website = UserWebsite.objects.get(user=request.user)
+            website.is_active = False
+            website.is_deleted = True
+            website.save()
+            return Response({"detail": "Portfolio website deactivated successfully."}, status=status.HTTP_200_OK)
+        except UserWebsite.DoesNotExist:
+            return Response({"detail": "Website not found"}, status=status.HTTP_404_NOT_FOUND)

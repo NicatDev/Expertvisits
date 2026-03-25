@@ -43,6 +43,7 @@ export default function CompaniesPage() {
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [totalCount, setTotalCount] = useState(0);
+    const [isMounted, setIsMounted] = useState(false);
 
     // Filter State
     const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -78,6 +79,7 @@ export default function CompaniesPage() {
     const searchParamsRef = React.useRef(searchParams);
 
     useEffect(() => {
+        setIsMounted(true);
         searchParamsRef.current = searchParams;
 
         // Sync URL to State (handle back/forward)
@@ -137,6 +139,8 @@ export default function CompaniesPage() {
         params.set('page', newPage);
         router.push(`?${params.toString()}`);
     };
+
+    if (!isMounted) return null;
 
     return (
         <div className={styles.container}>

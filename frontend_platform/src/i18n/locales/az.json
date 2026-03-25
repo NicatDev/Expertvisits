@@ -238,7 +238,20 @@
         "view_profile": "Profilə Bax",
         "promo_label": "Hədiyyə",
         "promo_title": "Öz vebsaytını yarat",
-        "user_role": "İstifadəçi"
+        "user_role": "İstifadəçi",
+        "create_website_modal_title": "Portfolio Vebsaytını Yarat",
+        "select_template": "Şablon seçin:",
+        "template1_name": "Tünd Modern",
+        "template2_name": "İşıqlı İnteraktiv",
+        "save_template": "Yadda saxla",
+        "saving": "Yadda saxlanılır...",
+        "success_msg": "Şablon uğurla yadda saxlanıldı!",
+        "contact_disclaimer": "Lütfən diqqət: Vebsaytınızda göstərilən məlumatlar, o cümlədən əlaqə məlumatları sizin əsas profilinizdən götürülür. Məlumatları yeniləmək üçün profilinizi redaktə edin. Bu xidmət tamamilə ödənişsizdir və şablonu istədiyiniz zaman dəyişdirə bilərsiniz.",
+        "manage_website": "Vebsaytı İdarə Et",
+        "create_website": "Mənim Vebsaytım",
+        "visit_website": "Vebsayta Keçid Et",
+        "deactivate_website": "Vebsaytı Ləğv Et",
+        "deactivate_success_msg": "Vebsaytınız uğurla ləğv edildi."
     },
     "profile": {
         "section_helper": {

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Send, MapPin, Mail, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, MapPin, Mail, Phone, Loader2 } from 'lucide-react';
 import api from '@/lib/api/client';
+import { useTranslation } from '@/i18n/client';
 import t1Styles from '../styles/template1.module.scss';
 import styles from '../styles/contact.module.scss';
 
@@ -15,6 +16,12 @@ export default function Contact({ user }) {
     });
     const [status, setStatus] = useState('idle'); // idle, loading, success, error
     const [errorMessage, setErrorMessage] = useState('');
+    const { t } = useTranslation();
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -39,33 +46,46 @@ export default function Contact({ user }) {
         }
     };
 
+    const profile = user.user || {};
+    const phone_number = profile.phone_number || null;
+
+    if (!isMounted) return null;
+
     return (
-        <div className={t1Styles.pageContainer}>
+        <div style={{ backgroundColor: '#05050f', minHeight: '100vh', width: '100%' }}>
             <div className={styles.contactLayout}>
                 {/* Left Side: Info */}
                 <div className={styles.contactInfo}>
-                    <h1 className={styles.pageTitle}>Let's talk</h1>
+                    <h1 className={styles.pageTitle}>{t('portfolio.letsTalk')} <span>{t('portfolio.together')}</span></h1>
                     <p className={styles.subtitle}>
-                        Interested in working together or just want to say hi? 
-                        Fill out the form and I'll get back to you as soon as possible.
+                        {t('portfolio.interestedWorking')}
                     </p>
 
                     <div className={styles.infoCards}>
-                        {user.email && (
+                        {profile.email && (
                             <div className={styles.infoCard}>
                                 <div className={styles.iconBox}><Mail size={24} /></div>
                                 <div>
-                                    <h3>Email</h3>
-                                    <p>{user.email}</p>
+                                    <h3>{t('portfolio.email')}</h3>
+                                    <p>{profile.email}</p>
                                 </div>
                             </div>
                         )}
-                        {user.city && (
+                        {phone_number && (
+                            <div className={styles.infoCard}>
+                                <div className={styles.iconBox}><Phone size={24} /></div>
+                                <div>
+                                    <h3>{t('portfolio.phone')}</h3>
+                                    <p>{phone_number}</p>
+                                </div>
+                            </div>
+                        )}
+                        {profile.city && (
                             <div className={styles.infoCard}>
                                 <div className={styles.iconBox}><MapPin size={24} /></div>
                                 <div>
-                                    <h3>Location</h3>
-                                    <p>{user.city}</p>
+                                    <h3>{t('portfolio.location')}</h3>
+                                    <p>{profile.city}</p>
                                 </div>
                             </div>
                         )}
@@ -74,9 +94,10 @@ export default function Contact({ user }) {
 
                 {/* Right Side: Form */}
                 <div className={styles.formContainer}>
+                    <h2 className={styles.formHeader}>{t('portfolio.sendMessage')}</h2>
                     <form onSubmit={handleSubmit} className={styles.contactForm}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="name">Full Name</label>
+                            <label htmlFor="name">{t('portfolio.fullName')}</label>
                             <input 
                                 type="text" 
                                 id="name" 
@@ -90,7 +111,7 @@ export default function Contact({ user }) {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="email">Email Address</label>
+                            <label htmlFor="email">{t('portfolio.emailAddress')}</label>
                             <input 
                                 type="email" 
                                 id="email" 
@@ -104,7 +125,7 @@ export default function Contact({ user }) {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="subject">Subject</label>
+                            <label htmlFor="subject">{t('portfolio.subject')}</label>
                             <input 
                                 type="text" 
                                 id="subject" 
@@ -112,21 +133,21 @@ export default function Contact({ user }) {
                                 value={formData.subject} 
                                 onChange={handleChange} 
                                 required 
-                                placeholder="Project inquiry"
+                                placeholder={t('portfolio.subject')}
                                 disabled={status === 'loading'}
                             />
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="message">Message</label>
+                            <label htmlFor="message">{t('portfolio.sendMsg')}</label>
                             <textarea 
                                 id="message" 
                                 name="message" 
                                 value={formData.message} 
                                 onChange={handleChange} 
                                 required 
-                                rows={6}
-                                placeholder="Tell me about your project..."
+                                rows={5}
+                                placeholder={t('portfolio.messagePlaceholder')}
                                 disabled={status === 'loading'}
                             />
                         </div>
@@ -137,15 +158,15 @@ export default function Contact({ user }) {
                             disabled={status === 'loading'}
                         >
                             {status === 'loading' ? (
-                                <><Loader2 size={18} className={styles.spinner} /> Sending...</>
+                                <><Loader2 size={18} className={styles.spinner} /> {t('portfolio.sending')}</>
                             ) : (
-                                <><Send size={18} /> Send Message</>
+                                <><Send size={18} /> {t('portfolio.sendMessage')}</>
                             )}
                         </button>
 
                         {status === 'success' && (
                             <div className={styles.successMessage}>
-                                Your message has been sent successfully!
+                                {t('portfolio.msgSuccess')}
                             </div>
                         )}
 
