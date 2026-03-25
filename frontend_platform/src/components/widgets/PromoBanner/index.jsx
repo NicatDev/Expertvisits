@@ -16,7 +16,7 @@ const PromoBanner = () => {
     const handleClick = (e) => {
         e.preventDefault();
         if (!user) {
-            toast.info("Giriş etməlisiniz");
+            toast.info(t('auth.login_required') || 'Giriş etməlisiniz');
             return;
         }
         setIsModalOpen(true);

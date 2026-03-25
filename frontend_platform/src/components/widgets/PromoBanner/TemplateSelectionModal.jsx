@@ -1,8 +1,9 @@
-"use client";
+'use client';
+
 import React, { useState } from 'react';
 import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
-import { websites_api } from '@/lib/api';
+import { websites_api, content } from '@/lib/api';
 import { toast } from 'react-toastify';
 import styles from './modal.module.scss';
 
@@ -11,12 +12,14 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
     const [selected, setSelected] = useState(2);
     const [loading, setLoading] = useState(false);
     const [isActive, setIsActive] = useState(false);
+    const [articlesCount, setArticlesCount] = useState(0);
 
     const [isFetching, setIsFetching] = useState(true);
 
     React.useEffect(() => {
         if (isOpen) {
             fetchCurrentTemplate();
+            fetchArticlesCount();
         }
     }, [isOpen]);
 
@@ -33,14 +36,31 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
         }
     };
 
+    const fetchArticlesCount = async () => {
+        try {
+            const res = await content.getArticleStats();
+            setArticlesCount(res.data.count || 0);
+        } catch (error) {
+            console.error("Failed to fetch article count", error);
+        }
+    };
+
     if (!isOpen) return null;
 
     const handleSave = async () => {
+        // Prevent saving if user doesn't have at least 3 articles
+        if (articlesCount < 3) {
+            toast.warning(t('widgets.article_limit_error') || 'Vebsayt yaratmaq üçün ən azı 3 məqaləniz olmalıdır.');
+            return;
+        }
+
         setLoading(true);
         try {
             await websites_api.updateTemplate(selected);
             toast.success(t('widgets.success_msg') || 'Template saved successfully!');
             onClose();
+            // Refresh page to update any state if needed (optional)
+            window.location.reload();
         } catch (error) {
             toast.error(error.response?.data?.detail || 'Failed to save template');
         } finally {
@@ -55,6 +75,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
             toast.success(t('widgets.deactivate_success_msg') || 'Website deactivated successfully!');
             setIsActive(false);
             onClose();
+            window.location.reload();
         } catch (error) {
             toast.error(error.response?.data?.detail || 'Failed to deactivate template');
         } finally {
@@ -71,6 +92,12 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                 </div>
                 
                 <div className={styles.body}>
+                    {articlesCount < 3 && (
+                        <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#dc2626', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '0.9rem', fontWeight: '500' }}>
+                            {t('widgets.article_limit_error')} (Cari: {articlesCount}/3)
+                        </div>
+                    )}
+
                     <p className={styles.label}>{t('widgets.select_template')}</p>
                     
                     {isFetching ? (
@@ -127,8 +154,8 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                     <button 
                         className={styles.saveBtn} 
                         onClick={handleSave} 
-                        disabled={loading}
-                        style={{ flex: 1 }}
+                        disabled={loading || articlesCount < 3}
+                        style={{ flex: 1, opacity: articlesCount < 3 ? 0.6 : 1, cursor: articlesCount < 3 ? 'not-allowed' : 'pointer' }}
                     >
                         {loading ? (t('widgets.saving') || 'Saving...') : t('widgets.save_template')}
                     </button>

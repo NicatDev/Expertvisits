@@ -24,7 +24,8 @@
     "auth": {
         "login": "Daxil ol",
         "register": "Qeydiyyat",
-        "logout": "Çıxış"
+        "logout": "Çıxış",
+        "login_required": "Zəhmət olmasa daxil olun"
     },
     "settings": {
         "tabs": {
@@ -248,11 +249,12 @@
         "saving": "Yadda saxlanılır...",
         "success_msg": "Şablon uğurla yadda saxlanıldı!",
         "contact_disclaimer": "Lütfən diqqət: Vebsaytınızda göstərilən məlumatlar, o cümlədən əlaqə məlumatları sizin əsas profilinizdən götürülür. Məlumatları yeniləmək üçün profilinizi redaktə edin. Bu xidmət tamamilə ödənişsizdir və şablonu istədiyiniz zaman dəyişdirə bilərsiniz.",
-        "manage_website": "Vebsaytı İdarə Et",
-        "create_website": "Mənim Vebsaytım",
+        "manage_website": "Mənim Vebsaytım",
+        "create_website": "Öz vebsaytını yarat",
         "visit_website": "Vebsayta Keçid Et",
         "deactivate_website": "Vebsaytı Ləğv Et",
-        "deactivate_success_msg": "Vebsaytınız uğurla ləğv edildi."
+        "deactivate_success_msg": "Vebsaytınız uğurla ləğv edildi.",
+        "article_limit_error": "Vebsayt yaratmaq üçün ən azı 3 məqaləniz olmalıdır."
     },
     "profile": {
         "section_helper": {

@@ -128,7 +128,7 @@ const ProfileHeader = ({
                             onClick={(e) => { e.stopPropagation(); setTemplateModalOpen(true); }}
                             style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: '#fff', border: 'none', fontWeight: 600, boxShadow: '0 4px 15px rgba(99,102,241,0.3)' }}
                         >
-                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Vebsaytı İdarə Et') : (t('widgets.create_website') || 'Vebsayt Yarat')}
+                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Öz vebsaytını yarat')}
                         </Button>
                     </div>
                 )}

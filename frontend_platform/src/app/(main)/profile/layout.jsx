@@ -19,7 +19,7 @@ import { useTranslation } from '@/i18n/client';
 
 export default function ProfileLayout({ children }) {
     const { t } = useTranslation('common');
-    const { user: currentUser, refreshUser } = useAuth();
+    const { user: currentUser, refreshUser, loading: authLoading } = useAuth();
     const pathname = usePathname();
     const router = useRouter();
 
@@ -32,8 +32,10 @@ export default function ProfileLayout({ children }) {
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
     useEffect(() => {
-        loadProfile();
-    }, [currentUser]);
+        if (!authLoading) {
+            loadProfile();
+        }
+    }, [currentUser, authLoading]);
 
     const loadProfile = async () => {
         if (!currentUser) {
@@ -62,7 +64,7 @@ export default function ProfileLayout({ children }) {
         }
     };
 
-    if (loading) return <div>{t('common.loading')}</div>;
+    if (authLoading || loading) return <div>{t('common.loading')}</div>;
     if (!profile) return <div>{t('profile.user_not_found')}</div>;
 
     // Determine active tab based on pathname

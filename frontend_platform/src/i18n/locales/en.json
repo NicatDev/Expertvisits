@@ -24,7 +24,8 @@
     "auth": {
         "login": "Login",
         "register": "Register",
-        "logout": "Logout"
+        "logout": "Logout",
+        "login_required": "Please login to proceed"
     },
     "settings": {
         "tabs": {
@@ -247,11 +248,12 @@
         "saving": "Saving...",
         "success_msg": "Template saved successfully!",
         "contact_disclaimer": "Please note: Information displayed on your website, including contact details, is taken from your main profile. Edit your profile to update the information. This service is completely free, and you can change the template at any time.",
-        "manage_website": "Manage Website",
-        "create_website": "My Website",
+        "manage_website": "My Website",
+        "create_website": "Create your own website",
         "visit_website": "Visit Website",
         "deactivate_website": "Cancel Website",
-        "deactivate_success_msg": "Your website has been successfully deactivated."
+        "deactivate_success_msg": "Your website has been successfully deactivated.",
+        "article_limit_error": "You must have at least 3 articles to create a website."
     },
     "profile": {
         "section_helper": {

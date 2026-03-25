@@ -1,5 +1,6 @@
-"use client";
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -9,6 +10,8 @@ import Button from '../../ui/Button';
 import { Search, Globe, User, LogOut, Menu, X, ChevronDown } from 'lucide-react';
 import LanguageSwitcher from '../../advanced/LanguageSwitcher';
 import { useTranslation } from '@/i18n/client';
+import { toast } from 'react-toastify';
+import TemplateSelectionModal from '../../widgets/PromoBanner/TemplateSelectionModal';
 
 const Navigation = () => {
     const { t } = useTranslation('common');
@@ -16,6 +19,31 @@ const Navigation = () => {
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+    
+    const [websiteData, setWebsiteData] = useState(null);
+    const [isWebsiteModalOpen, setIsWebsiteModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            // Lazy load the websites API to avoid unnecessary initial bundle size
+            import('@/lib/api/websites').then(({ websites_api }) => {
+                websites_api.getTemplate()
+                    .then(res => setWebsiteData(res.data))
+                    .catch(err => console.error("Nav website fetch failed", err));
+            });
+        } else {
+            setWebsiteData(null);
+        }
+    }, [user]);
+
+    const handleWebsiteClick = (e) => {
+        e.preventDefault();
+        if (!user) {
+            toast.info(t('auth.login_required') || 'Giriş etməlisiniz');
+            return;
+        }
+        setIsWebsiteModalOpen(true);
+    };
 
     return (
         <nav className={styles.navbar}>
@@ -32,12 +60,23 @@ const Navigation = () => {
                     <Link href="/experts" className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
                     <Link href="/vacancies" className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                     <Link href="/companies" className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
+                    
+                    <a 
+                        href="#" 
+                        onClick={handleWebsiteClick} 
+                        className={styles.navLink} 
+                        style={{ color: '#6366f1', fontWeight: '700' }}
+                        suppressHydrationWarning
+                    >
+                        {websiteData?.is_active 
+                            ? (t('widgets.manage_website') || 'Mənim Vebsaytım') 
+                            : (t('widgets.create_website') || 'Öz vebsaytını yarat')
+                        }
+                    </a>
                 </div>
 
                 {/* Right: Actions */}
                 <div className={styles.actions}>
-
-
                     {/* Language Dropdown */}
                     <LanguageSwitcher />
 
@@ -66,7 +105,6 @@ const Navigation = () => {
                                 {user ? (
                                     <>
                                         <button onClick={() => router.push('/profile')} suppressHydrationWarning>{t('nav.profile')}</button>
-                                        {/* <button onClick={() => router.push('/settings')} suppressHydrationWarning>{t('nav.settings')}</button> */}
                                         <button onClick={logout} style={{ color: 'red' }} suppressHydrationWarning>{t('auth.logout')}</button>
                                     </>
                                 ) : (
@@ -93,9 +131,27 @@ const Navigation = () => {
                         <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
                         <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
+                        <a 
+                            href="#" 
+                            onClick={(e) => { setIsMenuOpen(false); handleWebsiteClick(e); }} 
+                            style={{ color: '#6366f1', fontWeight: '700', padding: '12px 0' }}
+                            suppressHydrationWarning
+                        >
+                            {websiteData?.is_active 
+                                ? (t('widgets.manage_website') || 'Mənim Vebsaytım') 
+                                : (t('widgets.create_website') || 'Öz vebsaytını yarat')
+                            }
+                        </a>
                     </div>
                 )
             }
+
+            {isWebsiteModalOpen && (
+                <TemplateSelectionModal 
+                    isOpen={isWebsiteModalOpen} 
+                    onClose={() => setIsWebsiteModalOpen(false)} 
+                />
+            )}
         </nav >
     );
 };
