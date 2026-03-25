@@ -12,30 +12,35 @@ function TemplateLoader() {
 const layouts = {
     1: dynamic(() => import("@/templates/template1/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
     2: dynamic(() => import("@/templates/template2/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
 };
 
 // Home pages for the root portfolio URL (/[username]/)
 const homePages = {
     1: dynamic(() => import("@/templates/template1/pages/Home"), { loading: () => <TemplateLoader /> }),
     2: dynamic(() => import("@/templates/template2/pages/Home"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/Home"), { loading: () => <TemplateLoader /> }),
 };
 
 // Articles list pages (/[username]/articles/)
 const articlesPages = {
     1: dynamic(() => import("@/templates/template1/pages/Articles"), { loading: () => <TemplateLoader /> }),
     2: dynamic(() => import("@/templates/template2/pages/Articles"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/Articles"), { loading: () => <TemplateLoader /> }),
 };
 
 // Article Detail pages (/[username]/articles/[slug]/)
 const articleDetailPages = {
     1: dynamic(() => import("@/templates/template1/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
     2: dynamic(() => import("@/templates/template2/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
 };
 
 // Contact pages (/[username]/contact/)
 const contactPages = {
     1: dynamic(() => import("@/templates/template1/pages/Contact"), { loading: () => <TemplateLoader /> }),
     2: dynamic(() => import("@/templates/template2/pages/Contact"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/Contact"), { loading: () => <TemplateLoader /> }),
 };
 
 export function getTemplateLayout(templateName) {

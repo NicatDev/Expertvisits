@@ -230,6 +230,10 @@
     letter-spacing: -1px;
     line-height: 1.2;
     margin-bottom: 16px;
+
+    @media (max-width: 380px) {
+        font-size: 1.75rem;
+    }
 }
 
 .sectionDesc {

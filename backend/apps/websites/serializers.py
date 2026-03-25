@@ -2,7 +2,7 @@ from rest_framework import serializers
 from apps.accounts.models import User
 from apps.websites.models import UserWebsite
 from apps.content.models import Article
-from apps.profiles.models import Experience, Education, Skill, Language, Certificate
+from apps.profiles.models import Experience, Education, Skill, Language, Certificate, Service
 from apps.accounts.api.serializers import SubCategorySerializer
 
 class WebsiteUserSerializer(serializers.ModelSerializer):
@@ -39,6 +39,11 @@ class CertificateSerializer(serializers.ModelSerializer):
         model = Certificate
         fields = ['id', 'name', 'issuing_organization', 'issue_date']
 
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'title', 'description', 'steps']
+
 class UserWebsiteSerializer(serializers.ModelSerializer):
     user = WebsiteUserSerializer(read_only=True)
     experiences = serializers.SerializerMethodField()
@@ -46,13 +51,18 @@ class UserWebsiteSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
     certificates = serializers.SerializerMethodField()
+    services = serializers.SerializerMethodField()
     
     class Meta:
         model = UserWebsite
         fields = [
             'user', 'template_id', 'banner', 
-            'experiences', 'educations', 'skills', 'languages', 'certificates'
+            'experiences', 'educations', 'skills', 'languages', 'certificates', 'services'
         ]
+
+    def get_services(self, obj):
+        qs = obj.user.services.all().order_by('-id')
+        return ServiceSerializer(qs, many=True).data
 
     def get_experiences(self, obj):
         qs = obj.user.experiences.all().order_by('-start_date')

@@ -243,6 +243,7 @@
         "select_template": "Şablon seçin:",
         "template1_name": "Tünd Modern",
         "template2_name": "İşıqlı İnteraktiv",
+        "template3_name": "Korporativ",
         "save_template": "Yadda saxla",
         "saving": "Yadda saxlanılır...",
         "success_msg": "Şablon uğurla yadda saxlanıldı!",
@@ -284,6 +285,7 @@
         "change_password": "Şifrəni dəyiş",
         "tabs": {
             "about": "Haqqında",
+            "services": "Xidmətlər",
             "posts": "Paylaşımlar",
             "booking": "Randevular",
             "vacancies": "Vakansiyalarım",
@@ -694,6 +696,16 @@
             "name": "Ad",
             "org": "Verən təşkilat",
             "date": "Tarix"
+        },
+        "service": {
+            "add": "Xidmət əlavə et",
+            "edit": "Xidməti redaktə et",
+            "title": "Başlıq",
+            "description": "Təsvir",
+            "steps": "Mərhələlər",
+            "add_step": "Mərhələ əlavə et",
+            "step_placeholder": "Mərhələni daxil edin...",
+            "read_more": "Daha ətraflı"
         },
         "password": {
             "title": "Şifrəni dəyiş",

@@ -6,10 +6,8 @@ export default function Footer({ data, user }) {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className={styles.footer}>
-            <div className={styles.footerContainer}>
-                <p>&copy; {currentYear} {user?.full_name || 'Portfolio'}. All rights reserved.</p>
-            </div>
+        <footer style={{ padding: '20px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', color: '#64748b', fontSize: '0.9rem' }}>
+            <p>&copy; {currentYear} {user?.full_name || 'Portfolio'}. All rights reserved.</p>
         </footer>
     );
 }

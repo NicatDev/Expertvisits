@@ -1,0 +1,112 @@
+// Template 3 Article Detail Styles - Corporate Executive
+.articlePage {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    min-height: calc(100vh - 80px);
+}
+
+.articleHeader {
+    margin-bottom: 48px;
+}
+
+.headerContainer {
+    .title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+    }
+}
+
+.metaInfo {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.thumbnailContainer {
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.mainImage {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.contentContainer {
+    margin: 0 auto;
+}
+
+.articleBody {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    line-height: 1.9;
+
+    h1, h2, h3, h4 { color: #fff; margin: 1.5em 0 0.8em; font-weight: 700; }
+    p { margin-bottom: 1.2em; }
+    a { color: #f59e0b; text-decoration: underline; }
+    blockquote {
+        border-left: 4px solid #f59e0b;
+        padding-left: 20px;
+        margin: 24px 0;
+        color: #94a3b8;
+        font-style: italic;
+    }
+    img { max-width: 100%; border-radius: 12px; margin: 24px 0; }
+    code {
+        background: rgba(255,255,255,0.06);
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+    pre {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 20px;
+        overflow-x: auto;
+        code { background: none; padding: 0; }
+    }
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.tagPill {
+    padding: 6px 14px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.loadingState, .emptyState {
+    text-align: center;
+    color: #94a3b8;
+    padding: 80px 20px;
+    font-size: 1.1rem;
+}

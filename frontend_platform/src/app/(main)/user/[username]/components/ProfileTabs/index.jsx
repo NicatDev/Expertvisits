@@ -12,7 +12,8 @@ const ProfileTabs = ({ username }) => {
     // Determine active tab based on path
     const isPosts = pathname.endsWith('/posts');
     const isVacancies = pathname.endsWith('/vacancies');
-    const isAbout = !isPosts && !isVacancies;
+    const isServices = pathname.endsWith('/services');
+    const isAbout = !isPosts && !isVacancies && !isServices;
 
     return (
         <div className={styles.tabs}>
@@ -21,6 +22,12 @@ const ProfileTabs = ({ username }) => {
                 className={isAbout ? styles.activeTab : ''}
             >
                 {t('public_profile.tabs.about')}
+            </Link>
+            <Link
+                href={`/user/${username}/services`}
+                className={isServices ? styles.activeTab : ''}
+            >
+                {t('profile.tabs.services') || 'Services'}
             </Link>
             <Link
                 href={`/user/${username}/posts`}

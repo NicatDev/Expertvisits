@@ -69,3 +69,13 @@ class QuickNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.user.username}"
+
+class Service(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    steps = models.JSONField(default=list, blank=True)
+
+    def __str__(self):
+        return self.title
+

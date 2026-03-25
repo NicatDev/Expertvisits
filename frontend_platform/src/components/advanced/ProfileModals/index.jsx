@@ -307,3 +307,81 @@ export const PasswordModal = ({ isOpen, onClose, onSave }) => {
         </FormModal>
     );
 };
+
+export const ServiceModal = ({ isOpen, onClose, initialData, onSave }) => {
+    const { t } = useTranslation('common');
+    const [formData, setFormData] = useState({ title: '', description: '', steps: [] });
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                title: initialData.title || '',
+                description: initialData.description || '',
+                steps: initialData.steps || [],
+                id: initialData.id
+            });
+        }
+        else setFormData({ title: '', description: '', steps: [] });
+    }, [initialData, isOpen]);
+
+    const handleStepChange = (index, val) => {
+        const newSteps = [...formData.steps];
+        newSteps[index] = val;
+        setFormData({ ...formData, steps: newSteps });
+    };
+
+    const addStep = () => {
+        setFormData({ ...formData, steps: [...formData.steps, ''] });
+    };
+
+    const removeStep = (index) => {
+        const newSteps = formData.steps.filter((_, i) => i !== index);
+        setFormData({ ...formData, steps: newSteps });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        // filter out empty steps
+        const cleanedData = { ...formData, steps: formData.steps.filter(s => s.trim() !== '') };
+        await onSave(cleanedData);
+        setLoading(false);
+        onClose();
+    };
+
+    return (
+        <FormModal isOpen={isOpen} onClose={onClose} title={initialData ? t('profile_modals.service.edit') || 'Edit Service' : t('profile_modals.service.add') || 'Add Service'} onSubmit={handleSubmit} loading={loading}>
+            <Input label={t('profile_modals.service.title') || 'Title'} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+            <div style={{ marginBottom: '8px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.service.description') || 'Description'}</label>
+                <textarea 
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #d9d9d9', borderRadius: '6px', minHeight: '80px', fontFamily: 'inherit' }}
+                    value={formData.description}
+                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                    required
+                />
+            </div>
+            
+            <div style={{ marginTop: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.service.steps') || 'Steps'}</label>
+                {formData.steps.map((step, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <span style={{ padding: '8px 0', fontWeight: 'bold', color: '#666' }}>{idx + 1}.</span>
+                        <input 
+                            style={{ flex: 1, padding: '8px 12px', border: '1px solid #d9d9d9', borderRadius: '6px' }}
+                            value={step}
+                            onChange={(e) => handleStepChange(idx, e.target.value)}
+                            placeholder={t('profile_modals.service.step_placeholder') || 'Enter step...'}
+                            required
+                        />
+                        <button type="button" onClick={() => removeStep(idx)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '0 12px', cursor: 'pointer' }}>X</button>
+                    </div>
+                ))}
+                <button type="button" onClick={addStep} style={{ background: '#f5f5f5', border: '1px dashed #d9d9d9', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#666', marginTop: '8px' }}>
+                    + {t('profile_modals.service.add_step') || 'Add Step'}
+                </button>
+            </div>
+        </FormModal>
+    );
+};

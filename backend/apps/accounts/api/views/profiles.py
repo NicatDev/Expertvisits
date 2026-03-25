@@ -2,10 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from apps.accounts.models import User
-from apps.profiles.models import Experience, Education, Skill, Language, Certificate
+from apps.profiles.models import Experience, Education, Skill, Language, Certificate, Service
 from apps.profiles.api.serializers import (
     ExperienceSerializer, EducationSerializer, SkillSerializer,
-    LanguageSerializer, CertificateSerializer
+    LanguageSerializer, CertificateSerializer, ServiceSerializer
 )
 
 class UserProfileDetailsAPIView(APIView):
@@ -36,5 +36,6 @@ class UserProfileDetailsAPIView(APIView):
             'skills': SkillSerializer(Skill.objects.filter(user=user), many=True).data,
             'languages': LanguageSerializer(Language.objects.filter(user=user), many=True).data,
             'certificates': CertificateSerializer(Certificate.objects.filter(user=user), many=True).data,
+            'services': ServiceSerializer(Service.objects.filter(user=user), many=True).data,
         }
         return Response(data)

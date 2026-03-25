@@ -5,6 +5,7 @@ from .views.skills import SkillListCreateAPIView, SkillDetailAPIView
 from .views.notes import QuickNoteListCreateAPIView, QuickNoteDetailAPIView
 from .views.languages import LanguageListCreateAPIView, LanguageDetailAPIView
 from .views.certificates import CertificateListCreateAPIView, CertificateDetailAPIView
+from .views.services import ServiceListCreateAPIView, ServiceDetailAPIView
 
 urlpatterns = [
     path('experience/', ExperienceListCreateAPIView.as_view(), name='experience-list-create'),
@@ -24,4 +25,7 @@ urlpatterns = [
     
     path('certificates/', CertificateListCreateAPIView.as_view(), name='certificate-list-create'),
     path('certificates/<int:pk>/', CertificateDetailAPIView.as_view(), name='certificate-detail'),
+    
+    path('services/', ServiceListCreateAPIView.as_view(), name='service-list-create'),
+    path('services/<int:pk>/', ServiceDetailAPIView.as_view(), name='service-detail'),
 ]

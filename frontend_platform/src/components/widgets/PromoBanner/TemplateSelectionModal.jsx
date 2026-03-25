@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { X, CheckCircle, LayoutTemplate, PaintBucket } from 'lucide-react';
+import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { websites_api } from '@/lib/api';
 import { toast } from 'react-toastify';
@@ -95,6 +95,15 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                 <div className={styles.iconBox}><PaintBucket size={24}/></div>
                                 <span className={styles.templateName}>{t('widgets.template2_name')}</span>
                                 {selected === 2 && <CheckCircle className={styles.checkIcon} size={20}/>}
+                            </div>
+
+                            <div 
+                                className={`${styles.option} ${selected === 3 ? styles.active : ''}`}
+                                onClick={() => setSelected(3)}
+                            >
+                                <div className={styles.iconBox}><Briefcase size={24}/></div>
+                                <span className={styles.templateName}>{t('widgets.template3_name')}</span>
+                                {selected === 3 && <CheckCircle className={styles.checkIcon} size={20}/>}
                             </div>
                         </div>
                     )}

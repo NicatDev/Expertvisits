@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Mail, MapPin, ArrowUpRight, ShieldCheck, Cpu, Users, GraduationCap, Briefcase, Globe } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import Services from '../sections/Services';
 import styles from '../styles/home.module.scss';
 import t2Styles from '../styles/template2.module.scss';
 
@@ -108,6 +109,11 @@ export default function Home({ user }) {
                             ))}
                         </div>
                     </section>
+                )}
+
+                {/* Services Section */}
+                {user.services && user.services.length > 0 && (
+                    <Services data={user.services} />
                 )}
 
                 {/* Education Section */}

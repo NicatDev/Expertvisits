@@ -91,3 +91,7 @@ class RegistrationSession(models.Model):
 
     def __str__(self):
         return f"Session: {self.email}"
+
+
+
+    

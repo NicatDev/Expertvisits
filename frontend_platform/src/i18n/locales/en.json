@@ -242,6 +242,7 @@
         "select_template": "Select a template:",
         "template1_name": "Dark Modern",
         "template2_name": "Light Interactive",
+        "template3_name": "Corporate",
         "save_template": "Save template",
         "saving": "Saving...",
         "success_msg": "Template saved successfully!",
@@ -282,6 +283,7 @@
         "change_password": "Change Password",
         "tabs": {
             "about": "About",
+            "services": "Services",
             "posts": "Posts",
             "booking": "Booking",
             "vacancies": "My Vacancies",
@@ -490,6 +492,16 @@
             "name": "Name",
             "org": "Issuing Org.",
             "date": "Date"
+        },
+        "service": {
+            "add": "Add Service",
+            "edit": "Edit Service",
+            "title": "Title",
+            "description": "Description",
+            "steps": "Steps",
+            "add_step": "Add Step",
+            "step_placeholder": "Enter step...",
+            "read_more": "Read More"
         },
         "password": {
             "title": "Change Password",

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.profiles.models import Experience, Education, Skill, QuickNote, Language, Certificate
+from apps.profiles.models import Experience, Education, Skill, QuickNote, Language, Certificate, Service
 
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,3 +33,8 @@ class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = ['id', 'name', 'issuing_organization', 'issue_date']
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'title', 'description', 'steps']
