@@ -17,6 +17,7 @@ import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import { toast } from 'react-toastify';
 
 import OpenToWork from './components/OpenToWork';
+import ProfileSummary from './components/ProfileSummary';
 
 export default function AboutPage() {
     const { t } = useTranslation('common');
@@ -68,16 +69,20 @@ export default function AboutPage() {
         }
     };
 
-    const saveInline = async (field) => {
-        let payload = { [field]: aboutData[field] };
+    const saveInline = async (field, overrideValue = undefined) => {
+        const valueToSave = overrideValue !== undefined ? overrideValue : aboutData[field];
+        let payload = { [field]: valueToSave };
+        
         if (field === 'profession_sub_category') {
-            payload = { profession_sub_category_id: aboutData['profession_sub_category'] };
+            payload = { profession_sub_category_id: valueToSave };
         }
 
         try {
             await profiles.updateProfile(profile.username, payload);
             refreshProfile(); // Refresh main profile context
-            toggleEdit(field);
+            if (overrideValue === undefined) {
+                toggleEdit(field);
+            }
             toast.success(t('profile.toasts.updated'));
         } catch (err) {
             console.error(err);
@@ -154,6 +159,8 @@ export default function AboutPage() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <OpenToWork user={profile} isEditable={isOwner} onUpdate={handleOpenToUpdate} />
+
+            <ProfileSummary profile={profile} isOwner={isOwner} onSave={saveInline} />
 
             <div className={styles.section}>
                 <div className={styles.sectionHeader}>

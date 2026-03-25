@@ -136,6 +136,34 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             )
         return queryset
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        new_username = request.data.get('username')
+        new_email = request.data.get('email')
+
+        errors = {}
+        if new_username and new_username != instance.username:
+            if User.objects.filter(username=new_username).exclude(pk=instance.pk).exists():
+                errors['username'] = ["Bu istifadəçi adı artıq mövcuddur."]
+        
+        if new_email and new_email != instance.email:
+            if User.objects.filter(email=new_email).exclude(pk=instance.pk).exists():
+                errors['email'] = ["Bu e-poçt ünvanı artıq istifadədədir."]
+
+        if errors:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
 class UserMeAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer

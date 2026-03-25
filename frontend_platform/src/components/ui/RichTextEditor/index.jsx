@@ -91,12 +91,19 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
         },
     });
 
-    // Update content if it changes externally (e.g. initial load)
+    // Update content if it changes externally (e.g. initial load or form reset)
     useEffect(() => {
-        if (editor && content !== editor.getHTML()) {
-            // Only update if difference is significant to avoid cursor jumps
-            if (editor.getText() === '' && content) {
-                editor.commands.setContent(content);
+        if (editor && content !== undefined) {
+            const currentHtml = editor.getHTML();
+            if (content !== currentHtml) {
+                // Explicitly allow clearing the editor from the outside
+                if (content === '' || content === '<p></p>') {
+                    editor.commands.setContent(content);
+                } 
+                // Only update on initial load to avoid cursor jumps while typing
+                else if (editor.getText() === '') {
+                    editor.commands.setContent(content);
+                }
             }
         }
     }, [content, editor]);

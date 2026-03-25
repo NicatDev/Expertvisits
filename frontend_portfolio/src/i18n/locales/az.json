@@ -1,0 +1,37 @@
+{
+    "nav": {
+        "home": "Ana Səhifə",
+        "about": "Haqqımda",
+        "projects": "Layihələr",
+        "contact": "Əlaqə"
+    },
+    "hero": {
+        "greeting": "Salam, mən",
+        "subtitle": "Portfolio Saytıma Xoş Gəlmisiniz",
+        "cta": "Layihələrimə Bax"
+    },
+    "about": {
+        "title": "Haqqımda",
+        "description": "Məlumat hələ əlavə olunmayıb."
+    },
+    "projects": {
+        "title": "Layihələr",
+        "viewProject": "Layihəyə Bax",
+        "noProjects": "Hələ heç bir layihə əlavə olunmayıb."
+    },
+    "contact": {
+        "title": "Əlaqə",
+        "name": "Ad",
+        "email": "E-poçt",
+        "message": "Mesaj",
+        "send": "Göndər"
+    },
+    "footer": {
+        "rights": "Bütün hüquqlar qorunur."
+    },
+    "common": {
+        "loading": "Yüklənir...",
+        "error": "Xəta baş verdi",
+        "notFound": "Səhifə tapılmadı"
+    }
+}

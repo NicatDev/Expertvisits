@@ -10,6 +10,10 @@
     transition: transform 0.2s, box-shadow 0.2s;
     border: 1px solid #f0f0f0;
 
+    @media (max-width: 480px) {
+        padding: 16px;
+    }
+
     &:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
@@ -73,7 +77,6 @@
 .contentBody {
     h3 {
         font-size: 1.5rem;
-        /* Increased from 1.25rem to separate from content */
         font-weight: 700;
         margin-bottom: 8px;
         color: #1a1a1a;
@@ -164,6 +167,7 @@
     border-bottom: 1px solid #f0f0f0;
     color: #64748b;
     font-size: 0.9rem;
+    flex-wrap: wrap;
 
     span {
         cursor: pointer;
@@ -179,10 +183,17 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
 
     .actionGroup {
         display: flex;
         gap: 16px;
+        flex-wrap: wrap;
+
+        @media (max-width: 480px) {
+            gap: 8px;
+        }
     }
 
     button {

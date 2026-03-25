@@ -5,6 +5,7 @@ import { profiles } from '@/lib/api';
 import { useTranslation } from '@/i18n/client';
 import NoContent from '@/components/ui/NoContent';
 import OpenToWork from '../../profile/components/OpenToWork';
+import ProfileSummary from '../../profile/components/ProfileSummary';
 import styles from './about.module.scss'; // New style file for about page
 
 export default function UserAboutPage() {
@@ -56,7 +57,8 @@ export default function UserAboutPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <OpenToWork user={profile} isEditable={false} />
 
-                {/* Info with Birthday */}
+                <ProfileSummary profile={profile} isOwner={false} onSave={() => {}} />
+
                 {/* Info with Birthday */}
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>

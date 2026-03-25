@@ -122,7 +122,7 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
                     <div className={styles.actions}>
                         <Button type="default" onClick={onClose}>{t('common.cancel')}</Button>
                         <Button type="primary" onClick={handleSubmit} loading={loading}>
-                            {loading ? t('create_modal.posting') : t('create_modal.post_btn')}
+                            {loading ? t('create_modal.post_btn') : t('create_modal.post_btn')}
                         </Button>
                     </div>
                 </div>

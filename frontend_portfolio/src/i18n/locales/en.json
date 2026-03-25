@@ -1,0 +1,37 @@
+{
+    "nav": {
+        "home": "Home",
+        "about": "About",
+        "projects": "Projects",
+        "contact": "Contact"
+    },
+    "hero": {
+        "greeting": "Hi, I'm",
+        "subtitle": "Welcome to My Portfolio",
+        "cta": "View My Projects"
+    },
+    "about": {
+        "title": "About Me",
+        "description": "No information added yet."
+    },
+    "projects": {
+        "title": "Projects",
+        "viewProject": "View Project",
+        "noProjects": "No projects added yet."
+    },
+    "contact": {
+        "title": "Contact",
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "send": "Send"
+    },
+    "footer": {
+        "rights": "All rights reserved."
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "notFound": "Page not found"
+    }
+}

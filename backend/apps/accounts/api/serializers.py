@@ -21,7 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    phone_number = serializers.CharField(required=False, allow_blank=True)
+    phone_number = serializers.CharField(required=False, allow_blank=True) # Assuming no extra validation here for mock
+    summary = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     interests = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=True, min_length=1
     )
@@ -40,7 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name', 
-            'phone_number', 'birth_day', 'city', 'interests', 'avatar', 'cover_image',
+            'phone_number', 'birth_day', 'city', 'summary', 'interests', 'avatar', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
             'followers_count', 'following_count', 'is_following', 'company_slug',

@@ -1,0 +1,154 @@
+/* =============================================
+   Template 3 – Portfolio Styles (Skeleton)
+   ============================================= */
+
+.template3 {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+}
+
+/* ---- Navbar ---- */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.navbarContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbarLogo {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.navbarLinks {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+
+    li a {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #6b7280;
+        transition: color 0.2s;
+
+        &:hover {
+            color: #111827;
+        }
+    }
+}
+
+/* ---- Hero ---- */
+.hero {
+    padding: 80px 24px;
+    text-align: center;
+}
+
+.heroContainer {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.heroSubtitle {
+    font-size: 1.25rem;
+    color: #6b7280;
+}
+
+/* ---- Section Title ---- */
+.sectionTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+/* ---- About ---- */
+.about {
+    padding: 64px 24px;
+}
+
+.aboutContainer {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.aboutText {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.8;
+}
+
+/* ---- Projects ---- */
+.projects {
+    padding: 64px 24px;
+    background: #f9fafb;
+}
+
+.projectsContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.projectsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.projectCard {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+
+    h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+}
+
+.emptyText {
+    font-size: 1rem;
+    color: #9ca3af;
+    text-align: center;
+    padding: 40px 0;
+}
+
+/* ---- Footer ---- */
+.footer {
+    background: #111827;
+    color: #9ca3af;
+    padding: 24px;
+}
+
+.footerContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.875rem;
+}
