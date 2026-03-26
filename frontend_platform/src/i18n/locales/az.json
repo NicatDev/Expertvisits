@@ -451,6 +451,8 @@
     },
     "vacancies": {
         "title": "Vakansiyalar",
+        "filters_hidden": "Axtarış filtrləri",
+        "list_hidden": "Vakansiyaların siyahısı",
         "subtitle": "Xəyalınızdakı işi və ya təcrübəni tapın",
         "post_vacancy": "Vakansiya yerləşdir",
         "search_placeholder": "Vəzifə, şirkət üzrə axtar...",
@@ -555,6 +557,8 @@
     },
     "companies": {
         "title": "Şirkətləri Kəşf Et",
+        "filters_hidden": "Axtarış filtrləri",
+        "list_hidden": "Şirkətlərin siyahısı",
         "subtitle": "Sənaye liderləri və innovatorlarla əlaqə qurun",
         "register_company": "Şirkət Qeydiyyatı",
         "search_placeholder": "Ad və ya sənaye üzrə axtar...",
@@ -789,5 +793,9 @@
         "failed": "Google ilə giriş uğursuz oldu",
         "sign_in": "Google ilə daxil ol",
         "sign_up": "Google ilə qeydiyyatdan keç"
+    },
+    "seo": {
+        "home_h1": "Expert Visits - Peşəkar Mütəxəssislər, Şirkətlər və İş Elanları Platforması",
+        "home_h2": "Ən Son Paylaşımlar və Məqalələr"
     }
 }

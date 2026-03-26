@@ -2,20 +2,30 @@ import { getUser } from "@/lib/api/portfolio";
 import { getTemplateLayout } from "@/templates";
 import { notFound } from "next/navigation";
 
+import { cookies } from 'next/headers';
+
 export async function generateMetadata({ params }) {
     const { username } = await params;
+    const cookieStore = await cookies();
+    const lng = cookieStore.get('i18next')?.value || 'en';
 
     try {
-        const user = await getUser(username);
-        if (!user) {
-            return { title: "Portfolio Not Found" };
+        const resUser = await getUser(username);
+        if (!resUser) {
+            return { title: lng === 'az' ? 'Portfel tapılmadı' : (lng === 'ru' ? 'Портфолио не найдено' : 'Portfolio Not Found') };
         }
+        
+        const profile = resUser.user || {};
+        const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username || username;
+        const suffix = 'Expert Visits';
+        const defaultDesc = lng === 'az' ? `${fullName}-in rəsmi şəxsi portfeli.` : (lng === 'ru' ? `Официальное персональное портфолио ${fullName}.` : `Official personal portfolio of ${fullName}.`);
+
         return {
-            title: `${user.full_name || username} | Portfolio`,
-            description: user.data?.hero?.subtitle || `${user.full_name || username}'s portfolio`,
+            title: `${fullName} | ${suffix}`,
+            description: resUser.data?.hero?.subtitle || defaultDesc,
         };
     } catch {
-        return { title: `${username} | Portfolio` };
+        return { title: `${username} | Expert Visits` };
     }
 }
 

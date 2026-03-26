@@ -138,6 +138,9 @@ export default function HomePage() {
 
             {/* Center: Feed */}
             <section className={styles.mainFeed}>
+                <h1 className="visually-hidden">
+                    {t('seo.home_h1', { defaultValue: 'Expert Visits - Professional Experts, Companies and Job Vacancies Platform' })}
+                </h1>
                 {/* 1. Create Post Section (Moved Top) */}
                 <div className={styles.createBox} onClick={handleCreateClick}>
                     <div className={styles.placeholderInput}>
@@ -263,6 +266,9 @@ export default function HomePage() {
                 </div>
 
                 {/* Feed Content */}
+                <h2 className="visually-hidden">
+                    {t('seo.home_h2', { defaultValue: 'Latest Posts and Articles' })}
+                </h2>
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
                         <div style={{ display: 'inline-block', width: '24px', height: '24px', border: '2px solid #ccc', borderTopColor: '#333', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>

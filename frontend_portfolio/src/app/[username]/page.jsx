@@ -7,18 +7,35 @@ import { notFound } from "next/navigation";
  * 
  * Renders the home page of the selected template. 
  */
+import { cookies } from 'next/headers';
+
 export async function generateMetadata({ params }) {
     const { username } = await params;
+    const cookieStore = await cookies();
+    const lng = cookieStore.get('i18next')?.value || 'en';
+
     try {
         const userResponse = await getUser(username);
-        if (!userResponse) return { title: "Portfolio Not Found" };
+        if (!userResponse) return { title: lng === 'az' ? 'Portfel tapılmadı' : (lng === 'ru' ? 'Портфолио не найдено' : 'Portfolio Not Found') };
         
         const profile = userResponse.user || {};
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username || username;
         const profession = profile.profession_sub_category?.profession || "";
-        const titleSuffix = profession ? ` - ${profession} Portfolio` : " - Portfolio";
+        
+        let titleSuffix, defaultDesc;
+        if (lng === 'az') {
+            titleSuffix = profession ? ` - ${profession} | Expert Visits` : " | Expert Visits";
+            defaultDesc = `${fullName}-in rəsmi portfeli. Təcrübə, bacarıqlar və layihələrlə tanış olun.`;
+        } else if (lng === 'ru') {
+            titleSuffix = profession ? ` - ${profession} | Expert Visits` : " | Expert Visits";
+            defaultDesc = `Официальное портфолио ${fullName}. Изучите опыт, навыки и проекты.`;
+        } else {
+            titleSuffix = profession ? ` - ${profession} | Expert Visits` : " | Expert Visits";
+            defaultDesc = `Welcome to the official portfolio website of ${fullName}. Explore my experience, skills, and projects.`;
+        }
+
         const title = `${fullName}${titleSuffix}`;
-        const description = profile.summary ? profile.summary.substring(0, 160) : `Welcome to the official portfolio website of ${fullName}. Explore my experience, skills, and projects.`;
+        const description = profile.summary ? profile.summary.substring(0, 160) : defaultDesc;
         
         return {
             title,
@@ -38,7 +55,7 @@ export async function generateMetadata({ params }) {
         };
     } catch (e) {
         return {
-            title: "Portfolio",
+            title: 'Expert Visits',
             description: "User Portfolio"
         };
     }

@@ -559,6 +559,8 @@
     },
     "vacancies": {
         "title": "Vacancies",
+        "filters_hidden": "Search filters",
+        "list_hidden": "Vacancies list",
         "subtitle": "Find your dream job or internship",
         "post_vacancy": "Post Vacancy",
         "search_placeholder": "Search by title, company...",
@@ -663,6 +665,8 @@
     },
     "companies": {
         "title": "Discover Companies",
+        "filters_hidden": "Search filters",
+        "list_hidden": "Companies list",
         "subtitle": "Connect with industry leaders and innovators",
         "register_company": "Register Company",
         "search_placeholder": "Search by name, industry...",
@@ -799,5 +803,9 @@
         "failed": "Google Auth Failed",
         "sign_in": "Sign in with Google",
         "sign_up": "Sign up with Google"
+    },
+    "seo": {
+        "home_h1": "Expert Visits - Professional Experts, Companies and Job Vacancies Platform",
+        "home_h2": "Latest Posts and Articles"
     }
 }

@@ -73,9 +73,9 @@ export default function Home({ user }) {
                     <h1 className={styles.name}>{fullName}</h1>
                     
                     {profile.profession_sub_category && (
-                        <h2 className={styles.profession}>
+                        <p className={styles.profession}>
                         <span>{profile.profession_sub_category.profession}</span>
-                        </h2>
+                        </p>
                     )}
                     
                     <div className={styles.heroActions}>
@@ -121,8 +121,8 @@ export default function Home({ user }) {
                                         {new Date(exp.start_date).getFullYear()} - 
                                         {!exp.end_date ? ` ${t('portfolio.present')}` : ` ${new Date(exp.end_date).getFullYear()}`}
                                     </div>
-                                    <h4>{exp.position}</h4>
-                                    <h5>{exp.company_name}</h5>
+                                    <h3>{exp.position}</h3>
+                                    <h4>{exp.company_name}</h4>
                                     {exp.description && <p>{exp.description}</p>}
                                 </div>
                             ))}
@@ -152,8 +152,8 @@ export default function Home({ user }) {
                                         {new Date(edu.start_date).getFullYear()} - 
                                         {!edu.end_date ? ` ${t('portfolio.present')}` : ` ${new Date(edu.end_date).getFullYear()}`}
                                     </div>
-                                    <h4>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} {t('portfolio.degreeIn')} {edu.field_of_study}</h4>
-                                    <h5>{edu.institution}</h5>
+                                    <h3>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} {t('portfolio.degreeIn')} {edu.field_of_study}</h3>
+                                    <h4>{edu.institution}</h4>
                                     {edu.description && <p>{edu.description}</p>}
                                 </div>
                             ))}
@@ -211,7 +211,7 @@ export default function Home({ user }) {
                     <div className={styles.cardsGrid}>
                         {certificates.map((cert, idx) => (
                             <div key={cert.id || idx} className={styles.glassCard}>
-                                <h4>{cert.name}</h4>
+                                <h3>{cert.name}</h3>
                                 <p><ShieldCheck size={14} style={{display: 'inline', marginRight: '4px'}}/> {cert.issuing_organization || cert.organization}</p>
                                 {cert.issue_date && (
                                     <span className={styles.dateInfo}>{t('portfolio.issued')} {new Date(cert.issue_date).getFullYear()}</span>
@@ -233,7 +233,7 @@ export default function Home({ user }) {
                     <div className={styles.cardsGrid}>
                         {languages.map((lng, idx) => (
                             <div key={lng.id || idx} className={styles.glassCard}>
-                                <h4>{lng.language || lng.name} <span className={styles.levelBadge}>{lng.proficiency?.replace('_', ' ') || lng.level_display}</span></h4>
+                                <h3>{lng.language || lng.name} <span className={styles.levelBadge}>{lng.proficiency?.replace('_', ' ') || lng.level_display}</span></h3>
                             </div>
                         ))}
                     </div>

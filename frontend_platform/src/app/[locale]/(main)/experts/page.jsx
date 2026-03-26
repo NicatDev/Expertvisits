@@ -71,7 +71,7 @@ export default function ExpertsPage() {
     if (!loading && !user) {
         return (
             <div className={styles.authWarning}>
-                <h2 suppressHydrationWarning>{t('experts.auth_required_title')}</h2>
+                <h1 suppressHydrationWarning>{t('experts.auth_required_title')}</h1>
                 <p suppressHydrationWarning>{t('experts.auth_required_desc')}</p>
                 <Link href="/login" className={styles.loginBtn} suppressHydrationWarning>{t('experts.login_to_continue')}</Link>
             </div>
@@ -88,9 +88,11 @@ export default function ExpertsPage() {
 
             <div className={styles.mainLayout}>
                 <div className={styles.sidebar}>
+                    <h2 className="visually-hidden">{t('experts.filters_title', { defaultValue: 'Filters' })}</h2>
                     <Filters values={filters} onChange={setFilters} onSearch={handleSearch} />
                 </div>
                 <div className={styles.content}>
+                    <h2 className="visually-hidden">{t('experts.list_title', { defaultValue: 'Experts List' })}</h2>
                     <UsersList users={users} loading={loading} />
                     <Pagination
                         currentPage={page}

@@ -15,7 +15,7 @@ import FeedItem from '@/components/advanced/FeedItem'; // Assuming we can reuse 
 import api from '@/lib/api/client'; // Direct API for feed if needed
 import { useTranslation } from '@/i18n/client';
 
-export default function CompanyDetailPage({ params }) {
+export default function CompanyDetailClient({ params }) {
     const { t } = useTranslation('common');
     const resolvedParams = use(params);
     const slug = resolvedParams.slug;
@@ -418,7 +418,7 @@ export default function CompanyDetailPage({ params }) {
                                         {service.title?.charAt(0)}
                                     </div>
                                 )}
-                                <h4>{service.title}</h4>
+                                <h3>{service.title}</h3>
                                 <p>
                                     {service.description.length > 100
                                         ? <>{service.description.substring(0, 100)}... <span style={{ color: '#1890ff', fontSize: '13px', fontWeight: '500' }}>{t('company_detail.services.read_more')}</span></>

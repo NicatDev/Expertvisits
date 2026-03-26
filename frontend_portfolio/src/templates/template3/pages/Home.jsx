@@ -120,7 +120,7 @@ export default function Home({ user }) {
                                     </div>
                                     <div className={styles.timelineDot}></div>
                                     <div className={styles.timelineContent}>
-                                        <h4>{exp.position}</h4>
+                                        <h3>{exp.position}</h3>
                                         <span className={styles.timelineCompany}>{exp.company_name}</span>
                                         {exp.description && <p>{exp.description}</p>}
                                     </div>
@@ -144,7 +144,7 @@ export default function Home({ user }) {
                                     </div>
                                     <div className={styles.timelineDot}></div>
                                     <div className={styles.timelineContent}>
-                                        <h4>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} {t('portfolio.degreeIn')} {edu.field_of_study}</h4>
+                                        <h3>{edu.degree_type_display ? edu.degree_type_display.toUpperCase() : 'Degree'} {t('portfolio.degreeIn')} {edu.field_of_study}</h3>
                                         <span className={styles.timelineCompany}>{edu.institution}</span>
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@ export default function Home({ user }) {
                                 <div key={cert.id || idx} className={styles.certCard}>
                                     <div className={styles.certIcon}><Award size={32} /></div>
                                     <div className={styles.certInfo}>
-                                        <h4>{cert.name}</h4>
+                                        <h3>{cert.name}</h3>
                                         <span>{cert.issuing_organization || cert.organization}</span>
                                         {cert.issue_date && (
                                             <small>{t('portfolio.issued')} {new Date(cert.issue_date).getFullYear()}</small>

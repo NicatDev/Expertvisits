@@ -85,6 +85,7 @@ export default function VacanciesPage() {
                 )}
             </div>
 
+            <h2 className="visually-hidden">{t('vacancies.filters_hidden', { defaultValue: 'Axtarış filtrləri' })}</h2>
             <div className={styles.filters}>
                 <div className={styles.searchWrapper}>
                     <Search size={18} className={styles.searchIcon} />
@@ -127,6 +128,7 @@ export default function VacanciesPage() {
                 </select>
             </div>
 
+            <h2 className="visually-hidden">{t('vacancies.list_hidden', { defaultValue: 'Vakansiyaların siyahısı' })}</h2>
             <div className={styles.grid}>
                 {loading ? (
                     <div className={styles.loading}>{t('vacancies.loading')}</div>

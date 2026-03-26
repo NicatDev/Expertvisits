@@ -50,7 +50,7 @@ const Navigation = () => {
             <div className={styles.container}>
                 {/* Left: Logo */}
                 <Link href="/" className={styles.logo}>
-                    <Image src="/logo.png" alt="Expert Visits" width={40} height={40} />
+                    <Image src="/logo.png" alt="Expert Visits" width={40} height={40} priority unoptimized />
                     <span className={styles.brandName}>Expert Visits</span>
                 </Link>
 

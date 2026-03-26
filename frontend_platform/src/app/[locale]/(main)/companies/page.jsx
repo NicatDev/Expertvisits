@@ -156,6 +156,7 @@ export default function CompaniesPage() {
                 )}
             </div>
 
+            <h2 className="visually-hidden">{t('companies.filters_hidden', { defaultValue: 'Axtarış filtrləri' })}</h2>
             <div className={styles.filters}>
                 <div className={styles.searchWrapper}>
                     <Search size={18} className={styles.searchIcon} />
@@ -183,6 +184,7 @@ export default function CompaniesPage() {
                 </select>
             </div>
 
+            <h2 className="visually-hidden">{t('companies.list_hidden', { defaultValue: 'Şirkətlərin siyahısı' })}</h2>
             {loading ? (
                 <div className={styles.loading}>{t('companies.loading')}</div>
             ) : (
@@ -197,7 +199,7 @@ export default function CompaniesPage() {
                                     <div className={styles.info}>
                                         {/* Name Link to Detail */}
                                         <Link href={`/companies/${company.slug}`} className={styles.nameLink}>
-                                            <h2>{company.name}</h2>
+                                            <h3>{company.name}</h3>
                                         </Link>
 
                                         {company.website_url && (

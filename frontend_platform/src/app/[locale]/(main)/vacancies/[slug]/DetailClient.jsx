@@ -137,7 +137,7 @@ export default function DetailClient({ vacancy }) {
                 {/* Sidebar: Job Overview / Details */}
                 <div className={styles.sidebar}>
                     <div className={styles.card}>
-                        <h3>{t('vacancy_detail.overview')}</h3>
+                        <h2>{t('vacancy_detail.overview')}</h2>
                         <ul className={styles.overviewList}>
                             <li>
                                 <MapPin size={20} className={styles.icon} />
@@ -232,7 +232,7 @@ function ApplicantsList({ vacancyId }) {
     if (applicants.length === 0) {
         return (
             <div className={styles.applicantsSection}>
-                <h3>{t('vacancy_detail.applicants')}</h3>
+                <h2>{t('vacancy_detail.applicants')}</h2>
                 <div className={styles.emptyApplicants}>
                     <div className={styles.emptyIcon}>📂</div>
                     <p>{t('vacancy_detail.no_applicants')}</p>
@@ -243,7 +243,7 @@ function ApplicantsList({ vacancyId }) {
 
     return (
         <div className={styles.applicantsSection}>
-            <h3>{t('vacancy_detail.applicants')} ({applicants.length})</h3>
+            <h2>{t('vacancy_detail.applicants')} ({applicants.length})</h2>
             <div className={styles.applicantsList}>
                 {applicants.map(app => (
                     <div key={app.id} className={styles.applicantCard}>

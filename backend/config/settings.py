@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-z^u5qs9_^wpo#la2j0*z!fa6+fv3n!59tugsf()9%7^6%sx+m_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'storages',
+    'seo',
 
     # Local
     'core',
@@ -172,11 +173,34 @@ AUTH_USER_MODEL = 'accounts.User'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "https://expertvisits.com",
+    "https://www.expertvisits.com",
+    "https://app.expertvisits.com",
+    "https://website.expertvisits.com",
+    "http://expertvisits.com",
+    "http://www.expertvisits.com",
+    "http://app.expertvisits.com",
+    "http://website.expertvisits.com",
+]
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
+    "https://expertvisits.com",
+    "https://www.expertvisits.com",
+    "https://app.expertvisits.com",
+    "https://website.expertvisits.com",
+    "http://expertvisits.com",
+    "http://www.expertvisits.com",
+    "http://app.expertvisits.com",
+    "http://website.expertvisits.com",
 ]
 
 # Cloudflare R2 / AWS S3 Config
