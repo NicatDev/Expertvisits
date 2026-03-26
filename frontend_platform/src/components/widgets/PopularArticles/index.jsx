@@ -11,7 +11,10 @@ const PopularArticles = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [isMounted, setIsMounted] = useState(false);
+
     useEffect(() => {
+        setIsMounted(true);
         fetchPopularParams();
     }, []);
 
@@ -38,6 +41,7 @@ const PopularArticles = () => {
         }
     };
 
+    if (!isMounted) return <div className={styles.container}>...</div>;
     if (loading) return <div className={styles.container}>{t('widgets.loading')}</div>;
     if (articles.length === 0) return null;
 

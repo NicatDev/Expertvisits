@@ -36,18 +36,28 @@ export async function generateMetadata({ params }) {
   };
 
   const t = metaTranslations[lng] || metaTranslations['az'];
+  const baseUrl = "https://app.expertvisits.com";
 
   return {
     title: t.title,
     description: t.description,
     keywords: t.keywords,
+    alternates: {
+      canonical: `${baseUrl}/${lng}`,
+      languages: {
+        'az': `${baseUrl}/az`,
+        'en': `${baseUrl}/en`,
+        'ru': `${baseUrl}/ru`,
+        'x-default': `${baseUrl}/en`, // or the default you prefer
+      },
+    },
     icons: {
       icon: '/logo.png',
     },
     openGraph: {
       title: t.title,
       description: t.description,
-      url: "https://app.expertvisits.com",
+      url: `${baseUrl}/${lng}`,
       siteName: "Expert Visits",
       images: [
         {

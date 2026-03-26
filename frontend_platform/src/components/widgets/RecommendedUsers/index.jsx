@@ -15,7 +15,10 @@ const RecommendedUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [isMounted, setIsMounted] = useState(false);
+
     useEffect(() => {
+        setIsMounted(true);
         fetchUsers();
     }, []);
 
@@ -54,6 +57,7 @@ const RecommendedUsers = () => {
         }
     };
 
+    if (!isMounted) return <div className={styles.container}>...</div>;
     if (loading) return <div className={styles.container}>{t('widgets.loading')}</div>;
     if (users.length === 0) return null;
 

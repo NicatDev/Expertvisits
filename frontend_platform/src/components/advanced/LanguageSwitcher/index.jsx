@@ -11,15 +11,33 @@ const languages = [
     { code: 'ru', label: 'RU' }
 ];
 
+import { usePathname, useRouter } from 'next/navigation';
+
 export default function LanguageSwitcher() {
     const { i18n } = useTranslation('common');
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
+    const pathname = usePathname();
+    const router = useRouter();
 
     const currentLang = languages.find(l => l.code === i18n.resolvedLanguage) || languages[0];
 
     const handleLanguageChange = (code) => {
         i18n.changeLanguage(code);
+        document.cookie = `i18next=${code}; path=/; max-age=31536000`; // Ensure cookie is saved
+
+        if (pathname) {
+            const segments = pathname.split('/');
+            if (['az', 'en', 'ru'].includes(segments[1])) {
+                segments[1] = code;
+            } else {
+                segments.splice(1, 0, code);
+            }
+            const newPath = segments.join('/') || '/';
+            router.push(newPath);
+            router.refresh(); // Force server components to re-render with new locale
+        }
+        
         setIsOpen(false);
     };
 

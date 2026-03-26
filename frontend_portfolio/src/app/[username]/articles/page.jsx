@@ -2,13 +2,22 @@ import { getUser } from "@/lib/api/portfolio";
 import { getTemplateArticles } from "@/templates";
 import { notFound } from "next/navigation";
 
-export const metadata = {
-    title: "Articles | Portfolio",
-    robots: {
-        index: false,
-        follow: false,
-    }
-};
+import { cookies } from 'next/headers';
+
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const lng = cookieStore.get('i18next')?.value || 'en';
+    
+    const title = lng === 'az' ? "Məqalələr | Portfel" : (lng === 'ru' ? "Статьи | Портфолио" : "Articles | Portfolio");
+    
+    return {
+        title: title,
+        robots: {
+            index: false,
+            follow: false,
+        }
+    };
+}
 
 export default async function UserArticlesPage({ params }) {
     const { username } = await params;
