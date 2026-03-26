@@ -61,18 +61,7 @@ const Navigation = () => {
                     <Link href="/vacancies" className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                     <Link href="/companies" className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
                     
-                    <a 
-                        href="#" 
-                        onClick={handleWebsiteClick} 
-                        className={styles.navLink} 
-                        style={{ color: '#6366f1', fontWeight: '700' }}
-                        suppressHydrationWarning
-                    >
-                        {websiteData?.is_active 
-                            ? (t('widgets.manage_website') || 'Mənim Vebsaytım') 
-                            : (t('widgets.create_website') || 'Öz vebsaytını yarat')
-                        }
-                    </a>
+                  
                 </div>
 
                 {/* Right: Actions */}
@@ -131,17 +120,7 @@ const Navigation = () => {
                         <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
                         <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
-                        <a 
-                            href="#" 
-                            onClick={(e) => { setIsMenuOpen(false); handleWebsiteClick(e); }} 
-                            style={{ color: '#6366f1', fontWeight: '700', padding: '12px 0' }}
-                            suppressHydrationWarning
-                        >
-                            {websiteData?.is_active 
-                                ? (t('widgets.manage_website') || 'Mənim Vebsaytım') 
-                                : (t('widgets.create_website') || 'Öz vebsaytını yarat')
-                            }
-                        </a>
+                   
                     </div>
                 )
             }

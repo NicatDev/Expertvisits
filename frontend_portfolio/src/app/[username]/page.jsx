@@ -49,10 +49,12 @@ export default async function UserHomePage({ params }) {
     let user;
     try {
         user = await getUser(username);
+        console.log(user);
     } catch (error) {
+        console.log(error);
         return notFound();
     }
-
+console.log(user)
     if (!user) return notFound();
 
     const TemplateHome = getTemplateHome(user.template_id);

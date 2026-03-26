@@ -144,15 +144,14 @@ class UserWebsiteManageAPIView(APIView):
         if not template_id:
             return Response({"detail": "template_id is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        website, created = UserWebsite.objects.get_or_create(
+        website, created = UserWebsite.objects.update_or_create(
             user=request.user,
-            defaults={'template_id': template_id, 'is_active': True}
+            defaults={
+                'template_id': template_id,
+                'is_active': True,
+                'is_deleted': False
+            }
         )
-        if not created:
-            website.template_id = template_id
-            website.is_active = True
-            website.is_deleted = False
-            website.save()
 
         return Response({"detail": "Portfolio website saved successfully."}, status=status.HTTP_200_OK)
 
