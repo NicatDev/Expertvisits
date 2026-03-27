@@ -39,7 +39,7 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Article
-        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'author', 'author_avatar', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'language', 'author', 'author_avatar', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
 
     def validate_body(self, value):
         import bleach

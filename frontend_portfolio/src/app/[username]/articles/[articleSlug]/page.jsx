@@ -1,4 +1,4 @@
-import { getUser } from "@/lib/api/portfolio";
+import { getUser, getArticleDetail } from "@/lib/api/portfolio";
 import { getTemplateArticleDetail } from "@/templates";
 import { notFound } from "next/navigation";
 
@@ -17,15 +17,23 @@ export default async function UserArticleDetailPage({ params }) {
     const { username, articleSlug } = await params;
 
     let user;
+    let article;
     try {
         user = await getUser(username);
+        article = await getArticleDetail(username, articleSlug);
     } catch (error) {
         return notFound();
     }
 
-    if (!user) return notFound();
+    if (!user || !article) return notFound();
 
     const TemplateArticleDetail = getTemplateArticleDetail(user.template_id);
+    const articleLang = article?.language || user?.user?.language || 'az';
 
-    return <TemplateArticleDetail user={user} slug={articleSlug} />;
+    return (
+        <>
+            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${articleLang}";` }} suppressHydrationWarning />
+            <TemplateArticleDetail user={user} slug={articleSlug} />
+        </>
+    );
 }

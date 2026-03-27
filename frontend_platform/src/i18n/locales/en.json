@@ -128,7 +128,7 @@
         "first_name": "First Name",
         "last_name": "Last Name",
         "phone": "Phone",
-        "birth_date": "Birth Date",
+        "birth_day": "Birth Date",
         "city": "City",
         "profession": "Profession",
         "select_city": "Select City",
@@ -150,7 +150,23 @@
         "personal_info": "Personal Information",
         "professional_details": "Professional Details",
         "security": "Account Security",
-        "enter_code": "Enter code"
+        "enter_code": "Enter code",
+        "or": "or",
+        "errors": {
+            "fill_all": "Please fill in all required fields.",
+            "password_short": "Password must be at least 8 characters.",
+            "passwords_mismatch": "Passwords do not match.",
+            "invalid_email": "Invalid email format.",
+            "registration_failed": "An error occurred during registration.",
+            "invalid_credentials": "Invalid username or password.",
+            "verification_failed": "Verification code is incorrect.",
+            "failed_resend": "Failed to resend verification code.",
+            "taken": "This username or email is already taken.",
+            "username": "Username",
+            "email": "Email",
+            "password": "Password",
+            "birth_day": "Birth day"
+        }
     },
     "create_modal": {
         "title": "Create Content",
@@ -182,7 +198,6 @@
         "poll_question_placeholder": "Ask a question...",
         "poll_options": "Options",
         "option": "Option",
-        "add_option": "Add Option",
         "max_options": "Max 4 options allowed",
         "fill_required": "Please fill all fields",
         "poll_tab": "Poll",
@@ -253,7 +268,13 @@
         "visit_website": "Visit Website",
         "deactivate_website": "Cancel Website",
         "deactivate_success_msg": "Your website has been successfully deactivated.",
-        "article_limit_error": "You must have at least 3 articles to create a website."
+        "article_limit_error": "You must have at least 3 articles to create a website.",
+        "profile_completion": "Profile Completion",
+        "profile_completion_desc": "A minimum of 60% is required to create a website (First Name, Last Name, Email, Avatar, Phone, Summary, Education, Experience, Skills, Languages, Certificates are considered).",
+        "go_to_profile": "Go to Profile →",
+        "articles": "Articles",
+        "articles_desc": "You must have at least 3 articles to activate the site creation.",
+        "go_to_articles": "Go to Articles →"
     },
     "profile": {
         "section_helper": {

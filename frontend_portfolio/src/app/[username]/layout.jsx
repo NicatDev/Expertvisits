@@ -11,14 +11,16 @@ export async function generateMetadata({ params }) {
 
     try {
         const resUser = await getUser(username);
+        const userLang = resUser?.user?.language || lng;
+
         if (!resUser) {
-            return { title: lng === 'az' ? 'Portfel tapılmadı' : (lng === 'ru' ? 'Портфолио не найдено' : 'Portfolio Not Found') };
+            return { title: userLang === 'az' ? 'Portfel tapılmadı' : (userLang === 'ru' ? 'Портфолио не найдено' : 'Portfolio Not Found') };
         }
         
         const profile = resUser.user || {};
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username || username;
         const suffix = 'Expert Visits';
-        const defaultDesc = lng === 'az' ? `${fullName}-in rəsmi şəxsi portfeli.` : (lng === 'ru' ? `Официальное персональное портфолио ${fullName}.` : `Official personal portfolio of ${fullName}.`);
+        const defaultDesc = userLang === 'az' ? `${fullName}-in rəsmi şəxsi portfeli.` : (userLang === 'ru' ? `Официальное персональное портфолио ${fullName}.` : `Official personal portfolio of ${fullName}.`);
 
         return {
             title: `${fullName} | ${suffix}`,
@@ -47,8 +49,10 @@ export default async function UserLayout({ children, params }) {
     const TemplateLayout = getTemplateLayout(user.template_id);
 
     // Render the selected template's layout wrapper around the specific page content
+    const userLang = user?.user?.language || 'az';
     return (
         <TemplateLayout user={user}>
+            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${userLang}";` }} suppressHydrationWarning />
             {children}
         </TemplateLayout>
     );

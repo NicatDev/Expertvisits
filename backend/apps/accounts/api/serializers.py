@@ -4,14 +4,14 @@ from apps.accounts.models import User, Category, SubCategory
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ['id', 'name', 'slug', 'profession']
+        fields = ['id', 'slug', 'name_az', 'name_en', 'name_ru', 'profession_az', 'profession_en', 'profession_ru']
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'subcategories']
+        fields = ['id', 'slug', 'subcategories', 'name_az', 'name_en', 'name_ru']
 
 class UserSerializer(serializers.ModelSerializer):
     profession_sub_category = SubCategorySerializer(read_only=True)
@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(required=False, allow_blank=True) # Assuming no extra validation here for mock
     summary = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     interests = serializers.ListField(
-        child=serializers.IntegerField(), write_only=True, required=True, min_length=1
+        child=serializers.IntegerField(), write_only=True, required=False, allow_empty=True
     )
     working_days = serializers.ListField(
         child=serializers.IntegerField(), required=False, allow_empty=True
@@ -41,7 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name', 
-            'phone_number', 'birth_day', 'city', 'summary', 'interests', 'avatar', 'cover_image',
+            'phone_number', 'birth_day', 'city', 'summary', 'language', 'interests', 'avatar', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
             'followers_count', 'following_count', 'is_following', 'company_slug',
@@ -70,19 +70,17 @@ class UserSerializer(serializers.ModelSerializer):
         
         # Generate and Send Code
         import random
-        from django.core.mail import send_mail
+        from core.utils.email import send_verification_email
         from apps.accounts.models import VerificationCode
         
         code = str(random.randint(100000, 999999))
         VerificationCode.objects.create(user=user, code=code)
         
         try:
-            send_mail(
-                'Verify your account',
-                f'Your verification code is: {code}',
-                'noreply@expertvisits.com',
-                [user.email],
-                fail_silently=True,
+            send_verification_email(
+                user.email,
+                code,
+                language=user.language or 'az'
             )
         except Exception as e:
             print(f"Error sending email: {e}")

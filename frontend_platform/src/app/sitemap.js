@@ -16,19 +16,39 @@ export default async function sitemap() {
 
     // Static platform URLs
     sitemapData.static_urls.forEach((item) => {
-        if (item.url === '/') {
-            urls.push({
-                url: `${BASE_URL}/`,
-                lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                changeFrequency: item.changefreq || 'daily',
-                priority: item.priority || 0.8,
+        const u = item.url;
+        
+        urls.push({
+            url: `${BASE_URL}${u}`,
+            lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+            changeFrequency: item.changefreq || 'daily',
+            priority: u === '/' ? 1.0 : (item.priority || 0.8),
+        });
+
+        // For homepage
+        if (u === '/') {
+            ['en', 'ru'].forEach(lang => {
+                urls.push({
+                    url: `${BASE_URL}/${lang}/`,
+                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                    changeFrequency: item.changefreq || 'daily',
+                    priority: 0.9,
+                });
             });
-        } else {
-            urls.push({
-                url: `${BASE_URL}${item.url}`,
-                lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                changeFrequency: item.changefreq || 'daily',
-                priority: item.priority || 0.8,
+        }
+
+        // For specific pages that user wants postfix like /experts/en or /vacancies/en
+        if (u === '/experts/' || u === '/experts' || u === '/vacancies/' || u === '/vacancies') {
+            const pathWithoutSlash = u.startsWith('/') ? u.slice(1) : u;
+            const purePath = pathWithoutSlash.endsWith('/') ? pathWithoutSlash.slice(0, -1) : pathWithoutSlash;
+            
+            ['en', 'ru'].forEach(lang => {
+                urls.push({
+                    url: `${BASE_URL}/${purePath}/${lang}`,
+                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                    changeFrequency: item.changefreq || 'daily',
+                    priority: 0.7,
+                });
             });
         }
     });
@@ -43,6 +63,19 @@ export default async function sitemap() {
                 changeFrequency: item.changefreq || 'weekly',
                 priority: item.priority || 0.7,
             });
+            
+            // Add localized variants for articles
+            if (item.url.startsWith('/article/')) {
+                const pathWithoutSlash = item.url.startsWith('/') ? item.url.slice(1) : item.url;
+                ['en', 'ru'].forEach(lang => {
+                    urls.push({
+                        url: `${BASE_URL}/${lang}/${pathWithoutSlash}`,
+                        lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                        changeFrequency: item.changefreq || 'weekly',
+                        priority: 0.6,
+                    });
+                });
+            }
         }
     });
 

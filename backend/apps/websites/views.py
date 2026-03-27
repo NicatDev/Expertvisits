@@ -103,18 +103,30 @@ class UserWebsiteContactAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Get the owner's email
+        from apps.accounts.models import User
+        owner = User.objects.filter(username=username).first()
+        if not owner or not owner.email:
+             return Response({"detail": "Website owner not found or has no email."}, status=status.HTTP_404_NOT_FOUND)
+
         # Build email content
-        email_subject = f"New Contact Message via Portfolio: {subject}"
-        email_body = f"You have received a new message from your portfolio website.\n\n" \
-                     f"Name: {name}\nEmail: {email}\n\n" \
-                     f"Message:\n{message}"
+        email_subject = f"Expert Visits Portfolio: Yeni müraciət - {subject}"
+        email_body = (
+            f"Sizin portfolio saytınız vasitəsilə yeni mesaj göndərilib:\n\n"
+            f"Göndərən: {name}\n"
+            f"E-poçt: {email}\n"
+            f"Mövzu: {subject}\n\n"
+            f"Mesaj:\n{message}\n\n"
+            f"Hörmətlə,\n"
+            f"Expert Visits Platforması"
+        )
 
         try:
             send_mail(
                 subject=email_subject,
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
+                recipient_list=[owner.email],
                 fail_silently=False,
             )
             return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)

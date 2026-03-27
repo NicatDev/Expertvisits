@@ -90,12 +90,11 @@ class ResendCodeAPIView(APIView):
             session.code = code
             session.save()
             try:
-                send_mail(
-                    'Verify your account',
-                    f'Your verification code is: {code}',
-                    'expertvisits@gmail.com', 
-                    [email],
-                    fail_silently=False,
+                from core.utils.email import send_verification_email
+                send_verification_email(
+                    email,
+                    code,
+                    language=session.user_data.get('language', 'az')
                 )
                 return Response({'message': 'Verification code resent successfully'}, status=status.HTTP_200_OK)
             except Exception as e:
@@ -112,12 +111,11 @@ class ResendCodeAPIView(APIView):
         VerificationCode.objects.create(user=user, code=code)
         
         try:
-            send_mail(
-                'Verify your account',
-                f'Your verification code is: {code}',
-                'expertvisits@gmail.com', 
-                [user.email],
-                fail_silently=False,
+            from core.utils.email import send_verification_email
+            send_verification_email(
+                user.email,
+                code,
+                language=user.language or 'az'
             )
         except Exception as e:
              return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

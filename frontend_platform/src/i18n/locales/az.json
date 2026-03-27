@@ -132,7 +132,7 @@
         "first_name": "Ad",
         "last_name": "Soyad",
         "phone": "Telefon",
-        "birth_date": "Doğum tarixi",
+        "birth_day": "Doğum tarixi",
         "professional_details": "Peşəkar Məlumatlar",
         "city": "Şəhər",
         "select_city": "Şəhər seçin",
@@ -151,7 +151,22 @@
         "resend_code": "Kodu yenidən göndər",
         "verify_btn": "Təsdiqlə",
         "have_account": "Artıq hesabınız var?",
-        "enter_code": "Kodu daxil edin"
+        "or": "və ya",
+        "errors": {
+            "fill_all": "Xahiş edirik bütün məcburi sahələri doldurun.",
+            "password_short": "Şifrə ən azı 8 simvoldan ibarət olmalıdır.",
+            "passwords_mismatch": "Şifrələr uyğun gəlmir.",
+            "invalid_email": "E-poçt formatı yanlışdır.",
+            "registration_failed": "Qeydiyyat zamanı xəta baş verdi.",
+            "invalid_credentials": "İstifadəçi adı və ya şifrə yanlışdır.",
+            "verification_failed": "Təsdiq kodu yanlışdır.",
+            "failed_resend": "Kodu yenidən göndərmək mümkün olmadı.",
+            "taken": "Bu istifadəçi adı və ya e-poçt artıq tutulub.",
+            "username": "Bu istifadəçi adı",
+            "email": "Bu e-poçt",
+            "password": "Şifrə",
+            "birth_day": "Doğum tarixi"
+        }
     },
     "create_modal": {
         "title": "Məzmun Yarat",
@@ -254,7 +269,13 @@
         "visit_website": "Vebsayta Keçid Et",
         "deactivate_website": "Vebsaytı Ləğv Et",
         "deactivate_success_msg": "Vebsaytınız uğurla ləğv edildi.",
-        "article_limit_error": "Vebsayt yaratmaq üçün ən azı 3 məqaləniz olmalıdır."
+        "article_limit_error": "Vebsayt yaratmaq üçün ən azı 3 məqaləniz olmalıdır.",
+        "profile_completion": "Profil Tamamlanması",
+        "profile_completion_desc": "Veb sayt yaratmaq üçün minimum 60% tələb olunur (Ad, soyad, email, şəkil, nömrə, summary, təhsil, təcrübə, bacarıq, dil və sertifikat nəzərə alınır).",
+        "go_to_profile": "Profilə keç →",
+        "articles": "Məqalələr",
+        "articles_desc": "Məqalə səhifəsinin görünməsi üçün minimum 3 məqalə tələb olunur.",
+        "go_to_articles": "Məqalələrə keç →"
     },
     "profile": {
         "section_helper": {
@@ -408,7 +429,6 @@
         "apply_now": "Müraciət et",
         "applied": "Müraciət olunub",
         "share": "Bu işi paylaş",
-        "applicants": "Müraciət edənlər",
         "applicants_modal": {
             "title": "Müraciət edənlər",
             "loading": "Yüklənir...",

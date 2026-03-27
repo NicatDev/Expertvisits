@@ -10,7 +10,7 @@ class WebsiteUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'avatar', 'summary', 'city', 'phone_number', 'profession_sub_category']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'avatar', 'summary', 'city', 'phone_number', 'profession_sub_category', 'language']
 
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -93,5 +93,5 @@ class ArticlePublicSerializer(serializers.ModelSerializer):
         model = Article
         fields = [
             'id', 'title', 'slug', 'image', 'body',
-            'author', 'created_at', 'updated_at',
+            'author', 'created_at', 'updated_at', 'language'
         ]

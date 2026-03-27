@@ -16,7 +16,8 @@ export default function Home({ user }) {
     const skills = user.skills || [];
     const languages = user.languages || [];
     const certificates = user.certificates || [];
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language || 'az';
     const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {
@@ -41,7 +42,7 @@ export default function Home({ user }) {
                 <section className={styles.hero}>
                     <div className={styles.heroBadge}>
                         <Briefcase size={14} />
-                        {profile.profession_sub_category?.profession || 'Professional'}
+                        {profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession || 'Professional'}
                     </div>
                     <h1 className={styles.heroName}>{fullName}</h1>
                     

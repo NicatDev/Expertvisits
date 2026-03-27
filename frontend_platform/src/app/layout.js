@@ -34,7 +34,7 @@ export async function generateMetadata() {
   };
 
   const t = metaTranslations[lng] || metaTranslations['az'];
-  const baseUrl = "https://app.expertvisits.com";
+  const baseUrl = "https://expertvisits.com";
 
   return {
     metadataBase: new URL(baseUrl),

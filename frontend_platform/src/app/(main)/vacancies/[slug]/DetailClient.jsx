@@ -113,11 +113,11 @@ export default function DetailClient({ vacancy }) {
                         <div className={styles.datesRow}>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>{t('vacancy_detail.posted_date')}:</span>
-                                <span className={styles.dateValue}>{formatDate(vacancy.posted_at)}</span>
+                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancy.posted_at)}</span>
                             </div>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>{t('vacancy_detail.deadline')}:</span>
-                                <span className={styles.dateValue}>{formatDate(vacancy.expires_at)}</span>
+                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancy.expires_at)}</span>
                             </div>
                         </div>
 
@@ -268,7 +268,7 @@ function ApplicantsList({ vacancyId }) {
                                         {app.applicant_first_name} {app.applicant_last_name}
                                     </a>
                                     <span className={styles.username}>@{app.applicant_username}</span>
-                                    <div className={styles.appliedDate}>{t('vacancy_detail.applied')} {new Date(app.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'))}</div>
+                                    <div className={styles.appliedDate} suppressHydrationWarning>{t('vacancy_detail.applied')} {new Date(app.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'))}</div>
                                 </div>
                             </div>
                             <span className={`${styles.statusBadge} ${styles[app.status]}`}>

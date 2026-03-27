@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,6 +22,17 @@ const Navigation = () => {
     
     const [websiteData, setWebsiteData] = useState(null);
     const [isWebsiteModalOpen, setIsWebsiteModalOpen] = useState(false);
+    const userMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setShowUserMenu(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (user) {
@@ -71,8 +82,9 @@ const Navigation = () => {
 
                     {/* Auth Dropdown */}
                     <div className={styles.dropdownWrapper}
-                        onMouseEnter={() => setShowUserMenu(true)}
-                        onMouseLeave={() => setShowUserMenu(false)}>
+                        ref={userMenuRef}
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                        style={{ cursor: 'pointer' }}>
 
                         {user ? (
                             <button className={styles.iconBtn}>
@@ -118,6 +130,7 @@ const Navigation = () => {
                 isMenuOpen && (
                     <div className={styles.mobileMenu}>
                         <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
+                        <Link href="/experts" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
                         <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
                    

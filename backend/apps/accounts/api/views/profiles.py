@@ -31,6 +31,17 @@ class UserProfileDetailsAPIView(APIView):
         # Alternatively, we can do parallel async or just simple sequential queries as is.
         
         data = {
+            'id': user.id,
+            'summary': user.summary,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'phone_number': user.phone_number,
+            'birth_day': user.birth_day,
+            'city': user.city,
+            'profession_sub_category': getattr(user.profession_sub_category, 'id', None) if user.profession_sub_category else None,
+            'avatar': user.avatar.url if user.avatar else None,
             'experience': ExperienceSerializer(Experience.objects.filter(user=user), many=True).data,
             'education': EducationSerializer(Education.objects.filter(user=user), many=True).data,
             'skills': SkillSerializer(Skill.objects.filter(user=user), many=True).data,

@@ -1,26 +1,26 @@
 import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
 import { cookies } from 'next/headers';
+import { getUser, getArticleDetail } from "@/lib/api/portfolio";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export async function generateMetadata() {
-    return {
-        title: "Portfolio | Expert Visits",
-        description: "Professional Portfolio Platform",
-        icons: {
-            icon: '/favicon.ico',
-        },
-    };
-}
+export const metadata = {
+    title: "Portfolio | Expert Visits",
+    description: "Professional Portfolio Platform",
+    icons: {
+        icon: '/logo.png',
+        shortcut: '/logo.png',
+        apple: '/logo.png',
+    }
+};
 
 export default async function RootLayout({ children }) {
-    // Determine language from cookie to set html lang attribute
     const cookieStore = await cookies();
-    const lng = cookieStore.get('i18next')?.value || 'az';
-
+    const fallbackLng = cookieStore.get('i18next')?.value || 'az';
+    
     return (
-        <html lang={lng} suppressHydrationWarning>
+        <html lang={fallbackLng} suppressHydrationWarning>
             <body className={inter.className} suppressHydrationWarning={true}>
                 {children}
             </body>

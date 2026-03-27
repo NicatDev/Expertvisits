@@ -63,7 +63,17 @@ export async function generateMetadata({ params }) {
     };
 }
 
+import LanguageSetter from '@/components/LanguageSetter';
+
 export default async function Page({ params }) {
     const { slug } = await params;
-    return <ClientPage slug={slug} />;
+    const article = await getArticle(slug);
+    const lang = article?.language || 'az';
+    return (
+        <>
+            <LanguageSetter lang={lang} />
+            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${lang}";` }} suppressHydrationWarning />
+            <ClientPage slug={slug} />
+        </>
+    );
 }

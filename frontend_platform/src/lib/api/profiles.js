@@ -46,10 +46,10 @@ export const profiles = {
     changePassword: (data) => api.post('accounts/users/set_password/', data),
 
     // Unified Profile Details
-    getProfileDetails: (id_or_username) => {
-        const params = {};
+    getProfileDetails: (id_or_username, config = {}) => {
+        const params = { ...config.params };
         if (isNaN(id_or_username)) params.username = id_or_username;
         else params.user_id = id_or_username;
-        return api.get('accounts/profile-details/', { params });
+        return api.get('accounts/profile-details/', { ...config, params });
     },
 };

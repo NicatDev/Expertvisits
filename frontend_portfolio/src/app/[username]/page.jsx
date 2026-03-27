@@ -12,15 +12,17 @@ import { cookies } from 'next/headers';
 export async function generateMetadata({ params }) {
     const { username } = await params;
     const cookieStore = await cookies();
-    const lng = cookieStore.get('i18next')?.value || 'en';
+    const cookieLng = cookieStore.get('i18next')?.value || 'en';
 
     try {
         const userResponse = await getUser(username);
+        const lng = userResponse?.user?.language || cookieLng;
+
         if (!userResponse) return { title: lng === 'az' ? 'Portfel tapılmadı' : (lng === 'ru' ? 'Портфолио не найдено' : 'Portfolio Not Found') };
         
         const profile = userResponse.user || {};
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username || username;
-        const profession = profile.profession_sub_category?.profession || "";
+        const profession = profile.profession_sub_category?.[`profession_${lng}`] || profile.profession_sub_category?.profession || "";
         
         let titleSuffix, defaultDesc;
         if (lng === 'az') {

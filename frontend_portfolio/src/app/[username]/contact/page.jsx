@@ -7,10 +7,12 @@ import { cookies } from 'next/headers';
 export async function generateMetadata({ params }) {
     const { username } = await params;
     const cookieStore = await cookies();
-    const lng = cookieStore.get('i18next')?.value || 'en';
+    const cookieLng = cookieStore.get('i18next')?.value || 'en';
 
     try {
         const userResponse = await getUser(username);
+        const lng = userResponse?.user?.language || cookieLng;
+
         if (!userResponse) return { title: lng === 'az' ? 'Əlaqə | Expert Visits' : (lng === 'ru' ? 'Контакты | Expert Visits' : 'Contact | Expert Visits') };
 
         const profile = userResponse.user || {};

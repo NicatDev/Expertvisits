@@ -4,9 +4,18 @@ import { notFound } from "next/navigation";
 
 import { cookies } from 'next/headers';
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }) {
+    const { username } = await params;
     const cookieStore = await cookies();
-    const lng = cookieStore.get('i18next')?.value || 'en';
+    const cookieLng = cookieStore.get('i18next')?.value || 'en';
+    
+    let lng = cookieLng;
+    try {
+        const userResponse = await getUser(username);
+        if (userResponse?.user?.language) {
+            lng = userResponse.user.language;
+        }
+    } catch (e) {}
     
     const title = lng === 'az' ? "Məqalələr | Portfel" : (lng === 'ru' ? "Статьи | Портфолио" : "Articles | Portfolio");
     

@@ -1,215 +1,249 @@
 [
   {
-    "category": "Biznes və İdarəetmə",
+    "name_az": "Biznes və İdarəetmə",
+    "name_en": "Business and Management",
+    "name_ru": "Бизнес и управление",
     "subcategories": [
-      { "name": "Biznesin İdarə Edilməsi (Ümumi)", "profession": "Biznes Meneceri" },
-      { "name": "Biznes Konsaltinqi", "profession": "Biznes Konsultantı" },
-      { "name": "Biznes Analitikası", "profession": "Business Analyst" },
-      { "name": "Layihə İdarəetməsi (Project Management)", "profession": "Project Manager" },
-      { "name": "Məhsul İdarəetməsi (Product Management)", "profession": "Product Manager" },
-      { "name": "Biznes Prosesləri", "profession": "Proses Analitiki" },
-      { "name": "Strateji Planlama", "profession": "Strateji Menecer" },
-      { "name": "Biznesin İnkişafı", "profession": "Business Development Manager" },
-      { "name": "Əməliyyatlar (Operations)", "profession": "Operations Manager" },
-      { "name": "Risk Menecmenti", "profession": "Risk Meneceri" },
-      { "name": "Logistika və Təchizat", "profession": "Logistika Meneceri" }
+      { "name_az": "Biznesin İdarə Edilməsi (Ümumi)", "name_en": "Business Administration (General)", "name_ru": "Бизнес-администрирование (Общее)", "profession_az": "Biznes Meneceri", "profession_en": "Business Manager", "profession_ru": "Бизнес-менеджер" },
+      { "name_az": "Biznes Konsaltinqi", "name_en": "Business Consulting", "name_ru": "Бизнес-консалтинг", "profession_az": "Biznes Konsultantı", "profession_en": "Business Consultant", "profession_ru": "Бизнес-консультант" },
+      { "name_az": "Biznes Analitikası", "name_en": "Business Analytics", "name_ru": "Бизнес-аналитика", "profession_az": "Business Analyst", "profession_en": "Business Analyst", "profession_ru": "Бизнес-аналитик" },
+      { "name_az": "Layihə İdarəetməsi (Project Management)", "name_en": "Project Management", "name_ru": "Управление проектами", "profession_az": "Project Manager", "profession_en": "Project Manager", "profession_ru": "Менеджер проектов" },
+      { "name_az": "Məhsul İdarəetməsi (Product Management)", "name_en": "Product Management", "name_ru": "Управление продуктом", "profession_az": "Product Manager", "profession_en": "Product Manager", "profession_ru": "Менеджер продукта" },
+      { "name_az": "Biznes Prosesləri", "name_en": "Business Processes", "name_ru": "Бизнес-процессы", "profession_az": "Proses Analitiki", "profession_en": "Process Analyst", "profession_ru": "Процессный аналитик" },
+      { "name_az": "Strateji Planlama", "name_en": "Strategic Planning", "name_ru": "Стратегическое планирование", "profession_az": "Strateji Menecer", "profession_en": "Strategic Manager", "profession_ru": "Стратегический менеджер" },
+      { "name_az": "Biznesin İnkişafı", "name_en": "Business Development", "name_ru": "Развитие бизнеса", "profession_az": "Business Development Manager", "profession_en": "Business Development Manager", "profession_ru": "Менеджер по развитию бизнеса" },
+      { "name_az": "Əməliyyatlar (Operations)", "name_en": "Operations", "name_ru": "Операции (Operations)", "profession_az": "Operations Manager", "profession_en": "Operations Manager", "profession_ru": "Операционный менеджер" },
+      { "name_az": "Risk Menecmenti", "name_en": "Risk Management", "name_ru": "Управление рисками", "profession_az": "Risk Meneceri", "profession_en": "Risk Manager", "profession_ru": "Риск-менеджер" },
+      { "name_az": "Logistika və Təchizat", "name_en": "Logistics and Supply Chain", "name_ru": "Логистика и снабжение", "profession_az": "Logistika Meneceri", "profession_en": "Logistics Manager", "profession_ru": "Менеджер по логистике" }
     ]
   },
   {
-    "category": "Maliyyə, Mühasibatlıq və Audit",
+    "name_az": "Maliyyə, Mühasibatlıq və Audit",
+    "name_en": "Finance, Accounting and Audit",
+    "name_ru": "Финансы, бухгалтерский учет и аудит",
     "subcategories": [
-      { "name": "Maliyyə İşləri (Ümumi)", "profession": "Maliyyəçi" },
-      { "name": "Mühasibat Uçotu", "profession": "Mühasib" },
-      { "name": "Maliyyə Analizi", "profession": "Maliyyə Analitiki" },
-      { "name": "Audit", "profession": "Auditor" },
-      { "name": "Vergi Planlaması", "profession": "Vergi Məsləhətçisi" },
-      { "name": "İnvestisiya", "profession": "İnvestisiya Məsləhətçisi" },
-      { "name": "Maliyyə Planlaması", "profession": "Financial Planner" },
-      { "name": "Xəzinədarlıq", "profession": "Xəzinədar" }
+      { "name_az": "Maliyyə İşləri (Ümumi)", "name_en": "Finance (General)", "name_ru": "Финансы (Общее)", "profession_az": "Maliyyəçi", "profession_en": "Financier", "profession_ru": "Финансист" },
+      { "name_az": "Mühasibat Uçotu", "name_en": "Accounting", "name_ru": "Бухгалтерский учет", "profession_az": "Mühasib", "profession_en": "Accountant", "profession_ru": "Бухгалтер" },
+      { "name_az": "Maliyyə Analizi", "name_en": "Financial Analysis", "name_ru": "Финансовый анализ", "profession_az": "Maliyyə Analitiki", "profession_en": "Financial Analyst", "profession_ru": "Финансовый аналитик" },
+      { "name_az": "Audit", "name_en": "Audit", "name_ru": "Аудит", "profession_az": "Auditor", "profession_en": "Auditor", "profession_ru": "Аудитор" },
+      { "name_az": "Vergi Planlaması", "name_en": "Tax Planning", "name_ru": "Налоговое планирование", "profession_az": "Vergi Məsləhətçisi", "profession_en": "Tax Advisor", "profession_ru": "Налоговый консультант" },
+      { "name_az": "İnvestisiya", "name_en": "Investment", "name_ru": "Инвестиции", "profession_az": "İnvestisiya Məsləhətçisi", "profession_en": "Investment Advisor", "profession_ru": "Инвестиционный советник" },
+      { "name_az": "Maliyyə Planlaması", "name_en": "Financial Planning", "name_ru": "Финансовое планирование", "profession_az": "Financial Planner", "profession_en": "Financial Planner", "profession_ru": "Финансовый планировщик" },
+      { "name_az": "Xəzinədarlıq", "name_en": "Treasury", "name_ru": "Казначейство", "profession_az": "Xəzinədar", "profession_en": "Treasurer", "profession_ru": "Казначей" }
     ]
   },
   {
-    "category": "Bankçılıq və Kredit",
+    "name_az": "Bankçılıq və Kredit",
+    "name_en": "Banking and Credit",
+    "name_ru": "Банковское дело и кредит",
     "subcategories": [
-      { "name": "Kredit", "profession": "Kredit Mütəxəssisi" },
-      { "name": "Kredit Riskləri", "profession": "Risk Analitiki" },
-      { "name": "İpoteka", "profession": "İpoteka Məsləhətçisi" },
-      { "name": "Korporativ Bankçılıq", "profession": "Korporativ Bankir" },
-      { "name": "KOS (SME) Bankçılığı", "profession": "KOS Mütəxəssisi" }
+      { "name_az": "Kredit", "name_en": "Credit", "name_ru": "Кредит", "profession_az": "Kredit Mütəxəssisi", "profession_en": "Credit Specialist", "profession_ru": "Кредитный специалист" },
+      { "name_az": "Kredit Riskləri", "name_en": "Credit Risks", "name_ru": "Кредитные риски", "profession_az": "Risk Analitiki", "profession_en": "Risk Analyst", "profession_ru": "Риск-аналитик" },
+      { "name_az": "İpoteka", "name_en": "Mortgage", "name_ru": "Ипотека", "profession_az": "İpoteka Məsləhətçisi", "profession_en": "Mortgage Advisor", "profession_ru": "Ипотечный консультант" },
+      { "name_az": "Korporativ Bankçılıq", "name_en": "Corporate Banking", "name_ru": "Корпоративный банкинг", "profession_az": "Korporativ Bankir", "profession_en": "Corporate Banker", "profession_ru": "Корпоративный банкир" },
+      { "name_az": "KOS (SME) Bankçılığı", "name_en": "SME Banking", "name_ru": "МСБ Банкинг", "profession_az": "KOS Mütəxəssisi", "profession_en": "SME Specialist", "profession_ru": "Специалист по МСБ" }
     ]
   },
   {
-    "category": "İnformasiya Texnologiyaları (Proqramlaşdırma)",
+    "name_az": "İnformasiya Texnologiyaları (Proqramlaşdırma)",
+    "name_en": "Information Technologies (Programming)",
+    "name_ru": "Информационные технологии (Программирование)",
     "subcategories": [
-      { "name": "Proqramlaşdırma (Ümumi)", "profession": "Proqramçı / Software Engineer" },
-      { "name": "Backend Development", "profession": "Backend Developer" },
-      { "name": "Frontend Development", "profession": "Frontend Developer" },
-      { "name": "Full Stack Development", "profession": "Full Stack Developer" },
-      { "name": "Mobil Tətbiq İnkişafı", "profession": "Mobile Developer" },
-      { "name": "DevOps", "profession": "DevOps Engineer" },
-      { "name": "Süni İntellekt (AI) və ML", "profession": "AI / ML Engineer" },
-      { "name": "Oyun Yaradılması (Gamedev)", "profession": "Game Developer" },
-      { "name": "Proqram Təminatı Memarlığı", "profession": "Software Architect" }
+      { "name_az": "Proqramlaşdırma (Ümumi)", "name_en": "Programming (General)", "name_ru": "Программирование (Общее)", "profession_az": "Proqramçı / Software Engineer", "profession_en": "Software Engineer", "profession_ru": "Программист (Software Engineer)" },
+      { "name_az": "Backend Development", "name_en": "Backend Development", "name_ru": "Backend Разработка", "profession_az": "Backend Developer", "profession_en": "Backend Developer", "profession_ru": "Backend Разработчик" },
+      { "name_az": "Frontend Development", "name_en": "Frontend Development", "name_ru": "Frontend Разработка", "profession_az": "Frontend Developer", "profession_en": "Frontend Developer", "profession_ru": "Frontend Разработчик" },
+      { "name_az": "Full Stack Development", "name_en": "Full Stack Development", "name_ru": "Full Stack Разработка", "profession_az": "Full Stack Developer", "profession_en": "Full Stack Developer", "profession_ru": "Full Stack Разработчик" },
+      { "name_az": "Mobil Tətbiq İnkişafı", "name_en": "Mobile App Development", "name_ru": "Мобильная разработка", "profession_az": "Mobile Developer", "profession_en": "Mobile Developer", "profession_ru": "Мобильный разработчик" },
+      { "name_az": "DevOps", "name_en": "DevOps", "name_ru": "DevOps", "profession_az": "DevOps Engineer", "profession_en": "DevOps Engineer", "profession_ru": "DevOps Инженер" },
+      { "name_az": "Süni İntellekt (AI) və ML", "name_en": "Artificial Intelligence (AI) & ML", "name_ru": "Искусственный интеллект (AI) и ML", "profession_az": "AI / ML Engineer", "profession_en": "AI / ML Engineer", "profession_ru": "AI / ML Инженер" },
+      { "name_az": "Oyun Yaradılması (Gamedev)", "name_en": "Game Development (Gamedev)", "name_ru": "Разработка игр (Gamedev)", "profession_az": "Game Developer", "profession_en": "Game Developer", "profession_ru": "Разработчик игр" },
+      { "name_az": "Proqram Təminatı Memarlığı", "name_en": "Software Architecture", "name_ru": "Архитектура программного обеспечения", "profession_az": "Software Architect", "profession_en": "Software Architect", "profession_ru": "Архитектор ПО" }
     ]
   },
   {
-    "category": "İT İnfrastruktur və Təhlükəsizlik",
+    "name_az": "İT İnfrastruktur və Təhlükəsizlik",
+    "name_en": "IT Infrastructure and Security",
+    "name_ru": "ИТ Инфраструктура и безопасность",
     "subcategories": [
-      { "name": "İT Mütəxəssisliyi (Ümumi)", "profession": "İT Mütəxəssisi" },
-      { "name": "Kiber Təhlükəsizlik", "profession": "Cybersecurity Specialist" },
-      { "name": "Penetrasiya Testləri", "profession": "Penetration Tester" },
-      { "name": "Şəbəkə İnzibatçılığı", "profession": "Network Engineer" },
-      { "name": "Sistem İnzibatçılığı", "profession": "System Administrator" },
-      { "name": "Bulud Texnologiyaları", "profession": "Cloud Engineer" },
-      { "name": "QA və Testləşdirmə", "profession": "QA Engineer" },
-      { "name": "Texniki Dəstək (IT Support)", "profession": "Helpdesk Specialist" }
+      { "name_az": "İT Mütəxəssisliyi (Ümumi)", "name_en": "IT Professional (General)", "name_ru": "ИТ Специалист (Общее)", "profession_az": "İT Mütəxəssisi", "profession_en": "IT Specialist", "profession_ru": "ИТ Специалист" },
+      { "name_az": "Kiber Təhlükəsizlik", "name_en": "Cybersecurity", "name_ru": "Кибербезопасность", "profession_az": "Cybersecurity Specialist", "profession_en": "Cybersecurity Specialist", "profession_ru": "Специалист по кибербезопасности" },
+      { "name_az": "Penetrasiya Testləri", "name_en": "Penetration Testing", "name_ru": "Тестирование на проникновение (Пентест)", "profession_az": "Penetration Tester", "profession_en": "Penetration Tester", "profession_ru": "Пентестер" },
+      { "name_az": "Şəbəkə İnzibatçılığı", "name_en": "Network Administration", "name_ru": "Сетевое администрирование", "profession_az": "Network Engineer", "profession_en": "Network Engineer", "profession_ru": "Сетевой инженер" },
+      { "name_az": "Sistem İnzibatçılığı", "name_en": "System Administration", "name_ru": "Системное администрирование", "profession_az": "System Administrator", "profession_en": "System Administrator", "profession_ru": "Системный администратор" },
+      { "name_az": "Bulud Texnologiyaları", "name_en": "Cloud Technologies", "name_ru": "Облачные технологии", "profession_az": "Cloud Engineer", "profession_en": "Cloud Engineer", "profession_ru": "Cloud Инженер" },
+      { "name_az": "QA və Testləşdirmə", "name_en": "QA and Testing", "name_ru": "QA и Тестирование", "profession_az": "QA Engineer", "profession_en": "QA Engineer", "profession_ru": "QA Инженер" },
+      { "name_az": "Texniki Dəstək (IT Support)", "name_en": "IT Support", "name_ru": "Техническая поддержка (IT Support)", "profession_az": "Helpdesk Specialist", "profession_en": "Helpdesk Specialist", "profession_ru": "Специалист технической поддержки" }
     ]
   },
   {
-    "category": "Data və Analitika",
+    "name_az": "Data və Analitika",
+    "name_en": "Data and Analytics",
+    "name_ru": "Данные и аналитика",
     "subcategories": [
-      { "name": "Data Analitikası", "profession": "Data Analyst" },
-      { "name": "Data Elmi (Data Science)", "profession": "Data Scientist" },
-      { "name": "Data Mühəndisliyi", "profession": "Data Engineer" },
-      { "name": "Bazar Araşdırması", "profession": "Market Research Analyst" },
-      { "name": "Statistika", "profession": "Statistik" },
-      { "name": "Business Intelligence (BI)", "profession": "BI Developer" }
+      { "name_az": "Data Analitikası", "name_en": "Data Analytics", "name_ru": "Аналитика данных", "profession_az": "Data Analyst", "profession_en": "Data Analyst", "profession_ru": "Аналитик данных" },
+      { "name_az": "Data Elmi (Data Science)", "name_en": "Data Science", "name_ru": "Наука о данных (Data Science)", "profession_az": "Data Scientist", "profession_en": "Data Scientist", "profession_ru": "Специалист по Data Science" },
+      { "name_az": "Data Mühəndisliyi", "name_en": "Data Engineering", "name_ru": "Инженерия данных", "profession_az": "Data Engineer", "profession_en": "Data Engineer", "profession_ru": "Инженер данных" },
+      { "name_az": "Bazar Araşdırması", "name_en": "Market Research", "name_ru": "Исследование рынка", "profession_az": "Market Research Analyst", "profession_en": "Market Research Analyst", "profession_ru": "Аналитик по исследованию рынка" },
+      { "name_az": "Statistika", "name_en": "Statistics", "name_ru": "Статистика", "profession_az": "Statistik", "profession_en": "Statistician", "profession_ru": "Статистик" },
+      { "name_az": "Business Intelligence (BI)", "name_en": "Business Intelligence (BI)", "name_ru": "Бизнес-аналитика (BI)", "profession_az": "BI Developer", "profession_en": "BI Developer", "profession_ru": "BI Разработчик" }
     ]
   },
   {
-    "category": "Marketinq, PR və Media",
+    "name_az": "Marketinq, PR və Media",
+    "name_en": "Marketing, PR, and Media",
+    "name_ru": "Маркетинг, PR и медиа",
     "subcategories": [
-      { "name": "Marketinq (Ümumi)", "profession": "Marketoloq" },
-      { "name": "Rəqəmsal Marketinq", "profession": "Digital Marketing Specialist" },
-      { "name": "Sosial Media (SMM)", "profession": "SMM Meneceri" },
-      { "name": "Axtarış Motoru Optimizasiyası (SEO)", "profession": "SEO Mütəxəssisi" },
-      { "name": "Kontent Yaradıcılığı", "profession": "Content Creator" },
-      { "name": "Brendinq", "profession": "Brend Meneceri" },
-      { "name": "İctimaiyyətlə Əlaqələr (PR)", "profession": "PR Meneceri" },
-      { "name": "Reklam (PPC/Performance)", "profession": "Reklam Mütəxəssisi" }
+      { "name_az": "Marketinq (Ümumi)", "name_en": "Marketing (General)", "name_ru": "Маркетинг (Общее)", "profession_az": "Marketoloq", "profession_en": "Marketer", "profession_ru": "Маркетолог" },
+      { "name_az": "Rəqəmsal Marketinq", "name_en": "Digital Marketing", "name_ru": "Цифровой маркетинг", "profession_az": "Digital Marketing Specialist", "profession_en": "Digital Marketing Specialist", "profession_ru": "Специалист по цифровому маркетингу" },
+      { "name_az": "Sosial Media (SMM)", "name_en": "Social Media (SMM)", "name_ru": "Социальные сети (SMM)", "profession_az": "SMM Meneceri", "profession_en": "SMM Manager", "profession_ru": "SMM Менеджер" },
+      { "name_az": "Axtarış Motoru Optimizasiyası (SEO)", "name_en": "Search Engine Optimization (SEO)", "name_ru": "Поисковая оптимизация (SEO)", "profession_az": "SEO Mütəxəssisi", "profession_en": "SEO Specialist", "profession_ru": "SEO Специалист" },
+      { "name_az": "Kontent Yaradıcılığı", "name_en": "Content Creation", "name_ru": "Создание контента", "profession_az": "Content Creator", "profession_en": "Content Creator", "profession_ru": "Контент-креатор" },
+      { "name_az": "Brendinq", "name_en": "Branding", "name_ru": "Брендинг", "profession_az": "Brend Meneceri", "profession_en": "Brand Manager", "profession_ru": "Бренд-менеджер" },
+      { "name_az": "İctimaiyyətlə Əlaqələr (PR)", "name_en": "Public Relations (PR)", "name_ru": "Связи с общественностью (PR)", "profession_az": "PR Meneceri", "profession_en": "PR Manager", "profession_ru": "PR Менеджер" },
+      { "name_az": "Reklam (PPC/Performance)", "name_en": "Advertising (PPC/Performance)", "name_ru": "Реклама (PPC/Performance)", "profession_az": "Reklam Mütəxəssisi", "profession_en": "Advertising Specialist", "profession_ru": "Специалист по рекламе" }
     ]
   },
   {
-    "category": "Satış və Müştəri Xidmətləri",
+    "name_az": "Satış və Müştəri Xidmətləri",
+    "name_en": "Sales and Customer Service",
+    "name_ru": "Продажи и обслуживание клиентов",
     "subcategories": [
-      { "name": "Satış (Ümumi)", "profession": "Satış Təmsilçisi" },
-      { "name": "Satış İdarəetməsi", "profession": "Satış Meneceri" },
-      { "name": "Müştəri Xidmətləri", "profession": "Müştəri Xidmətləri Mütəxəssisi" },
-      { "name": "Account Management", "profession": "Account Manager" },
-      { "name": "Elektron Ticarət (E-commerce)", "profession": "E-commerce Manager" },
-      { "name": "Müştəri Uğuru (Customer Success)", "profession": "Customer Success Manager" }
+      { "name_az": "Satış (Ümumi)", "name_en": "Sales (General)", "name_ru": "Продажи (Общее)", "profession_az": "Satış Təmsilçisi", "profession_en": "Sales Representative", "profession_ru": "Торговый представитель" },
+      { "name_az": "Satış İdarəetməsi", "name_en": "Sales Management", "name_ru": "Управление продажами", "profession_az": "Satış Meneceri", "profession_en": "Sales Manager", "profession_ru": "Менеджер по продажам" },
+      { "name_az": "Müştəri Xidmətləri", "name_en": "Customer Service", "name_ru": "Обслуживание клиентов", "profession_az": "Müştəri Xidmətləri Mütəxəssisi", "profession_en": "Customer Service Specialist", "profession_ru": "Специалист по обслуживанию клиентов" },
+      { "name_az": "Account Management", "name_en": "Account Management", "name_ru": "Управление аккаунтами", "profession_az": "Account Manager", "profession_en": "Account Manager", "profession_ru": "Аккаунт-менеджер" },
+      { "name_az": "Elektron Ticarət (E-commerce)", "name_en": "E-commerce", "name_ru": "Электронная коммерция (E-commerce)", "profession_az": "E-commerce Manager", "profession_en": "E-commerce Manager", "profession_ru": "Менеджер по E-commerce" },
+      { "name_az": "Müştəri Uğuru (Customer Success)", "name_en": "Customer Success", "name_ru": "Успех клиентов (Customer Success)", "profession_az": "Customer Success Manager", "profession_en": "Customer Success Manager", "profession_ru": "Менеджер по успеху клиентов" }
     ]
   },
   {
-    "category": "Dizayn və Yaradıcılıq",
+    "name_az": "Dizayn və Yaradıcılıq",
+    "name_en": "Design and Creativity",
+    "name_ru": "Дизайн и творчество",
     "subcategories": [
-      { "name": "Dizayn (Ümumi)", "profession": "Dizayner" },
-      { "name": "Qrafik Dizayn", "profession": "Qrafik Dizayner" },
-      { "name": "UI/UX Dizayn", "profession": "UI/UX Dizayner" },
-      { "name": "Məhsul Dizaynı", "profession": "Product Designer" },
-      { "name": "Motion Dizayn", "profession": "Motion Dizayner" },
-      { "name": "3D Modelləşdirmə", "profession": "3D Artist" },
-      { "name": "İnteryer Dizaynı", "profession": "İnteryer Dizayner" },
-      { "name": "Landşaft Dizaynı", "profession": "Landşaft Dizayneri" },
-      { "name": "Dəb və Geyim Dizaynı", "profession": "Modelyer" },
-      { "name": "İllüstrasiya", "profession": "İllüstrator" }
+      { "name_az": "Dizayn (Ümumi)", "name_en": "Design (General)", "name_ru": "Дизайн (Общее)", "profession_az": "Dizayner", "profession_en": "Designer", "profession_ru": "Дизайнер" },
+      { "name_az": "Qrafik Dizayn", "name_en": "Graphic Design", "name_ru": "Графический дизайн", "profession_az": "Qrafik Dizayner", "profession_en": "Graphic Designer", "profession_ru": "Графический дизайнер" },
+      { "name_az": "UI/UX Dizayn", "name_en": "UI/UX Design", "name_ru": "UI/UX Дизайн", "profession_az": "UI/UX Dizayner", "profession_en": "UI/UX Designer", "profession_ru": "UI/UX Дизайнер" },
+      { "name_az": "Məhsul Dizaynı", "name_en": "Product Design", "name_ru": "Дизайн продукта", "profession_az": "Product Designer", "profession_en": "Product Designer", "profession_ru": "Продуктовый дизайнер" },
+      { "name_az": "Motion Dizayn", "name_en": "Motion Design", "name_ru": "Моушен-дизайн", "profession_az": "Motion Dizayner", "profession_en": "Motion Designer", "profession_ru": "Моушен-дизайнер" },
+      { "name_az": "3D Modelləşdirmə", "name_en": "3D Modeling", "name_ru": "3D-моделирование", "profession_az": "3D Artist", "profession_en": "3D Artist", "profession_ru": "3D-художник" },
+      { "name_az": "İnteryer Dizaynı", "name_en": "Interior Design", "name_ru": "Дизайн интерьера", "profession_az": "İnteryer Dizayner", "profession_en": "Interior Designer", "profession_ru": "Дизайнер интерьера" },
+      { "name_az": "Landşaft Dizaynı", "name_en": "Landscape Design", "name_ru": "Ландшафтный дизайн", "profession_az": "Landşaft Dizayneri", "profession_en": "Landscape Designer", "profession_ru": "Ландшафтный дизайнер" },
+      { "name_az": "Dəb və Geyim Dizaynı", "name_en": "Fashion and Apparel Design", "name_ru": "Дизайн одежды и мода", "profession_az": "Modelyer", "profession_en": "Fashion Designer", "profession_ru": "Модельер" },
+      { "name_az": "İllüstrasiya", "name_en": "Illustration", "name_ru": "Иллюстрация", "profession_az": "İllüstrator", "profession_en": "Illustrator", "profession_ru": "Иллюстратор" }
     ]
   },
   {
-    "category": "Video, Foto və Məzmun",
+    "name_az": "Video, Foto və Məzmun",
+    "name_en": "Video, Photo and Content",
+    "name_ru": "Видео, фото и контент",
     "subcategories": [
-      { "name": "Video Çəkiliş", "profession": "Videoqraf" },
-      { "name": "Video Montaj", "profession": "Video Editor" },
-      { "name": "Fotoqrafiya", "profession": "Fotoqraf" },
-      { "name": "Kopiraytinq", "profession": "Kopirayter" },
-      { "name": "Ssenari Yazarlığı", "profession": "Ssenarist" },
-      { "name": "Rejissorluq", "profession": "Rejissor" },
-      { "name": "Səs Rejissorluğu", "profession": "Səs Rejissoru" }
+      { "name_az": "Video Çəkiliş", "name_en": "Video Shooting", "name_ru": "Видеосъемка", "profession_az": "Videoqraf", "profession_en": "Videographer", "profession_ru": "Видеограф" },
+      { "name_az": "Video Montaj", "name_en": "Video Editing", "name_ru": "Видеомонтаж", "profession_az": "Video Editor", "profession_en": "Video Editor", "profession_ru": "Видеомонтажер" },
+      { "name_az": "Fotoqrafiya", "name_en": "Photography", "name_ru": "Фотография", "profession_az": "Fotoqraf", "profession_en": "Photographer", "profession_ru": "Фотограф" },
+      { "name_az": "Kopiraytinq", "name_en": "Copywriting", "name_ru": "Копирайтинг", "profession_az": "Kopirayter", "profession_en": "Copywriter", "profession_ru": "Копирайтер" },
+      { "name_az": "Ssenari Yazarlığı", "name_en": "Scriptwriting", "name_ru": "Сценаристика", "profession_az": "Ssenarist", "profession_en": "Scriptwriter", "profession_ru": "Сценарист" },
+      { "name_az": "Rejissorluq", "name_en": "Directing", "name_ru": "Режиссура", "profession_az": "Rejissor", "profession_en": "Director", "profession_ru": "Режиссер" },
+      { "name_az": "Səs Rejissorluğu", "name_en": "Sound Directing", "name_ru": "Звукорежиссура", "profession_az": "Səs Rejissoru", "profession_en": "Sound Engineer", "profession_ru": "Звукорежиссер" }
     ]
   },
   {
-    "category": "İnsan Resursları (HR)",
+    "name_az": "İnsan Resursları (HR)",
+    "name_en": "Human Resources (HR)",
+    "name_ru": "Человеческие ресурсы (HR)",
     "subcategories": [
-      { "name": "İnsan Resursları (Ümumi)", "profession": "HR Mütəxəssisi" },
-      { "name": "İşə Qəbul (Recruitment)", "profession": "Recruiter" },
-      { "name": "Təlim və İnkişaf (L&D)", "profession": "Təlimçi / L&D Mütəxəssisi" },
-      { "name": "HR Biznes Tərəfdaşlığı", "profession": "HR Business Partner" },
-      { "name": "Kadr Kargüzarlığı", "profession": "Kadrlar üzrə Mütəxəssis" }
+      { "name_az": "İnsan Resursları (Ümumi)", "name_en": "Human Resources (General)", "name_ru": "Человеческие ресурсы (Общее)", "profession_az": "HR Mütəxəssisi", "profession_en": "HR Specialist", "profession_ru": "HR Специалист" },
+      { "name_az": "İşə Qəbul (Recruitment)", "name_en": "Recruitment", "name_ru": "Рекрутинг (Подбор персонала)", "profession_az": "Recruiter", "profession_en": "Recruiter", "profession_ru": "Рекрутер" },
+      { "name_az": "Təlim və İnkişaf (L&D)", "name_en": "Learning and Development (L&D)", "name_ru": "Обучение и развитие (L&D)", "profession_az": "Təlimçi / L&D Mütəxəssisi", "profession_en": "Trainer / L&D Specialist", "profession_ru": "Тренер / L&D Специалист" },
+      { "name_az": "HR Biznes Tərəfdaşlığı", "name_en": "HR Business Partner", "name_ru": "HR Бизнес-партнерство", "profession_az": "HR Business Partner", "profession_en": "HR Business Partner", "profession_ru": "HR Бизнес-партнер" },
+      { "name_az": "Kadr Kargüzarlığı", "name_en": "HR Administration", "name_ru": "Кадровое делопроизводство", "profession_az": "Kadrlar üzrə Mütəxəssis", "profession_en": "HR Administrator", "profession_ru": "Специалист по кадрам" }
     ]
   },
   {
-    "category": "Psixologiya və Psixoterapiya",
+    "name_az": "Psixologiya və Psixoterapiya",
+    "name_en": "Psychology and Psychotherapy",
+    "name_ru": "Психология и психотерапия",
     "subcategories": [
-      { "name": "Psixologiya (Ümumi)", "profession": "Psixoloq" },
-      { "name": "Klinik Psixologiya", "profession": "Klinik Psixoloq" },
-      { "name": "Uşaq Psixologiyası", "profession": "Uşaq Psixoloqu" },
-      { "name": "Ailə və Cütlük Psixologiyası", "profession": "Ailə Psixoloqu" },
-      { "name": "Psixoterapiya", "profession": "Psixoterapevt" },
-      { "name": "Neyropsixologiya", "profession": "Neyropsixoloq" },
-      { "name": "Loqopediya", "profession": "Loqoped" }
+      { "name_az": "Psixologiya (Ümumi)", "name_en": "Psychology (General)", "name_ru": "Психология (Общее)", "profession_az": "Psixoloq", "profession_en": "Psychologist", "profession_ru": "Психолог" },
+      { "name_az": "Klinik Psixologiya", "name_en": "Clinical Psychology", "name_ru": "Клиническая психология", "profession_az": "Klinik Psixoloq", "profession_en": "Clinical Psychologist", "profession_ru": "Клинический психолог" },
+      { "name_az": "Uşaq Psixologiyası", "name_en": "Child Psychology", "name_ru": "Детская психология", "profession_az": "Uşaq Psixoloqu", "profession_en": "Child Psychologist", "profession_ru": "Детский психолог" },
+      { "name_az": "Ailə və Cütlük Psixologiyası", "name_en": "Family and Couple Psychology", "name_ru": "Семейная психология", "profession_az": "Ailə Psixoloqu", "profession_en": "Family Psychologist", "profession_ru": "Семейный психолог" },
+      { "name_az": "Psixoterapiya", "name_en": "Psychotherapy", "name_ru": "Психотерапия", "profession_az": "Psixoterapevt", "profession_en": "Psychotherapist", "profession_ru": "Психотерапевт" },
+      { "name_az": "Neyropsixologiya", "name_en": "Neuropsychology", "name_ru": "Нейропсихология", "profession_az": "Neyropsixoloq", "profession_en": "Neuropsychologist", "profession_ru": "Нейропсихолог" },
+      { "name_az": "Loqopediya", "name_en": "Speech Therapy", "name_ru": "Логопедия", "profession_az": "Loqoped", "profession_en": "Speech Therapist", "profession_ru": "Логопед" }
     ]
   },
   {
-    "category": "Kouçinq və Şəxsi İnkişaf",
+    "name_az": "Kouçinq və Şəxsi İnkişaf",
+    "name_en": "Coaching and Personal Development",
+    "name_ru": "Коучинг и личностное развитие",
     "subcategories": [
-      { "name": "Kouçinq (Ümumi)", "profession": "Kouç" },
-      { "name": "Həyat Kouçluğu (Life Coaching)", "profession": "Life Coach" },
-      { "name": "Karyera Kouçluğu", "profession": "Karyera Kouçu" },
-      { "name": "Biznes Kouçluğu", "profession": "Biznes Kouçu" },
-      { "name": "Mentorluq", "profession": "Mentor" }
+      { "name_az": "Kouçinq (Ümumi)", "name_en": "Coaching (General)", "name_ru": "Коучинг (Общее)", "profession_az": "Kouç", "profession_en": "Coach", "profession_ru": "Коуч" },
+      { "name_az": "Həyat Kouçluğu (Life Coaching)", "name_en": "Life Coaching", "name_ru": "Лайф-коучинг", "profession_az": "Life Coach", "profession_en": "Life Coach", "profession_ru": "Лайф-коуч" },
+      { "name_az": "Karyera Kouçluğu", "name_en": "Career Coaching", "name_ru": "Карьерный коучинг", "profession_az": "Karyera Kouçu", "profession_en": "Career Coach", "profession_ru": "Карьерный коуч" },
+      { "name_az": "Biznes Kouçluğu", "name_en": "Business Coaching", "name_ru": "Бизнес-коучинг", "profession_az": "Biznes Kouçu", "profession_en": "Business Coach", "profession_ru": "Бизнес-коуч" },
+      { "name_az": "Mentorluq", "name_en": "Mentoring", "name_ru": "Менторство", "profession_az": "Mentor", "profession_en": "Mentor", "profession_ru": "Ментор" }
     ]
   },
   {
-    "category": "Tibb və Səhiyyə",
+    "name_az": "Tibb və Səhiyyə",
+    "name_en": "Medicine and Healthcare",
+    "name_ru": "Медицина и здравоохранение",
     "subcategories": [
-      { "name": "Təbabət (Ümumi)", "profession": "Həkim" },
-      { "name": "Terapevtika", "profession": "Terapevt" },
-      { "name": "Pediatriya", "profession": "Pediatr" },
-      { "name": "Kardiologiya", "profession": "Kardioloq" },
-      { "name": "Stomatologiya", "profession": "Stomatoloq" },
-      { "name": "Nevrologiya", "profession": "Nevroloq" },
-      { "name": "Dermatologiya", "profession": "Dermatoloq" },
-      { "name": "Cərrahiyyə", "profession": "Cərrah" },
-      { "name": "Ginekologiya", "profession": "Ginekoloq" },
-      { "name": "Diyetologiya", "profession": "Diyetoloq" },
-      { "name": "Fizioterapiya", "profession": "Fizioterapevt" },
-      { "name": "Oftalmologiya", "profession": "Oftalmoloq (Göz Həkimi)" },
-      { "name": "Radiologiya", "profession": "Radioloq" },
-      { "name": "Əczaçılıq", "profession": "Əczaçı" }
+      { "name_az": "Təbabət (Ümumi)", "name_en": "Medicine (General)", "name_ru": "Лечебное дело (Общее)", "profession_az": "Həkim", "profession_en": "Doctor", "profession_ru": "Врач" },
+      { "name_az": "Terapevtika", "name_en": "Therapeutics", "name_ru": "Терапия", "profession_az": "Terapevt", "profession_en": "Therapist", "profession_ru": "Терапевт" },
+      { "name_az": "Pediatriya", "name_en": "Pediatrics", "name_ru": "Педиатрия", "profession_az": "Pediatr", "profession_en": "Pediatrician", "profession_ru": "Педиатр" },
+      { "name_az": "Kardiologiya", "name_en": "Cardiology", "name_ru": "Кардиология", "profession_az": "Kardioloq", "profession_en": "Cardiologist", "profession_ru": "Кардиолог" },
+      { "name_az": "Stomatologiya", "name_en": "Dentistry", "name_ru": "Стоматология", "profession_az": "Stomatoloq", "profession_en": "Dentist", "profession_ru": "Стоматолог" },
+      { "name_az": "Nevrologiya", "name_en": "Neurology", "name_ru": "Неврология", "profession_az": "Nevroloq", "profession_en": "Neurologist", "profession_ru": "Невролог" },
+      { "name_az": "Dermatologiya", "name_en": "Dermatology", "name_ru": "Дерматология", "profession_az": "Dermatoloq", "profession_en": "Dermatologist", "profession_ru": "Дерматолог" },
+      { "name_az": "Cərrahiyyə", "name_en": "Surgery", "name_ru": "Хирургия", "profession_az": "Cərrah", "profession_en": "Surgeon", "profession_ru": "Хирург" },
+      { "name_az": "Ginekologiya", "name_en": "Gynecology", "name_ru": "Гинекология", "profession_az": "Ginekoloq", "profession_en": "Gynecologist", "profession_ru": "Гинеколог" },
+      { "name_az": "Diyetologiya", "name_en": "Dietetics", "name_ru": "Диетология", "profession_az": "Diyetoloq", "profession_en": "Dietitian", "profession_ru": "Диетолог" },
+      { "name_az": "Fizioterapiya", "name_en": "Physiotherapy", "name_ru": "Физиотерапия", "profession_az": "Fizioterapevt", "profession_en": "Physiotherapist", "profession_ru": "Физиотерапевт" },
+      { "name_az": "Oftalmologiya", "name_en": "Ophthalmology", "name_ru": "Офтальмология", "profession_az": "Oftalmoloq (Göz Həkimi)", "profession_en": "Ophthalmologist", "profession_ru": "Офтальмолог" },
+      { "name_az": "Radiologiya", "name_en": "Radiology", "name_ru": "Радиология", "profession_az": "Radioloq", "profession_en": "Radiologist", "profession_ru": "Радиолог" },
+      { "name_az": "Əczaçılıq", "name_en": "Pharmacy", "name_ru": "Фармация", "profession_az": "Əczaçı", "profession_en": "Pharmacist", "profession_ru": "Фармацевт" }
     ]
   },
   {
-    "category": "Hüquq",
+    "name_az": "Hüquq",
+    "name_en": "Law",
+    "name_ru": "Юриспруденция",
     "subcategories": [
-      { "name": "Hüquqşünaslıq (Ümumi)", "profession": "Hüquqşünas" },
-      { "name": "Vəkillik", "profession": "Vəkil" },
-      { "name": "Korporativ Hüquq", "profession": "Korporativ Hüquqşünas" },
-      { "name": "Notariat", "profession": "Notarius" },
-      { "name": "Miqrasiya Hüququ", "profession": "Miqrasiya Hüquqşünası" }
+      { "name_az": "Hüquqşünaslıq (Ümumi)", "name_en": "Jurisprudence (General)", "name_ru": "Юриспруденция (Общее)", "profession_az": "Hüquqşünas", "profession_en": "Lawyer", "profession_ru": "Юрист" },
+      { "name_az": "Vəkillik", "name_en": "Advocacy", "name_ru": "Адвокатура", "profession_az": "Vəkil", "profession_en": "Attorney", "profession_ru": "Адвокат" },
+      { "name_az": "Korporativ Hüquq", "name_en": "Corporate Law", "name_ru": "Корпоративное право", "profession_az": "Korporativ Hüquqşünas", "profession_en": "Corporate Lawyer", "profession_ru": "Корпоративный юрист" },
+      { "name_az": "Notariat", "name_en": "Notary", "name_ru": "Нотариат", "profession_az": "Notarius", "profession_en": "Notary", "profession_ru": "Нотариус" },
+      { "name_az": "Miqrasiya Hüququ", "name_en": "Migration Law", "name_ru": "Миграционное право", "profession_az": "Miqrasiya Hüquqşünası", "profession_en": "Migration Lawyer", "profession_ru": "Миграционный юрист" }
     ]
   },
   {
-    "category": "Təhsil və Tədris",
+    "name_az": "Təhsil və Tədris",
+    "name_en": "Education and Training",
+    "name_ru": "Образование и обучение",
     "subcategories": [
-      { "name": "Pedaqogika (Ümumi)", "profession": "Müəllim" },
-      { "name": "İbtidai Sinif Tədrisi", "profession": "İbtidai Sinif Müəllimi" },
-      { "name": "Xarici Dil Tədrisi", "profession": "Xarici Dil Müəllimi" },
-      { "name": "Riyaziyyat Tədrisi", "profession": "Riyaziyyat Müəllimi" },
-      { "name": "Repetitorluq", "profession": "Repetitor" },
-      { "name": "Ali Təhsil", "profession": "Lektor / Professor" },
-      { "name": "Korporativ Təlim", "profession": "Təlimçi" }
+      { "name_az": "Pedaqogika (Ümumi)", "name_en": "Pedagogy (General)", "name_ru": "Педагогика (Общее)", "profession_az": "Müəllim", "profession_en": "Teacher", "profession_ru": "Преподаватель / Учитель" },
+      { "name_az": "İbtidai Sinif Tədrisi", "name_en": "Primary Education", "name_ru": "Начальное образование", "profession_az": "İbtidai Sinif Müəllimi", "profession_en": "Primary School Teacher", "profession_ru": "Учитель начальных классов" },
+      { "name_az": "Xarici Dil Tədrisi", "name_en": "Foreign Language Teaching", "name_ru": "Преподавание иностранных языков", "profession_az": "Xarici Dil Müəllimi", "profession_en": "Foreign Language Teacher", "profession_ru": "Преподаватель иностранных языков" },
+      { "name_az": "Riyaziyyat Tədrisi", "name_en": "Mathematics Teaching", "name_ru": "Преподавание математики", "profession_az": "Riyaziyyat Müəllimi", "profession_en": "Mathematics Teacher", "profession_ru": "Учитель математики" },
+      { "name_az": "Repetitorluq", "name_en": "Tutoring", "name_ru": "Репетиторство", "profession_az": "Repetitor", "profession_en": "Tutor", "profession_ru": "Репетитор" },
+      { "name_az": "Ali Təhsil", "name_en": "Higher Education", "name_ru": "Высшее образование", "profession_az": "Lektor / Professor", "profession_en": "Lecturer / Professor", "profession_ru": "Лектор / Профессор" },
+      { "name_az": "Korporativ Təlim", "name_en": "Corporate Training", "name_ru": "Корпоративное обучение", "profession_az": "Təlimçi", "profession_en": "Trainer", "profession_ru": "Бизнес-тренер" }
     ]
   },
   {
-    "category": "Mühəndislik",
+    "name_az": "Mühəndislik",
+    "name_en": "Engineering",
+    "name_ru": "Инженерия",
     "subcategories": [
-      { "name": "Mühəndislik (Ümumi)", "profession": "Mühəndis" },
-      { "name": "İnşaat Mühəndisliyi", "profession": "İnşaat Mühəndisi" },
-      { "name": "Neft və Qaz Mühəndisliyi", "profession": "Neft-Qaz Mühəndisi" },
-      { "name": "Elektrik Mühəndisliyi", "profession": "Elektrik Mühəndisi" },
-      { "name": "Mexanika Mühəndisliyi", "profession": "Mexanika Mühəndisi" },
-      { "name": "Memarlıq", "profession": "Memar" },
-      { "name": "Geologiya", "profession": "Geoloq" }
+      { "name_az": "Mühəndislik (Ümumi)", "name_en": "Engineering (General)", "name_ru": "Инженерия (Общее)", "profession_az": "Mühəndis", "profession_en": "Engineer", "profession_ru": "Инженер" },
+      { "name_az": "İnşaat Mühəndisliyi", "name_en": "Civil Engineering", "name_ru": "Строительная инженерия", "profession_az": "İnşaat Mühəndisi", "profession_en": "Civil Engineer", "profession_ru": "Инженер-строитель" },
+      { "name_az": "Neft və Qaz Mühəndisliyi", "name_en": "Oil and Gas Engineering", "name_ru": "Нефтегазовая инженерия", "profession_az": "Neft-Qaz Mühəndisi", "profession_en": "Oil and Gas Engineer", "profession_ru": "Инженер-нефтяник" },
+      { "name_az": "Elektrik Mühəndisliyi", "name_en": "Electrical Engineering", "name_ru": "Электроинженерия", "profession_az": "Elektrik Mühəndisi", "profession_en": "Electrical Engineer", "profession_ru": "Инженер-электрик" },
+      { "name_az": "Mexanika Mühəndisliyi", "name_en": "Mechanical Engineering", "name_ru": "Механическая инженерия", "profession_az": "Mexanika Mühəndisi", "profession_en": "Mechanical Engineer", "profession_ru": "Инженер-механик" },
+      { "name_az": "Memarlıq", "name_en": "Architecture", "name_ru": "Архитектура", "profession_az": "Memar", "profession_en": "Architect", "profession_ru": "Архитектор" },
+      { "name_az": "Geologiya", "name_en": "Geology", "name_ru": "Геология", "profession_az": "Geoloq", "profession_en": "Geologist", "profession_ru": "Геолог" }
     ]
   }
 ]

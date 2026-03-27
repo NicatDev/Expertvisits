@@ -10,7 +10,8 @@ import { useTranslation } from '@/i18n/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 
 const RecommendedUsers = () => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+    const currentLang = i18n.language || 'az';
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -75,7 +76,7 @@ const RecommendedUsers = () => {
                                 {user.first_name} {user.last_name}
                             </Link>
                             <span className={styles.followers} style={{ color: '#999', fontSize: '12px' }}>
-                                {user.profession_sub_category?.profession || user.profession_sub_category?.name || t('widgets.user_role')}
+                                {user.profession_sub_category?.[`profession_${currentLang}`] || user.profession_sub_category?.[`name_${currentLang}`] || t('widgets.user_role')}
                             </span>
                         </div>
                         <button

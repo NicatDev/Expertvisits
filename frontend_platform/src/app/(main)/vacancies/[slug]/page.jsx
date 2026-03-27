@@ -67,6 +67,8 @@ async function getVacancyData(slug) {
     }
 }
 
+import LanguageSetter from '@/components/LanguageSetter';
+
 export default async function VacancyDetailPage({ params }) {
     const { slug } = await params;
     const vacancy = await getVacancyData(slug);
@@ -75,7 +77,13 @@ export default async function VacancyDetailPage({ params }) {
         notFound();
     }
 
+    const lang = vacancy?.language || 'az';
+
     return (
-        <DetailClient vacancy={vacancy} />
+        <>
+            <LanguageSetter lang={lang} />
+            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${lang}";` }} suppressHydrationWarning />
+            <DetailClient vacancy={vacancy} />
+        </>
     );
 }

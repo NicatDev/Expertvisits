@@ -1,20 +1,65 @@
 @import '../../styles/variables.scss';
 @import '../../styles/mixins.scss';
 
-.authContainer {
+.authPageWrapper {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f7f9fc;
+}
+
+.authHeader {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        
+        .brandName {
+            font-size: 20px;
+            font-weight: 700;
+            color: $primary-color;
+        }
+    }
+}
+
+.authMain {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: $bg-color;
-    padding: $spacing-md;
+    padding: 40px 24px;
+    
+    @include mobile {
+        padding: 24px 16px;
+    }
+}
+
+.authContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .authCard {
     background: #fff;
-    padding: 32px;
-    border-radius: $border-radius-base;
-    box-shadow: $box-shadow-base;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     width: 100%;
     max-width: 600px;
     display: flex;
@@ -29,10 +74,10 @@
 
 .title {
     text-align: center;
-    margin-bottom: 24px;
-    font-size: 24px;
-    font-weight: 600;
-    color: $primary-color;
+    margin-bottom: 32px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
 }
 
 .form {
@@ -44,14 +89,17 @@
 .section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    margin-bottom: 8px;
 }
 
 .sectionTitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: $primary-color;
-    margin-bottom: 0px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 8px;
 }
@@ -59,7 +107,7 @@
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 20px;
 
     @include mobile {
         grid-template-columns: 1fr;
@@ -74,30 +122,31 @@
     label {
         font-weight: 500;
         font-size: 14px;
+        color: #444;
     }
 
-    /* Override Input component wrapper style if needed, or target input directly */
     :global(.input-wrapper) {
         margin-bottom: 0 !important;
     }
 }
 
 .footer {
-    margin-top: 24px;
+    margin-top: 32px;
     text-align: center;
     font-size: 14px;
-    color: $text-secondary;
+    color: #666;
 
     a {
         color: $primary-color;
-        font-weight: 500;
+        font-weight: 600;
+        text-decoration: none;
 
         &:hover {
-            text-decoration: underline;
+            color: darken($primary-color, 10%);
         }
     }
 }
 
 .interestsStep {
-    /* Retain styles for step 2 just in case, though user asked for single form, Step 2 is logically separate (interests selection) */
+    /* Step 2 bypassed */
 }

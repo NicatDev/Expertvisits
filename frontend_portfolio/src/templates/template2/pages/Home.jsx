@@ -17,7 +17,8 @@ export default function Home({ user }) {
     const skills = user.skills || [];
     const languages = user.languages || [];
     const certificates = user.certificates || [];
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language || 'az';
     const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {
@@ -50,7 +51,7 @@ export default function Home({ user }) {
                         
                         {profile.profession_sub_category && (
                             <p className={styles.profession}>
-                                <span>{profile.profession_sub_category.profession}</span>
+                                <span>{profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession}</span>
                             </p>
                         )}
                         

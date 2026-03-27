@@ -12,7 +12,26 @@ export default async function sitemap() {
         console.error("Sitemap fetch failed", err);
     }
     
-    const urls = [];
+    const urls = [
+        {
+            url: `${BASE_URL}/`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 1.0,
+        },
+        {
+            url: `${BASE_URL}/en`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.9,
+        },
+        {
+            url: `${BASE_URL}/ru`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.9,
+        }
+    ];
 
     // Only dynamic portfolio URLs for frontend_portfolio
     sitemapData.dynamic_urls.forEach((item) => {

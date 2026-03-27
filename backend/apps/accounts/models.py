@@ -2,32 +2,51 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from core.utils import custom_slugify
 from core.utils.images import compress_image
+from core.utils.language import detect_language
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name_az = models.CharField(max_length=100)
+    name_en = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, db_index=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = custom_slugify(self.name)
+            self.slug = custom_slugify(self.name_en)
         super().save(*args, **kwargs)
 
+    @property
+    def name(self):
+        return self.name_az
+
     def __str__(self):
-        return self.name
+        return self.name_az
 
 class SubCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
-    name = models.CharField(max_length=100)
-    profession = models.CharField(max_length=100, null=True, blank=True)
+    name_az = models.CharField(max_length=100)
+    name_en = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+    profession_az = models.CharField(max_length=100, null=True, blank=True)
+    profession_en = models.CharField(max_length=100, null=True, blank=True)
+    profession_ru = models.CharField(max_length=100, null=True, blank=True)
     slug = models.SlugField(unique=True, db_index=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = custom_slugify(self.name)
+            self.slug = custom_slugify(self.name_en)
         super().save(*args, **kwargs)
 
+    @property
+    def name(self):
+        return self.name_az
+
+    @property
+    def profession(self):
+        return self.profession_az
+
     def __str__(self):
-        return self.name
+        return self.name_az
 
 class User(AbstractUser):
     profession_sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True, blank=True)
@@ -61,7 +80,16 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    language = models.CharField(max_length=10, default='az', blank=True, null=True)
+
     def save(self, *args, **kwargs):
+        if self.summary:
+            detected_lang = detect_language(self.summary)
+            self.language = detected_lang
+        else:
+            if not self.language:
+                self.language = 'az'
+                
         if self.pk:
             old = User.objects.filter(pk=self.pk).first()
             if old:

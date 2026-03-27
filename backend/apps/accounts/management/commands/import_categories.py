@@ -23,29 +23,47 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Cleared existing categories.'))
 
         for item in data:
-            category_name = item['category']
+            category_az = item['name_az']
+            category_en = item['name_en']
+            category_ru = item['name_ru']
             subcategories = item['subcategories']
 
-            category, created = Category.objects.get_or_create(name=category_name)
+            category, created = Category.objects.get_or_create(
+                name_az=category_az,
+                defaults={
+                    'name_en': category_en,
+                    'name_ru': category_ru,
+                }
+            )
             if created:
-                self.stdout.write(self.style.SUCCESS(f'Created category: {category_name}'))
+                self.stdout.write(self.style.SUCCESS(f'Created category: {category_az}'))
             else:
-                self.stdout.write(f'Category exists: {category_name}')
+                self.stdout.write(f'Category exists: {category_az}')
 
             for sub in subcategories:
-                sub_name = sub['name']
-                profession = sub.get('profession', '')
+                sub_az = sub['name_az']
+                sub_en = sub['name_en']
+                sub_ru = sub['name_ru']
+                prof_az = sub.get('profession_az', '')
+                prof_en = sub.get('profession_en', '')
+                prof_ru = sub.get('profession_ru', '')
 
                 # Update or Create SubCategory
                 sub_cat, sub_created = SubCategory.objects.update_or_create(
                     category=category,
-                    name=sub_name,
-                    defaults={'profession': profession}
+                    name_az=sub_az,
+                    defaults={
+                        'name_en': sub_en,
+                        'name_ru': sub_ru,
+                        'profession_az': prof_az,
+                        'profession_en': prof_en,
+                        'profession_ru': prof_ru,
+                    }
                 )
 
                 if sub_created:
-                    self.stdout.write(self.style.SUCCESS(f'  Created subcategory: {sub_name} ({profession})'))
+                    self.stdout.write(self.style.SUCCESS(f'  Created subcategory: {sub_az} ({prof_az})'))
                 else:
-                    self.stdout.write(f'  Updated subcategory: {sub_name}')
+                    self.stdout.write(f'  Updated subcategory: {sub_az}')
 
         self.stdout.write(self.style.SUCCESS('Successfully imported all categories'))
