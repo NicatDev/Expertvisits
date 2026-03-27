@@ -185,6 +185,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://expertvisits.com",
     "http://www.expertvisits.com",
     "http://app.expertvisits.com",
+    "http://api.expertvisits.com",
     "http://website.expertvisits.com",
 ]
 
@@ -196,6 +197,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://expertvisits.com",
     "https://www.expertvisits.com",
     "https://app.expertvisits.com",
+    "https://api.expertvisits.com",
     "https://website.expertvisits.com",
     "http://expertvisits.com",
     "http://www.expertvisits.com",
