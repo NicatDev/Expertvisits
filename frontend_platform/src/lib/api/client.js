@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://api.expertvisits.com/api/',
 });
 
 import { toast } from 'react-toastify';
@@ -83,7 +83,7 @@ api.interceptors.response.use((response) => {
             // Using a new axios instance to avoid interceptors on the refresh call itself ideally, 
             // but effectively valid refresh call shouldn't 401 immediately unless token is bad.
             // Using direct axios call to avoid circular dependency if we tried to import 'auth' helper.
-            const response = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/') + 'auth/token/refresh/', {
+            const response = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'https://api.expertvisits.com/api/') + 'auth/token/refresh/', {
                 refresh: refreshToken
             });
 
