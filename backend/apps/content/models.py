@@ -7,20 +7,35 @@ from core.utils.images import compress_image
 from django.contrib.contenttypes.fields import GenericRelation
 from apps.interactions.models import Like, Comment
 
+from core.utils.language import detect_language
+
 class Article(models.Model):
+    LANGUAGE_CHOICES = [
+        ('az', 'Azerbaijani'),
+        ('en', 'English'),
+        ('ru', 'Russian'),
+    ]
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles')
     sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True)
     title = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(unique=True, db_index=True, max_length=255)
     image = models.ImageField(upload_to='articles/', blank=True, null=True)
     body = models.TextField()
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, default='az', db_index=True)
     likes = GenericRelation(Like)
     comments = GenericRelation(Comment)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        # Auto-detect language if not set or default
+        if not self.language or self.language == 'az':
+            # Check title first, it often gives good results
+            text_to_detect = f"{self.title} {self.body[:500]}"
+            self.language = detect_language(text_to_detect)
+
         if not self.slug:
+            # ... existing slugify logic ...
             base_slug = custom_slugify(self.title)
             # Smart truncation (stop at word boundary, approx 50 chars)
             if len(base_slug) > 50:

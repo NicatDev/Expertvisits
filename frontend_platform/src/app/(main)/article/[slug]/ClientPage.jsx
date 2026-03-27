@@ -35,6 +35,14 @@ export default function ClientPage() {
         try {
             const { data } = await api.get(`/content/articles/${slug}/`);
             setArticle(data);
+            
+            // Force the site language and HTML lang tag to match the article's language
+            if (data.language && i18n.language !== data.language) {
+                i18n.changeLanguage(data.language);
+                document.documentElement.lang = data.language;
+            } else if (data.language) {
+                document.documentElement.lang = data.language;
+            }
         } catch (err) {
             console.error(err);
             toast.error(t('article_page.load_error'));

@@ -22,13 +22,6 @@ export default async function sitemap() {
                 lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
                 changeFrequency: item.changefreq || 'daily',
                 priority: item.priority || 0.8,
-                alternates: {
-                    languages: {
-                        en: `${BASE_URL}/en`,
-                        az: `${BASE_URL}/az`,
-                        ru: `${BASE_URL}/ru`,
-                    },
-                },
             });
         } else {
             urls.push({

@@ -17,7 +17,7 @@ export async function generateMetadata() {
 export default async function RootLayout({ children }) {
     // Determine language from cookie to set html lang attribute
     const cookieStore = await cookies();
-    const lng = cookieStore.get('i18next')?.value || 'en';
+    const lng = cookieStore.get('i18next')?.value || 'az';
 
     return (
         <html lang={lng} suppressHydrationWarning>

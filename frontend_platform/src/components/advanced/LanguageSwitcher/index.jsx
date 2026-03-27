@@ -24,20 +24,9 @@ export default function LanguageSwitcher() {
 
     const handleLanguageChange = (code) => {
         i18n.changeLanguage(code);
-        document.cookie = `i18next=${code}; path=/; max-age=31536000`; // Ensure cookie is saved
-
-        if (pathname) {
-            const segments = pathname.split('/');
-            if (['az', 'en', 'ru'].includes(segments[1])) {
-                segments[1] = code;
-            } else {
-                segments.splice(1, 0, code);
-            }
-            const newPath = segments.join('/') || '/';
-            router.push(newPath);
-            router.refresh(); // Force server components to re-render with new locale
-        }
+        document.cookie = `i18next=${code}; path=/; max-age=31536000; SameSite=Lax`; 
         
+        router.refresh(); // Refresh to update server components with new cookie
         setIsOpen(false);
     };
 

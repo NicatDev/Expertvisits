@@ -18,8 +18,15 @@ export default function DetailClient({ vacancy }) {
     const [showApplyModal, setShowApplyModal] = useState(false);
 
     useEffect(() => {
+        // Force the site language and HTML lang tag to match the vacancy's language
+        if (vacancy.language && i18n.language !== vacancy.language) {
+            i18n.changeLanguage(vacancy.language);
+            document.documentElement.lang = vacancy.language;
+        } else if (vacancy.language) {
+             document.documentElement.lang = vacancy.language;
+        }
+
         // If user is logged in, re-fetch vacancy to get accurate 'is_applied' status
-        // because server-side render doesn't have user context.
         if (user && vacancy.slug) {
             business.getVacancy(vacancy.slug)
                 .then(res => {
@@ -29,7 +36,7 @@ export default function DetailClient({ vacancy }) {
         } else if (vacancy.is_applied !== undefined) {
             setIsApplied(vacancy.is_applied);
         }
-    }, [user, vacancy.slug, vacancy.is_applied]);
+    }, [user, vacancy.slug, vacancy.is_applied, vacancy.language, i18n]);
 
     const handleApplyClick = () => {
         if (!user) {

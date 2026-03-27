@@ -66,7 +66,14 @@ class CompanyNews(models.Model):
             compress_image(self.image)
         super().save(*args, **kwargs)
 
+from core.utils.language import detect_language
+
 class Vacancy(models.Model):
+    LANGUAGE_CHOICES = [
+        ('az', 'Azerbaijani'),
+        ('en', 'English'),
+        ('ru', 'Russian'),
+    ]
     LISTING_TYPE = [('job', 'Job'), ('internship', 'Internship')]
     JOB_TYPE = [('full-time', 'Full-time'), ('part-time', 'Part-time')]
     WORK_MODE = [('remote', 'Remote'), ('hybrid', 'Hybrid'), ('office', 'Office')]
@@ -76,8 +83,14 @@ class Vacancy(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True)
     listing_type = models.CharField(choices=LISTING_TYPE, max_length=20, db_index=True)
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, default='az', db_index=True)
 
     def save(self, *args, **kwargs):
+        # Auto-detect language if not set or default
+        if not self.language or self.language == 'az':
+            text_to_detect = f"{self.title} {self.description[:500]}"
+            self.language = detect_language(text_to_detect)
+
         if not self.slug:
             from core.utils import custom_slugify
             base_slug = custom_slugify(self.title)

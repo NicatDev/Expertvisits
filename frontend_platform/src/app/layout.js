@@ -4,15 +4,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { cookies } from 'next/headers';
 
 const inter = Inter({ subsets: ["latin"] });
 
-import { cookies } from 'next/headers';
-
-export async function generateMetadata({ params }) {
-  const { locale } = await params;
+export async function generateMetadata() {
   const cookieStore = await cookies();
-  const lng = locale || cookieStore.get('i18next')?.value || 'en';
+  const lng = cookieStore.get('i18next')?.value || 'az';
 
   const metaTranslations = {
     az: {
@@ -39,17 +37,12 @@ export async function generateMetadata({ params }) {
   const baseUrl = "https://app.expertvisits.com";
 
   return {
+    metadataBase: new URL(baseUrl),
     title: t.title,
     description: t.description,
     keywords: t.keywords,
     alternates: {
-      canonical: `${baseUrl}/${lng}`,
-      languages: {
-        'az': `${baseUrl}/az`,
-        'en': `${baseUrl}/en`,
-        'ru': `${baseUrl}/ru`,
-        'x-default': `${baseUrl}/en`, // or the default you prefer
-      },
+      canonical: baseUrl,
     },
     icons: {
       icon: '/logo.png',
@@ -57,7 +50,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: t.title,
       description: t.description,
-      url: `${baseUrl}/${lng}`,
+      url: baseUrl,
       siteName: "Expert Visits",
       images: [
         {
@@ -79,14 +72,21 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function RootLayout({ children }) {
+import { LanguageProvider } from "@/lib/contexts/LanguageProvider";
+
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies();
+  const lng = cookieStore.get('i18next')?.value || 'az';
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lng} suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning={true}>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
           <AuthProvider>
-            {children}
-            <ToastContainer />
+            <LanguageProvider lng={lng}>
+              {children}
+              <ToastContainer />
+            </LanguageProvider>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>

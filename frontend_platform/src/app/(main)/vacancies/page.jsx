@@ -15,11 +15,6 @@ import { useTranslation } from '@/i18n/client';
 export default function VacanciesPage() {
     const { t, ready } = useTranslation('common');
 
-    // Prevent hydration mismatch by ensuring translations are loaded
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const { user } = useAuth();
     const [vacancies, setVacancies] = useState([]);
@@ -69,7 +64,6 @@ export default function VacanciesPage() {
         fetchVacancies();
     }, [jobType, workMode, searchLocation, page]);
 
-    if (!mounted) return null;
 
     return (
         <div className={styles.container}>

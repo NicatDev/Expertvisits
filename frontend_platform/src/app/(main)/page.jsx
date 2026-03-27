@@ -23,6 +23,7 @@ export default function HomePage() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
+
     // Modals
     const [showCreateModal, setShowCreateModal] = useState(false); // Selection
     const [showArticleModal, setShowArticleModal] = useState(false);
@@ -121,6 +122,7 @@ export default function HomePage() {
         }
         setShowCreateModal(true);
     };
+
 
     return (
         <div className={styles.container}>
