@@ -4,7 +4,7 @@ export default async function sitemap() {
     let sitemapData = { static_urls: [], dynamic_urls: [] };
 
     try {
-        const res = await fetch('http://127.0.0.1:8000/api/seo/sitemap/', { next: { revalidate: 3600 } });
+        const res = await fetch('https://api.expertvisits.com/api/seo/sitemap/', { next: { revalidate: 3600 } });
         if (res.ok) {
             sitemapData = await res.json();
         }

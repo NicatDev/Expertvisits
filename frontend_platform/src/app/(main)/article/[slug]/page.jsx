@@ -4,7 +4,7 @@ import ClientPage from './ClientPage';
 async function getArticle(slug) {
     if (!slug) return;
     try {
-        const res = await fetch(`http://127.0.0.1:8000/api/content/articles/${slug}/`, {
+        const res = await fetch(`https://api.expertvisits.com/api/content/articles/${slug}/`, {
             cache: 'no-store', // Ensure fresh data
         });
         if (!res.ok) return null;
