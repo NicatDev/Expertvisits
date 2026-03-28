@@ -1,6 +1,5 @@
 const nextConfig = {
     basePath: '/u',
-    assetPrefix: '/u/',
 
     images: {
         remotePatterns: [
