@@ -117,7 +117,7 @@ const ProfileHeader = ({
                 {onUpdateProfile && (
                     <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 20, display: 'flex', gap: '12px' }}>
                         {websiteData?.is_active && (
-                            <a href={`http://192.168.0.187:3001/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                            <a href={`https://expertvisits.com/u/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                                 <Button type="default" style={{ background: 'rgba(255,255,255,0.9)', color: '#111', fontWeight: 600, border: 'none', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
                                     {t('widgets.visit_website') || 'Vebsayta Keçid Et'}
                                 </Button>
