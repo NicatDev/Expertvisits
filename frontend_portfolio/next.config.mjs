@@ -1,5 +1,7 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
+    basePath: '/u',
+    assetPrefix: '/u/',
+
     images: {
         remotePatterns: [
             {
