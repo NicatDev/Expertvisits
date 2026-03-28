@@ -16,7 +16,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Auto-expire pending bookings
-        BookingRequest.objects.filter(status='pending', requested_datetime__lt=timezone.now()).update(status='missed')
+        BookingRequest.objects.filter(status='pending', requested_datetime__lt=timezone.now() - timedelta(hours=2)).update(status='missed')
         
         user = self.request.user
         qs = BookingRequest.objects.select_related('provider', 'customer')
@@ -57,6 +57,18 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         request_start = serializer.validated_data.get('requested_datetime')
         duration = serializer.validated_data.get('duration_minutes', 30)
         request_end = request_start + timedelta(minutes=duration)
+        timezone_val = serializer.validated_data.get('timezone')
+
+        from rest_framework import serializers
+
+        # Past check
+        if request_start < timezone.now():
+             raise serializers.ValidationError({"requested_datetime": ["You cannot book a session in the past."]})
+
+        # Update customer timezone if provided
+        if timezone_val:
+             customer.timezone = timezone_val
+             customer.save(update_fields=['timezone'])
 
         # Check for overlaps
         day_start = request_start.replace(hour=0, minute=0, second=0)
@@ -73,7 +85,6 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
             b_end = b_start + timedelta(minutes=b.duration_minutes)
             
             if request_start < b_end and request_end > b_start:
-                from rest_framework import serializers
                 raise serializers.ValidationError({"non_field_errors": ["The selected time slot overlaps with an existing appointment."]})
         
         status_val = 'pending'

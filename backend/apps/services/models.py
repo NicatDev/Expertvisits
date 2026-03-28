@@ -9,6 +9,9 @@ class BookingRequest(models.Model):
     requested_datetime = models.DateTimeField(db_index=True)
     duration_minutes = models.IntegerField(default=30)
     note = models.TextField(blank=True, null=True)
+    meet_link = models.URLField(blank=True, null=True, max_length=500)
+    location = models.CharField(blank=True, null=True, max_length=255)
+    timezone = models.CharField(max_length=50, blank=True, null=True)
     status = models.CharField(choices=STATUS_CHOICES, default='pending', max_length=20)
 
     def __str__(self):

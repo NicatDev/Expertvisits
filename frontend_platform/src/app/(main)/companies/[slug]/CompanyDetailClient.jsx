@@ -436,7 +436,7 @@ export default function CompanyDetailClient({ params }) {
                     <div className={styles.sectionHeader}>
                         <h2>{t('company_detail.vacancies.title')}</h2>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+                    <div className={styles.vacanciesGrid}>
                         {vacancies.map(v => (
                             <VacancyCard key={v.id} vacancy={v} />
                         ))}

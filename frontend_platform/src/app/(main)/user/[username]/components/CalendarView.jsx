@@ -28,8 +28,23 @@ const CalendarView = ({ events, onDateSelect, workingHours, workingDays }) => {
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <style>{`
                 .fc-event { cursor: pointer; }
-                .fc-toolbar-title { font-size: 1.2rem !important; }
-                .fc-button { font-size: 0.8rem !important; }
+                .fc-toolbar-title { font-size: 1rem !important; margin: 0 !important; }
+                .fc-button { font-size: 0.75rem !important; padding: 4px 8px !important; }
+                
+                @media (max-width: 600px) {
+                    .fc-toolbar {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        align-items: center;
+                    }
+                    .fc-toolbar-chunk {
+                        display: flex;
+                        justify-content: center;
+                        gap: 4px;
+                        width: 100%;
+                    }
+                }
             `}</style>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

@@ -2,22 +2,22 @@ const BASE_URL = 'https://expertvisits.com';
 
 export default async function sitemap() {
     let sitemapData = { static_urls: [], dynamic_urls: [] };
-    
+
     try {
-        const res = await fetch('https://api.expertvisits.com/api/seo/sitemap/', { next: { revalidate: 3600 } });
+        const res = await fetch('http://127.0.0.1:8000/api/seo/sitemap/', { next: { revalidate: 3600 } });
         if (res.ok) {
             sitemapData = await res.json();
         }
     } catch (err) {
         console.error("Sitemap fetch failed", err);
     }
-    
+
     const urls = [];
 
     // Static platform URLs
     sitemapData.static_urls.forEach((item) => {
         const u = item.url;
-        
+
         urls.push({
             url: `${BASE_URL}${u}`,
             lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
@@ -41,7 +41,7 @@ export default async function sitemap() {
         if (u === '/experts/' || u === '/experts' || u === '/vacancies/' || u === '/vacancies') {
             const pathWithoutSlash = u.startsWith('/') ? u.slice(1) : u;
             const purePath = pathWithoutSlash.endsWith('/') ? pathWithoutSlash.slice(0, -1) : pathWithoutSlash;
-            
+
             ['en', 'ru'].forEach(lang => {
                 urls.push({
                     url: `${BASE_URL}/${purePath}/${lang}`,
@@ -63,7 +63,7 @@ export default async function sitemap() {
                 changeFrequency: item.changefreq || 'weekly',
                 priority: item.priority || 0.7,
             });
-            
+
             // Add localized variants for articles
             if (item.url.startsWith('/article/')) {
                 const pathWithoutSlash = item.url.startsWith('/') ? item.url.slice(1) : item.url;

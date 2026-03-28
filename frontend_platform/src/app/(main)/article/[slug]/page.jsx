@@ -4,7 +4,7 @@ import ClientPage from './ClientPage';
 async function getArticle(slug) {
     if (!slug) return;
     try {
-        const res = await fetch(`https://api.expertvisits.com/api/content/articles/${slug}/`, {
+        const res = await fetch(`http://127.0.0.1:8000/api/content/articles/${slug}/`, {
             cache: 'no-store', // Ensure fresh data
         });
         if (!res.ok) return null;
@@ -31,10 +31,10 @@ export async function generateMetadata({ params }) {
     // Prioritize the article's detected language for SEO
     const articleLng = article.language || 'az';
     const localeMap = { az: 'az_AZ', ru: 'ru_RU', en: 'en_US' };
-    
+
     // Choose suffix based on article language
     const titleSuffix = 'Expert Visits';
-    
+
     // Clean body for description
     const cleanBody = article.body ? article.body.replace(/<[^>]+>/g, '') : '';
     const desc = cleanBody ? cleanBody.substring(0, 160) : article.title;

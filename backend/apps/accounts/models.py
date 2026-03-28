@@ -62,6 +62,7 @@ class User(AbstractUser):
     birth_day = models.DateField(null=True, blank=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
+    timezone = models.CharField(max_length=50, default='UTC', blank=True)
 
     def default_open_to():
         return ["freelance"]

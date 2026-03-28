@@ -41,12 +41,7 @@ export default function BookingPage() {
     });
     const [savedAvailability, setSavedAvailability] = useState(null);
 
-    useEffect(() => {
-        loadBookingsData();
-        if (activeSubTab === 'requests') {
-            loadRequestHistory(1, true);
-        }
-    }, [activeSubTab]);
+    // Single unified useEffect - the duplicate below handles all tabs
 
     useEffect(() => {
         if (profile) {
@@ -287,7 +282,7 @@ export default function BookingPage() {
 
             {activeSubTab === 'calendar' && (
                 <div className={styles.list}>
-                    <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         <div style={{ width: 12, height: 12, background: '#fa8c16', borderRadius: '50%' }}></div>
                         <span style={{ fontSize: '0.9rem', color: '#666' }}>{t('profile.booking.legend.pending')}</span>
                         <div style={{ width: 12, height: 12, background: '#595959', marginLeft: '16px', borderRadius: '50%' }}></div>
@@ -313,6 +308,8 @@ export default function BookingPage() {
                                     end: info.event.end,
                                     status: info.event.extendedProps.status,
                                     note: info.event.extendedProps.note,
+                                    meet_link: info.event.extendedProps.meet_link,
+                                    location: info.event.extendedProps.location,
                                     is_incoming: info.event.extendedProps.is_incoming,
                                     customer: info.event.extendedProps.customer
                                 }
@@ -462,6 +459,14 @@ export default function BookingPage() {
                             <p><strong>{t('profile.booking.status')}</strong> <span style={{ textTransform: 'capitalize' }}>{paramModal.data.status}</span></p>
                             <p><strong>{t('profile.booking.time')}</strong> {paramModal.data.start.toLocaleString()} - {paramModal.data.end.toLocaleTimeString()}</p>
                             {paramModal.data.note && <p><strong>{t('profile.booking.note')}</strong> {paramModal.data.note}</p>}
+                            {paramModal.data.meet_link && (
+                                <p><strong>{t('booking_modal.meet_link')}</strong>{' '}
+                                    <a href={paramModal.data.meet_link} target="_blank" rel="noreferrer" style={{ color: '#1890ff' }}>{paramModal.data.meet_link}</a>
+                                </p>
+                            )}
+                            {paramModal.data.location && (
+                                <p><strong>{t('booking_modal.location')}</strong> {paramModal.data.location}</p>
+                            )}
 
                             <div style={{ marginTop: '24px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                                 <Button type="default" onClick={() => setParamModal({ isOpen: false, data: null })}>{t('profile.booking.close_btn')}</Button>

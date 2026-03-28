@@ -32,43 +32,37 @@ class BookingEventsAPIView(APIView):
             is_owner = True
         
         events = []
-        user = request.user
+        user_id = request.user.id if request.user.is_authenticated else None
         
         for b in bookings:
             start = b.requested_datetime
             end = start + datetime.timedelta(minutes=b.duration_minutes)
             
-            is_my_booking = (request.user.is_authenticated and (b.customer == request.user or b.provider == request.user))
+            # Use IDs for reliable comparison
+            is_customer = (user_id and b.customer_id == user_id)
+            is_provider = (user_id and b.provider_id == user_id)
+            is_my_booking = is_customer or is_provider
+            
+            title = "Busy"
+            color = '#d9d9d9' # Grey
             
             if is_my_booking:
                 if b.status == 'pending':
-                    color = '#faad14' # Yellow/Orange
+                    color = '#fa8c16' # Orange/Yellow
                 else:
                     color = '#52c41a' # Green
 
-                if b.customer == request.user:
+                if is_customer:
                     # I sent the request
-                    title = f"From: Me To: {b.provider.first_name} {b.provider.last_name}"
+                    title = f"To: {b.provider.first_name} {b.provider.last_name}"
                 else:
                     # I received the request
-                    title = f"From: {b.customer.first_name} {b.customer.last_name} To: Me"
-            elif is_owner:
-                 # Provider viewing own calendar (Private View logic fallback if needed, though usually covered by is_my_booking)
-                 # Wait, if I am the provider, is_my_booking is True. So this elif might be redundant or for specific edge cases.
-                 # Let's rely on is_my_booking for the owner view too.
-                 pass 
-            else:
-                 # Stranger viewing
-                 title = "Busy"
-                 color = '#d9d9d9' # Grey
-                 # Ensure we don't leak info for busy slots
+                    title = f"From: {b.customer.first_name} {b.customer.last_name}"
             
             # Special case for "Blocked" (Provider self-booking?)
-            if b.provider == b.customer:
-                 title = "Blocked"
-                 color = '#595959' # Dark Grey
-
-            is_incoming = (b.customer != request.user)
+            if b.provider_id == b.customer_id:
+                  title = "Blocked"
+                  color = '#595959' # Dark Grey
 
             events.append({
                 'id': b.id,
@@ -80,8 +74,10 @@ class BookingEventsAPIView(APIView):
                 'extendedProps': {
                     'status': b.status,
                     'note': b.note,
-                    'is_incoming': is_incoming,
-                    'customer': b.customer_id # useful if needed
+                    'meet_link': b.meet_link,
+                    'location': b.location,
+                    'is_incoming': is_provider and not is_customer, # I am provider but not customer
+                    'customer': b.customer_id
                 }
             })
             

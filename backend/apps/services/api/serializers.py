@@ -14,7 +14,7 @@ class BookingRequestSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BookingRequest
-        fields = ['id', 'provider', 'provider_details', 'provider_name', 'provider_id', 'customer', 'customer_details', 'requested_datetime', 'duration_minutes', 'note', 'status']
+        fields = ['id', 'provider', 'provider_details', 'provider_name', 'provider_id', 'customer', 'customer_details', 'requested_datetime', 'duration_minutes', 'note', 'meet_link', 'location', 'status', 'timezone']
         extra_kwargs = {
             'customer': {'read_only': True},
             'provider': {'read_only': True},

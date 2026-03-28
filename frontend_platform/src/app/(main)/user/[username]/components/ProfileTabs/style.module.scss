@@ -2,17 +2,21 @@
 
 .tabs {
     display: flex;
-    gap: $spacing-lg;
+    gap: $spacing-md;
     border-bottom: 1px solid $border-color;
     margin-bottom: $spacing-lg;
-    margin-bottom: $spacing-lg;
-    // background: #fff;
-    padding: 0 $spacing-lg; // Add padding to align with content
+    padding: 0 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
 
     a {
+        flex-shrink: 0;
         background: none;
         border: none;
-        padding: $spacing-sm 0;
+        padding: 12px 0;
         font-size: 16px;
         font-weight: 500;
         color: $text-secondary;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { X } from 'lucide-react';
+import { X, Link, MapPin } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { services } from '@/lib/api';
 
@@ -12,35 +12,26 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
     const [time, setTime] = useState('');
     const [duration, setDuration] = useState(30);
     const [note, setNote] = useState('');
+    const [meetLink, setMeetLink] = useState('');
+    const [location, setLocation] = useState('');
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (isOpen && initialData) {
             if (initialData.startStr) {
-                // From Calendar Select
-                // FullCalendar select returns startStr/endStr (ISO8601) or start/end (Date objects)
-
-                // dateStr logic was used when I manually constructed object { dateStr: info.startStr }
-                // Now I pass full info object.
-
-                // Let's rely on info.start and info.end (Date objects) if available, or parse text strings.
-                // FullCalendar's `select` info has `start` and `end` as Date objects.
-
                 const d = initialData.start; // Date object
-                if (!d) return; // Should not happen if confirmed
+                if (!d) return;
 
-                // Set Date: YYYY-MM-DD
                 const yyyy = d.getFullYear();
                 const mm = String(d.getMonth() + 1).padStart(2, '0');
                 const dd = String(d.getDate()).padStart(2, '0');
                 setDate(`${yyyy}-${mm}-${dd}`);
 
-                // Set Time: HH:mm
                 const hours = String(d.getHours()).padStart(2, '0');
                 const minutes = String(d.getMinutes()).padStart(2, '0');
                 setTime(`${hours}:${minutes}`);
 
-                // Set Duration: based on selection
                 if (initialData.end) {
                     const diffMs = initialData.end.getTime() - d.getTime();
                     const diffMins = Math.round(diffMs / 60000);
@@ -49,7 +40,6 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
                     setDuration(30);
                 }
             } else if (initialData.dateStr) {
-                // Support legacy format if passed differently (manual trigger sometimes?)
                 const d = new Date(initialData.dateStr);
                 setDate(initialData.dateStr.split('T')[0]);
                 if (initialData.dateStr.includes('T')) {
@@ -58,24 +48,29 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
                     setTime(`${hours}:${minutes}`);
                 }
             } else {
-                // Manual or Reset
                 setDate('');
                 setTime('');
             }
         }
+        if (!isOpen) {
+            // Reset all fields when modal closes
+            setDate('');
+            setTime('');
+            setDuration(30);
+            setNote('');
+            setMeetLink('');
+            setLocation('');
+            setErrors({});
+        }
     }, [isOpen, initialData]);
 
     const checkOverlap = (start, end) => {
-        // Convert to timestamps
         const startMs = start.getTime();
         const endMs = end.getTime();
 
         for (const evt of events) {
-            // evt.start and evt.end are likely ISO strings
             const evtStart = new Date(evt.start).getTime();
             const evtEnd = new Date(evt.end).getTime();
-
-            // Simple overlap check: (StartA < EndB) and (EndA > StartB)
             if (startMs < evtEnd && endMs > evtStart) {
                 return true;
             }
@@ -84,58 +79,52 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
     };
 
     const handleConfirm = async () => {
+        setErrors({});
         if (!date || !time) {
-            toast.error("Please select date and time");
+            toast.error(t('booking_modal.select_date_error'));
             return;
         }
 
         const startDateTime = new Date(`${date}T${time}`);
         const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
 
-        // 1. Check Working Days/Hours (Simple check)
-        // Note: workingHours is like { start: "09:00", end: "18:00" }
-        // check workingDays [1, 2, 3...] where 0=Sun, 1=Mon... (FullCalendar uses 0=Sun)
-        // JS Date.getDay() 0=Sun. 
-        // Need to match format provided by backend. Usually backend returns 1=Mon...7=Sun or 0-6.
-        // Assuming backend is 1=Mon...7=Sun based on previous experience? Or 0=Mon?
-        // Actually Profile page used: { value: 0, name: 'Monday' } ... so 0=Mon?.
-        // I will trust the user selection for now regarding days but strict overlap check is crucial.
+        // Past check
+        if (startDateTime < new Date()) {
+            toast.error(t('booking_modal.past_time_error', { defaultValue: 'You cannot book a slot in the past.' }));
+            return;
+        }
 
-        // 2. Check Overlap
         if (checkOverlap(startDateTime, endDateTime)) {
-            toast.error("Selected time overlaps with an existing booking or busy slot.");
+            toast.error(t('booking_modal.overlap_error', { defaultValue: 'Selected time overlaps with an existing booking.' }));
             return;
         }
 
         setLoading(true);
         try {
-            // Determine timezone offset 
-            // Send as ISO string. 
-            // Note: If I define "2024-01-01T10:00" in local, sending it as is to backend might be interpreted as UTC or Local.
-            // Previous fix used: localDate.toISOString() (which converts to UTC).
-            // So if I picked 10:00 AZT, it becomes 06:00 UTC. Backend expects UTC.
-
             const payload = {
                 provider_id: providerId,
                 requested_datetime: startDateTime.toISOString(),
                 duration_minutes: duration,
-                note: note
+                note: note || null,
+                meet_link: meetLink || null,
+                location: location || null,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
             };
 
             await services.bookSlot(payload);
-            toast.success("Booking request sent successfully!");
+            toast.success(t('booking_modal.success'));
             onSuccess();
-
-            // Reset fields
-            setDate('');
-            setTime('');
-            setDuration(30);
-            setNote('');
-
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to book slot. " + (err.response?.data?.detail || ""));
+            if (err.response?.data) {
+                setErrors(err.response.data);
+                if (err.response.data.detail || err.response.data.non_field_errors) {
+                    toast.error(t('booking_modal.error') + ' ' + (err.response.data.detail || err.response.data.non_field_errors[0] || ''));
+                }
+            } else {
+                toast.error(t('booking_modal.error'));
+            }
         } finally {
             setLoading(false);
         }
@@ -148,7 +137,7 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
             position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
             background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
         }}>
-            <div style={{ background: '#fff', borderRadius: '8px', padding: '20px', width: '400px', maxWidth: '90%' }}>
+            <div style={{ background: '#fff', borderRadius: '8px', padding: '20px', width: '440px', maxWidth: '95%', maxHeight: '90vh', overflowY: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
                     <h3 style={{ margin: 0 }}>{t('booking_modal.confirm')}</h3>
                     <X size={20} style={{ cursor: 'pointer' }} onClick={onClose} />
@@ -157,7 +146,7 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div>
                         <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.date')}</label>
-                        <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+                        <Input type="date" value={date} onChange={e => setDate(e.target.value)} error={errors.requested_datetime?.[0]} />
                     </div>
                     <div>
                         <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.time')}</label>
@@ -178,19 +167,45 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
                             <option value={180}>180 {t('booking_modal.min')} (3 {t('booking_modal.hr')})</option>
                             <option value={210}>210 {t('booking_modal.min')} (3.5 {t('booking_modal.hr')})</option>
                             <option value={240}>240 {t('booking_modal.min')} (4 {t('booking_modal.hr')})</option>
-                            <option value={270}>270 {t('booking_modal.min')} (4.5 {t('booking_modal.hr')})</option>
-                            <option value={300}>300 {t('booking_modal.min')} (5 {t('booking_modal.hr')})</option>
-                            <option value={330}>330 {t('booking_modal.min')} (5.5 {t('booking_modal.hr')})</option>
-                            <option value={360}>360 {t('booking_modal.min')} (6 {t('booking_modal.hr')})</option>
                         </select>
                     </div>
+
+                    {/* Meet Link */}
+                    <div>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', fontSize: '14px' }}>
+                            <Link size={14} />
+                            {t('booking_modal.meet_link')}
+                        </label>
+                        <Input
+                            type="url"
+                            value={meetLink}
+                            onChange={e => setMeetLink(e.target.value)}
+                            placeholder={t('booking_modal.meet_link_placeholder')}
+                            error={errors.meet_link?.[0]}
+                        />
+                    </div>
+
+                    {/* Location */}
+                    <div>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', fontSize: '14px' }}>
+                            <MapPin size={14} />
+                            {t('booking_modal.location')}
+                        </label>
+                        <Input
+                            type="text"
+                            value={location}
+                            onChange={e => setLocation(e.target.value)}
+                            placeholder={t('booking_modal.location_placeholder')}
+                        />
+                    </div>
+
                     <div>
                         <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.note')}</label>
                         <textarea
                             rows={3}
                             value={note}
                             onChange={e => setNote(e.target.value)}
-                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #d9d9d9', resize: 'vertical' }}
+                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #d9d9d9', resize: 'vertical', boxSizing: 'border-box' }}
                             placeholder={t('booking_modal.placeholder')}
                         />
                     </div>

@@ -10,7 +10,7 @@ import styles from './modal.module.scss';
 import Link from 'next/link';
 
 export default function TemplateSelectionModal({ isOpen, onClose }) {
-    const { t } = useTranslation('common');
+    const { t } = useTranslation();
     const [selected, setSelected] = useState(2);
     const [loading, setLoading] = useState(false);
     const [isActive, setIsActive] = useState(false);
@@ -125,12 +125,12 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h3>Create your Portfolio</h3>
+                    <h3>{t('widgets.create_website_modal_title') || 'Create your Portfolio'}</h3>
                     <button className={styles.closeBtn} onClick={onClose}><X size={20}/></button>
                 </div>
                 
                 <div className={styles.body}>
-                    <p className={styles.label}>Select a template:</p>
+                    <p className={styles.label}>{t('widgets.select_template') || 'Select a template:'}</p>
                     
                     {isFetching ? (
                         <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
@@ -143,7 +143,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                 onClick={() => setSelected(1)}
                             >
                                 <div className={styles.iconBox}><LayoutTemplate size={24}/></div>
-                                 <span className={styles.templateName}>Dark Modern</span>
+                                 <span className={styles.templateName}>{t('widgets.template1_name') || 'Dark Modern'}</span>
                                 {selected === 1 && <CheckCircle className={styles.checkIcon} size={20}/>}
                             </div>
 
@@ -152,7 +152,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                 onClick={() => setSelected(2)}
                             >
                                 <div className={styles.iconBox}><PaintBucket size={24}/></div>
-                                 <span className={styles.templateName}>Light Interactive</span>
+                                 <span className={styles.templateName}>{t('widgets.template2_name') || 'Light Interactive'}</span>
                                 {selected === 2 && <CheckCircle className={styles.checkIcon} size={20}/>}
                             </div>
 
@@ -161,14 +161,14 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                 onClick={() => setSelected(3)}
                             >
                                 <div className={styles.iconBox}><Briefcase size={24}/></div>
-                                 <span className={styles.templateName}>Corporate</span>
+                                 <span className={styles.templateName}>{t('widgets.template3_name') || 'Corporate'}</span>
                                 {selected === 3 && <CheckCircle className={styles.checkIcon} size={20}/>}
                             </div>
                         </div>
                     )}
 
                     <div className={styles.disclaimer} style={{ marginBottom: '24px' }}>
-                         Please note: Information displayed on your website, including contact details, is taken from your main profile. Edit your profile to update the information. This service is completely free, and you can change the template at any time.
+                         {t('widgets.contact_disclaimer') || 'Please note: Information displayed on your website, including contact details, is taken from your main profile. Edit your profile to update the information. This service is completely free, and you can change the template at any time.'}
                     </div>
 
                     <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -221,7 +221,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                             disabled={loading}
                             style={{ padding: '12px 24px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', border: 'none', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
                         >
-                             Cancel Website
+                             {t('widgets.deactivate_website') || 'Cancel Website'}
                         </button>
                     )}
                     <button 
@@ -230,7 +230,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                         disabled={loading || progress < 60}
                         style={{ flex: 1, opacity: (progress < 60) ? 0.6 : 1, cursor: (progress < 60) ? 'not-allowed' : 'pointer' }}
                     >
-                         {loading ? 'Saving...' : 'Save template'}
+                         {loading ? (t('widgets.saving') || 'Saving...') : (t('widgets.save_template') || 'Save template')}
                     </button>
                 </div>
             </div>

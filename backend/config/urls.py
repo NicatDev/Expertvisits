@@ -7,8 +7,20 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from django.contrib.sitemaps.views import sitemap
+from seo.sitemaps import StaticViewSitemap, ArticleSitemap, CompanySitemap, VacancySitemap, ProfileSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'articles': ArticleSitemap,
+    'companies': CompanySitemap,
+    'vacancies': VacancySitemap,
+    'profiles': ProfileSitemap,
+}
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # path('api/auth/', include('rest_framework.urls')), # Login/Logout (Browsables)
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

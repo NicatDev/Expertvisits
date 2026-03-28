@@ -1,6 +1,6 @@
 import requests
 try:
-    response = requests.get('https://api.expertvisits.com/api/accounts/users/')
+    response = requests.get('http://127.0.0.1:8000/api/accounts/users/')
     data = response.json()
     results = data.get('results', []) if isinstance(data, dict) else data
     

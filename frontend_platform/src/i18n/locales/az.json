@@ -25,7 +25,8 @@
         "login": "Daxil ol",
         "register": "Qeydiyyat",
         "logout": "Çıxış",
-        "login_required": "Zəhmət olmasa daxil olun"
+        "login_required": "Zəhmət olmasa daxil olun",
+        "login_to_create": "Məzmun yaratmaq üçün daxil olun"
     },
     "settings": {
         "tabs": {
@@ -654,12 +655,17 @@
         "duration": "Müddət",
         "unavailable": "(Mövcud deyil)",
         "note": "Qeyd (İstəyə bağlı)",
+        "meet_link": "Onlayn Görüş Linki",
+        "meet_link_placeholder": "https://meet.google.com/...",
+        "location": "Görüş Yeri",
+        "location_placeholder": "Hər hansı ünvan və ya ofis",
         "placeholder": "Sorğunuzu qısaca təsvir edin...",
         "cancel": "Ləğv et",
         "confirm": "Təsdiqlə",
         "success": "Sorğu göndərildi!",
         "error": "Xəta baş verdi.",
         "select_date_error": "Zəhmət olmasa tarix və vaxt seçin.",
+        "past_time_error": "Məqsədyönlü şəkildə keçmiş zamanlara görüş təyin etmək mümkün deyil.",
         "hr": "saat",
         "min": "dəq"
     },
@@ -773,7 +779,7 @@
         "back_to_profile": "Profilə qayıt",
         "book_a_session": "Sessiya sifariş et",
         "select_slot_instruction": "Təqvimdə vaxt seçin və ya manual sifariş yaradın.",
-        "manual_booking": "Manual sifariş"
+        "manual_booking": "Manual müraciət"
     },
     "application_status": {
         "pending": "Gözləyir",

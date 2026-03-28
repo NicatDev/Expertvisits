@@ -25,7 +25,8 @@
         "login": "Login",
         "register": "Register",
         "logout": "Logout",
-        "login_required": "Please login to proceed"
+        "login_required": "Please login to proceed",
+        "login_to_create": "Please login to create content"
     },
     "settings": {
         "tabs": {
@@ -447,12 +448,17 @@
         "duration": "Duration",
         "unavailable": "(Unavailable)",
         "note": "Note (Optional)",
+        "meet_link": "Online Meet Link",
+        "meet_link_placeholder": "https://meet.google.com/...",
+        "location": "Meeting Location",
+        "location_placeholder": "Any physical address or office",
         "placeholder": "Briefly describe your request...",
         "cancel": "Cancel",
         "confirm": "Confirm Booking",
         "success": "Booking Request Sent!",
         "error": "Failed to book slot.",
         "select_date_error": "Please select a date and time.",
+        "past_time_error": "You cannot book a session in the past.",
         "hr": "hr",
         "min": "min"
     },

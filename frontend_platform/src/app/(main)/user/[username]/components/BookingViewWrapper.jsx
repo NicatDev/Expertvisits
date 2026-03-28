@@ -27,7 +27,10 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
             title: info.event.title,
             start: info.event.start,
             end: info.event.end,
-            status: info.event.extendedProps.status
+            status: info.event.extendedProps.status,
+            meetLink: info.event.extendedProps.meet_link,
+            location: info.event.extendedProps.location,
+            note: info.event.extendedProps.note
         };
         setSelectedEvent(evt);
     };
@@ -97,7 +100,16 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                     }} onClick={() => setSelectedEvent(null)}>
                         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', minWidth: '300px' }} onClick={e => e.stopPropagation()}>
                             <h3>{selectedEvent.title}</h3>
-                            <p><strong>Time:</strong> {selectedEvent.start.toLocaleString()} - {selectedEvent.end.toLocaleTimeString()}</p>
+                            <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>Time:</strong> {selectedEvent.start.toLocaleString()} - {selectedEvent.end.toLocaleTimeString()}</p>
+                            {selectedEvent.meetLink && (
+                                <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>{t('booking_modal.meet_link')}:</strong> <a href={selectedEvent.meetLink} target="_blank" rel="noreferrer" style={{ color: '#1890ff', textDecoration: 'underline' }}>{selectedEvent.meetLink}</a></p>
+                            )}
+                            {selectedEvent.location && (
+                                <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>{t('booking_modal.location')}:</strong> {selectedEvent.location}</p>
+                            )}
+                            {selectedEvent.note && (
+                                <p style={{ marginTop: '4px', marginBottom: '8px' }}><strong>{t('booking_modal.note')}:</strong> {selectedEvent.note}</p>
+                            )}
 
                             {(selectedEvent.title !== 'Busy' && selectedEvent.title !== 'Blocked') ? (
                                 <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>

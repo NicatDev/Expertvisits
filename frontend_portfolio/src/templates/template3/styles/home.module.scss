@@ -571,6 +571,20 @@
         transform: translateY(-5px) scale(1.03);
         box-shadow: 0 20px 45px rgba(245,158,11,0.3);
     }
+
+    @media (max-width: 500px) {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        border-radius: 12px;
+        gap: 8px;
+        
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
 }
 
 .ctaFooter {

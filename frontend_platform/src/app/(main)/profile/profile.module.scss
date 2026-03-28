@@ -28,11 +28,26 @@
 
 .tabs {
     display: flex;
-    gap: $spacing-lg;
+    gap: $spacing-md;
     border-bottom: 1px solid $border-color;
     margin-bottom: $spacing-lg;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 4px;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    @include mobile {
+        gap: $spacing-sm;
+    }
 
     a {
+        flex-shrink: 0;
         text-decoration: none;
         background: none;
         border: none;
