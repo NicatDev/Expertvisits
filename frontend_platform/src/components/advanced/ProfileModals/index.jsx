@@ -35,7 +35,8 @@ export const ExperienceModal = ({ isOpen, onClose, initialData, onSave }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        await onSave(formData);
+        const submitData = { ...formData, end_date: formData.end_date || null };
+        await onSave(submitData);
         setLoading(false);
         onClose();
     };
@@ -65,7 +66,8 @@ export const EducationModal = ({ isOpen, onClose, initialData, onSave }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        await onSave(formData);
+        const submitData = { ...formData, end_date: formData.end_date || null };
+        await onSave(submitData);
         setLoading(false);
         onClose();
     };

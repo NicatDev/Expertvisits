@@ -8,6 +8,9 @@ class Experience(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['-start_date']
+
     def __str__(self):
         return f"{self.position} at {self.company_name}"
 
@@ -27,6 +30,9 @@ class Education(models.Model):
     field_of_study = models.CharField(max_length=255, db_index=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-start_date']
 
     def __str__(self):
         return f"{self.get_degree_type_display()} in {self.field_of_study}"

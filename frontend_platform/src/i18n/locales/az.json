@@ -7,7 +7,8 @@
         "delete": "Sil",
         "search": "Axtar...",
         "previous": "Geriyə",
-        "next": "Növbəti"
+        "next": "Növbəti",
+        "present": "Davam edir"
     },
     "nav": {
         "home": "Ana Səhifə",
@@ -276,7 +277,9 @@
         "go_to_profile": "Profilə keç →",
         "articles": "Məqalələr",
         "articles_desc": "Məqalə səhifəsinin görünməsi üçün minimum 3 məqalə tələb olunur.",
-        "go_to_articles": "Məqalələrə keç →"
+        "go_to_articles": "Məqalələrə keç →",
+        "visit_website_desc": "Şəxsi portfolio vebsaytınız artıq yayımdadır və yenilənib.",
+        "website_url": "Vebsaytınızın URL-i"
     },
     "profile": {
         "section_helper": {

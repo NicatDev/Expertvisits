@@ -90,7 +90,10 @@ export default function AboutPage() {
             toast.success(t('profile.toasts.updated'));
         } catch (err) {
             console.error(err);
-            toast.error(t('profile.toasts.failed_update'));
+            const errorMsg = err.response?.data?.username 
+                ? (Array.isArray(err.response.data.username) ? err.response.data.username[0] : err.response.data.username)
+                : t('profile.toasts.failed_update');
+            toast.error(errorMsg);
         }
     };
 
@@ -198,7 +201,7 @@ export default function AboutPage() {
                                 ) : (
                                     <>
                                         <span style={{ color: profile[field] ? '#333' : '#999' }}>{profile[field] || t('profile.not_set')}</span>
-                                        {isOwner && <Edit2 className={styles.editIcon} size={14} onClick={() => toggleEdit(field)} />}
+                                        {isOwner && field !== 'email' && <Edit2 className={styles.editIcon} size={14} onClick={() => toggleEdit(field)} />}
                                     </>
                                 )}
                             </div>
@@ -257,7 +260,7 @@ export default function AboutPage() {
                     <div className={styles.itemContent}>
                         <h3>{item.position}</h3>
                         <p>{item.company_name}</p>
-                        <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                        <span>{item.start_date} - {item.end_date || t('present')}</span>
                     </div>
                 )}
             />
@@ -273,7 +276,7 @@ export default function AboutPage() {
                     <div className={styles.itemContent}>
                         <h3>{item.institution}</h3>
                         <p>{item.degree_type_display || item.degree_type} in {item.field_of_study}</p>
-                        <span>{item.start_date} - {item.end_date || 'Present'}</span>
+                        <span>{item.start_date} - {item.end_date || t('present')}</span>
                     </div>
                 )}
             />

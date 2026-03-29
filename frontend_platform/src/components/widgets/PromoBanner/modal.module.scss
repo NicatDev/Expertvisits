@@ -71,3 +71,74 @@
     &:hover:not(:disabled) { background: #374151; }
     &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
+
+.successContent {
+    text-align: center;
+    padding: 20px 0;
+
+    .successIcon {
+        background: #ecfdf5;
+        color: #10b981;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+    }
+
+    h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        color: #6b7280;
+        margin-bottom: 24px;
+        font-size: 0.95rem;
+    }
+}
+
+.urlBox {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: left;
+
+    span {
+        display: block;
+        font-size: 0.75rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 6px;
+        letter-spacing: 0.05em;
+    }
+
+    a {
+        color: #4f46e5;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.1rem;
+        word-break: break-all;
+        &:hover { text-decoration: underline; }
+    }
+}
+
+.doneBtn {
+    background: #4f46e5;
+    color: white;
+    padding: 12px 32px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+    &:hover { background: #4338ca; }
+}

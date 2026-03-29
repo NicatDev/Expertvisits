@@ -7,7 +7,8 @@
         "delete": "Delete",
         "search": "Search...",
         "previous": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "present": "Present"
     },
     "nav": {
         "home": "Home",
@@ -275,7 +276,9 @@
         "go_to_profile": "Go to Profile →",
         "articles": "Articles",
         "articles_desc": "You must have at least 3 articles to activate the site creation.",
-        "go_to_articles": "Go to Articles →"
+        "go_to_articles": "Go to Articles →",
+        "visit_website_desc": "Your personal portfolio website is now live and updated.",
+        "website_url": "Your Website URL"
     },
     "profile": {
         "section_helper": {
