@@ -275,8 +275,8 @@
         "profile_completion": "Profil Tamamlanması",
         "profile_completion_desc": "Veb sayt yaratmaq üçün minimum 60% tələb olunur (Ad, soyad, email, şəkil, nömrə, summary, təhsil, təcrübə, bacarıq, dil və sertifikat nəzərə alınır).",
         "go_to_profile": "Profilə keç →",
-        "articles": "Məqalələr",
-        "articles_desc": "Məqalə səhifəsinin görünməsi üçün minimum 3 məqalə tələb olunur.",
+        "articles": "Məqalələr (Opsional)",
+        "articles_desc": "Veb saytı yaratmağa mane deyil, lakin məqalə səhifəsinin görünməsi üçün minimum 3 məqalə tələb olunur.",
         "go_to_articles": "Məqalələrə keç →",
         "visit_website_desc": "Şəxsi portfolio vebsaytınız artıq yayımdadır və yenilənib.",
         "website_url": "Vebsaytınızın URL-i"
