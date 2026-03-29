@@ -7,6 +7,10 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+    @media (max-width: 768px) {
+        padding: 0;
+    }
 }
 
 .skillsGrid {
@@ -29,6 +33,10 @@
 
     h3 {
         margin-bottom: 12px;
+    }
+
+    @media (max-width: 640px) {
+        padding: 16px;
     }
 }
 
@@ -136,5 +144,103 @@
     .value {
         flex: 1;
         color: #333;
+    }
+}
+
+// Services Styles
+.servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 10px;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.serviceCard {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+
+    .cardHeader {
+        background: #f8fafc;
+        padding: 18px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+    }
+
+    .cardBody {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        p {
+            margin: 0 0 20px 0;
+            color: #4b5563;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+    }
+
+    .cardFooter {
+        border-top: 1px dashed #e5e7eb;
+        padding-top: 16px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: auto;
+
+        .readMore {
+            color: #2563eb;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+
+            span { font-size: 1.1rem; line-height: 1; }
+        }
+    }
+
+    &:hover .cardFooter .readMore {
+        gap: 8px;
     }
 }

@@ -50,35 +50,23 @@ export default function UserServicesPage() {
                         {t('profile.section_helper.no_items')}
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                    <div className={styles.servicesGrid}>
                         {services.map(item => (
-                            <div key={item.id} style={{
-                                background: 'white', 
-                                border: '1px solid #e5e7eb', 
-                                borderRadius: '12px', 
-                                display: 'flex', 
-                                flexDirection: 'column',
-                                transition: 'all 0.3s ease',
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-                                overflow: 'hidden'
-                            }} 
-                            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05)'; }}
-                            onClick={() => openViewModal(item)}
+                            <div 
+                                key={item.id} 
+                                className={styles.serviceCard}
+                                onClick={() => openViewModal(item)}
                             >
-                                <div style={{ background: '#f8fafc', padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center' }}>
-                                    <h3 style={{ margin: 0, color: '#1f2937', fontSize: '1.25rem', fontWeight: '600', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{item.title}</h3>
+                                <div className={styles.cardHeader}>
+                                    <h3>{item.title}</h3>
                                 </div>
                                 
-                                <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                    <p style={{ margin: '0 0 20px 0', color: '#4b5563', fontSize: '0.95rem', lineHeight: '1.6', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
-                                        {item.description}
-                                    </p>
+                                <div className={styles.cardBody}>
+                                    <p>{item.description}</p>
                                     
-                                    <div style={{ borderTop: '1px dashed #e5e7eb', paddingTop: '16px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 'auto' }}>
-                                        <span style={{ color: '#2563eb', fontSize: '0.9rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            {t('profile_modals.service.read_more') || 'Daha ətraflı'} <span style={{ fontSize: '1.2rem', lineHeight: '1' }}>→</span>
+                                    <div className={styles.cardFooter}>
+                                        <span className={styles.readMore}>
+                                            {t('profile_modals.service.read_more') || 'Daha ətraflı'} <span>→</span>
                                         </span>
                                     </div>
                                 </div>
