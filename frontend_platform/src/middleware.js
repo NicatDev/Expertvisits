@@ -9,6 +9,8 @@ export function middleware(request) {
         const url = request.nextUrl.clone();
         url.protocol = 'http:';
         url.host = 'localhost:3001';
+        // Ensure non-ASCII characters (like 'ə') are properly handled during the rewrite bridge
+        url.pathname = encodeURI(decodeURI(url.pathname));
         return NextResponse.rewrite(url);
     }
 

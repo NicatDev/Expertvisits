@@ -7,7 +7,7 @@ import apiClient from './client';
  */
 export async function getUser(username) {
     try {
-        const response = await apiClient.get(`/websites/${username}/`);
+        const response = await apiClient.get(`/websites/${encodeURIComponent(username)}/`);
         return response.data;
     } catch (error) {
         if (error?.response?.status === 404) {
@@ -25,7 +25,7 @@ export async function getUser(username) {
  */
 export async function getUserPortfolio(username) {
     try {
-        const response = await apiClient.get(`/websites/${username}/sections/`);
+        const response = await apiClient.get(`/websites/${encodeURIComponent(username)}/sections/`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch portfolio sections:', error);
@@ -45,7 +45,7 @@ export async function getArticles({ username, url, search }) {
     }
     const params = {};
     if (search) params.search = search;
-    const response = await apiClient.get(`/websites/${username}/articles/`, { params });
+    const response = await apiClient.get(`/websites/${encodeURIComponent(username)}/articles/`, { params });
     return response.data;
 }
 
@@ -55,7 +55,7 @@ export async function getArticles({ username, url, search }) {
  * @param {string} slug
  */
 export async function getArticleDetail(username, slug) {
-    const response = await apiClient.get(`/websites/${username}/articles/${slug}/`);
+    const response = await apiClient.get(`/websites/${encodeURIComponent(username)}/articles/${encodeURIComponent(slug)}/`);
     return response.data;
 }
 
@@ -63,6 +63,6 @@ export async function getArticleDetail(username, slug) {
  * Submit contact form
  */
 export async function submitContactForm(username, data) {
-    const response = await apiClient.post(`/websites/${username}/contact/`, data);
+    const response = await apiClient.post(`/websites/${encodeURIComponent(username)}/contact/`, data);
     return response.data;
 }
