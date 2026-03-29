@@ -57,7 +57,9 @@
       { "name_az": "DevOps", "name_en": "DevOps", "name_ru": "DevOps", "profession_az": "DevOps Engineer", "profession_en": "DevOps Engineer", "profession_ru": "DevOps Инженер" },
       { "name_az": "Süni İntellekt (AI) və ML", "name_en": "Artificial Intelligence (AI) & ML", "name_ru": "Искусственный интеллект (AI) и ML", "profession_az": "AI / ML Engineer", "profession_en": "AI / ML Engineer", "profession_ru": "AI / ML Инженер" },
       { "name_az": "Oyun Yaradılması (Gamedev)", "name_en": "Game Development (Gamedev)", "name_ru": "Разработка игр (Gamedev)", "profession_az": "Game Developer", "profession_en": "Game Developer", "profession_ru": "Разработчик игр" },
-      { "name_az": "Proqram Təminatı Memarlığı", "name_en": "Software Architecture", "name_ru": "Архитектура программного обеспечения", "profession_az": "Software Architect", "profession_en": "Software Architect", "profession_ru": "Архитектор ПО" }
+      { "name_az": "Proqram Təminatı Memarlığı", "name_en": "Software Architecture", "name_ru": "Архитектура программного обеспечения", "profession_az": "Software Architect", "profession_en": "Software Architect", "profession_ru": "Архитектор ПО" },
+      { "name_az": "İT Biznes Analitika", "name_en": "IT Business Analytics", "name_ru": "ИТ Бизнес Аналитика", "profession_az": "İT Biznes Analitik", "profession_en": "IT Business Analyst", "profession_ru": "ИТ Бизнес Аналитик" },
+      { "name_az": "İT Layihə idarəsi", "name_en": "IT Project Management", "name_ru": "ИТ Проект Менеджмент", "profession_az": "İT Layihə rəhbəri", "profession_en": "IT Project Manager", "profession_ru": "ИТ Проект Менеджер" }
     ]
   },
   {

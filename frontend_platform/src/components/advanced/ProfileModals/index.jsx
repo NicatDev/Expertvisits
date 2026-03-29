@@ -3,8 +3,6 @@ import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
-import hardSkills from '@/data/hard_skills.json';
-import softSkills from '@/data/soft_skills.json';
 
 // Reusable Form Modal Wrapper
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
@@ -105,8 +103,6 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
     const [formData, setFormData] = useState({ name: '', skill_type: 'hard' });
     const [loading, setLoading] = useState(false);
 
-    const [suggestions, setSuggestions] = useState([]);
-
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -117,26 +113,7 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
         } else {
             setFormData({ name: '', skill_type: 'hard' });
         }
-        setSuggestions([]);
     }, [initialData, isOpen]);
-
-    const handleNameChange = (e) => {
-        const val = e.target.value;
-        setFormData(prev => ({ ...prev, name: val }));
-
-        if (val.length > 0) {
-            const source = (formData.skill_type === 'soft') ? softSkills : hardSkills;
-            const filtered = source.filter(s => s.name_en.toLowerCase().includes(val.toLowerCase())).slice(0, 10);
-            setSuggestions(filtered);
-        } else {
-            setSuggestions([]);
-        }
-    };
-
-    const selectSuggestion = (val) => {
-        setFormData(prev => ({ ...prev, name: val }));
-        setSuggestions([]);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -146,52 +123,16 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
         onClose();
     };
 
-    const showTypeSelect = !initialData?.skill_type || (initialData.id && !initialData.skill_type_fixed);
-
     return (
-        <FormModal isOpen={isOpen} onClose={onClose} title={initialData?.id ? t('profile_modals.skill.edit') : t('profile_modals.skill.add')} onSubmit={handleSubmit} loading={loading} bodyStyle={{ overflow: 'visible' }}>
-            <div style={{ position: 'relative' }}>
-                <Input
-                    label={t('profile_modals.skill.name')}
-                    value={formData.name}
-                    onChange={handleNameChange}
-                    required
-                    autoComplete="off"
-                />
-                {suggestions.length > 0 && (
-                    <div style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        backgroundColor: '#fff',
-                        border: '1px solid #d9d9d9',
-                        borderRadius: '0 0 6px 6px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
-                        maxHeight: '200px',
-                        overflowY: 'auto',
-                        marginTop: '0px'
-                    }}>
-                        {suggestions.map(s => (
-                            <div
-                                key={s.code}
-                                onClick={() => selectSuggestion(s.name_en)}
-                                style={{
-                                    padding: '8px 12px',
-                                    cursor: 'pointer',
-                                    borderBottom: '1px solid #f0f0f0',
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
-                                onMouseLeave={(e) => e.target.style.background = '#fff'}
-                            >
-                                {s.name_en}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+        <FormModal isOpen={isOpen} onClose={onClose} title={initialData?.id ? t('profile_modals.skill.edit') : t('profile_modals.skill.add')} onSubmit={handleSubmit} loading={loading}>
+            <Input
+                label={t('profile_modals.skill.name')}
+                value={formData.name}
+                onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                required
+                autoComplete="off"
+                placeholder={t('profile_modals.skill.placeholder') || "Enter skill (e.g. JavaScript, Public Speaking)"}
+            />
 
             {!initialData?.skill_type && (
                 <div style={{ marginBottom: '8px' }}>
@@ -200,8 +141,7 @@ export const SkillModal = ({ isOpen, onClose, initialData, onSave }) => {
                         style={{ width: '100%', padding: '8px 12px', border: '1px solid #d9d9d9', borderRadius: '6px' }}
                         value={formData.skill_type}
                         onChange={e => {
-                            setFormData(prev => ({ ...prev, skill_type: e.target.value, name: '' })); // Reset name on type change to reset suggestions context
-                            setSuggestions([]);
+                            setFormData(prev => ({ ...prev, skill_type: e.target.value }));
                         }}
                     >
                         <option value="hard">{t('profile_modals.skill.hard')}</option>

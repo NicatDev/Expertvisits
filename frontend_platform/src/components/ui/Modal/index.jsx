@@ -24,7 +24,7 @@ const Modal = ({
     if (!isOpen) return null;
 
     const modalContent = (
-        <div className={styles.overlay} onClick={onClose}>
+        <div className={styles.overlay}>
             <div
                 className={styles.modal}
                 style={{ width: width }}

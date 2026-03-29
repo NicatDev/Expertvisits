@@ -4,6 +4,19 @@
     // padding: $spacing-lg;
     // background: #fff;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skillsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .section {
@@ -39,6 +52,13 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    &.compactList {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 8px;
+    }
 }
 
 .listItem {
@@ -54,6 +74,29 @@
         border-color: $primary-color;
         background: #fafafa;
     }
+
+    &.compactItem {
+        padding: 6px 14px;
+        background: #f5f5f5;
+        border: 1px solid #e8e8e8;
+        border-radius: 20px;
+        align-items: center;
+        margin: 0;
+
+        &:hover {
+            border-color: $primary-color;
+            background: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+    }
+}
+
+.skillBadge {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
 }
 
 .itemContent {

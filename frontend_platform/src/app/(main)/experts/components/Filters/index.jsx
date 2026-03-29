@@ -4,8 +4,6 @@ import { useTranslation } from '@/i18n/client';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import TagsInput from '@/components/ui/TagsInput';
-import hardSkills from '@/data/hard_skills.json';
-import softSkills from '@/data/soft_skills.json';
 import { City } from 'country-state-city';
 import { useState, useMemo } from 'react';
 
@@ -35,7 +33,6 @@ export default function Filters({ values, onChange, onSearch }) {
                 placeholder="e.g. Python, Excel..."
                 tags={values.hard_skills || []}
                 onChange={tags => handleChange('hard_skills', tags)}
-                source={hardSkills}
             />
 
             <TagsInput
@@ -43,7 +40,6 @@ export default function Filters({ values, onChange, onSearch }) {
                 placeholder="e.g. Leadership..."
                 tags={values.soft_skills || []}
                 onChange={tags => handleChange('soft_skills', tags)}
-                source={softSkills}
             />
 
             <div className={styles.field}>

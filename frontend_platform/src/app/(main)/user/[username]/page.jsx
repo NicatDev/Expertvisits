@@ -110,17 +110,29 @@ export default function UserAboutPage() {
                     </div>
                 )} t={t} />
 
-                <Section title={t('profile.sections.hard_skills')} items={skills.filter(s => s.skill_type === 'hard')} renderItem={(item) => (
-                    <div className={styles.itemContent}>
-                        <h3>{item.name}</h3>
-                    </div>
-                )} t={t} />
+                <div className={styles.skillsGrid}>
+                    <Section 
+                        title={t('profile.sections.hard_skills')} 
+                        items={skills.filter(s => s.skill_type === 'hard')} 
+                        layout="compact"
+                        renderItem={(item) => (
+                            <div className={styles.skillBadge}>
+                                {item.name}
+                            </div>
+                        )} t={t} 
+                    />
 
-                <Section title={t('profile.sections.soft_skills')} items={skills.filter(s => s.skill_type === 'soft')} renderItem={(item) => (
-                    <div className={styles.itemContent}>
-                        <h3>{item.name}</h3>
-                    </div>
-                )} t={t} />
+                    <Section 
+                        title={t('profile.sections.soft_skills')} 
+                        items={skills.filter(s => s.skill_type === 'soft')} 
+                        layout="compact"
+                        renderItem={(item) => (
+                            <div className={styles.skillBadge}>
+                                {item.name}
+                            </div>
+                        )} t={t} 
+                    />
+                </div>
 
                 <Section title={t('profile.sections.languages')} items={languages} renderItem={(item) => (
                     <div className={styles.itemContent}>
@@ -142,18 +154,21 @@ export default function UserAboutPage() {
     );
 }
 
-const Section = ({ title, items, renderItem, t }) => (
-    <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-            <h2>{title}</h2>
+const Section = ({ title, items, renderItem, t, layout = 'list' }) => {
+    const isCompact = layout === 'compact';
+    return (
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <h2>{title}</h2>
+            </div>
+            <div className={`${styles.list} ${isCompact ? styles.compactList : ''}`}>
+                {items.map(item => (
+                    <div key={item.id} className={`${styles.listItem} ${isCompact ? styles.compactItem : ''}`}>
+                        {renderItem(item)}
+                    </div>
+                ))}
+                {items.length === 0 && <NoContent message={t('profile.section_helper.no_items')} size="small" />}
+            </div>
         </div>
-        <div className={styles.list}>
-            {items.map(item => (
-                <div key={item.id} className={styles.listItem}>
-                    {renderItem(item)}
-                </div>
-            ))}
-            {items.length === 0 && <NoContent message={t('profile.section_helper.no_items')} size="small" />}
-        </div>
-    </div>
-);
+    );
+};

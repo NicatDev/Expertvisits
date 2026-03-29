@@ -278,33 +278,37 @@ export default function AboutPage() {
                 )}
             />
 
-            <Section
-                title={t('profile.sections.hard_skills')}
-                items={details.skills?.filter(s => s.skill_type === 'hard') || []}
-                isOwner={isOwner}
-                onAdd={() => openModal('skill', { skill_type: 'hard' })}
-                onEdit={(item) => openModal('skill', item)}
-                onDelete={(id) => handleDelete('skill', id)}
-                renderItem={(item) => (
-                    <div className={styles.itemContent}>
-                        <h3>{item.name}</h3>
-                    </div>
-                )}
-            />
+            <div className={styles.skillsGrid}>
+                <Section
+                    title={t('profile.sections.hard_skills')}
+                    items={details.skills?.filter(s => s.skill_type === 'hard') || []}
+                    isOwner={isOwner}
+                    layout="compact"
+                    onAdd={() => openModal('skill', { skill_type: 'hard' })}
+                    onEdit={(item) => openModal('skill', item)}
+                    onDelete={(id) => handleDelete('skill', id)}
+                    renderItem={(item, isCompact) => (
+                        <div className={styles.itemContent} style={{ padding: isCompact ? 0 : '' }}>
+                            <h3 style={{ margin: 0, fontSize: isCompact ? '14px' : '', fontWeight: isCompact ? 500 : '' }}>{item.name}</h3>
+                        </div>
+                    )}
+                />
 
-            <Section
-                title={t('profile.sections.soft_skills')}
-                items={details.skills?.filter(s => s.skill_type === 'soft') || []}
-                isOwner={isOwner}
-                onAdd={() => openModal('skill', { skill_type: 'soft' })}
-                onEdit={(item) => openModal('skill', item)}
-                onDelete={(id) => handleDelete('skill', id)}
-                renderItem={(item) => (
-                    <div className={styles.itemContent}>
-                        <h3>{item.name}</h3>
-                    </div>
-                )}
-            />
+                <Section
+                    title={t('profile.sections.soft_skills')}
+                    items={details.skills?.filter(s => s.skill_type === 'soft') || []}
+                    isOwner={isOwner}
+                    layout="compact"
+                    onAdd={() => openModal('skill', { skill_type: 'soft' })}
+                    onEdit={(item) => openModal('skill', item)}
+                    onDelete={(id) => handleDelete('skill', id)}
+                    renderItem={(item, isCompact) => (
+                        <div className={styles.itemContent} style={{ padding: isCompact ? 0 : '' }}>
+                            <h3 style={{ margin: 0, fontSize: isCompact ? '14px' : '', fontWeight: isCompact ? 500 : '' }}>{item.name}</h3>
+                        </div>
+                    )}
+                />
+            </div>
 
             <Section
                 title={t('profile.sections.languages')}
