@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { websites_api, content, profiles } from '@/lib/api';
@@ -11,51 +11,51 @@ import Link from 'next/link';
 
 export default function TemplateSelectionModal({ isOpen, onClose }) {
     const { t } = useTranslation();
+    const { user: currentUser } = useAuth(); // Rename to avoid any potential shadowing
+    
     const [selected, setSelected] = useState(2);
     const [loading, setLoading] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [articlesCount, setArticlesCount] = useState(0);
     const [progress, setProgress] = useState(0);
-    const { user } = useAuth();
     const [showSuccess, setShowSuccess] = useState(false);
-
     const [isFetching, setIsFetching] = useState(true);
 
-    React.useEffect(() => {
-        if (isOpen && user?.id) {
+    useEffect(() => {
+        if (isOpen && currentUser?.id) {
             fetchCurrentTemplate();
             fetchArticlesCount();
             fetchProfileData();
             setShowSuccess(false); // Reset when reopened
         }
-    }, [isOpen]);
+    }, [isOpen, currentUser]);
 
     const fetchProfileData = async () => {
-        if (!user) return;
+        if (!currentUser) return;
         try {
             // timestamp array bypasses browser cache
-            const { data } = await profiles.getProfileDetails(user.id, { params: { t: new Date().getTime() } });
+            const { data } = await profiles.getProfileDetails(currentUser.id, { params: { t: new Date().getTime() } });
             
-            // !! prioritizes the data (fresh from db). If undefined, fallback to user
-            const summary = data.summary !== undefined ? data.summary : user.summary;
-            const phone = data.phone_number !== undefined ? data.phone_number : user.phone_number;
+            // Prioritize fresh data from db, fallback to context
+            const summary = data.summary !== undefined ? data.summary : currentUser.summary;
+            const phone = data.phone_number !== undefined ? data.phone_number : currentUser.phone_number;
             
             const requiredFields = [
                 !!summary, // Summary
-                !!(data.first_name !== undefined ? data.first_name : user.first_name), // First Name
-                !!(data.last_name !== undefined ? data.last_name : user.last_name), // Last Name
-                !!(data.username !== undefined ? data.username : user.username), // Username
-                !!(data.email !== undefined ? data.email : user.email), // Email
-                !!phone, // Phone Number
-                !!(data.birth_day !== undefined ? data.birth_day : (data.birth_date !== undefined ? data.birth_date : user.birth_day)), // Birth Date
-                !!(data.city !== undefined ? data.city : user.city), // City
-                !!(data.profession_sub_category !== undefined ? data.profession_sub_category : user.profession_sub_category), // Profession
-                !!(data.experience && data.experience.length > 0), // Experience
-                !!(data.education && data.education.length > 0), // Education
-                !!(data.skills && data.skills.some(s => s.skill_type === 'hard')), // Hard Skills
-                !!(data.skills && data.skills.some(s => s.skill_type === 'soft')), // Soft Skills
-                !!(data.languages && data.languages.length > 0), // Languages
-                !!(data.certificates && data.certificates.length > 0) // Certificates
+                !!(data.first_name !== undefined ? data.first_name : currentUser.first_name),
+                !!(data.last_name !== undefined ? data.last_name : currentUser.last_name),
+                !!(data.username !== undefined ? data.username : currentUser.username),
+                !!(data.email !== undefined ? data.email : currentUser.email),
+                !!phone,
+                !!(data.birth_day !== undefined ? data.birth_day : (data.birth_date !== undefined ? data.birth_date : currentUser.birth_day)),
+                !!(data.city !== undefined ? data.city : currentUser.city),
+                !!(data.profession_sub_category !== undefined ? data.profession_sub_category : currentUser.profession_sub_category),
+                !!(data.experience && data.experience.length > 0),
+                !!(data.education && data.education.length > 0),
+                !!(data.skills && data.skills.some(s => s.skill_type === 'hard')),
+                !!(data.skills && data.skills.some(s => s.skill_type === 'soft')),
+                !!(data.languages && data.languages.length > 0),
+                !!(data.certificates && data.certificates.length > 0)
             ];
             const completed = requiredFields.filter(Boolean).length;
             setProgress(Math.round((completed / requiredFields.length) * 100));
@@ -121,7 +121,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
         }
     };
 
-    const websiteUrl = user?.username ? `https://expertvisits.com/u/${user.username}` : '#';
+    const websiteUrl = currentUser?.username ? `https://expertvisits.com/u/${currentUser.username}` : '#';
 
     return (
         <div className={styles.overlay} onClick={onClose}>
