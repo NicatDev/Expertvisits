@@ -75,7 +75,7 @@ export default function Services({ data }) {
                                 </div>
                                 
                                 <h4 style={{ 
-                                    fontSize: '1.5rem', fontWeight: '800', color: '#111', 
+                                    fontSize: '1.35rem', fontWeight: '800', color: '#111', 
                                     marginBottom: '12px', letterSpacing: '-0.5px' 
                                 }}>
                                     {service.title}
@@ -142,17 +142,17 @@ export default function Services({ data }) {
                             <span>{t('portfolio.services') || 'Service'}</span>
                         </div>
 
-                        <h2 style={{ margin: '0 0 20px 0', color: '#111', fontSize: '2rem', fontWeight: '800', letterSpacing: '-0.5px', paddingRight: '40px' }}>
+                        <h2 style={{ margin: '0 0 20px 0', color: '#111', fontSize: 'clamp(1.5rem, 5vw, 1.8rem)', fontWeight: '800', letterSpacing: '-0.5px', paddingRight: '40px' }}>
                             {selectedService.title}
                         </h2>
                         
-                        <p style={{ color: '#4b5563', lineHeight: '1.8', marginBottom: '32px', fontSize: '1.1rem' }}>
+                        <p style={{ color: '#4b5563', lineHeight: '1.8', marginBottom: '32px', fontSize: '1rem' }}>
                             {selectedService.description}
                         </p>
                         
                         {selectedService.steps && selectedService.steps.length > 0 && (
                             <div>
-                                <h4 style={{ marginBottom: '20px', color: '#111', fontSize: '1.3rem', fontWeight: '800' }}>
+                                <h4 style={{ marginBottom: '20px', color: '#111', fontSize: '1.2rem', fontWeight: '800' }}>
                                     {t('portfolio.steps') || 'Steps'}:
                                 </h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -171,7 +171,7 @@ export default function Services({ data }) {
                                             }}>
                                                 {idx + 1}
                                             </div>
-                                            <div style={{ color: '#374151', lineHeight: '1.7', paddingTop: '3px', fontSize: '1.05rem', fontWeight: '500' }}>
+                                            <div style={{ color: '#374151', lineHeight: '1.7', paddingTop: '3px', fontSize: '1rem', fontWeight: '500' }}>
                                                 {step}
                                             </div>
                                         </div>

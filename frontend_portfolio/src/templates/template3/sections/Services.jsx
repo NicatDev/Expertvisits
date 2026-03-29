@@ -59,7 +59,7 @@ export default function Services({ data }) {
                                 }}>
                                     <Box size={20} />
                                 </div>
-                                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', fontWeight: '500', color: '#fff' }}>{service.title}</h3>
+                                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', fontWeight: '500', color: '#fff' }}>{service.title}</h3>
                                 <p style={{ 
                                     color: '#9ca3af', fontSize: '0.9rem', lineHeight: '1.6', 
                                     display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', 
@@ -103,14 +103,14 @@ export default function Services({ data }) {
                             <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', flexShrink: 0 }}>
                                 <Box size={20} />
                             </div>
-                            <h2 style={{ margin: 0, color: '#f9fafb', fontSize: '1.4rem', fontWeight: '500' }}>{selectedService.title}</h2>
+                            <h2 style={{ margin: 0, color: '#f9fafb', fontSize: '1.25rem', fontWeight: '500' }}>{selectedService.title}</h2>
                         </div>
                         
-                        <p style={{ color: '#9ca3af', lineHeight: '1.6', marginBottom: '30px' }}>{selectedService.description}</p>
+                        <p style={{ color: '#9ca3af', lineHeight: '1.6', marginBottom: '30px', fontSize: '0.9rem' }}>{selectedService.description}</p>
                         
                         {selectedService.steps && selectedService.steps.length > 0 && (
                             <div>
-                                <h4 style={{ marginBottom: '16px', color: '#fbbf24', fontSize: '1.1rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                <h4 style={{ marginBottom: '16px', color: '#fbbf24', fontSize: '1rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                     {t('portfolio.steps') || 'Steps'}
                                 </h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -122,7 +122,7 @@ export default function Services({ data }) {
                                             }}>
                                                 {idx + 1}
                                             </div>
-                                            <div style={{ color: '#d1d5db', lineHeight: '1.6', paddingTop: '2px', fontSize: '0.95rem' }}>
+                                            <div style={{ color: '#d1d5db', lineHeight: '1.6', paddingTop: '2px', fontSize: '0.9rem' }}>
                                                 {step}
                                             </div>
                                         </div>

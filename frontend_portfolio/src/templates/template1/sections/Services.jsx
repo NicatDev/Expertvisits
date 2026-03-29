@@ -54,7 +54,7 @@ export default function Services({ data, sectionIndex }) {
                                 }}>
                                     <Layers size={24} />
                                 </div>
-                                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.3rem', color: '#fff' }}>{service.title}</h3>
+                                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', color: '#fff' }}>{service.title}</h3>
                                 <p style={{ 
                                     color: '#9ca3af', fontSize: '0.95rem', lineHeight: '1.6', 
                                     display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', 
@@ -93,12 +93,12 @@ export default function Services({ data, sectionIndex }) {
                             <X size={24} />
                         </button>
                         
-                        <h2 style={{ margin: '0 0 16px 0', color: '#fff', fontSize: '1.5rem', paddingRight: '30px' }}>{selectedService.title}</h2>
-                        <p style={{ color: '#cbd5e1', lineHeight: '1.6', marginBottom: '24px' }}>{selectedService.description}</p>
+                        <h2 style={{ margin: '0 0 16px 0', color: '#fff', fontSize: 'clamp(1.2rem, 4vw, 1.4rem)', paddingRight: '30px' }}>{selectedService.title}</h2>
+                        <p style={{ color: '#cbd5e1', lineHeight: '1.6', marginBottom: '24px', fontSize: '0.95rem' }}>{selectedService.description}</p>
                         
                         {selectedService.steps && selectedService.steps.length > 0 && (
                             <div>
-                                <h4 style={{ marginBottom: '16px', color: '#4facfe', fontSize: '1.1rem' }}>{t('portfolio.steps') || 'Steps'}:</h4>
+                                <h4 style={{ marginBottom: '16px', color: '#4facfe', fontSize: '1rem' }}>{t('portfolio.steps') || 'Steps'}:</h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                     {selectedService.steps.map((step, idx) => (
                                         <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px' }}>

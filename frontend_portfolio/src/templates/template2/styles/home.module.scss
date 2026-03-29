@@ -45,8 +45,8 @@
     align-items: center;
     text-align: center;
     gap: 40px;
-    margin-bottom: 80px;
-    padding-top: 80px;
+    margin-bottom: 65px;
+    padding-top: 70px;
 
     @media (min-width: 1024px) {
         flex-direction: row;
@@ -77,7 +77,7 @@
 }
 
 .name {
-    font-size: clamp(2.5rem, 7vw, 6.5rem);
+    font-size: clamp(2.2rem, 7vw, 6rem);
     font-weight: 900;
     line-height: 0.95;
     color: #111;
@@ -206,7 +206,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
-    margin-bottom: 160px;
+    margin-bottom: 130px;
     position: relative;
 
     @media (min-width: 1024px) {
@@ -224,7 +224,7 @@
 }
 
 .sectionTitle {
-    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
     font-weight: 800;
     color: #111;
     letter-spacing: -1px;
@@ -376,7 +376,7 @@
     background: #111;
     color: #fff;
     border-radius: 40px;
-    padding: 100px 40px 60px;
+    padding: 80px 40px 50px;
     text-align: center;
     margin-bottom: 20px;
     position: relative;
@@ -390,7 +390,7 @@
 }
 
 .megaText {
-    font-size: clamp(3rem, 7vw, 5rem);
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
     font-weight: 900;
     margin-bottom: 50px;
     letter-spacing: -2px;
@@ -414,6 +414,14 @@
     border-radius: 24px;
     font-size: 1.3rem;
     font-weight: 800;
+    word-break: break-all;
+    max-width: 100%;
+    
+    @media (max-width: 640px) {
+        padding: 16px 24px;
+        font-size: 1.1rem;
+        border-radius: 16px;
+    }
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;

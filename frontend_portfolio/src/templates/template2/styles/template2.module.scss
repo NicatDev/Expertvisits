@@ -42,7 +42,7 @@
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 800;
     color: #111827;
     text-decoration: none;
@@ -100,13 +100,13 @@
 }
 
 .mobileNavLink {
-    text-decoration: none; color: #4b5563; font-size: 1.2rem;
+    text-decoration: none; color: #4b5563; font-size: 1.15rem;
     font-weight: 500; padding: 10px 0;
     &:hover, &.active { color: #111827; }
 }
 
 .pageContainer {
-    max-width: 1200px; margin: 0 auto; padding: 40px 24px;
+    max-width: 1200px; margin: 0 auto; padding: 32px 24px;
     animation: fadeIn 0.5s ease-in-out;
 }
 
