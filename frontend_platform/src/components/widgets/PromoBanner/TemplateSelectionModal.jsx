@@ -238,7 +238,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                     {articlesCount < 3 && (
                                         <p style={{ color: '#64748b', fontSize: '0.8rem', marginTop: '8px' }}>
                                             {t('widgets.articles_desc') || 'Məqalə səhifəsinin görünməsi üçün minimum 3 məqalə tələb olunur.'}
-                                            <Link href="/my-articles" onClick={onClose} style={{ color: '#4f46e5', marginLeft: '6px', textDecoration: 'none', fontWeight: '600' }}>{t('widgets.go_to_articles') || 'Məqalələrə keç →'}</Link>
+                                   
                                         </p>
                                     )}
                                 </div>

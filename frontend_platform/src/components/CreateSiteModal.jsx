@@ -74,7 +74,6 @@ export default function CreateSiteModal({ isOpen, onClose }) {
             )}
             <div className={styles.links}>
               <Link href="/profile"><a className={styles.link}>Profilinizi redaktə edin</a></Link>
-              <Link href="/my-articles"><a className={styles.link}>Məqalələrim ({articles.length})</a></Link>
             </div>
             {articles.length < 3 && (
               <p className={styles.info}>3 məqaləniz yoxdur – məqalə səhifəniz boş qalacaq, amma bloq məhdudiyyəti yoxdur.</p>
