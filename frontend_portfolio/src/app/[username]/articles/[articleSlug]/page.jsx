@@ -25,7 +25,7 @@ export default async function UserArticleDetailPage({ params }) {
         return notFound();
     }
 
-    if (!user || !article) return notFound();
+    if (!user || user.articles_count < 3 || !article) return notFound();
 
     const TemplateArticleDetail = getTemplateArticleDetail(user.template_id);
     const articleLang = article?.language || user?.user?.language || 'az';

@@ -36,6 +36,7 @@
     },
     "portfolio": {
         "loading": "Yüklənir...",
+        "loadingTemplate": "Şablon yüklənir...",
         "hello": "Salam, mən",
         "passionate": "Həvəsli bir",
         "viewWork": "İşlərimə Bax",

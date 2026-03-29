@@ -26,7 +26,7 @@ export default function Navbar({ data, user }) {
 
     const navLinks = [
         { label: t('nav.home', { defaultValue: 'Home' }), path: `/${username}` },
-        { label: t('portfolio.myWritings', { defaultValue: 'Articles' }), path: `/${username}/articles` },
+        ...(user?.articles_count >= 3 ? [{ label: t('portfolio.myWritings', { defaultValue: 'Articles' }), path: `/${username}/articles` }] : []),
         { label: t('nav.contact', { defaultValue: 'Contact' }), path: `/${username}/contact` },
     ];
 

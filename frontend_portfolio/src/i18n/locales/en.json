@@ -36,6 +36,7 @@
     },
     "portfolio": {
         "loading": "Loading...",
+        "loadingTemplate": "Loading template...",
         "hello": "Hello, I'm",
         "passionate": "A passionate",
         "viewWork": "View My Work",

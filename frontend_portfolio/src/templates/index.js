@@ -1,9 +1,11 @@
 import dynamic from "next/dynamic";
+import { useTranslation } from "@/i18n/client";
 
 function TemplateLoader() {
+    const { t } = useTranslation();
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: '#666' }}>
-            Loading Template...
+            {t('portfolio.loadingTemplate') || 'Loading Template...'}
         </div>
     );
 }

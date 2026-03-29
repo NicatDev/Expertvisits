@@ -38,7 +38,7 @@ export default async function UserArticlesPage({ params }) {
         return notFound();
     }
 
-    if (!user) return notFound();
+    if (!user || user.articles_count < 3) return notFound();
 
     const TemplateArticles = getTemplateArticles(user.template_id);
 

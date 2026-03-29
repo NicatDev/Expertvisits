@@ -52,13 +52,18 @@ class UserWebsiteSerializer(serializers.ModelSerializer):
     languages = serializers.SerializerMethodField()
     certificates = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
+    articles_count = serializers.SerializerMethodField()
     
     class Meta:
         model = UserWebsite
         fields = [
             'user', 'template_id', 'banner', 
-            'experiences', 'educations', 'skills', 'languages', 'certificates', 'services'
+            'experiences', 'educations', 'skills', 'languages', 'certificates', 'services',
+            'articles_count'
         ]
+
+    def get_articles_count(self, obj):
+        return obj.user.articles.count()
 
     def get_services(self, obj):
         qs = obj.user.services.all().order_by('-id')
