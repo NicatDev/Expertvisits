@@ -98,7 +98,7 @@ export default function UserAboutPage() {
                     <div className={styles.itemContent}>
                         <h3>{item.position}</h3>
                         <p>{item.company_name}</p>
-                        <span>{item.start_date} - {item.end_date || t('present')}</span>
+                        <span>{item.start_date} - {item.end_date || t('common.present')}</span>
                     </div>
                 )} t={t} />
 
@@ -106,7 +106,7 @@ export default function UserAboutPage() {
                     <div className={styles.itemContent}>
                         <h3>{item.institution}</h3>
                         <p>{item.degree_type_display || item.degree_type} in {item.field_of_study}</p>
-                        <span>{item.start_date} - {item.end_date || t('present')}</span>
+                        <span>{item.start_date} - {item.end_date || t('common.present')}</span>
                     </div>
                 )} t={t} />
 

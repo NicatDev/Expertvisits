@@ -16,6 +16,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
     const [isActive, setIsActive] = useState(false);
     const [articlesCount, setArticlesCount] = useState(0);
     const [progress, setProgress] = useState(0);
+    const { user } = useAuth();
     const [showSuccess, setShowSuccess] = useState(false);
 
     const [isFetching, setIsFetching] = useState(true);
