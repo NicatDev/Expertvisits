@@ -261,6 +261,7 @@
         "template1_name": "Dark Modern",
         "template2_name": "Light Interactive",
         "template3_name": "Corporate",
+        "template4_name": "Cyberpunk",
         "save_template": "Save template",
         "saving": "Saving...",
         "success_msg": "Template saved successfully!",

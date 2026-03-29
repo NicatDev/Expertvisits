@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase } from 'lucide-react';
+import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase, Sidebar } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { websites_api, content, profiles } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -195,6 +195,15 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                         <div className={styles.iconBox}><Briefcase size={24}/></div>
                                         <span className={styles.templateName}>{t('widgets.template3_name') || 'Corporate'}</span>
                                         {selected === 3 && <CheckCircle className={styles.checkIcon} size={20}/>}
+                                    </div>
+
+                                    <div 
+                                        className={`${styles.option} ${selected === 4 ? styles.active : ''}`}
+                                        onClick={() => setSelected(4)}
+                                    >
+                                        <div className={styles.iconBox}><Sidebar size={24}/></div>
+                                        <span className={styles.templateName}>{t('widgets.template4_name') || 'Animated Sidebar'}</span>
+                                        {selected === 4 && <CheckCircle className={styles.checkIcon} size={20}/>}
                                     </div>
                                 </div>
                             )}

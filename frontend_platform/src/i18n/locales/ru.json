@@ -256,6 +256,7 @@
         "template1_name": "Темный Модерн",
         "template2_name": "Светлый Интерактив",
         "template3_name": "Корпоративный",
+        "template4_name": "Cyberpunk",
         "save_template": "Сохранить",
         "saving": "Сохранение...",
         "success_msg": "Шаблон успешно сохранен!",
