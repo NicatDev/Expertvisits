@@ -35,6 +35,7 @@
         "notFound": "Page not found"
     },
     "portfolio": {
+        "loading": "Loading...",
         "hello": "Hello, I'm",
         "passionate": "A passionate",
         "viewWork": "View My Work",

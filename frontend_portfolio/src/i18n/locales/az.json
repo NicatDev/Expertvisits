@@ -35,6 +35,7 @@
         "notFound": "Səhifə tapılmadı"
     },
     "portfolio": {
+        "loading": "Yüklənir...",
         "hello": "Salam, mən",
         "passionate": "Həvəsli bir",
         "viewWork": "İşlərimə Bax",
