@@ -37,14 +37,22 @@ export default async function sitemap() {
             });
         }
 
-        // For specific pages that user wants postfix like /experts/en or /vacancies/en
-        if (u === '/experts/' || u === '/experts' || u === '/vacancies/' || u === '/vacancies') {
-            const pathWithoutSlash = u.startsWith('/') ? u.slice(1) : u;
-            const purePath = pathWithoutSlash.endsWith('/') ? pathWithoutSlash.slice(0, -1) : pathWithoutSlash;
-
+        // For specific pages that user wants localized variants
+        if (u === '/experts/' || u === '/experts') {
             ['en', 'ru'].forEach(lang => {
                 urls.push({
-                    url: `${BASE_URL}/${purePath}/${lang}`,
+                    url: `${BASE_URL}/experts/${lang}`,
+                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                    changeFrequency: item.changefreq || 'daily',
+                    priority: 0.7,
+                });
+            });
+        }
+        
+        if (u === '/vacancies/' || u === '/vacancies') {
+            ['en', 'ru'].forEach(lang => {
+                urls.push({
+                    url: `${BASE_URL}/${lang}/vacancies`,
                     lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
                     changeFrequency: item.changefreq || 'daily',
                     priority: 0.7,
