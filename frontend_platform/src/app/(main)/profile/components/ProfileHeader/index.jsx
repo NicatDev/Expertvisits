@@ -231,6 +231,7 @@ const ProfileHeader = ({
                 imageSrc={cropModal.imageSrc}
                 onCropComplete={handleCropComplete}
                 onClose={handleCropCancel}
+                aspectRatio={cropModal.type === 'cover' ? 900 / 200 : undefined}
             />
         )}
         </>
