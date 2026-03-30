@@ -17,7 +17,6 @@ const ProfileHeader = () => {
     const [followType, setFollowType] = useState('followers');
     const [isBookingView, setIsBookingView] = useState(false);
     const [calendarEvents, setCalendarEvents] = useState([]);
-console.log(profile,'---')
     const handleOpenFollow = (type) => {
         setFollowType(type);
         setShowFollowModal(true);
@@ -52,7 +51,7 @@ console.log(profile,'---')
                         <div className={styles.defaultCover} style={{ background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)' }} />
                     )}
 
-                    {(profile.website_active || profile.has_active_website || profile.has_site || profile.has_website) && (
+                    {(profile.website_active) && (
                         <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1000 }}>
                             <a href={`https://expertvisits.com/u/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                                 <Button 
