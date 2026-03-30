@@ -17,10 +17,10 @@ class Command(BaseCommand):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        # Clear existing data
-        self.stdout.write('Clearing existing categories...')
-        Category.objects.all().delete()
-        self.stdout.write(self.style.SUCCESS('Cleared existing categories.'))
+        # Clear existing data - REMOVED as per user request
+        # self.stdout.write('Clearing existing categories...')
+        # Category.objects.all().delete()
+        # self.stdout.write(self.style.SUCCESS('Cleared existing categories.'))
 
         for item in data:
             category_az = item['name_az']
@@ -38,7 +38,7 @@ class Command(BaseCommand):
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Created category: {category_az}'))
             else:
-                self.stdout.write(f'Category exists: {category_az}')
+                self.stdout.write(f'Category already exists: {category_az}')
 
             for sub in subcategories:
                 sub_az = sub['name_az']
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 prof_ru = sub.get('profession_ru', '')
 
                 # Update or Create SubCategory
-                sub_cat, sub_created = SubCategory.objects.update_or_create(
+                sub_cat, sub_created = SubCategory.objects.get_or_create(
                     category=category,
                     name_az=sub_az,
                     defaults={
@@ -64,6 +64,6 @@ class Command(BaseCommand):
                 if sub_created:
                     self.stdout.write(self.style.SUCCESS(f'  Created subcategory: {sub_az} ({prof_az})'))
                 else:
-                    self.stdout.write(f'  Updated subcategory: {sub_az}')
+                    self.stdout.write(f'  Subcategory already exists: {sub_az}')
 
         self.stdout.write(self.style.SUCCESS('Successfully imported all categories'))

@@ -68,7 +68,7 @@
     "name_ru": "ИТ Инфраструктура и безопасность",
     "subcategories": [
       { "name_az": "İT Mütəxəssisliyi (Ümumi)", "name_en": "IT Professional (General)", "name_ru": "ИТ Специалист (Общее)", "profession_az": "İT Mütəxəssisi", "profession_en": "IT Specialist", "profession_ru": "ИТ Специалист" },
-      { "name_az": "Kiber Təhlükəsizlik", "name_en": "Cybersecurity", "name_ru": "Кибербезопасность", "profession_az": "Cybersecurity Specialist", "profession_en": "Cybersecurity Specialist", "profession_ru": "Специалист по кибербезопасности" },
+      { "name_az": "Kiber Təhlükəsizlik", "name_en": "Cybersecurity (IT)", "name_ru": "Кибербезопасность", "profession_az": "Cybersecurity Specialist", "profession_en": "Cybersecurity Specialist", "profession_ru": "Специалист по кибербезопасности" },
       { "name_az": "Penetrasiya Testləri", "name_en": "Penetration Testing", "name_ru": "Тестирование на проникновение (Пентест)", "profession_az": "Penetration Tester", "profession_en": "Penetration Tester", "profession_ru": "Пентестер" },
       { "name_az": "Şəbəkə İnzibatçılığı", "name_en": "Network Administration", "name_ru": "Сетевое администрирование", "profession_az": "Network Engineer", "profession_en": "Network Engineer", "profession_ru": "Сетевой инженер" },
       { "name_az": "Sistem İnzibatçılığı", "name_en": "System Administration", "name_ru": "Системное администрирование", "profession_az": "System Administrator", "profession_en": "System Administrator", "profession_ru": "Системный администратор" },
@@ -112,7 +112,7 @@
     "subcategories": [
     { "name_az": "Satış (Ümumi)", "name_en": "Sales (General)", "name_ru": "Продажи (Общее)", "profession_az": "Satış Təmsilçisi", "profession_en": "Sales Representative", "profession_ru": "Торговый представитель" },
     { "name_az": "Satış İdarəetməsi", "name_en": "Sales Management", "name_ru": "Управление продажами", "profession_az": "Satış Meneceri", "profession_en": "Sales Manager", "profession_ru": "Менеджер по продажам" },
-    { "name_az": "Biznes İnkişafı (Business Development)", "name_en": "Business Development", "name_ru": "Развитие бизнеса", "profession_az": "Biznes İnkişaf Meneceri", "profession_en": "Business Development Manager", "profession_ru": "Менеджер по развитию бизнеса" },
+    { "name_az": "Biznes İnkişafı (Business Development)", "name_en": "Business Development (Sales)", "name_ru": "Развитие бизнеса", "profession_az": "Biznes İnkişaf Meneceri", "profession_en": "Business Development Manager", "profession_ru": "Менеджер по развитию бизнеса" },
     { "name_az": "Müştəri Xidmətləri", "name_en": "Customer Service", "name_ru": "Обслуживание клиентов", "profession_az": "Müştəri Xidmətləri Mütəxəssisi", "profession_en": "Customer Service Specialist", "profession_ru": "Специалист по обслуживанию клиентов" },
     { "name_az": "Call Center və Dəstək", "name_en": "Call Center & Support", "name_ru": "Колл-центр", "profession_az": "Operator", "profession_en": "Call Center Agent", "profession_ru": "Оператор колл-центра" },
     { "name_az": "Account Management", "name_en": "Account Management", "name_ru": "Управление аккаунтами", "profession_az": "Account Manager", "profession_en": "Account Manager", "profession_ru": "Аккаунт-менеджер" },
@@ -316,7 +316,7 @@
     { "name_az": "Su Təsərrüfatı və Hidrotexnika", "name_en": "Water Resources Engineering", "name_ru": "Водное хозяйство", "profession_az": "Hidrotexnik", "profession_en": "Water Engineer", "profession_ru": "Гидротехник" },
     { "name_az": "İnformasiya Texnologiyaları Mühəndisliyi", "name_en": "Information Technology Engineering", "name_ru": "IT инженерия", "profession_az": "IT Mühəndisi", "profession_en": "IT Engineer", "profession_ru": "IT инженер" },
     { "name_az": "Proqram Mühəndisliyi", "name_en": "Software Engineering", "name_ru": "Программная инженерия", "profession_az": "Proqram Mühəndisi", "profession_en": "Software Engineer", "profession_ru": "Инженер-программист" },
-    { "name_az": "Kibertəhlükəsizlik", "name_en": "Cybersecurity", "name_ru": "Кибербезопасность", "profession_az": "Kibertəhlükəsizlik Mütəxəssisi", "profession_en": "Cybersecurity Specialist", "profession_ru": "Специалист по кибербезопасности" },
+    { "name_az": "Kibertəhlükəsizlik", "name_en": "Cybersecurity (Engineering)", "name_ru": "Кибербезопасность", "profession_az": "Kibertəhlükəsizlik Mütəxəssisi", "profession_en": "Cybersecurity Specialist", "profession_ru": "Специалист по кибербезопасности" },
     { "name_az": "Telekommunikasiya Mühəndisliyi", "name_en": "Telecommunications Engineering", "name_ru": "Телекоммуникации", "profession_az": "Telekom Mühəndisi", "profession_en": "Telecom Engineer", "profession_ru": "Инженер связи" },
     { "name_az": "Avtomatika və Robototexnika", "name_en": "Automation and Robotics", "name_ru": "Автоматизация и робототехника", "profession_az": "Avtomatika Mühəndisi", "profession_en": "Automation Engineer", "profession_ru": "Инженер по автоматизации" },
     { "name_az": "Keyfiyyətə Nəzarət və Sertifikatlaşdırma", "name_en": "Quality Control and Certification", "name_ru": "Контроль качества", "profession_az": "Keyfiyyət Mühəndisi", "profession_en": "Quality Engineer", "profession_ru": "Инженер по качеству" },

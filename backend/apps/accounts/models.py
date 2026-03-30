@@ -34,7 +34,14 @@ class SubCategory(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = custom_slugify(self.name_en)
+            base_slug = custom_slugify(self.name_en)
+            slug = base_slug
+            counter = 1
+            # Ensure slug is unique within the entire SubCategory table
+            while SubCategory.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     @property
