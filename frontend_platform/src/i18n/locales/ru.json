@@ -274,7 +274,8 @@
         "articles_desc": "Для активации создания сайта необходимо иметь минимум 3 статьи.",
         "go_to_articles": "Перейти к статьям →",
         "visit_website_desc": "Ваш личный веб-сайт портфолио запущен и обновлен.",
-        "website_url": "URL вашего сайта"
+        "website_url": "URL вашего сайта",
+        "create_website_btn": "Создать мой сайт"
     },
     "profile": {
         "section_helper": {
@@ -501,7 +502,8 @@
             "name": "Название навыка",
             "type": "Тип",
             "hard": "Профессиональный (Hard)",
-            "soft": "Гибкий (Soft)"
+            "soft": "Гибкий (Soft)",
+            "placeholder": "Введите навык (напр. JavaScript, Общение)"
         },
         "language": {
             "edit": "Редактировать язык",

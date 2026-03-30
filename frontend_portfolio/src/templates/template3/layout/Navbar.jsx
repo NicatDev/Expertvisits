@@ -30,9 +30,15 @@ export default function Navbar({ data, user }) {
         { label: t('nav.contact', { defaultValue: 'Contact' }), path: `/${username}/contact` },
     ];
 
-    const toggleLanguage = (lang) => i18n.changeLanguage(lang);
+    const toggleLanguage = (lang) => {
+        document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        localStorage.setItem('i18nextLng', lang);
+        window.location.reload();
+    };
 
     if (!isMounted) return null;
+
+    const currentLang = i18n.resolvedLanguage;
 
     return (
         <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
@@ -55,9 +61,9 @@ export default function Navbar({ data, user }) {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <button onClick={() => toggleLanguage('en')} style={{ background: 'none', border: 'none', color: i18n.resolvedLanguage === 'en' ? '#f59e0b' : '#64748b', cursor: 'pointer', fontSize: '0.9rem', fontWeight: i18n.resolvedLanguage === 'en' ? '700' : '500' }}>EN</button>
+                        <button onClick={() => toggleLanguage('en')} style={{ background: 'none', border: 'none', color: currentLang === 'en' ? '#f59e0b' : '#64748b', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentLang === 'en' ? '700' : '500' }}>EN</button>
                         <span style={{ color: '#475569' }}>/</span>
-                        <button onClick={() => toggleLanguage('az')} style={{ background: 'none', border: 'none', color: i18n.resolvedLanguage === 'az' ? '#f59e0b' : '#64748b', cursor: 'pointer', fontSize: '0.9rem', fontWeight: i18n.resolvedLanguage === 'az' ? '700' : '500' }}>AZ</button>
+                        <button onClick={() => toggleLanguage('az')} style={{ background: 'none', border: 'none', color: currentLang === 'az' ? '#f59e0b' : '#64748b', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentLang === 'az' ? '700' : '500' }}>AZ</button>
                     </div>
                     
                     <button 

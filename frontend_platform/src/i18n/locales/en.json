@@ -279,7 +279,8 @@
         "articles_desc": "Doesn't block site creation, but a minimum of 3 articles is required for the articles page to be visible.",
         "go_to_articles": "Go to Articles →",
         "visit_website_desc": "Your personal portfolio website is now live and updated.",
-        "website_url": "Your Website URL"
+        "website_url": "Your Website URL",
+        "create_website_btn": "Create my Website"
     },
     "profile": {
         "section_helper": {
@@ -511,7 +512,8 @@
             "name": "Skill Name",
             "type": "Type",
             "hard": "Hard Skill",
-            "soft": "Soft Skill"
+            "soft": "Soft Skill",
+            "placeholder": "Enter skill (e.g. JavaScript, Public Speaking)"
         },
         "language": {
             "edit": "Edit Language",

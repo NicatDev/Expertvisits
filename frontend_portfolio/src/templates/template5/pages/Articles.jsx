@@ -8,8 +8,7 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/articles.module.scss';
 
 export default function Articles({ user }) {
-    const userLang = user?.user?.language || 'az';
-    const { t } = useTranslation(undefined, { lng: userLang });
+    const { t } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
     
     useEffect(() => {

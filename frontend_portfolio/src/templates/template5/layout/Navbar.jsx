@@ -8,8 +8,7 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/layout.module.scss';
 
 export default function Navbar({ user }) {
-    const userLang = user?.user?.language || 'az';
-    const { t } = useTranslation(undefined, { lng: userLang });
+    const { t, i18n } = useTranslation();
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -17,7 +16,9 @@ export default function Navbar({ user }) {
     const profile = user?.user || {};
     const username = user.username || profile.username || '';
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || username;
-    const specialist = profile.profession_sub_category?.[`profession_${userLang}`] || profile.profession_sub_category?.profession || 'Professional';
+    
+    const currentLang = i18n.resolvedLanguage || 'az';
+    const specialist = profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession || 'Professional';
 
     const [isMounted, setIsMounted] = useState(false);
     
@@ -29,6 +30,12 @@ export default function Navbar({ user }) {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const toggleLanguage = (lang) => {
+        document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        localStorage.setItem('i18nextLng', lang);
+        window.location.reload();
+    };
 
     if (!isMounted) return null;
 
@@ -44,17 +51,30 @@ export default function Navbar({ user }) {
         <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
             <div className={styles.topBar}>
                <div className={styles.container}>
-                   <div className={styles.contactInfo}>
-                       {profile.phone_number && (
-                           <div className={styles.topItem}>
-                               <Phone size={14} /> <span>{profile.phone_number}</span>
-                           </div>
-                       )}
-                       {profile.email && (
-                           <div className={styles.topItem}>
-                               <Mail size={14} /> <span>{profile.email}</span>
-                           </div>
-                       )}
+                   <div className={styles.topBarContent} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                       <div className={styles.contactInfo}>
+                           {profile.phone_number && (
+                               <div className={styles.topItem}>
+                                   <Phone size={14} /> <span>{profile.phone_number}</span>
+                               </div>
+                           )}
+                           {profile.email && (
+                               <div className={styles.topItem}>
+                                   <Mail size={14} /> <span>{profile.email}</span>
+                               </div>
+                           )}
+                       </div>
+                       <div className={styles.langSwitcher} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                           <button 
+                               onClick={() => toggleLanguage('az')} 
+                               style={{ background: 'none', border: 'none', color: currentLang === 'az' ? 'var(--t5-primary)' : '#fff', cursor: 'pointer', fontSize: '0.8rem', fontWeight: currentLang === 'az' ? '700' : '400', transition: 'all 0.2s' }}
+                           >AZ</button>
+                           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>|</span>
+                           <button 
+                               onClick={() => toggleLanguage('en')} 
+                               style={{ background: 'none', border: 'none', color: currentLang === 'en' ? 'var(--t5-primary)' : '#fff', cursor: 'pointer', fontSize: '0.8rem', fontWeight: currentLang === 'en' ? '700' : '400', transition: 'all 0.2s' }}
+                           >EN</button>
+                       </div>
                    </div>
                </div>
             </div>
@@ -99,6 +119,12 @@ export default function Navbar({ user }) {
                                     </Link>
                                 </li>
                             ))}
+                            <li className={styles.mobileLangSw}>
+                                <div style={{ display: 'flex', gap: '12px', padding: '16px 0', borderTop: '1px solid #eee', marginTop: '8px' }}>
+                                    <button onClick={() => toggleLanguage('az')} style={{ background: 'none', border: 'none', color: currentLang === 'az' ? 'var(--t5-primary)' : '#666', fontWeight: currentLang === 'az' ? '700' : '400' }}>AZ</button>
+                                    <button onClick={() => toggleLanguage('en')} style={{ background: 'none', border: 'none', color: currentLang === 'en' ? 'var(--t5-primary)' : '#666', fontWeight: currentLang === 'en' ? '700' : '400' }}>EN</button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 )}

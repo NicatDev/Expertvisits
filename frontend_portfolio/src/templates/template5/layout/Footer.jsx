@@ -7,17 +7,17 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/layout.module.scss';
 
 export default function Footer({ user }) {
-    const userLang = user?.user?.language || 'az';
-    const { t } = useTranslation(undefined, { lng: userLang });
+    const { t, i18n } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
     React.useEffect(() => {
         setIsMounted(true);
     }, []);
 
+    const currentLang = i18n.resolvedLanguage || 'az';
     const profile = user?.user || {};
     const username = user.username || profile.username || '';
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || username;
-    const specialist = profile.profession_sub_category?.[`profession_${userLang}`] || profile.profession_sub_category?.profession || 'Professional';
+    const specialist = profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession || 'Professional';
 
     if (!isMounted) return null;
 

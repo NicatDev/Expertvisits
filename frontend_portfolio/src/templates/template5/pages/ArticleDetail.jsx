@@ -9,8 +9,7 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/articles.module.scss';
 
 export default function ArticleDetail({ user, slug }) {
-    const userLang = user?.user?.language || 'az';
-    const { t } = useTranslation(undefined, { lng: userLang });
+    const { t } = useTranslation();
     const [article, setArticle] = useState(null);
     const [recentArticles, setRecentArticles] = useState([]);
     const [loading, setLoading] = useState(true);

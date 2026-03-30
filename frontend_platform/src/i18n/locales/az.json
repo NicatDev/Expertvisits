@@ -282,7 +282,8 @@
         "articles_desc": "Veb-saytınızın məqalələr səhifəsinin aktivləşməsi üçün minimum 3 məqalə əlavə etməniz tələb olunur.",
         "go_to_articles": "Məqalələrə keç →",
         "visit_website_desc": "Şəxsi portfolio vebsaytınız artıq yayımdadır və yenilənib.",
-        "website_url": "Vebsaytınızın URL-i"
+        "website_url": "Vebsaytınızın URL-i",
+        "create_website_btn": "Veb-saytımı yarat"
     },
     "profile": {
         "section_helper": {
@@ -720,7 +721,8 @@
             "name": "Bacarıq adı",
             "type": "Növ",
             "hard": "Hard Skill",
-            "soft": "Soft Skill"
+            "soft": "Soft Skill",
+            "placeholder": "Bacarığı daxil edin (məs: JavaScript, Ünsiyyət)"
         },
         "language": {
             "edit": "Dili redaktə et",

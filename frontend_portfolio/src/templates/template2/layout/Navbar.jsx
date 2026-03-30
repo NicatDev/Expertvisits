@@ -30,9 +30,15 @@ export default function Navbar({ data, user }) {
         { label: t('nav.contact', { defaultValue: 'Contact' }), path: `/${username}/contact` },
     ];
 
-    const toggleLanguage = (lang) => i18n.changeLanguage(lang);
+    const toggleLanguage = (lang) => {
+        document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        localStorage.setItem('i18nextLng', lang);
+        window.location.reload();
+    };
 
     if (!isMounted) return null;
+
+    const currentLang = i18n.resolvedLanguage;
 
     return (
         <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
@@ -51,15 +57,13 @@ export default function Navbar({ data, user }) {
                             {link.label}
                         </Link>
                     ))}
-                    
-                    
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div className={styles.mobileLangSwitcher} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <button onClick={() => toggleLanguage('en')} style={{ background: 'none', border: 'none', color: i18n.resolvedLanguage === 'en' ? '#111827' : '#6b7280', cursor: 'pointer', fontSize: '0.9rem', fontWeight: i18n.resolvedLanguage === 'en' ? '700' : '500' }}>EN</button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <button onClick={() => toggleLanguage('en')} style={{ background: 'none', border: 'none', color: currentLang === 'en' ? '#111827' : '#6b7280', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentLang === 'en' ? '700' : '500' }}>EN</button>
                         <span style={{ color: '#d1d5db' }}>/</span>
-                        <button onClick={() => toggleLanguage('az')} style={{ background: 'none', border: 'none', color: i18n.resolvedLanguage === 'az' ? '#111827' : '#6b7280', cursor: 'pointer', fontSize: '0.9rem', fontWeight: i18n.resolvedLanguage === 'az' ? '700' : '500' }}>AZ</button>
+                        <button onClick={() => toggleLanguage('az')} style={{ background: 'none', border: 'none', color: currentLang === 'az' ? '#111827' : '#6b7280', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentLang === 'az' ? '700' : '500' }}>AZ</button>
                     </div>
                     
                     <button 
@@ -85,13 +89,6 @@ export default function Navbar({ data, user }) {
                     </div>
                 )}
             </div>
-            <style jsx>{`
-                @media (min-width: 768px) {
-                    .${styles.mobileLangSwitcher} {
-                        display: none !important;
-                    }
-                }
-            `}</style>
         </nav>
     );
 }

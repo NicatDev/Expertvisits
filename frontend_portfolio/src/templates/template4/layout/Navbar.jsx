@@ -27,7 +27,9 @@ export default function Navbar({ user }) {
     ];
 
     const toggleLanguage = (lang) => {
-        i18n.changeLanguage(lang);
+        document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        localStorage.setItem('i18nextLng', lang);
+        window.location.reload();
     };
 
     if (!isMounted) return null;

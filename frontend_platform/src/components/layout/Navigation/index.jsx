@@ -95,6 +95,9 @@ const Navigation = () => {
                         </Button>
                     </div>
 
+                    {/* Language Switcher */}
+                    <LanguageSwitcher />
+
                     {/* Auth Dropdown */}
                     <div className={styles.dropdownWrapper}
                         ref={userMenuRef}
