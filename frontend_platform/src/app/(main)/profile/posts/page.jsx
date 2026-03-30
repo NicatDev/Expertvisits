@@ -74,19 +74,21 @@ export default function PostsPage() {
         <div className={styles.tabContent}>
             <div className={styles.sectionHeader}>
                 <h3>{t('profile.tabs.posts')}</h3>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    {['all', 'article', 'quiz', 'poll'].map(ft => (
-                        <Button
-                            key={ft}
-                            size="small"
-                            style={{ background: filterType === ft ? '#1890ff' : '#f0f0f0', color: filterType === ft ? '#fff' : '#333', border: 'none' }}
-                            onClick={() => setFilterType(ft)}
-                        >
-                            {ft === 'all' ? t('profile.filters.all') : ft === 'article' ? t('profile.filters.articles') : ft === 'quiz' ? t('profile.filters.quizzes') : t('create_modal.poll_tab')}
-                        </Button>
-                    ))}
+                <div className={styles.filtersWrapper}>
+                    <div className={styles.filters}>
+                        {['all', 'article', 'quiz', 'poll'].map(ft => (
+                            <Button
+                                key={ft}
+                                size="small"
+                                className={filterType === ft ? styles.activeFilter : styles.filterBtn}
+                                onClick={() => setFilterType(ft)}
+                            >
+                                {ft === 'all' ? t('profile.filters.all') : ft === 'article' ? t('profile.filters.articles') : ft === 'quiz' ? t('profile.filters.quizzes') : t('create_modal.poll_tab')}
+                            </Button>
+                        ))}
+                    </div>
+                    {isOwner && <Button onClick={() => setShowCreateModal(true)}>+ {t('profile.content.add_content')}</Button>}
                 </div>
-                {isOwner && <Button onClick={() => setShowCreateModal(true)}>+ {t('profile.content.add_content')}</Button>}
             </div>
 
             <div className={styles.list} style={{ flexDirection: 'column', gap: '16px' }}>

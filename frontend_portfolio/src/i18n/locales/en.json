@@ -81,6 +81,7 @@
         "next": "Next",
         "backToArticles": "Back to Articles",
         "loadingArticle": "Loading article...",
-        "articleNotFound": "Article not found."
+        "articleNotFound": "Article not found.",
+        "systemStarting": "System starting..."
     }
 }

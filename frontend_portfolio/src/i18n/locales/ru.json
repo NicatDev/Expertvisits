@@ -1,0 +1,87 @@
+{
+    "nav": {
+        "home": "Главная",
+        "about": "Обо мне",
+        "projects": "Проекты",
+        "contact": "Контакт"
+    },
+    "hero": {
+        "greeting": "Привет, я",
+        "subtitle": "Добро пожаловать в мое портфолио",
+        "cta": "Посмотреть проекты"
+    },
+    "about": {
+        "title": "Обо мне",
+        "description": "Информация еще не добавлена."
+    },
+    "projects": {
+        "title": "Проекты",
+        "viewProject": "Посмотреть проект",
+        "noProjects": "Проекты еще не добавлены."
+    },
+    "contact": {
+        "title": "Контакт",
+        "name": "Имя",
+        "email": "Email",
+        "message": "Сообщение",
+        "send": "Отправить"
+    },
+    "footer": {
+        "rights": "Все права защищены."
+    },
+    "common": {
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка",
+        "notFound": "Страница не найдена"
+    },
+    "portfolio": {
+        "loading": "Загрузка...",
+        "loadingTemplate": "Загрузка шаблона...",
+        "hello": "Привет, я",
+        "passionate": "Увлеченный",
+        "viewWork": "Мои работы",
+        "contactMe": "Связаться со мной",
+        "aboutMe": "Обо мне",
+        "services": "Услуги",
+        "steps": "Этапы",
+        "experience": "Опыт работы",
+        "education": "Образование",
+        "hardSkills": "Профессиональные навыки",
+        "softSkills": "Личные качества",
+        "certificates": "Сертификаты",
+        "languages": "Языки",
+        "readyToCollaborate": "Готовы к",
+        "readyToCollaborateSpan": "сотрудничеству?",
+        "allRightsReserved": "Все права защищены.",
+        "present": "Настоящее время",
+        "degreeIn": "по специальности",
+        "issued": "Выдан:",
+        "letsTalk": "Давайте",
+        "together": "поговорим.",
+        "interestedWorking": "Заинтересованы в сотрудничестве? Заполните форму, и я свяжусь с вами в ближайшее время. Буду рад обсудить ваши идеи и потенциальные проекты.",
+        "email": "Email",
+        "phone": "Телефон",
+        "location": "Адрес",
+        "sendMsg": "Ваше сообщение...",
+        "sendMessage": "Отправить сообщение",
+        "fullName": "Полное имя",
+        "emailAddress": "Эл. почта",
+        "subject": "Тема",
+        "messagePlaceholder": "Расскажите о вашем проекте...",
+        "sending": "Отправка...",
+        "msgSuccess": "Ваше сообщение успешно отправлено!",
+        "myWritings": "Статьи",
+        "writingsSpan": "Мои записи.",
+        "searchArticles": "Поиск статей...",
+        "search": "Поиск",
+        "loadingArticles": "Загрузка статей...",
+        "noArticles": "Статьи по вашему запросу не найдены.",
+        "page": "Страница",
+        "prev": "Назад",
+        "next": "Вперед",
+        "backToArticles": "Назад к статьям",
+        "loadingArticle": "Загрузка статьи...",
+        "articleNotFound": "Статья не найдена.",
+        "systemStarting": "Система запускается..."
+    }
+}

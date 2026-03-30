@@ -77,8 +77,23 @@ const Navigation = () => {
 
                 {/* Right: Actions */}
                 <div className={styles.actions}>
-                    {/* Language Dropdown */}
-                    <LanguageSwitcher />
+                    {/* Create Website Button */}
+                    <div className={styles.desktopOnly}>
+                        <Button 
+                            onClick={handleWebsiteClick}
+                            style={{ 
+                                background: websiteData?.is_active ? 'rgba(79, 70, 229, 0.1)' : 'linear-gradient(135deg, #6366f1, #a855f7)',
+                                color: websiteData?.is_active ? '#4f46e5' : '#fff',
+                                border: websiteData?.is_active ? '1px solid #4f46e5' : 'none',
+                                fontWeight: 600,
+                                whiteSpace: 'nowrap',
+                                padding: '8px 16px',
+                                fontSize: '13px'
+                            }}
+                        >
+                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Öz vebsaytını yarat')}
+                        </Button>
+                    </div>
 
                     {/* Auth Dropdown */}
                     <div className={styles.dropdownWrapper}
@@ -133,7 +148,9 @@ const Navigation = () => {
                         <Link href="/experts" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
                         <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
-                   
+                        <div onClick={(e) => { handleWebsiteClick(e); setIsMenuOpen(false); }} className={styles.mobileNavAction} style={{ cursor: 'pointer', padding: '12px 0', borderTop: '1px solid #eee' }}>
+                           {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Veb-saytını yarat')}
+                        </div>
                     </div>
                 )
             }

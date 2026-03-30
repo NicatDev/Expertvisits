@@ -60,6 +60,13 @@
     gap: 16px;
 }
 
+.desktopOnly {
+    @media (max-width: 768px) {
+        display: none !important;
+    }
+}
+
+
 
 
 .iconBtn {
@@ -162,6 +169,17 @@
 
         &:hover {
             background: #f9f9f9;
+        }
+    }
+
+    .mobileNavAction {
+        font-weight: 600;
+        color: #4f46e5;
+        padding: 12px 8px;
+        transition: all 0.2s;
+        
+        &:hover {
+            background: #f5f3ff;
         }
     }
 }

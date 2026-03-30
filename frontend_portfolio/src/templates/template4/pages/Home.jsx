@@ -52,7 +52,7 @@ export default function Home({ user }) {
                                 &gt; {profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession}_
                             </h2>
                         )}
-                        <p className={styles.heroGreeting}>{t('portfolio.hello')} System starting...</p>
+                        <p className={styles.heroGreeting}> {t('portfolio.systemStarting')}</p>
                     </div>
 
                     <div className={styles.heroActions}>

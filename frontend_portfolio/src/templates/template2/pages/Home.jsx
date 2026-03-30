@@ -46,7 +46,7 @@ export default function Home({ user }) {
                 {/* Hero Section */}
                 <section className={styles.heroSection}>
                     <div className={styles.heroContent}>
-                        <div className={styles.greeting}>{t('portfolio.hello')}</div>
+                        {/* <div className={styles.greeting}>{t('portfolio.hello')}</div> */}
                         <h1 className={styles.name}>{fullName}</h1>
                         
                         {profile.profession_sub_category && (

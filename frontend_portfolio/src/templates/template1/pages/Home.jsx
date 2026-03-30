@@ -70,7 +70,7 @@ export default function Home({ user }) {
                 </div>
                 
                 <div className={styles.heroContent}>
-                    <span className={styles.greeting}>{t('portfolio.hello')}</span>
+                    {/* <span className={styles.greeting}>{t('portfolio.hello')}</span> */}
                     <h1 className={styles.name}>{fullName}</h1>
                     
                     {profile.profession_sub_category && (

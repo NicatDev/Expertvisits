@@ -5,13 +5,14 @@
     grid-template-columns: 1fr;
     gap: 40px;
     align-items: start;
-    padding: 60px 20px;
+    padding: 40px 16px; // Reduced padding for mobile
     max-width: 1200px;
     margin: 0 auto;
 
     @media (min-width: 1024px) {
         grid-template-columns: 1fr 1fr;
         gap: 60px;
+        padding: 60px 24px;
     }
 }
 
@@ -51,12 +52,17 @@
 .infoCard {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px; // Reduced from 20px
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 24px;
+    padding: 16px; // Reduced from 24px
     border-radius: 20px;
     transition: all 0.3s ease;
+
+    @media (min-width: 640px) {
+        gap: 20px;
+        padding: 24px;
+    }
 
     &:hover {
         background: rgba(255, 255, 255, 0.06);
@@ -66,29 +72,40 @@
 
     h3 {
         margin: 0 0 4px 0;
-        font-size: 1rem;
+        font-size: 0.9rem; // Slightly smaller
         color: #9ca3af;
         font-weight: 500;
     }
 
     p {
         margin: 0;
-        font-size: 1.1rem;
+        font-size: 1rem; // Slightly smaller base
         font-weight: 600;
         color: #fff;
+        word-break: break-word; // Fix overflow
+        
+        @media (min-width: 640px) {
+            font-size: 1.1rem;
+        }
     }
 }
 
 .iconBox {
     background: rgba(79, 172, 254, 0.1);
     color: #4facfe;
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
+    width: 48px; // Smaller for mobile
+    height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+
+    @media (min-width: 640px) {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+    }
 }
 
 // Form Area
@@ -96,9 +113,14 @@
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
-    padding: 40px;
-    border-radius: 24px;
+    padding: 24px; // Reduced from 40px for mobile
+    border-radius: 20px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+
+    @media (min-width: 768px) {
+        padding: 40px;
+        border-radius: 24px;
+    }
 }
 
 .formHeader {

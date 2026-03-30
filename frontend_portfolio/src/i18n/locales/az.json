@@ -81,6 +81,7 @@
         "next": "Növbəti",
         "backToArticles": "Məqalələrə Qayıt",
         "loadingArticle": "Məqalə yüklənir...",
-        "articleNotFound": "Məqalə tapılmadı."
+        "articleNotFound": "Məqalə tapılmadı.",
+        "systemStarting": "Sistem işə düşür..."
     }
 }

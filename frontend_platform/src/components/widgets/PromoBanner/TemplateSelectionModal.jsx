@@ -127,7 +127,13 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
                 <div className={styles.header}>
-                    <h3>{showSuccess ? (t('widgets.success_msg') || 'Success!') : (t('widgets.create_website_modal_title') || 'Create your Portfolio')}</h3>
+                    <h3>
+                        {showSuccess ? (t('widgets.success_msg') || 'Uğurlu!') : (
+                            isActive 
+                                ? (t('widgets.edit_website_modal_title') || 'Vebsaytını Redaktə Et') 
+                                : (t('widgets.create_website_modal_title') || 'Veb-saytını yarat')
+                        )}
+                    </h3>
                     <button className={styles.closeBtn} onClick={onClose}><X size={20}/></button>
                 </div>
                 
@@ -162,7 +168,17 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                         </div>
                     ) : (
                         <>
-                            <p className={styles.label}>{t('widgets.select_template') || 'Select a template:'}</p>
+                            {isActive && (
+                                <div className={styles.urlBox} style={{ marginBottom: '20px', background: '#f0f9ff', padding: '12px', borderRadius: '10px' }}>
+                                    <span style={{ fontSize: '0.85rem', color: '#0369a1', fontWeight: 600 }}>Cari Vebsaytınız:</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                                        <Link href={`https://expertvisits.com/u/${currentUser?.username}`} target="_blank" style={{ fontSize: '14px', color: '#0284c7', fontWeight: 500, wordBreak: 'break-all' }}>
+                                            expertvisits.com/u/{currentUser?.username}
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+                            <p className={styles.label}>{t('widgets.select_template') || 'Şablon seçin:'}</p>
                             
                             {isFetching ? (
                                 <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
@@ -274,7 +290,11 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                             disabled={loading || progress < 60}
                             style={{ flex: 1, opacity: (progress < 60) ? 0.6 : 1, cursor: (progress < 60) ? 'not-allowed' : 'pointer' }}
                         >
-                            {loading ? (t('widgets.saving') || 'Saving...') : (t('widgets.save_template') || 'Save template')}
+                            {loading ? (t('widgets.saving') || 'Gözləyin...') : (
+                                isActive 
+                                    ? (t('common.save') || 'Yadda saxla') 
+                                    : (t('widgets.create_website_btn') || 'Veb-saytımı yarat')
+                            )}
                         </button>
                     </div>
                 )}

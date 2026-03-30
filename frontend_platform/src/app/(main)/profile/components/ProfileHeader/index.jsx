@@ -114,24 +114,6 @@ const ProfileHeader = ({
             )}
 
             <div className={styles.coverContainer}>
-                {onUpdateProfile && (
-                    <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 20, display: 'flex', gap: '12px' }}>
-                        {websiteData?.is_active && (
-                            <a href={`https://expertvisits.com/u/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                                <Button type="default" style={{ background: 'rgba(255,255,255,0.9)', color: '#111', fontWeight: 600, border: 'none', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
-                                    {t('widgets.visit_website') || 'Vebsayta Keçid Et'}
-                                </Button>
-                            </a>
-                        )}
-                        <Button 
-                            type="primary" 
-                            onClick={(e) => { e.stopPropagation(); setTemplateModalOpen(true); }}
-                            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: '#fff', border: 'none', fontWeight: 600, boxShadow: '0 4px 15px rgba(99,102,241,0.3)' }}
-                        >
-                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Öz vebsaytını yarat')}
-                        </Button>
-                    </div>
-                )}
                 {profile.cover_image ? (
                     <img src={profile.cover_image} className={styles.coverImage} alt="Cover" />
                 ) : (
