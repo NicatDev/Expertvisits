@@ -2,6 +2,8 @@ import { getUser } from "@/lib/api/portfolio";
 import { getTemplateHome } from "@/templates";
 import { notFound } from "next/navigation";
 
+export const revalidate = 0;
+
 /**
  * User Portfolio Home Page
  * 

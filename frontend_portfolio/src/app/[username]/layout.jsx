@@ -1,7 +1,7 @@
 import { getUser } from "@/lib/api/portfolio";
 import { getTemplateLayout } from "@/templates";
 import { notFound } from "next/navigation";
-
+import LanguageManager from "@/components/LanguageManager";
 import { cookies } from 'next/headers';
 
 export async function generateMetadata({ params }) {
@@ -52,7 +52,7 @@ export default async function UserLayout({ children, params }) {
     const userLang = user?.user?.language || 'az';
     return (
         <TemplateLayout user={user}>
-            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${userLang}";` }} suppressHydrationWarning />
+            <LanguageManager lang={userLang} />
             {children}
         </TemplateLayout>
     );

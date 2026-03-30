@@ -2,6 +2,7 @@
     "nav": {
         "home": "Ana Səhifə",
         "about": "Haqqımda",
+        "services": "Xidmətlər",
         "projects": "Layihələr",
         "contact": "Əlaqə"
     },
@@ -32,7 +33,8 @@
     "common": {
         "loading": "Yüklənir...",
         "error": "Xəta baş verdi",
-        "notFound": "Səhifə tapılmadı"
+        "notFound": "Səhifə tapılmadı",
+        "search": "Axtar"
     },
     "portfolio": {
         "loading": "Yüklənir...",
@@ -82,6 +84,36 @@
         "backToArticles": "Məqalələrə Qayıt",
         "loadingArticle": "Məqalə yüklənir...",
         "articleNotFound": "Məqalə tapılmadı.",
-        "systemStarting": "Sistem işə düşür..."
+        "systemStarting": "Sistem işə düşür...",
+        "trustedProfessional": "Təsdiqlənmiş Peşəkar",
+        "bookConsultation": "Əlaqə Saxla",
+        "readMore": "Daha Çox",
+        "yearsExperience": "İl Təcrübə",
+        "emergencyHelp": "Əlaqə",
+        "emailUs": "E-poçt",
+        "expertInMedicalCare": "Tibbi Qayğı üzrə Ekspert",
+        "excellenceInService": "Xidmətdə Üstünlük",
+        "medicalCareDesc": "Yüksək keyfiyyətli tibbi yardım",
+        "viewArticle": "Məqaləyə Bax",
+        "contactMeTitle": "Sualınız və ya təklifiniz var?",
+        "contactMeDesc": "İstənilən vaxt mənimlə əlaqə saxlaya bilərsiniz. Ən qısa zamanda cavablandırılacaq.",
+        "contactMeBtn": "Əlaqə Saxla",
+        "medicalExcellenceServices": "Xidmətlərim",
+        "medicalInsights": "Tibbi Məqalələr",
+        "medicalInsightsDesc": "Ən son tibbi araşdırmalar, sağlamlıq məsləhətləri və xəbərlərdən xəbərdar olun.",
+        "processSteps": "İş Mərhələləri",
+        "understood": "Başa düşdüm",
+        "patientCaredFocus": "Müştəri yönümlü",
+        "modernDiagnostics": "Müasir yanaşma",
+        "articleSidebarAuthor": "Müəllif haqqında",
+        "articleSidebarRecent": "Son məqalələr",
+        "shareThis": "Paylaş",
+        "getInTouch": "Əlaqə Saxlayın",
+        "getInTouchDesc": "Sualınız var və ya müayinə üçün randevu almaq istəyirsiniz? Bizimlə asanlıqla əlaqə qura bilərsiniz.",
+        "sendMessage": "Bizə Mesaj Göndərin",
+        "author": "Müəllif",
+        "recentPosts": "Son Paylaşımlar",
+        "search": "Axtar",
+        "minRead": "dəq oxu"
     }
 }

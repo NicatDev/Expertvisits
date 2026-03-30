@@ -1,0 +1,156 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/mixins.scss';
+
+.contactWrapper {
+  padding: 140px 0 80px;
+  background: white;
+  
+  @include mobile {
+    padding: 100px 0 60px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  
+  @include mobile {
+    margin-bottom: 30px;
+  }
+  
+  h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; }
+  p { color: #64748b; font-size: 18px; max-width: 700px; margin: 0 auto; }
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 80px;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+}
+
+.contactCards {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  background: #f8fafc;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  
+  .iconWrapper {
+    width: 64px;
+    height: 64px;
+    background: white;
+    color: var(--t5-primary);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+  
+  .cardBody {
+    h4 { font-size: 16px; color: #64748b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+    p { font-size: 20px; font-weight: 700; color: #1e293b; margin: 0; word-break: break-all; }
+    a { text-decoration: none; color: inherit; &:hover { color: var(--t5-primary); } }
+  }
+}
+
+.formBox {
+  background: white;
+  padding: 48px;
+  border-radius: 32px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  border: 1px solid #f1f5f9;
+  
+  @include mobile {
+    padding: 32px 24px;
+  }
+  
+  h3 { font-size: 24px; font-weight: 800; margin-bottom: 32px; text-align: center; }
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  label { font-size: 14px; font-weight: 600; color: #475569; }
+  
+  input, textarea {
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    font-size: 15px;
+    outline: none;
+    background: #f8fafc;
+    transition: all 0.2s;
+    
+    &:focus {
+      border-color: var(--t5-primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+    }
+  }
+  
+  textarea { min-height: 150px; resize: none; }
+}
+
+.btnSubmit {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--t5-primary);
+  color: white;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: var(--t5-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.4);
+  }
+}
+
+.mapWidget {
+  margin-top: 100px;
+  border-radius: 32px;
+  overflow: hidden;
+  height: 400px;
+  background: #f1f5f9;
+  
+  iframe { border: none; }
+}

@@ -1,6 +1,7 @@
 import { getUser, getArticleDetail } from "@/lib/api/portfolio";
 import { getTemplateArticleDetail } from "@/templates";
 import { notFound } from "next/navigation";
+import LanguageManager from "@/components/LanguageManager";
 
 export async function generateMetadata({ params }) {
     const { username, articleSlug } = await params;
@@ -32,7 +33,7 @@ export default async function UserArticleDetailPage({ params }) {
 
     return (
         <>
-            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${articleLang}";` }} suppressHydrationWarning />
+            <LanguageManager lang={articleLang} />
             <TemplateArticleDetail user={user} slug={articleSlug} />
         </>
     );

@@ -1,0 +1,242 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/mixins.scss';
+
+.servicesSection {
+  padding: 60px 0;
+  background: white;
+  
+  @include mobile {
+    padding: 40px 0;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  
+  @include mobile {
+    margin-bottom: 30px;
+  }
+  
+  .subTitle {
+    color: var(--t5-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: block;
+  }
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.serviceCard {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    border-color: var(--t5-primary);
+  }
+}
+
+.serviceIcon {
+  width: 60px;
+  height: 60px;
+  background: #f0f9ff;
+  color: var(--t5-primary);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.serviceTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.serviceDescription {
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.readMore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--t5-primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+// Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modalContent {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 32px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #f8fafc;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+}
+
+.modalBody {
+  padding: 60px 40px 40px;
+  text-align: center;
+  
+  @include mobile {
+    padding: 40px 24px 24px;
+  }
+}
+
+.modalIcon {
+  width: 80px;
+  height: 80px;
+  background: #f0f9ff;
+  color: var(--t5-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: var(--t5-primary);
+  margin: 20px auto;
+  border-radius: 3px;
+}
+
+.fullDescription {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #475569;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.stepsWrapper {
+  text-align: left;
+  margin-bottom: 40px;
+  
+  h4 {
+    margin-bottom: 24px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+}
+
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepItem {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  
+  .stepNumber {
+    width: 28px;
+    height: 28px;
+    background: var(--t5-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  p {
+    font-size: 15px;
+    color: #334155;
+    margin: 0;
+  }
+}
+
+.modalAction {
+  width: 100%;
+  background: var(--t5-primary);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: var(--t5-primary-dark);
+  }
+}
