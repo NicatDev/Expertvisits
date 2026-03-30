@@ -25,14 +25,31 @@ export default async function sitemap() {
             priority: u === '/' ? 1.0 : (item.priority || 0.8),
         });
 
-        // For homepage
+        // Add localized variants for Home/Root
         if (u === '/') {
+            // Platform localized home
             ['en', 'ru'].forEach(lang => {
                 urls.push({
                     url: `${BASE_URL}/${lang}/`,
                     lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                    changeFrequency: item.changefreq || 'daily',
+                    changeFrequency: 'daily',
                     priority: 0.9,
+                });
+            });
+            
+            // PORTFOLIO informational pages (since basePath is /u)
+            urls.push({
+                url: `${BASE_URL}/u`,
+                lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                changeFrequency: 'monthly',
+                priority: 0.9,
+            });
+            ['en', 'ru'].forEach(lang => {
+                urls.push({
+                    url: `${BASE_URL}/u/${lang}`,
+                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                    changeFrequency: 'monthly',
+                    priority: 0.8,
                 });
             });
         }
@@ -61,29 +78,26 @@ export default async function sitemap() {
         }
     });
 
-    // Dynamic URLs
+    // Dynamic URLs (Both Platform and Portfolio)
     sitemapData.dynamic_urls.forEach((item) => {
-        // Only include non-portfolio paths
-        if (!item.url.startsWith('/u/')) {
-            urls.push({
-                url: `${BASE_URL}${item.url}`,
-                lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                changeFrequency: item.changefreq || 'weekly',
-                priority: item.priority || 0.7,
-            });
+        urls.push({
+            url: `${BASE_URL}${item.url}`,
+            lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+            changeFrequency: item.changefreq || 'weekly',
+            priority: item.priority || 0.7,
+        });
 
-            // Add localized variants for articles
-            if (item.url.startsWith('/article/')) {
-                const pathWithoutSlash = item.url.startsWith('/') ? item.url.slice(1) : item.url;
-                ['en', 'ru'].forEach(lang => {
-                    urls.push({
-                        url: `${BASE_URL}/${lang}/${pathWithoutSlash}`,
-                        lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                        changeFrequency: item.changefreq || 'weekly',
-                        priority: 0.6,
-                    });
+        // Add localized variants for articles (Platform only)
+        if (item.url.startsWith('/article/')) {
+            const pathWithoutSlash = item.url.startsWith('/') ? item.url.slice(1) : item.url;
+            ['en', 'ru'].forEach(lang => {
+                urls.push({
+                    url: `${BASE_URL}/${lang}/${pathWithoutSlash}`,
+                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
+                    changeFrequency: 'weekly',
+                    priority: 0.6,
                 });
-            }
+            });
         }
     });
 
