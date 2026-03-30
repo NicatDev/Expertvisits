@@ -6,9 +6,13 @@ import { useTranslation } from '@/i18n/client';
 import { MapPin, Users, BookOpen, GraduationCap } from 'lucide-react';
 
 export default function UserCard({ user }) {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
 
-    const profession = user.profession_sub_category?.profession || user.profession_sub_category?.name || t('profile.not_set');
+    const profession = user.profession_sub_category?.[`profession_${i18n.language}`] 
+        || user.profession_sub_category?.[`name_${i18n.language}`] 
+        || user.profession_sub_category?.profession_az 
+        || user.profession_sub_category?.name_az 
+        || '';
 
     return (
         <Link href={`/user/${user.username}`} className={styles.card}>

@@ -172,7 +172,7 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
                     imageSrc={cropImageSrc}
                     onCropComplete={handleCropComplete}
                     onClose={handleCropCancel}
-                    aspectRatio={16 / 9}
+                    aspectRatio={undefined}
                 />
             )}
         </>

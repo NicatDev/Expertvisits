@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
-import { X, Check, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
+import { X, Check, RotateCw, ZoomIn, ZoomOut, RectangleHorizontal, Square, Circle } from 'lucide-react';
 import styles from './style.module.scss';
 
 /**
@@ -10,20 +10,21 @@ import styles from './style.module.scss';
  *   imageSrc - base64 or object URL of the image to crop
  *   onCropComplete - callback(croppedBlob, croppedUrl)
  *   onClose - close the modal
- *   aspectRatio - default 16/9 for article covers
+ *   aspectRatio - number or undefined for free crop. Defaults to undefined (free).
  *   cropShape - 'rect' or 'round'
  */
 export default function ImageCropModal({
     imageSrc,
     onCropComplete,
     onClose,
-    aspectRatio = 16 / 9,
+    aspectRatio,
     cropShape = 'rect'
 }) {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [currentAspect, setCurrentAspect] = useState(aspectRatio || undefined);
 
     const onCropChange = useCallback((crop) => setCrop(crop), []);
     const onZoomChange = useCallback((zoom) => setZoom(zoom), []);
@@ -44,6 +45,9 @@ export default function ImageCropModal({
         }
     }, [croppedAreaPixels, imageSrc, rotation, onCropComplete]);
 
+    // Aspect ratio presets (only shown when no fixed aspect was passed)
+    const showAspectPresets = !aspectRatio;
+
     return (
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -60,7 +64,7 @@ export default function ImageCropModal({
                         crop={crop}
                         zoom={zoom}
                         rotation={rotation}
-                        aspect={aspectRatio}
+                        aspect={currentAspect}
                         cropShape={cropShape}
                         onCropChange={onCropChange}
                         onZoomChange={onZoomChange}
@@ -88,10 +92,36 @@ export default function ImageCropModal({
                     </div>
 
                     <div className={styles.controlGroup}>
-                        <button onClick={() => setRotation(r => (r + 90) % 360)} title="Rotate">
+                        <button onClick={() => setRotation(r => (r + 90) % 360)} title="Fırlat">
                             <RotateCw size={18} />
                         </button>
                     </div>
+
+                    {showAspectPresets && (
+                        <div className={styles.controlGroup}>
+                            <button
+                                onClick={() => setCurrentAspect(undefined)}
+                                title="Sərbəst"
+                                className={!currentAspect ? styles.activeControl : ''}
+                            >
+                                <RectangleHorizontal size={18} />
+                            </button>
+                            <button
+                                onClick={() => setCurrentAspect(1)}
+                                title="1:1"
+                                className={currentAspect === 1 ? styles.activeControl : ''}
+                            >
+                                <Square size={18} />
+                            </button>
+                            <button
+                                onClick={() => setCurrentAspect(16 / 9)}
+                                title="16:9"
+                                className={currentAspect === 16/9 ? styles.activeControl : ''}
+                            >
+                                16:9
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.actions}>

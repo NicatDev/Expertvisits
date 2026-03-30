@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Edit2, Trash2, User } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
+import ImageCropModal from '@/components/ui/ImageCropModal';
 import styles from './style.module.scss';
 
 const ProfileHeader = ({
@@ -15,19 +16,44 @@ const ProfileHeader = ({
     const fileInputRef = useRef(null);
     const coverInputRef = useRef(null);
 
-    const handleFileChange = async (e, type) => {
+    // Crop state
+    const [cropModal, setCropModal] = useState({ isOpen: false, imageSrc: null, type: null }); // type: 'avatar' | 'cover'
+
+    const handleFileSelect = (e, type) => {
         const file = e.target.files[0];
         if (!file) return;
-        const formData = new FormData();
-        formData.append(type === 'avatar' ? 'avatar' : 'cover_image', file);
-        onUpdateProfile(formData);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setCropModal({ isOpen: true, imageSrc: reader.result, type });
+        };
+        reader.readAsDataURL(file);
+
+        // Reset input so same file can be re-selected
+        e.target.value = '';
     };
 
-    const [actionModal, setActionModal] = React.useState({ isOpen: false, type: null });
-    const [confirmationModal, setConfirmationModal] = React.useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+    const handleCropComplete = (croppedBlob, croppedUrl) => {
+        const fieldName = cropModal.type === 'avatar' ? 'avatar' : 'cover_image';
+        const fileName = cropModal.type === 'avatar' ? 'avatar.jpg' : 'cover.jpg';
+        const croppedFile = new File([croppedBlob], fileName, { type: 'image/jpeg' });
 
-    const [templateModalOpen, setTemplateModalOpen] = React.useState(false);
-    const [websiteData, setWebsiteData] = React.useState(null);
+        const formData = new FormData();
+        formData.append(fieldName, croppedFile);
+        onUpdateProfile(formData);
+
+        setCropModal({ isOpen: false, imageSrc: null, type: null });
+    };
+
+    const handleCropCancel = () => {
+        setCropModal({ isOpen: false, imageSrc: null, type: null });
+    };
+
+    const [actionModal, setActionModal] = useState({ isOpen: false, type: null });
+    const [confirmationModal, setConfirmationModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+
+    const [templateModalOpen, setTemplateModalOpen] = useState(false);
+    const [websiteData, setWebsiteData] = useState(null);
 
     React.useEffect(() => {
         if (onUpdateProfile) {
@@ -38,6 +64,7 @@ const ProfileHeader = ({
     }, [onUpdateProfile, templateModalOpen]);
 
     return (
+        <>
         <div className={styles.header}>
             {templateModalOpen && (
                 <div style={{ position: 'fixed', zIndex: 1000000 }}>
@@ -144,7 +171,7 @@ const ProfileHeader = ({
                             <Trash2 size={16} />
                         </div>
                     )}
-                    <input type="file" hidden ref={coverInputRef} onChange={(e) => handleFileChange(e, 'cover')} />
+                    <input type="file" accept="image/*" hidden ref={coverInputRef} onChange={(e) => handleFileSelect(e, 'cover')} />
                 </div>
             </div>
 
@@ -163,7 +190,7 @@ const ProfileHeader = ({
                     >
                         <Edit2 size={24} />
                     </div>
-                    <input type="file" hidden ref={fileInputRef} onChange={(e) => handleFileChange(e, 'avatar')} />
+                    <input type="file" accept="image/*" hidden ref={fileInputRef} onChange={(e) => handleFileSelect(e, 'avatar')} />
                 </div>
 
                 <div className={styles.names}>
@@ -197,7 +224,18 @@ const ProfileHeader = ({
                 </div>
             </div>
         </div>
+
+        {/* Image Crop Modal */}
+        {cropModal.isOpen && cropModal.imageSrc && (
+            <ImageCropModal
+                imageSrc={cropModal.imageSrc}
+                onCropComplete={handleCropComplete}
+                onClose={handleCropCancel}
+            />
+        )}
+        </>
     );
 };
 
 export default ProfileHeader;
+
