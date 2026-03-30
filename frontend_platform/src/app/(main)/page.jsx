@@ -10,7 +10,7 @@ import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
-import { Search, SlidersHorizontal, Check, ChevronDown } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, ChevronDown, Plus } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
 import PromoBanner from '@/components/widgets/PromoBanner';
@@ -143,14 +143,19 @@ export default function HomePage() {
                 <h1 className="visually-hidden">
                     {t('seo.home_h1', { defaultValue: 'Expert Visits - Professional Experts, Companies and Job Vacancies Platform' })}
                 </h1>
-                {/* 1. Create Post Section (Moved Top) */}
-                <div className={styles.createBox} onClick={handleCreateClick}>
-                    <div className={styles.placeholderInput}>
-                        {t('feed.placeholder')}
-                    </div>
+                {/* 1. Main Search Bar (Moved Top) */}
+                <div className={styles.createBox} style={{ cursor: 'text', padding: '12px 20px', display: 'flex', alignItems: 'center' }}>
+                    <Search size={22} color="#999" style={{ marginRight: '12px', flexShrink: 0 }} />
+                    <input
+                        type="text"
+                        placeholder={t('common.search', "Axtarış üçün nəsə yazın...")}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '15px', color: '#333' }}
+                    />
                 </div>
 
-                {/* 2. Controls Section (Filters, Search, Ordering) */}
+                {/* 2. Controls Section (Filters, Ordering) */}
                 <div className={styles.controlsBox}>
                     <div className={styles.leftGroup}>
                         {/* Filters */}
@@ -166,15 +171,12 @@ export default function HomePage() {
                             ))}
                         </div>
 
-                        {/* Search Input */}
-                        <div className={styles.searchWrapper}>
-                            <Search size={16} className={styles.searchIcon} />
-                            <input
-                                type="text"
-                                placeholder={t('common.search')}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
+                        {/* Create Post Button */}
+                        <div className={styles.createBtnWrapper}>
+                            <Button type="primary" onClick={handleCreateClick} style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '20px', padding: '8px 20px', fontWeight: '600' }}>
+                                <Plus size={18} strokeWidth={2.5} />
+                                {t('common.create_post', 'Post yarat')}
+                            </Button>
                         </div>
                     </div>
 
@@ -266,6 +268,9 @@ export default function HomePage() {
                         )}
                     </div>
                 </div>
+
+
+
 
                 {/* Feed Content */}
                 <h2 className="visually-hidden">

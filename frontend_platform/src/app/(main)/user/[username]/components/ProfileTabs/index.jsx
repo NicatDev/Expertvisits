@@ -13,7 +13,8 @@ const ProfileTabs = ({ username }) => {
     const isPosts = pathname.endsWith('/posts');
     const isVacancies = pathname.endsWith('/vacancies');
     const isServices = pathname.endsWith('/services');
-    const isAbout = !isPosts && !isVacancies && !isServices;
+    const isProjects = pathname.endsWith('/projects');
+    const isAbout = !isPosts && !isVacancies && !isServices && !isProjects;
 
     return (
         <div className={styles.tabs}>
@@ -27,7 +28,13 @@ const ProfileTabs = ({ username }) => {
                 href={`/user/${username}/services`}
                 className={isServices ? styles.activeTab : ''}
             >
-                {t('profile.tabs.services') || 'Services'}
+                {t('profile.tabs.services') || 'Xidmətlər'}
+            </Link>
+            <Link
+                href={`/user/${username}/projects`}
+                className={isProjects ? styles.activeTab : ''}
+            >
+                {t('profile.tabs.projects', 'Layihələr')}
             </Link>
             <Link
                 href={`/user/${username}/posts`}

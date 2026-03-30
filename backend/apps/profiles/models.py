@@ -85,3 +85,15 @@ class Service(models.Model):
     def __str__(self):
         return self.title
 
+class Project(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    date = models.DateField()
+    image = models.ImageField(upload_to='projects/images/', null=True, blank=True)
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return self.title

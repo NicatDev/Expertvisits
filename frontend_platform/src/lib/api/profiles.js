@@ -37,6 +37,12 @@ export const profiles = {
     updateService: (id, data) => api.put(`profiles/services/${id}/`, data),
     deleteService: (id) => api.delete(`profiles/services/${id}/`),
 
+    // Projects
+    getProjects: (params) => api.get('profiles/projects/', { params }),
+    addProject: (data) => api.post('profiles/projects/', data),
+    updateProject: (id, data) => api.put(`profiles/projects/${id}/`, data),
+    deleteProject: (id) => api.delete(`profiles/projects/${id}/`),
+
     // Profile Updates (Cover, etc.) - Actually this uses UserViewSet usually?
     // Or we might need a specific endpoint for cover image.
     // UserViewSet 'me' endpoint or patch user.

@@ -52,7 +52,7 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
     };
 
     const handleCropComplete = (croppedBlob, croppedUrl) => {
-        const croppedFile = new File([croppedBlob], 'cover.jpg', { type: 'image/jpeg' });
+        const croppedFile = new File([croppedBlob], `cover-${Date.now()}.png`, { type: 'image/png' });
         setArticleData({ ...articleData, image: croppedFile });
         setPreviewUrl(croppedUrl);
         setShowCropper(false);

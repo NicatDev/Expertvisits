@@ -91,7 +91,8 @@ export default function ProfileLayout({ children }) {
 
                 <div className={styles.tabs}>
                     <Link href="/profile" className={activeTab === 'about' ? styles.activeTab : ''}>{t('profile.tabs.about')}</Link>
-                    <Link href="/profile/services" className={activeTab === 'services' ? styles.activeTab : ''}>{t('profile.tabs.services') || 'Services'}</Link>
+                    <Link href="/profile/services" className={activeTab === 'services' ? styles.activeTab : ''}>{t('profile.tabs.services') || 'Xidmətlər'}</Link>
+                    <Link href="/profile/projects" className={activeTab === 'projects' ? styles.activeTab : ''}>{t('profile.tabs.projects', 'Layihələr')}</Link>
                     <Link href="/profile/posts" className={activeTab === 'posts' ? styles.activeTab : ''}>{t('profile.tabs.posts')}</Link>
                     <Link href="/profile/booking" className={activeTab === 'booking' ? styles.activeTab : ''}>{t('profile.tabs.booking')}</Link>
                     <Link href="/profile/vacancies" className={activeTab === 'vacancies' ? styles.activeTab : ''}>{t('profile.tabs.vacancies')}</Link>

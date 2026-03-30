@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.profiles.models import Experience, Education, Skill, QuickNote, Language, Certificate, Service
+from apps.profiles.models import Experience, Education, Skill, QuickNote, Language, Certificate, Service, Project
 
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,3 +38,8 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ['id', 'title', 'description', 'steps']
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'title', 'description', 'date', 'image']

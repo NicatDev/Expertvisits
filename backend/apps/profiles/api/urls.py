@@ -6,6 +6,7 @@ from .views.notes import QuickNoteListCreateAPIView, QuickNoteDetailAPIView
 from .views.languages import LanguageListCreateAPIView, LanguageDetailAPIView
 from .views.certificates import CertificateListCreateAPIView, CertificateDetailAPIView
 from .views.services import ServiceListCreateAPIView, ServiceDetailAPIView
+from .views.projects import ProjectListCreateAPIView, ProjectDetailAPIView
 
 urlpatterns = [
     path('experience/', ExperienceListCreateAPIView.as_view(), name='experience-list-create'),
@@ -28,4 +29,7 @@ urlpatterns = [
     
     path('services/', ServiceListCreateAPIView.as_view(), name='service-list-create'),
     path('services/<int:pk>/', ServiceDetailAPIView.as_view(), name='service-detail'),
+
+    path('projects/', ProjectListCreateAPIView.as_view(), name='project-list-create'),
+    path('projects/<int:pk>/', ProjectDetailAPIView.as_view(), name='project-detail'),
 ]

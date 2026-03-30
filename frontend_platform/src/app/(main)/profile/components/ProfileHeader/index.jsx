@@ -18,6 +18,7 @@ const ProfileHeader = ({
 
     // Crop state
     const [cropModal, setCropModal] = useState({ isOpen: false, imageSrc: null, type: null }); // type: 'avatar' | 'cover'
+    const cropTypeRef = useRef(null);
 
     const handleFileSelect = (e, type) => {
         const file = e.target.files[0];
@@ -25,6 +26,7 @@ const ProfileHeader = ({
 
         const reader = new FileReader();
         reader.onload = () => {
+            cropTypeRef.current = type;
             setCropModal({ isOpen: true, imageSrc: reader.result, type });
         };
         reader.readAsDataURL(file);
@@ -34,19 +36,22 @@ const ProfileHeader = ({
     };
 
     const handleCropComplete = (croppedBlob, croppedUrl) => {
-        const fieldName = cropModal.type === 'avatar' ? 'avatar' : 'cover_image';
-        const fileName = cropModal.type === 'avatar' ? 'avatar.jpg' : 'cover.jpg';
-        const croppedFile = new File([croppedBlob], fileName, { type: 'image/jpeg' });
+        const currentType = cropTypeRef.current;
+        const fieldName = currentType === 'avatar' ? 'avatar' : 'cover_image';
+        const fileName = currentType === 'avatar' ? `avatar-${Date.now()}.png` : `cover-${Date.now()}.png`;
+        const croppedFile = new File([croppedBlob], fileName, { type: 'image/png' });
 
         const formData = new FormData();
         formData.append(fieldName, croppedFile);
         onUpdateProfile(formData);
 
         setCropModal({ isOpen: false, imageSrc: null, type: null });
+        cropTypeRef.current = null;
     };
 
     const handleCropCancel = () => {
         setCropModal({ isOpen: false, imageSrc: null, type: null });
+        cropTypeRef.current = null;
     };
 
     const [actionModal, setActionModal] = useState({ isOpen: false, type: null });
