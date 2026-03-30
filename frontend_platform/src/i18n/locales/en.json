@@ -13,6 +13,7 @@
         "rights_reserved": "All rights reserved."
     },
     "common": {
+        "create_post":"Create Post",
         "loading": "Loading...",
         "save": "Save",
         "cancel": "Cancel",
