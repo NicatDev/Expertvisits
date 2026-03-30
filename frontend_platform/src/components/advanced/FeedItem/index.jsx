@@ -89,7 +89,9 @@ const FeedItem = ({ item, onDelete }) => {
     };
 
     const handleShare = () => {
-        const url = `${window.location.origin}/post/${typeStr}/${localItem.id}`;
+        const url = isArticle && localItem.slug
+            ? `${window.location.origin}/article/${localItem.slug}`
+            : `${window.location.origin}/post/${typeStr}/${localItem.id}`;
         navigator.clipboard.writeText(url);
         toast.info(t('feed_item.toast.link_copied'));
     };
