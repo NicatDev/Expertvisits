@@ -95,12 +95,12 @@ class User(AbstractUser):
             old = User.objects.filter(pk=self.pk).first()
             if old:
                 if old.avatar != self.avatar:
-                     compress_image(self.avatar)
+                     compress_image(self.avatar, format='PNG')
                 if old.cover_image != self.cover_image:
-                     compress_image(self.cover_image)
+                     compress_image(self.cover_image, format='WEBP')
         else:
-             compress_image(self.avatar)
-             compress_image(self.cover_image)
+             compress_image(self.avatar, format='PNG')
+             compress_image(self.cover_image, format='WEBP')
         super().save(*args, **kwargs)
 
 class VerificationCode(models.Model):

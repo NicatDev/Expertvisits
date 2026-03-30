@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase, Sidebar } from 'lucide-react';
+import { X, CheckCircle, LayoutTemplate, PaintBucket, Briefcase, Sidebar, Stethoscope } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { websites_api, content, profiles } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -68,7 +68,7 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
         setIsFetching(true);
         try {
             const { data } = await websites_api.getTemplate();
-            if (data?.template_id) setSelected(data.template_id);
+            if (data?.template_id) setSelected(parseInt(data.template_id, 10));
             if (data?.is_active) setIsActive(true);
         } catch (error) {
             console.error("Failed to fetch current template", error);
@@ -220,6 +220,15 @@ export default function TemplateSelectionModal({ isOpen, onClose }) {
                                         <div className={styles.iconBox}><Sidebar size={24}/></div>
                                         <span className={styles.templateName}>{t('widgets.template4_name') || 'Animated Sidebar'}</span>
                                         {selected === 4 && <CheckCircle className={styles.checkIcon} size={20}/>}
+                                    </div>
+
+                                    <div 
+                                        className={`${styles.option} ${selected === 5 ? styles.active : ''}`}
+                                        onClick={() => setSelected(5)}
+                                    >
+                                        <div className={styles.iconBox}><Stethoscope size={24}/></div>
+                                        <span className={styles.templateName}>{t('widgets.template5_name') || 'Medical'}</span>
+                                        {selected === 5 && <CheckCircle className={styles.checkIcon} size={20}/>}
                                     </div>
                                 </div>
                             )}

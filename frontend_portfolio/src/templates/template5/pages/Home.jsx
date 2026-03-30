@@ -28,6 +28,7 @@ export default function Home({ user }) {
     if (!isMounted) return null;
 
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
+    const username = profile.username;
     const specialist = profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession || 'Specialist Physician';
 
     return (

@@ -73,7 +73,6 @@ export default function ArticleDetail({ user, slug }) {
                 <div className={styles.articleLayout}>
                     <div className={styles.mainContentDetail}>
                         <div className={styles.articleHeader}>
-                            <span className={styles.categoryBadge}>{t('feed.article')}</span>
                             <h1>{article.title}</h1>
                             <div className={styles.meta}>
                                 <div className={styles.item}><Calendar size={18} /> {new Date(article.created_at).toLocaleDateString()}</div>
@@ -89,20 +88,7 @@ export default function ArticleDetail({ user, slug }) {
 
                         <div className={styles.articleBody} dangerouslySetInnerHTML={{ __html: article.body }} />
                         
-                        <div className={styles.articleFooter}>
-                           <div className={styles.tags}>
-                               <span>#Təbabət</span>
-                               <span>#Səhiyyə</span>
-                               <span>#Sağlamlıq</span>
-                           </div>
-                           <div className={styles.shareRow}>
-                               <span>{t('portfolio.shareThis')}:</span>
-                               <div className={styles.shareIcons}>
-                                   <Share2 size={20} />
-                                   <LinkIcon size={20} />
-                               </div>
-                           </div>
-                        </div>
+                     
                     </div>
 
                     {/* Sidebar */}
