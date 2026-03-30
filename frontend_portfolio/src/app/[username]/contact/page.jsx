@@ -34,14 +34,22 @@ export async function generateMetadata({ params }) {
             ogDesc = `Get in touch with ${fullName} for work opportunities and collaborations.`;
         }
         
+        const shareImage = profile.avatar || '/logo.png';
+        
         return {
             title: title,
             description: description,
             openGraph: {
                 title: title,
                 description: ogDesc,
-                images: [{ url: '/logo.png' }],
+                images: [{ url: shareImage }],
                 type: 'website',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: title,
+                description: ogDesc,
+                images: [shareImage],
             }
         };
     } catch (e) {

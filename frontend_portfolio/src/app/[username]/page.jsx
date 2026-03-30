@@ -41,20 +41,22 @@ export async function generateMetadata({ params }) {
         const title = `${fullName}${titleSuffix}`;
         const description = profile.summary ? profile.summary.substring(0, 160) : defaultDesc;
         
+        const shareImage = profile.avatar || '/logo.png';
+        
         return {
             title,
             description,
             openGraph: {
                 title,
                 description,
-                images: [{ url: '/logo.png' }],
+                images: [{ url: shareImage }],
                 type: 'website',
             },
             twitter: {
                 card: 'summary_large_image',
                 title,
                 description,
-                images: ['/logo.png'],
+                images: [shareImage],
             }
         };
     } catch (e) {

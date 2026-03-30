@@ -8,7 +8,13 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/articles.module.scss';
 
 export default function Articles({ user }) {
-    const { t } = useTranslation();
+    const userLang = user?.user?.language || 'az';
+    const { t } = useTranslation(undefined, { lng: userLang });
+    const [isMounted, setIsMounted] = useState(false);
+    
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -71,6 +77,8 @@ export default function Articles({ user }) {
             fetchArticles(pagination.previous, searchTerm);
         }
     };
+
+    if (!isMounted) return null;
 
     return (
         <div className={styles.articlesWrapper}>

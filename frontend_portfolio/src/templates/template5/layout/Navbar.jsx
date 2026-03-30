@@ -8,7 +8,8 @@ import { useTranslation } from '@/i18n/client';
 import styles from '../styles/layout.module.scss';
 
 export default function Navbar({ user }) {
-    const { t } = useTranslation();
+    const userLang = user?.user?.language || 'az';
+    const { t } = useTranslation(undefined, { lng: userLang });
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -17,13 +18,18 @@ export default function Navbar({ user }) {
     const username = profile.username;
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || username;
 
+    const [isMounted, setIsMounted] = useState(false);
+    
     useEffect(() => {
+        setIsMounted(true);
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    if (!isMounted) return null;
 
     const navLinks = [
         { name: t('nav.home'), href: `/${username}` },

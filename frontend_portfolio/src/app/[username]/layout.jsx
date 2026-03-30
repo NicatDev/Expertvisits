@@ -22,12 +22,38 @@ export async function generateMetadata({ params }) {
         const suffix = 'Expert Visits';
         const defaultDesc = userLang === 'az' ? `${fullName}-in rəsmi şəxsi portfeli.` : (userLang === 'ru' ? `Официальное персональное портфолио ${fullName}.` : `Official personal portfolio of ${fullName}.`);
 
+        const shareImage = profile.avatar || '/logo.png';
+        
         return {
             title: `${fullName} | ${suffix}`,
             description: resUser.data?.hero?.subtitle || defaultDesc,
+            icons: {
+                icon: '/logo.png',
+                shortcut: '/logo.png',
+                apple: '/logo.png',
+            },
+            openGraph: {
+                title: `${fullName} | ${suffix}`,
+                description: resUser.data?.hero?.subtitle || defaultDesc,
+                images: [{ url: shareImage }],
+                type: 'website',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: `${fullName} | ${suffix}`,
+                description: resUser.data?.hero?.subtitle || defaultDesc,
+                images: [shareImage],
+            }
         };
     } catch {
-        return { title: `${username} | Expert Visits` };
+        return { 
+            title: `${username} | Expert Visits`,
+            icons: {
+                icon: '/logo.png',
+                shortcut: '/logo.png',
+                apple: '/logo.png',
+            }
+        };
     }
 }
 

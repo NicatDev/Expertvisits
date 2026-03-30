@@ -17,7 +17,7 @@ export default function Home({ user }) {
     const skills = user.skills || [];
     const languages = user.languages || [];
     const certificates = user.certificates || [];
-    const { t, i18n } = useTranslation();
+    const { t, i18n } = useTranslation(undefined, { lng: profile.language || 'az' });
     const currentLang = i18n.language || 'az';
     const [isMounted, setIsMounted] = useState(false);
     

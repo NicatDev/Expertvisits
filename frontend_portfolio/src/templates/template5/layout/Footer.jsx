@@ -1,15 +1,23 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, Globe } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import styles from '../styles/layout.module.scss';
 
 export default function Footer({ user }) {
-    const { t } = useTranslation();
+    const userLang = user?.user?.language || 'az';
+    const { t } = useTranslation(undefined, { lng: userLang });
+    const [isMounted, setIsMounted] = useState(false);
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     const profile = user?.user || {};
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
+
+    if (!isMounted) return null;
 
     return (
         <footer className={styles.footer}>

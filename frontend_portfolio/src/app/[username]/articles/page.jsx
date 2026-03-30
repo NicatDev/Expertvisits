@@ -19,11 +19,20 @@ export async function generateMetadata({ params }) {
     
     const title = lng === 'az' ? "Məqalələr | Portfel" : (lng === 'ru' ? "Статьи | Портфолио" : "Articles | Portfolio");
     
+    let shareImage = '/logo.png';
+    try {
+        const user = await getUser(username);
+        if (user?.avatar) shareImage = user.avatar;
+    } catch (e) {}
+
     return {
         title: title,
         robots: {
             index: false,
             follow: false,
+        },
+        openGraph: {
+            images: [{ url: shareImage }],
         }
     };
 }
