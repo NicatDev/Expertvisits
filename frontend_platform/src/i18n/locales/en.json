@@ -1,4 +1,17 @@
 {
+    "footer": {
+        "description": "Connecting professionals with opportunities worldwide. Share your expertise, take quizzes, and grow.",
+        "legal": "Legal",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "support": "Support",
+        "companies": "Companies",
+        "vacancies": "Vacancies",
+        "experts": "Experts",
+        "stay_connected": "Stay Connected",
+        "updates_desc": "Be the first to know about platform updates.",
+        "rights_reserved": "All rights reserved."
+    },
     "common": {
         "loading": "Loading...",
         "save": "Save",

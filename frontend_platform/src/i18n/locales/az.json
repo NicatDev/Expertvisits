@@ -1,4 +1,17 @@
 {
+    "footer": {
+        "description": "Dünya üzrə mütəxəssisləri fürsətlərlə birləşdirir. Təcrübəni paylaş, testlər həll et və inkişaf et.",
+        "legal": "Hüquqi",
+        "privacy": "Məxfilik siyasəti",
+        "terms": "İstifadə Şərtləri",
+        "support": "Dəstək",
+        "companies": "Şirkətlər",
+        "vacancies": "Vakansiyalar",
+        "experts": "Ekspertlər",
+        "stay_connected": "Bizimlə qalın",
+        "updates_desc": "Platformadakı yenilikləri ilk hiss edən siz olun.",
+        "rights_reserved": "Bütün hüquqlar qorunur."
+    },
     "common": {
         "loading": "Yüklənir...",
         "save": "Yadda saxla",
