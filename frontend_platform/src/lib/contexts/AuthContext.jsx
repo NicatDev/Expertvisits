@@ -58,6 +58,8 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         auth.logout();
         setUser(null);
+        router.push('/');
+        setTimeout(() => router.refresh(), 100);
     };
 
     const loginWithTokens = (access, refresh, userData) => {

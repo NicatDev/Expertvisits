@@ -21,7 +21,8 @@
         "search": "Search...",
         "previous": "Previous",
         "next": "Next",
-        "present": "Present"
+        "present": "Present",
+        "change": "Change"
     },
     "nav": {
         "home": "Home",
@@ -329,7 +330,8 @@
             "posts": "Posts",
             "booking": "Booking",
             "vacancies": "My Vacancies",
-            "applications": "My Applications"
+            "applications": "My Applications",
+            "projects": "Projects"
         },
         "personal_info": "Personal Information",
         "sections": {
@@ -557,6 +559,19 @@
             "confirm": "Confirm Password",
             "mismatch": "Passwords don't match",
             "error": "Failed to change password"
+        },
+        "project": {
+            "add": "Add Project",
+            "edit": "Edit Project",
+            "add_btn": "Add Project",
+            "no_projects": "No projects yet.",
+            "no_image": "No Image",
+            "read_more": "Read more",
+            "title_label": "Title",
+            "description_label": "Description",
+            "date_label": "Date",
+            "image_label": "Image (Optional)",
+            "upload_image": "Upload Image"
         }
     },
     "vacancy_detail": {
@@ -781,7 +796,8 @@
         "tabs": {
             "about": "About",
             "posts": "Posts",
-            "vacancies": "Vacancies"
+            "vacancies": "Vacancies",
+            "projects": "Projects"
         },
         "info_title": "Information",
         "labels": {

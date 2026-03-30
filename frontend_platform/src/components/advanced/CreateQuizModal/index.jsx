@@ -76,14 +76,18 @@ export default function CreateQuizModal({ isOpen, onClose, onSuccess, initialDat
     const handleSubmit = async () => {
         setLoading(true);
         try {
+            if (!quizData.title.trim()) {
+                toast.error(t('create_modal.title_required', { defaultValue: "Başlıq mütləqdir" }));
+                setLoading(false); return;
+            }
             if (quizData.questions.length === 0) {
-                toast.error("Please add at least one question.");
+                toast.error(t('create_modal.question_required', { defaultValue: "Ən azı 1 sual əlavə edilməlidir" }));
                 setLoading(false); return;
             }
             for (let i = 0; i < quizData.questions.length; i++) {
                 const q = quizData.questions[i];
-                if (!q.text.trim()) { toast.error(`Question ${i + 1} text required`); setLoading(false); return; }
-                if (!q.choices.some(c => c.is_correct)) { toast.error(`Question ${i + 1} needs correct answer`); setLoading(false); return; }
+                if (!q.text.trim()) { toast.error(`${i + 1}-ci sualın mətni boş ola bilməz`); setLoading(false); return; }
+                if (!q.choices.some(c => c.is_correct)) { toast.error(`${i + 1}-ci sual üçün ən azı 1 doğru variant seçilməlidir`); setLoading(false); return; }
             }
 
             if (initialData) {
@@ -92,12 +96,13 @@ export default function CreateQuizModal({ isOpen, onClose, onSuccess, initialDat
                 await content.createQuiz(quizData);
             }
 
-            toast.success(initialData ? 'Quiz updated!' : 'Quiz created successfully!');
+            toast.success(initialData ? t('common.updated_success', { defaultValue: 'Yeniləndi!' }) : t('common.created_success', { defaultValue: 'Uğurla yaradıldı!' }));
             onSuccess();
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error("Operation failed");
+            const errorMsg = err.response?.data?.title?.[0] || err.response?.data?.detail || t('common.operation_failed', { defaultValue: "Əməliyyat xətası baş verdi" });
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }

@@ -10,13 +10,11 @@ import Link from 'next/link';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
 import Pagination from '@/components/ui/Pagination';
 
-export default function ExpertsPage() {
+function ExpertsPageContent() {
     const { t } = useTranslation('common');
     const { user } = useAuth();
-
+    
     // Auth Check
-
-
     const [filters, setFilters] = useState({
         search: '',
         skill: '',
@@ -78,7 +76,6 @@ export default function ExpertsPage() {
         );
     }
 
-
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -106,5 +103,12 @@ export default function ExpertsPage() {
             </div>
         </div>
     );
-  
+}
+
+export default function ExpertsPage() {
+    return (
+        <React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center' }}>Loading...</div>}>
+            <ExpertsPageContent />
+        </React.Suspense>
+    );
 }

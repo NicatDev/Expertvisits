@@ -14,15 +14,24 @@ import { toast } from 'react-toastify';
 // Local Form Modal wrapper 
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
     const { t } = useTranslation('common');
+    const formId = "modal-form-" + Math.random().toString(36).substr(2, 9);
+
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={title} bodyStyle={bodyStyle}>
-            <form onSubmit={onSubmit}>
+        <Modal 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            title={title} 
+            bodyStyle={bodyStyle}
+            footer={
+                <>
+                    <Button type="default" onClick={onClose} disabled={loading}>{t('profile_modals.cancel') || 'Cancel'}</Button>
+                    <Button type="primary" htmlType="submit" form={formId} loading={loading}>{t('profile_modals.save') || 'Save'}</Button>
+                </>
+            }
+        >
+            <form id={formId} onSubmit={onSubmit}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {children}
-                </div>
-                <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                    <Button type="default" onClick={onClose} disabled={loading}>{t('profile_modals.cancel') || 'Cancel'}</Button>
-                    <Button type="primary" htmlType="submit" loading={loading}>{t('profile_modals.save') || 'Save'}</Button>
                 </div>
             </form>
         </Modal>
@@ -93,10 +102,10 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
 
     return (
         <>
-            <FormModal isOpen={isOpen} onClose={onClose} title={initialData ? t('profile.tabs.projects') + ' Edit' : t('profile.tabs.projects') + ' ' + t('profile_modals.service.add', 'Add')} onSubmit={handleSubmit} loading={loading}>
-                <Input label={t('profile_modals.service.title') || 'Title'} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+            <FormModal isOpen={isOpen} onClose={onClose} title={initialData ? t('profile_modals.project.edit') : t('profile_modals.project.add')} onSubmit={handleSubmit} loading={loading}>
+                <Input label={t('profile_modals.project.title_label')} value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
                 <div style={{ marginBottom: '8px' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.service.description') || 'Description'}</label>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.project.description_label')}</label>
                     <textarea 
                         style={{ width: '100%', padding: '8px 12px', border: '1px solid #d9d9d9', borderRadius: '6px', minHeight: '80px', fontFamily: 'inherit' }}
                         value={formData.description}
@@ -104,16 +113,16 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
                         required
                     />
                 </div>
-                <Input type="date" label={t('profile_modals.experience.start') || 'Date'} value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
+                <Input type="date" label={t('profile_modals.project.date_label')} value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
 
                 <div style={{ marginTop: '10px' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>Şəkil (Opsional)</label>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.project.image_label')}</label>
                     {imagePreview ? (
-                        <div style={{ position: 'relative', width: '100%', height: '200px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #ddd' }}>
-                            <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '8px' }}>
-                                <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: 'white', border: 'none', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>Dəyiş</button>
-                                <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); }} style={{ background: '#ff4d4f', color: 'white', border: 'none', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>Sil</button>
+                        <div style={{ position: 'relative', width: '100%', height: '200px', borderRadius: '12px', border: '1px solid #ddd', padding: '12px', background: '#f9f9f9' }}>
+                            <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '6px' }} />
+                            <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: '8px' }}>
+                                <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: 'white', border: 'none', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>{t('common.change')}</button>
+                                <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); }} style={{ background: '#ff4d4f', color: 'white', border: 'none', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>{t('common.delete')}</button>
                             </div>
                         </div>
                     ) : (
@@ -121,7 +130,7 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
                             onClick={() => fileInputRef.current?.click()}
                             style={{ width: '100%', height: '150px', border: '2px dashed #d9d9d9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#fafafa', color: '#888' }}
                         >
-                            + Şəkil Yüklə
+                            + {t('profile_modals.project.upload_image')}
                         </div>
                     )}
                     <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={handleFileSelect} />
@@ -133,7 +142,7 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
                     imageSrc={cropModal.imageSrc}
                     onCropComplete={handleCropComplete}
                     onClose={() => setCropModal({ isOpen: false, imageSrc: null })}
-                    aspectRatio={16/9}
+                    aspectRatio={1}
                 />
             )}
         </>
@@ -211,18 +220,18 @@ export default function ProjectsPage() {
             <div className={styles.section} style={{ padding: '0', background: 'transparent', boxShadow: 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', margin: 0 }}>
-                        {t('profile.tabs.projects', 'Layihələr')}
+                        {t('profile.tabs.projects')}
                     </h2>
                     {isOwner && (
                         <button onClick={() => openModal('project')} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#2563eb', color: 'white', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: '500', transition: 'background 0.2s' }}>
-                            <span style={{ fontSize: '1.2rem' }}>+</span> Layihə əlavə et
+                            <span style={{ fontSize: '1.2rem' }}>+</span> {t('profile_modals.project.add_btn')}
                         </button>
                     )}
                 </div>
 
                 {projects.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px', background: 'white', borderRadius: '12px', color: '#6b7280' }}>
-                        Layihə yoxdur.
+                        {t('profile_modals.project.no_projects')}
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
@@ -238,7 +247,7 @@ export default function ProjectsPage() {
                                     {item.image ? (
                                         <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     ) : (
-                                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>No Image</div>
+                                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>{t('profile_modals.project.no_image')}</div>
                                     )}
                                     {isOwner && (
                                         <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '8px' }}>
@@ -254,7 +263,7 @@ export default function ProjectsPage() {
                                         {item.description}
                                     </p>
                                     <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
-                                        <span style={{ color: '#2563eb', fontWeight: '500', fontSize: '0.9rem' }}>Ətraflı bax →</span>
+                                        <span style={{ color: '#2563eb', fontWeight: '500', fontSize: '0.9rem' }}>{t('profile_modals.project.read_more')} →</span>
                                     </div>
                                 </div>
                             </div>
@@ -280,14 +289,14 @@ export default function ProjectsPage() {
 
             {/* Detail View Modal */}
             {viewModalProject && (
-                <Modal isOpen={!!viewModalProject} onClose={closeViewModal} title={viewModalProject.title} bodyStyle={{ padding: 0 }}>
+                <Modal isOpen={!!viewModalProject} onClose={closeViewModal} title={viewModalProject.title} bodyStyle={{ padding: '20px' }}>
                     {viewModalProject.image && (
-                        <div style={{ width: '100%', maxHeight: '400px', overflow: 'hidden', background: '#f3f4f6' }}>
-                            <img src={viewModalProject.image} alt={viewModalProject.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                        <div style={{ width: '100%', maxHeight: '400px', overflow: 'hidden', background: '#f3f4f6', borderRadius: '12px', marginBottom: '20px' }}>
+                            <img src={viewModalProject.image} alt={viewModalProject.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
                         </div>
                     )}
-                    <div style={{ padding: '24px' }}>
-                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>Tarix: {viewModalProject.date}</div>
+                    <div style={{ padding: '0 4px' }}>
+                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>{t('profile_modals.project.date_label')}: {viewModalProject.date}</div>
                         <p style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: 0 }}>{viewModalProject.description}</p>
                     </div>
                 </Modal>

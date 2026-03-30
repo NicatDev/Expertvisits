@@ -21,7 +21,8 @@
         "search": "Axtar...",
         "previous": "Geriyə",
         "next": "Növbəti",
-        "present": "Davam edir"
+        "present": "Davam edir",
+        "change": "Dəyiş"
     },
     "nav": {
         "home": "Ana Səhifə",
@@ -333,7 +334,8 @@
             "posts": "Paylaşımlar",
             "booking": "Randevular",
             "vacancies": "Vakansiyalarım",
-            "applications": "Müraciətlər"
+            "applications": "Müraciətlər",
+            "projects": "Layihələr"
         },
         "personal_info": "Şəxsi Məlumatlar",
         "sections": {
@@ -766,13 +768,27 @@
             "confirm": "Şifrəni təsdiqlə",
             "mismatch": "Şifrələr uyğun gəlmir",
             "error": "Şifrəni dəyişmək mümkün olmadı"
+        },
+        "project": {
+            "add": "Layihə əlavə et",
+            "edit": "Layihəni yenilə",
+            "add_btn": "Layihə əlavə et",
+            "no_projects": "Hələ layihə yoxdur.",
+            "no_image": "Şəkil yoxdur",
+            "read_more": "Ətraflı bax",
+            "title_label": "Başlıq",
+            "description_label": "Məlumat",
+            "date_label": "Tarix",
+            "image_label": "Şəkil (Opsional)",
+            "upload_image": "Şəkil Yüklə"
         }
     },
     "public_profile": {
         "tabs": {
             "about": "Haqqında",
             "posts": "Paylaşımlar",
-            "vacancies": "Vakansiyalar"
+            "vacancies": "Vakansiyalar",
+            "projects": "Layihələr"
         },
         "info_title": "Məlumat",
         "labels": {

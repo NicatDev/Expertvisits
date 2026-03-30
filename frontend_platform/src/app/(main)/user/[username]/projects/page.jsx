@@ -42,13 +42,13 @@ export default function UserProjectsPage() {
             <div className={styles.section} style={{ padding: '0', background: 'transparent', border: 'none' }}>
                 <div className={styles.sectionHeader} style={{ marginBottom: '20px', paddingBottom: '0', border: 'none' }}>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#111827', margin: 0 }}>
-                        {t('profile.tabs.projects', 'Layihələr')}
+                        {t('profile.tabs.projects')}
                     </h2>
                 </div>
 
                 {projects.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px', background: 'white', borderRadius: '12px', color: '#6b7280' }}>
-                        Layihə yoxdur.
+                        {t('profile_modals.project.no_projects')}
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
@@ -64,7 +64,7 @@ export default function UserProjectsPage() {
                                     {item.image ? (
                                         <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     ) : (
-                                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>No Image</div>
+                                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>{t('profile_modals.project.no_image')}</div>
                                     )}
                                 </div>
                                 <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -74,7 +74,7 @@ export default function UserProjectsPage() {
                                         {item.description}
                                     </p>
                                     <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
-                                        <span style={{ color: '#2563eb', fontWeight: '500', fontSize: '0.9rem' }}>Ətraflı bax →</span>
+                                        <span style={{ color: '#2563eb', fontWeight: '500', fontSize: '0.9rem' }}>{t('profile_modals.project.read_more')} →</span>
                                     </div>
                                 </div>
                             </div>
@@ -85,14 +85,14 @@ export default function UserProjectsPage() {
 
             {/* Detail View Modal */}
             {viewModalProject && (
-                <Modal isOpen={!!viewModalProject} onClose={closeViewModal} title={viewModalProject.title} bodyStyle={{ padding: 0 }}>
+                <Modal isOpen={!!viewModalProject} onClose={closeViewModal} title={viewModalProject.title} bodyStyle={{ padding: '20px' }}>
                     {viewModalProject.image && (
-                        <div style={{ width: '100%', maxHeight: '400px', overflow: 'hidden', background: '#f3f4f6' }}>
-                            <img src={viewModalProject.image} alt={viewModalProject.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                        <div style={{ width: '100%', maxHeight: '400px', overflow: 'hidden', background: '#f3f4f6', borderRadius: '12px', marginBottom: '20px' }}>
+                            <img src={viewModalProject.image} alt={viewModalProject.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
                         </div>
                     )}
-                    <div style={{ padding: '24px' }}>
-                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>Tarix: {viewModalProject.date}</div>
+                    <div style={{ padding: '0 4px' }}>
+                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>{t('profile_modals.project.date_label')}: {viewModalProject.date}</div>
                         <p style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: 0 }}>{viewModalProject.description}</p>
                     </div>
                 </Modal>

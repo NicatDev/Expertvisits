@@ -7,15 +7,24 @@ import { useTranslation } from '@/i18n/client';
 // Reusable Form Modal Wrapper
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
     const { t } = useTranslation('common');
+    const formId = "modal-form-" + Math.random().toString(36).substr(2, 9);
+    
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={title} bodyStyle={bodyStyle}>
-            <form onSubmit={onSubmit}>
+        <Modal 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            title={title} 
+            bodyStyle={bodyStyle}
+            footer={
+                <>
+                    <Button type="default" onClick={onClose} disabled={loading}>{t('profile_modals.cancel')}</Button>
+                    <Button type="primary" htmlType="submit" form={formId} loading={loading}>{t('profile_modals.save')}</Button>
+                </>
+            }
+        >
+            <form id={formId} onSubmit={onSubmit}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {children}
-                </div>
-                <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                    <Button type="default" onClick={onClose} disabled={loading}>{t('profile_modals.cancel')}</Button>
-                    <Button type="primary" htmlType="submit" loading={loading}>{t('profile_modals.save')}</Button>
                 </div>
             </form>
         </Modal>

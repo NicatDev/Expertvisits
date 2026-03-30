@@ -21,7 +21,8 @@
         "search": "Поиск...",
         "previous": "Назад",
         "next": "Вперед",
-        "present": "Настоящее время"
+        "present": "Настоящее время",
+        "change": "Изменить"
     },
     "nav": {
         "home": "Главная",
@@ -333,7 +334,8 @@
             "posts": "Публикации",
             "booking": "Бронирование",
             "vacancies": "Мои вакансии",
-            "applications": "Мои отклики"
+            "applications": "Мои отклики",
+            "projects": "Проекты"
         },
         "personal_info": "Личная информация",
         "sections": {
@@ -381,15 +383,6 @@
         },
         "not_set": "Не указано",
         "professional": "Профессионал",
-        "days": {
-            "Monday": "Понедельник",
-            "Tuesday": "Вторник",
-            "Wednesday": "Среда",
-            "Thursday": "Четверг",
-            "Friday": "Пятница",
-            "Saturday": "Суббота",
-            "Sunday": "Воскресенье"
-        },
         "booking": {
             "availability": "Доступность",
             "calendar": "Календарь",
@@ -547,13 +540,26 @@
             "confirm": "Подтвердите пароль",
             "mismatch": "Пароли не совпадают",
             "error": "Ошибка смены пароля"
+        },
+        "project": {
+            "add": "Добавить проект",
+            "edit": "Изменить проект",
+            "add_btn": "Добавить проект",
+            "no_projects": "Пока нет проектов.",
+            "no_image": "Без картинки",
+            "read_more": "Подробнее",
+            "title_label": "Название",
+            "description_label": "Описание",
+            "date_label": "Дата",
+            "image_label": "Картинка (необязательно)",
+            "upload_image": "Загрузить картинку"
         }
     },
     "vacancy_detail": {
         "apply_now": "Откликнуться",
         "applied": "Вы откликнулись",
         "share": "Поделиться",
-        "applicants": "Соискатели",
+        "applicants": "Кандидаты",
         "applicants_modal": {
             "title": "Соискатели",
             "loading": "Загрузка...",
@@ -581,7 +587,6 @@
         "job_type": "Тип занятости",
         "work_mode": "Режим работы",
         "industry": "Индустрия",
-        "applicants": "Кандидаты",
         "loading_applicants": "Загрузка кандидатов...",
         "no_applicants": "Откликов пока нет.",
         "motivation": "Мотивационное письмо",
@@ -745,7 +750,8 @@
         "tabs": {
             "about": "О себе",
             "posts": "Публикации",
-            "vacancies": "Вакансии"
+            "vacancies": "Вакансии",
+            "projects": "Проекты"
         },
         "info_title": "Информация",
         "labels": {
