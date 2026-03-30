@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import ClientPage from './ClientPage';
+import { cookies } from 'next/headers';
+import LanguageSetter from '@/components/LanguageSetter';
+
+const BASE_URL = 'https://expertvisits.com';
+const API_URL = 'https://api.expertvisits.com';
+const FALLBACK_IMAGE = `${BASE_URL}/logo.png`;
 
 async function getArticle(slug) {
     if (!slug) return;
     try {
-        const res = await fetch(`https://api.expertvisits.com/api/content/articles/${slug}/`, {
-            cache: 'no-store', // Ensure fresh data
+        const res = await fetch(`${API_URL}/api/content/articles/${slug}/`, {
+            cache: 'no-store',
         });
         if (!res.ok) return null;
         return res.json();
@@ -14,7 +20,15 @@ async function getArticle(slug) {
     }
 }
 
-import { cookies } from 'next/headers';
+function stripHtml(html) {
+    if (!html) return '';
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function truncate(text, maxLen = 160) {
+    if (!text || text.length <= maxLen) return text;
+    return text.substring(0, maxLen - 3).trimEnd() + '...';
+}
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
@@ -23,57 +37,127 @@ export async function generateMetadata({ params }) {
     const article = await getArticle(slug);
 
     if (!article) {
+        const notFoundTitles = {
+            az: 'Məqalə tapılmadı | Expert Visits',
+            ru: 'Статья не найдена | Expert Visits',
+            en: 'Article Not Found | Expert Visits',
+        };
         return {
-            title: systemLng === 'az' ? 'Məqalə tapılmadı | Expert Visits' : (systemLng === 'ru' ? 'Статья не найдена | Expert Visits' : 'Article Not Found | Expert Visits'),
+            title: notFoundTitles[systemLng] || notFoundTitles.az,
+            robots: { index: false },
         };
     }
 
-    // Prioritize the article's detected language for SEO
     const articleLng = article.language || 'az';
     const localeMap = { az: 'az_AZ', ru: 'ru_RU', en: 'en_US' };
+    const articleUrl = `${BASE_URL}/article/${slug}/`;
 
-    // Choose suffix based on article language
-    const titleSuffix = 'Expert Visits';
+    // Clean body text for description
+    const cleanBody = stripHtml(article.body);
+    const description = truncate(cleanBody, 160) || article.title;
 
-    // Clean body for description
-    const cleanBody = article.body ? article.body.replace(/<[^>]+>/g, '') : '';
-    const desc = cleanBody ? cleanBody.substring(0, 160) : article.title;
+    // Resolve image: article image or fallback to site logo
+    const articleImage = article.image || null;
+    const ogImage = articleImage || FALLBACK_IMAGE;
+
+    // Author name
+    const authorName = article.author || 'Expert Visits';
 
     return {
-        title: `${article.title} | ${titleSuffix}`,
-        description: desc,
+        metadataBase: new URL(BASE_URL),
+        title: `${article.title} | Expert Visits`,
+        description: description,
+        authors: [{ name: authorName }],
         alternates: {
-            // Tell Google exactly which language this version is
-            canonical: `https://expertvisits.com/article/${slug}/`,
+            canonical: articleUrl,
             languages: {
-                [articleLng]: `https://expertvisits.com/article/${slug}/`,
+                [articleLng]: articleUrl,
             },
         },
         openGraph: {
             title: article.title,
-            description: desc,
-            url: `https://expertvisits.com/article/${slug}/`,
-            siteName: "Expert Visits",
-            images: article.cover_image || article.image ? [{ url: article.cover_image || article.image }] : [],
-            type: "article",
+            description: description,
+            url: articleUrl,
+            siteName: 'Expert Visits',
+            type: 'article',
             locale: localeMap[articleLng] || 'az_AZ',
             publishedTime: article.created_at,
-            authors: [article.author_name || 'Expert Visits'],
+            modifiedTime: article.updated_at || article.created_at,
+            authors: [authorName],
+            section: 'Articles',
+            images: [
+                {
+                    url: ogImage,
+                    width: articleImage ? 1200 : 800,
+                    height: articleImage ? 630 : 600,
+                    alt: article.title,
+                    type: 'image/jpeg',
+                },
+            ],
+        },
+        twitter: {
+            card: articleImage ? 'summary_large_image' : 'summary',
+            title: article.title,
+            description: description,
+            images: [ogImage],
+            creator: `@${article.author || 'expertvisits'}`,
+        },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
         },
     };
 }
-
-import LanguageSetter from '@/components/LanguageSetter';
 
 export default async function Page({ params }) {
     const { slug } = await params;
     const article = await getArticle(slug);
     const lang = article?.language || 'az';
+
+    // JSON-LD Structured Data
+    const jsonLd = article ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.title,
+        description: truncate(stripHtml(article.body), 200),
+        image: article.image || FALLBACK_IMAGE,
+        datePublished: article.created_at,
+        dateModified: article.updated_at || article.created_at,
+        author: {
+            '@type': 'Person',
+            name: article.author || 'Expert Visits',
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Expert Visits',
+            logo: {
+                '@type': 'ImageObject',
+                url: `${BASE_URL}/logo.png`,
+            },
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `${BASE_URL}/article/${slug}/`,
+        },
+    } : null;
+
     return (
         <>
             <LanguageSetter lang={lang} />
-            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${lang}";` }} suppressHydrationWarning />
+            <script
+                dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "${lang}";` }}
+                suppressHydrationWarning
+            />
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+            )}
             <ClientPage slug={slug} />
         </>
     );
 }
+

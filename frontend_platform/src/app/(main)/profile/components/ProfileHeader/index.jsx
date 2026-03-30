@@ -11,7 +11,7 @@ const ProfileHeader = ({
     onOpenFollow,
     onTriggerActionMonitor // For opening password modal etc.
 }) => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const fileInputRef = useRef(null);
     const coverInputRef = useRef(null);
 
@@ -168,7 +168,13 @@ const ProfileHeader = ({
 
                 <div className={styles.names}>
                     <h1>{profile.first_name} {profile.last_name}</h1>
-                    <p className={styles.subtitle}>@{profile.username} • {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || t('profile.professional')}</p>
+                    <p className={styles.subtitle}>@{profile.username} • {
+                        profile.profession_sub_category?.[`profession_${i18n.language}`] 
+                        || profile.profession_sub_category?.[`name_${i18n.language}`] 
+                        || profile.profession_sub_category?.profession_az 
+                        || profile.profession_sub_category?.name_az 
+                        || ''
+                    }</p>
 
                     <div style={{ display: 'flex', gap: '16px', marginTop: '8px', fontSize: '14px', color: '#666' }}>
                         <span
