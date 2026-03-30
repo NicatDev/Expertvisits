@@ -36,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_following = serializers.BooleanField(read_only=True, required=False)
     company_slug = serializers.SerializerMethodField()
     highest_education = serializers.SerializerMethodField()
+    website_active = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -49,7 +50,8 @@ class UserSerializer(serializers.ModelSerializer):
             'open_to',
             'is_searchable', 'show_phone_number', 'notify_email_general',
             'notify_meeting_reminder_1h', 'notify_meeting_reminder_15m',
-            'notify_new_follower', 'notify_updates'
+            'notify_new_follower', 'notify_updates',
+            'website_active'
         ]
         # read_only_fields = ['username', 'email'] # Username/Email handled by default logic? 
         # Wait, RegisterSerializer usually handles creation, so fields should be writable.
@@ -123,6 +125,12 @@ class UserSerializer(serializers.ModelSerializer):
             # Returning display string.
             return highest.get_degree_type_display()
         return None
+
+    def get_website_active(self, obj):
+        try:
+            return obj.website.is_active
+        except:
+            return False
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
