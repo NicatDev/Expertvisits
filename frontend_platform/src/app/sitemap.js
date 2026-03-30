@@ -87,18 +87,7 @@ export default async function sitemap() {
             priority: item.priority || 0.7,
         });
 
-        // Add localized variants for articles (Platform only)
-        if (item.url.startsWith('/article/')) {
-            const pathWithoutSlash = item.url.startsWith('/') ? item.url.slice(1) : item.url;
-            ['en', 'ru'].forEach(lang => {
-                urls.push({
-                    url: `${BASE_URL}/${lang}/${pathWithoutSlash}`,
-                    lastModified: item.lastmod ? new Date(item.lastmod) : new Date(),
-                    changeFrequency: 'weekly',
-                    priority: 0.6,
-                });
-            });
-        }
+        // Localized versions of dynamic articles/vacancies are not needed
     });
 
     return urls;
