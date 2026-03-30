@@ -15,30 +15,33 @@ export default function Footer({ user }) {
     }, []);
 
     const profile = user?.user || {};
-    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
+    const username = user.username || profile.username || '';
+    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || username;
+    const specialist = profile.profession_sub_category?.[`profession_${userLang}`] || profile.profession_sub_category?.profession || 'Professional';
 
     if (!isMounted) return null;
 
     return (
         <footer className={styles.footer}>
-            <div className={styles.container}>
+            <div className={styles.footerContainer}>
                 <div className={styles.footerGrid}>
                     <div className={styles.footerBrand}>
                         <h3>{fullName}</h3>
-                        <p>{profile.profession_sub_category?.profession || 'Professional'}</p>
+                        <p>{specialist}</p>
                         <div className={styles.footerSocial}>
-                             <Link href="#"><Globe size={20} /></Link>
-                             <Link href="#"><Mail size={20} /></Link>
-                             <Link href="#"><Phone size={20} /></Link>
+                             <Link href={`mailto:${profile.email}`} title="Email"><Mail size={20} /></Link>
+                             <Link href={`tel:${profile.phone_number?.replace(/\s/g, '')}`} title="Phone"><Phone size={20} /></Link>
                         </div>
                     </div>
                     
                     <div className={styles.footerLinks}>
                         <h4>{t('nav.explore') || 'Menu'}</h4>
                         <ul>
-                            <li><Link href={`/${profile.username}`}>{t('nav.home')}</Link></li>
-                            <li><Link href={`/${profile.username}/articles`}>{t('portfolio.myWritings')}</Link></li>
-                            <li><Link href={`/${profile.username}/contact`}>{t('nav.contact')}</Link></li>
+                            <li><Link href={`/${username}`}>{t('nav.home')}</Link></li>
+                            {user.articles_count >= 3 && (
+                                <li><Link href={`/${username}/articles`}>{t('portfolio.myWritings')}</Link></li>
+                            )}
+                            <li><Link href={`/${username}/contact`}>{t('nav.contact')}</Link></li>
                         </ul>
                     </div>
                     

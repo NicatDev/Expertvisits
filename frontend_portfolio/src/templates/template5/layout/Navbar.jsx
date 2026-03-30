@@ -15,8 +15,9 @@ export default function Navbar({ user }) {
     const [menuOpen, setMenuOpen] = useState(false);
     
     const profile = user?.user || {};
-    const username = profile.username;
+    const username = user.username || profile.username || '';
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || username;
+    const specialist = profile.profession_sub_category?.[`profession_${userLang}`] || profile.profession_sub_category?.profession || 'Professional';
 
     const [isMounted, setIsMounted] = useState(false);
     
@@ -33,7 +34,7 @@ export default function Navbar({ user }) {
 
     const navLinks = [
         { name: t('nav.home'), href: `/${username}` },
-        { name: t('portfolio.myWritings'), href: `/${username}/articles` },
+        ...(user.articles_count >= 3 ? [{ name: t('portfolio.myWritings'), href: `/${username}/articles` }] : []),
         { name: t('nav.contact'), href: `/${username}/contact` }
     ];
 

@@ -7,10 +7,13 @@
   color: var(--t5-text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .mainContent {
-  padding-top: 80px; // Space for navbar
+  padding-top: 106px; // Space for navbar (36px topbar + 70px nav)
+  flex: 1;
   
   @include mobile {
     padding-top: 70px;

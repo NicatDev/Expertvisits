@@ -52,6 +52,10 @@ export async function generateMetadata({ params }) {
                 images: [{ url: shareImage }],
                 type: 'website',
             },
+            icons: {
+                icon: '/logo.png',
+                apple: '/logo.png',
+            },
             twitter: {
                 card: 'summary_large_image',
                 title,

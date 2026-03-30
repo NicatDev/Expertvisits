@@ -9,8 +9,11 @@ export const metadata = {
     title: "Portfolio | Expert Visits",
     description: "Professional Portfolio Platform",
     icons: {
-        icon: '/logo.png',
-        shortcut: '/logo.png',
+        icon: [
+            { url: '/favicon.ico' },
+            { url: '/logo.png', type: 'image/png' },
+        ],
+        shortcut: '/favicon.ico',
         apple: '/logo.png',
     }
 };
@@ -21,6 +24,9 @@ export default async function RootLayout({ children }) {
     
     return (
         <html lang={fallbackLng} suppressHydrationWarning>
+            <head>
+                <link rel="icon" href="/logo.png" sizes="any" />
+            </head>
             <body className={inter.className} suppressHydrationWarning={true}>
                 {children}
             </body>

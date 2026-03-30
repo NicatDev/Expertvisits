@@ -3,14 +3,31 @@ import LandingPage from '../components/LandingPage';
 export const metadata = {
     title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
     description: 'Expert Visits platformasında qeydiyyatdan keçin, məlumatlarınızı doldurun və 1 kliklə öz unikal və peşəkar vebsaytınızı yaradın!',
+    alternates: {
+        canonical: 'https://expertvisits.com/u',
+    },
     openGraph: {
         title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
         description: 'Expert Visits platformasında qeydiyyatdan keçin, məlumatlarınızı doldurun və 1 kliklə öz unikal və peşəkar vebsaytınızı yaradın!',
-        url: 'https://expertvisits.com/',
+        url: 'https://expertvisits.com/u',
         images: [{ url: '/logo.png', width: 800, height: 600, alt: 'Expert Visits Portfolio' }],
         locale: 'az_AZ',
         type: 'website',
     },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
+        description: 'Expert Visits platformasında qeydiyyatdan keçin, məlumatlarınızı doldurun və 1 kliklə öz unikal və peşəkar vebsaytınızı yaradın!',
+        images: ['/logo.png'],
+    },
+    icons: {
+        icon: [
+            { url: '/favicon.ico' },
+            { url: '/logo.png', type: 'image/png' },
+        ],
+        shortcut: '/favicon.ico',
+        apple: '/logo.png',
+    }
 };
 
 export default function HomePage() {

@@ -28,8 +28,11 @@ export async function generateMetadata({ params }) {
             title: `${fullName} | ${suffix}`,
             description: resUser.data?.hero?.subtitle || defaultDesc,
             icons: {
-                icon: '/logo.png',
-                shortcut: '/logo.png',
+                icon: [
+                    { url: '/favicon.ico' },
+                    { url: '/logo.png', type: 'image/png' },
+                ],
+                shortcut: '/favicon.ico',
                 apple: '/logo.png',
             },
             openGraph: {

@@ -24,7 +24,7 @@ export default function LandingPage({ t }) {
                             </span>
                         ))}
                     </h1>
-                    <h2 className={styles.subtitle}>{t.heroSubtitle}</h2>
+                    <p className={styles.subtitle}>{t.heroSubtitle}</p>
 <Link href="https://expertvisits.com/register" className={styles.cta} style={{ fontSize: '1rem', padding: '14px 36px' }} target="_blank" rel="noopener noreferrer">{t.ctaBtn}</Link>
 
 
