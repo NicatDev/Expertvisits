@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
-import { User } from 'lucide-react';
+import Avatar from '@/components/ui/Avatar';
 import { toast } from 'react-toastify';
 import { interactions } from '@/lib/api';
 import { useTranslation } from '@/i18n/client';
@@ -68,9 +68,7 @@ const RecommendedUsers = () => {
             <div className={styles.list}>
                 {users.map(user => (
                     <div key={user.id} className={styles.item}>
-                        <div className={styles.avatar}>
-                            {user.avatar ? <img src={user.avatar} alt={user.username} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><User size={20} color="#999" /></div>}
-                        </div>
+                        <Avatar user={user} size={40} className={styles.avatar} />
                         <div className={styles.info}>
                             <Link href={`/user/${user.username}`} className={styles.name}>
                                 {user.first_name} {user.last_name}

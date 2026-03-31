@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../../ui/Button';
-import { Heart, MessageCircle, Share2, MoreHorizontal, PlayCircle, Send, User, CheckCircle, Edit2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, PlayCircle, Send, CheckCircle, Edit2, Trash2 } from 'lucide-react';
+import Avatar from '../../ui/Avatar';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import LikesModal from '../LikesModal';
@@ -191,15 +192,11 @@ const FeedItem = ({ item, onDelete }) => {
                 <div className={styles.userInfo}>
                     {localItem.author ? (
                         <Link href={`/user/${localItem.author}`} className={styles.avatar}>
-                            {localItem.author_avatar ? (
-                                <img src={localItem.author_avatar} alt={localItem.author} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                            ) : (
-                                <User size={24} color="#999" />
-                            )}
+                            <Avatar user={{ username: localItem.author, avatar: localItem.author_avatar, avatar_compressed: localItem.author_avatar_compressed }} size={32} />
                         </Link>
                     ) : (
                         <div className={styles.avatar}>
-                            <User size={24} color="#999" />
+                            <Avatar user={{ username: t('feed_item.unknown_user') }} size={32} />
                         </div>
                     )}
                     <div className={styles.meta}>
@@ -349,7 +346,7 @@ const FeedItem = ({ item, onDelete }) => {
             {/* Persistent Input */}
             <div className={styles.commentInput}>
                 <div className={styles.avatar}>
-                    {user?.avatar ? <img src={user.avatar} style={{ width: '100%', height: '100%' }} /> : <User size={20} color="#999" />}
+                    <Avatar user={user} size={32} />
                 </div>
                 <div className={styles.inputWrapper}>
                     <input

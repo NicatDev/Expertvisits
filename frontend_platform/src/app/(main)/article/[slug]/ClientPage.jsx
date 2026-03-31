@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/api/client';
-import { ChevronLeft, Send, Heart, MessageCircle, User } from 'lucide-react';
+import { ChevronLeft, Send, Heart, MessageCircle } from 'lucide-react';
+import Avatar from '@/components/ui/Avatar';
 import styles from './style.module.scss';
 import CommentsSection from '@/components/advanced/CommentsSection';
 import LikesModal from '@/components/advanced/LikesModal';
@@ -114,11 +115,7 @@ export default function ClientPage() {
                     <div className={styles.metaWrapper}>
                         <div className={styles.meta}>
                             <div className={styles.avatar}>
-                                {article.author_avatar ? (
-                                    <img src={article.author_avatar} alt={article.author} />
-                                ) : (
-                                    <User size={18} color="#666" />
-                                )}
+                                <Avatar user={{ username: article.author, avatar: article.author_avatar }} size={32} />
                             </div>
                             <div className={styles.info}>
                                 <span className={styles.author}>{article.author}</span>
@@ -162,9 +159,7 @@ export default function ClientPage() {
 
                     {/* Comment Input */}
                     <div className={styles.commentInput} style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
-                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                            {user?.avatar ? <img src={user.avatar} style={{ width: '100%', height: '100%' }} /> : <User size={20} color="#999" />}
-                        </div>
+                        <Avatar user={user} size={32} />
                         <div style={{ flex: 1, position: 'relative' }}>
                             <input
                                 type="text"

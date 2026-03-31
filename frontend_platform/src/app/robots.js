@@ -4,11 +4,8 @@ export default function robots() {
       userAgent: '*',
       allow: '/',
       disallow: [
-        '/profile/',
-        '/user/',
         '/admin/',
         '/api/',
-        '/u/*/articles/',
       ],
     },
     sitemap: 'https://expertvisits.com/sitemap.xml',

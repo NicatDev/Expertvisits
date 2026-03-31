@@ -43,7 +43,16 @@ const Footer = () => {
                 <div className={styles.column}>
                     <h4>{t('footer.stay_connected')}</h4>
                     <p style={{fontSize: '14px', color: '#666', lineHeight: '1.6'}}>
-                        {t('footer.updates_desc')}
+                        {t('footer.updates_desc').split('expertvisits.com/u/').map((part, index, array) => (
+                            <React.Fragment key={index}>
+                                {part}
+                                {index < array.length - 1 && (
+                                    <Link href="/u/" style={{ color: '#1890ff', fontWeight: '500' }}>
+                                        expertvisits.com/u/
+                                    </Link>
+                                )}
+                            </React.Fragment>
+                        ))}
                     </p>
                 </div>
             </div>

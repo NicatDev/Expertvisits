@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { User } from 'lucide-react';
+import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
 import styles from './style.module.scss';
@@ -74,13 +74,7 @@ const ProfileHeader = () => {
 
                 <div className={styles.info}>
                     <div className={styles.avatarContainer}>
-                        {profile.avatar ? (
-                            <img src={profile.avatar} className={styles.avatar} alt="Avatar" />
-                        ) : (
-                            <div className={styles.avatarPlaceholder}>
-                                <User size={40} />
-                            </div>
-                        )}
+                        <Avatar user={profile} size={85} className={styles.avatar} />
                     </div>
 
                     <div className={styles.names}>

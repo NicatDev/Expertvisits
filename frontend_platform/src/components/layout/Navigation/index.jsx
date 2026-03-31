@@ -106,8 +106,8 @@ const Navigation = () => {
 
                         {user ? (
                             <button className={styles.iconBtn}>
-                                {user?.avatar ?
-                                    <Image src={user?.avatar} width={28} height={28} style={{ borderRadius: '50%' }} alt="Avatar" />
+                                {user?.avatar_compressed || user?.avatar ?
+                                    <Image src={user?.avatar_compressed || user?.avatar} width={28} height={28} style={{ borderRadius: '50%', objectFit: 'cover' }} alt="Avatar" unoptimized />
                                     : <User size={24} />
                                 }
                             </button>

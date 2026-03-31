@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Avatar from '@/components/ui/Avatar';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 import { MapPin, Users, BookOpen, GraduationCap } from 'lucide-react';
@@ -26,12 +26,10 @@ export default function UserCard({ user }) {
 
             <div className={styles.content}>
                 <div className={styles.avatarWrapper}>
-                    <Image
-                        src={user.avatar || '/default-avatar.png'}
-                        alt={user.username}
-                        width={64}
-                        height={64}
-                        className={styles.avatar}
+                    <Avatar 
+                        user={user} 
+                        size={64} 
+                        className={styles.avatar} 
                     />
                 </div>
 

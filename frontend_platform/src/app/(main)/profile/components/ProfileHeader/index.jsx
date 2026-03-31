@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Edit2, Trash2, User } from 'lucide-react';
+import { Edit2, Trash2 } from 'lucide-react';
+import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
 import ImageCropModal from '@/components/ui/ImageCropModal';
@@ -182,13 +183,7 @@ const ProfileHeader = ({
 
             <div className={styles.info}>
                 <div className={styles.avatarContainer}>
-                    {profile.avatar ? (
-                        <img src={profile.avatar} className={styles.avatar} alt="Avatar" />
-                    ) : (
-                        <div className={styles.avatarPlaceholder}>
-                            <User size={40} />
-                        </div>
-                    )}
+                    <Avatar user={profile} size={120} className={styles.avatar} />
                     <div
                         className={styles.avatarOverlay}
                         onClick={() => setActionModal({ isOpen: true, type: 'avatar' })}

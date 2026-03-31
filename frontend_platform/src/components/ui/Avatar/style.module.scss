@@ -1,0 +1,32 @@
+@import '../../../styles/variables.scss';
+
+.avatarWrapper {
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff; // Optional wrapper bg
+}
+
+.avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatarPlaceholder {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    font-family: inherit;
+    line-height: 1;
+}
