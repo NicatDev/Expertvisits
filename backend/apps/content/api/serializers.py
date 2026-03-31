@@ -6,6 +6,7 @@ class ContentSerializerMixin(serializers.Serializer):
     is_liked = serializers.SerializerMethodField()
     latest_comment = serializers.SerializerMethodField()
     author_avatar = serializers.SerializerMethodField()
+    author_avatar_compressed = serializers.SerializerMethodField()
 
     def get_is_liked(self, obj):
         user = self.context.get('request', None).user if self.context.get('request') else None
@@ -21,7 +22,8 @@ class ContentSerializerMixin(serializers.Serializer):
                 "text": comment.text,
                 "user": {
                     "username": comment.user.username,
-                    "avatar": comment.user.avatar.url if comment.user.avatar else None
+                    "avatar": comment.user.avatar.url if comment.user.avatar else None,
+                    "avatar_compressed": comment.user.avatar_compressed.url if comment.user.avatar_compressed else None
                 }
             }
         return None
@@ -29,6 +31,11 @@ class ContentSerializerMixin(serializers.Serializer):
     def get_author_avatar(self, obj):
         if obj.author.avatar:
             return obj.author.avatar.url
+        return None
+
+    def get_author_avatar_compressed(self, obj):
+        if obj.author.avatar_compressed:
+            return obj.author.avatar_compressed.url
         return None
 
 class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
@@ -39,7 +46,7 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Article
-        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'language', 'author', 'author_avatar', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+        fields = ['id', 'title', 'slug', 'image', 'body', 'sub_category', 'language', 'author', 'author_avatar', 'author_avatar_compressed', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
 
     def validate_body(self, value):
         import bleach
@@ -67,7 +74,7 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Quiz
-        fields = ['id', 'title', 'sub_category', 'author', 'author_avatar', 'questions', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
+        fields = ['id', 'title', 'sub_category', 'author', 'author_avatar', 'author_avatar_compressed', 'questions', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
 
     participation_count = serializers.SerializerMethodField()
     is_participated = serializers.SerializerMethodField()
@@ -114,7 +121,8 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
             "id": obj.user.id,
             "username": obj.user.username,
             "full_name": obj.user.get_full_name(),
-            "avatar": obj.user.avatar.url if obj.user.avatar else None
+            "avatar": obj.user.avatar.url if obj.user.avatar else None,
+            "avatar_compressed": obj.user.avatar_compressed.url if obj.user.avatar_compressed else None
         }
 
     def get_percentage(self, obj):
@@ -187,7 +195,7 @@ class PollSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Poll
-        fields = ['id', 'question', 'options', 'author', 'author_avatar', 'created_at', 'total_votes', 'user_vote', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+        fields = ['id', 'question', 'options', 'author', 'author_avatar', 'author_avatar_compressed', 'created_at', 'total_votes', 'user_vote', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
 
     def get_total_votes(self, obj):
         return obj.votes.count()

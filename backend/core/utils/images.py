@@ -58,3 +58,48 @@ def compress_image(image_field, format='WEBP', quality=80, max_size=(1000, 1000)
         
     except Exception as e:
         print(f"Error compressing image: {e}")
+
+def create_compressed_avatar(avatar_field, size=(300, 300), format='PNG'):
+    """
+    Creates and returns a compressed version of the avatar as a ContentFile.
+    """
+    if not avatar_field or not hasattr(avatar_field, 'file') or not avatar_field.file:
+        return None
+
+    try:
+        # Re-open the image to ensure we're at the beginning
+        avatar_field.seek(0)
+        img = Image.open(avatar_field)
+        
+        # Convert to RGBA for PNG if transparency exists, otherwise RGB
+        if img.mode in ('RGBA', 'P'):
+            img = img.convert('RGBA')
+        else:
+            img = img.convert('RGB')
+            
+        # Resize using thumbnail
+        img.thumbnail(size, Image.Resampling.LANCZOS)
+        
+        # Save to BytesIO
+        output = BytesIO()
+        img.save(output, format=format.upper(), optimize=True)
+        output.seek(0)
+        
+        orig_name = os.path.basename(avatar_field.name)
+        name_only = os.path.splitext(orig_name)[0]
+        
+        # Deep cleaning of extensions
+        clean_name = name_only
+        while True:
+            temp_name, ext = os.path.splitext(clean_name)
+            if ext.lower() in ['.webp', '.png', '.jpg', '.jpeg']:
+                clean_name = temp_name
+            else:
+                break
+                
+        new_name = f"{clean_name}_compressed.{format.lower()}"
+        
+        return ContentFile(output.read(), name=new_name)
+    except Exception as e:
+        print(f"Error creating compressed avatar: {e}")
+        return None

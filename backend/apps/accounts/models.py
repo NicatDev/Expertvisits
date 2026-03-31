@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from core.utils import custom_slugify
-from core.utils.images import compress_image
+from core.utils.images import compress_image, create_compressed_avatar
 from core.utils.language import detect_language
 
 class Category(models.Model):
@@ -61,6 +61,7 @@ class User(AbstractUser):
     following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
     is_service_open = models.BooleanField(default=False, db_index=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar_compressed = models.ImageField(upload_to='avatars_compressed/', null=True, blank=True)
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     work_hours_start = models.TimeField(null=True, blank=True)
@@ -102,11 +103,25 @@ class User(AbstractUser):
             old = User.objects.filter(pk=self.pk).first()
             if old:
                 if old.avatar != self.avatar:
-                     compress_image(self.avatar, format='PNG')
+                    compress_image(self.avatar, format='PNG')
+                    # Create compressed version (300x300)
+                    compressed = create_compressed_avatar(self.avatar)
+                    if compressed:
+                        self.avatar_compressed.save(compressed.name, compressed, save=False)
+                elif self.avatar and not self.avatar_compressed:
+                    # Case: Avatar exists but compressed doesn't (backfill)
+                    compressed = create_compressed_avatar(self.avatar)
+                    if compressed:
+                        self.avatar_compressed.save(compressed.name, compressed, save=False)
+
                 if old.cover_image != self.cover_image:
                      compress_image(self.cover_image, format='WEBP')
         else:
              compress_image(self.avatar, format='PNG')
+             # New user with avatar
+             compressed = create_compressed_avatar(self.avatar)
+             if compressed:
+                 self.avatar_compressed.save(compressed.name, compressed, save=False)
              compress_image(self.cover_image, format='WEBP')
         super().save(*args, **kwargs)
 

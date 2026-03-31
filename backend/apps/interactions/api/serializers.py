@@ -5,7 +5,7 @@ from apps.accounts.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'avatar']
+        fields = ['username', 'avatar', 'avatar_compressed']
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

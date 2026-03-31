@@ -42,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name', 
-            'phone_number', 'birth_day', 'city', 'summary', 'language', 'interests', 'avatar', 'cover_image',
+            'phone_number', 'birth_day', 'city', 'summary', 'language', 'interests', 'avatar', 'avatar_compressed', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
             'followers_count', 'following_count', 'is_following', 'company_slug',
