@@ -14,7 +14,7 @@ export default async function sitemap() {
 
     const urls = [
         {
-            url: `${BASE_URL}/u`,
+            url: `${BASE_URL}/u/az`,
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 1.0,

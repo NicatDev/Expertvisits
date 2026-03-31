@@ -47,7 +47,7 @@ const Footer = () => {
                             <React.Fragment key={index}>
                                 {part}
                                 {index < array.length - 1 && (
-                                    <Link href="/u/" style={{ color: '#1890ff', fontWeight: '500' }}>
+                                    <Link href={`/u/${i18n.language || 'en'}/`} style={{ color: '#1890ff', fontWeight: '500' }}>
                                         expertvisits.com/u/
                                     </Link>
                                 )}

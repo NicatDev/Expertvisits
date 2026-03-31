@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/lib/api/client';
+import Avatar from '../../ui/Avatar';
 import Button from '../../ui/Button';
-import { User } from 'lucide-react';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import styles from './style.module.scss';
@@ -27,7 +27,7 @@ const CommentItem = ({ comment, contentType, objectId, onReply, onLike, t }) => 
         <div className={styles.commentItem}>
             <div className={styles.wrapper}>
                 <div className={styles.avatar}>
-                    {comment.user.avatar ? <img src={comment.user.avatar} /> : <User size={18} color="#999" />}
+                    <Avatar user={comment.user} size={32} />
                 </div>
                 <div className={styles.content}>
                     <div className={styles.bubble}>
