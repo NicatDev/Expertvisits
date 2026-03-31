@@ -7,7 +7,7 @@ import styles from './style.module.scss';
 import LegalModal from './LegalModal';
 
 const Footer = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'privacy' });
 
     const openModal = (e, type) => {
