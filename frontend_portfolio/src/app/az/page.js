@@ -1,4 +1,4 @@
-import LandingPage from '../components/LandingPage';
+import LandingPage from '../../components/LandingPage';
 
 export const metadata = {
     title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
