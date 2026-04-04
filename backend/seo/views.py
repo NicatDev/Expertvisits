@@ -58,11 +58,18 @@ def _iter_dynamic_url_dicts():
         }
 
     for u in _public_profile_users_qs().iterator():
+        lm = _dt_iso(getattr(u, 'updated_at', None))
         yield {
             'url': f'/u/{u.username}',
-            'lastmod': _dt_iso(getattr(u, 'updated_at', None)),
+            'lastmod': lm,
             'changefreq': 'weekly',
             'priority': 0.8
+        }
+        yield {
+            'url': f'/u/{u.username}/contact',
+            'lastmod': lm,
+            'changefreq': 'weekly',
+            'priority': 0.75
         }
 
 
@@ -82,11 +89,12 @@ def _dynamic_slice(start, end):
 
 
 def _dynamic_total_count():
+    users = _public_profile_users_qs().count()
     return (
         Vacancy.objects.count()
         + Company.objects.count()
         + Article.objects.count()
-        + _public_profile_users_qs().count()
+        + 2 * users
     )
 
 
