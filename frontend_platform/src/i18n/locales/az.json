@@ -833,6 +833,8 @@
         "filters": {
             "title": "Axtarış filtrləri",
             "search": "Ad və ya Soyad",
+            "profession": "Peşə",
+            "all_professions": "Bütün peşələr",
             "search_placeholder": "Axtarış...",
             "skill": "Bacarıqlar (Skills)",
             "hard_skills": "Hard Skills (Texniki)",
@@ -842,14 +844,16 @@
             "all_degrees": "Bütün dərəcələr",
             "location": "Məkan",
             "location_placeholder": "Şəhər...",
-            "clear": "Təmizlə"
+            "clear": "Təmizlə",
+            "toggle_advanced": "Filtr"
         },
         "search_btn": "Axtar",
         "no_results": "Nəticə tapılmadı",
         "no_results_desc": "Axtarış kriteriyalarınıza uyğun ekspert tapılmadı.",
         "load_more": "Daha çox",
         "spam_warning": "Diqqət: Spamların qarşısını almaq üçün axtarış etmədən istifadəçilərə baxmaq limitlidir. Zəhmət olmasa axtarış edin.",
-        "view_profile": "Profilə bax"
+        "view_profile": "Profilə bax",
+        "view_website": "Vebsayt"
     },
     "google_auth": {
         "login_success": "Uğurla giriş edildi!",

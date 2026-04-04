@@ -15,7 +15,7 @@ class ExpertListAPIView(generics.ListAPIView):
 
 
     def get_queryset(self):
-        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company', 'educations', 'skills').annotate(
+        queryset = User.objects.select_related('profession_sub_category', 'website').prefetch_related('company', 'educations', 'skills').annotate(
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
         ).filter(is_searchable=True)
@@ -56,6 +56,10 @@ class ExpertListAPIView(generics.ListAPIView):
         degree = self.request.query_params.get('degree')
         if degree:
             queryset = queryset.filter(educations__degree_type=degree)
+
+        profession_sub_category_id = self.request.query_params.get('profession_sub_category_id')
+        if profession_sub_category_id:
+            queryset = queryset.filter(profession_sub_category_id=profession_sub_category_id)
 
         # Is Following Annotation
         queryset = queryset.annotate(

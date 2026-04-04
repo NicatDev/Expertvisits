@@ -14,12 +14,15 @@
 }
 
 .skillsGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 4px;
+    width: 100%;
 
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+    > * {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -29,6 +32,9 @@
     padding: 24px;
     margin-bottom: 24px;
     border: 1px solid #f0f0f0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
     h3 {
@@ -60,6 +66,8 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
 
     &.compactList {
         flex-direction: row;

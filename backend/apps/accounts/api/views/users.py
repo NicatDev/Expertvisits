@@ -22,7 +22,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticatedOrReadOnly()]
 
     def get_queryset(self):
-        queryset = User.objects.select_related('profession_sub_category').prefetch_related('company', 'educations', 'skills').annotate(
+        queryset = User.objects.select_related('profession_sub_category', 'website').prefetch_related('company', 'educations', 'skills').annotate(
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
         ).order_by('-date_joined')
@@ -69,6 +69,10 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         degree = params.get('degree')
         if degree:
             queryset = queryset.filter(educations__degree_type=degree).distinct()
+
+        profession_sub_category_id = params.get('profession_sub_category_id')
+        if profession_sub_category_id:
+            queryset = queryset.filter(profession_sub_category_id=profession_sub_category_id)
 
         return queryset.distinct()
 

@@ -127,10 +127,20 @@ class UserSerializer(serializers.ModelSerializer):
         return None
 
     def get_website_active(self, obj):
-        try:
-            return obj.website.is_active
-        except:
+        if not getattr(obj, 'is_active', True):
             return False
+        try:
+            w = obj.website
+        except Exception:
+            return False
+        if getattr(w, 'is_deleted', False):
+            return False
+        if not w.is_active:
+            return False
+        tid = getattr(w, 'template_id', None)
+        if tid is None or int(tid) <= 0:
+            return False
+        return True
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)

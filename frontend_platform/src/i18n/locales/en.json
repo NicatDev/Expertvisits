@@ -842,6 +842,8 @@
         "filters": {
             "title": "Search Filters",
             "search": "Name or Surname",
+            "profession": "Profession",
+            "all_professions": "All professions",
             "search_placeholder": "Search...",
             "skill": "Skills",
             "hard_skills": "Hard Skills",
@@ -851,14 +853,16 @@
             "all_degrees": "All Degrees",
             "location": "Location",
             "location_placeholder": "City...",
-            "clear": "Clear Filters"
+            "clear": "Clear Filters",
+            "toggle_advanced": "Filters"
         },
         "search_btn": "Search",
         "no_results": "No results found",
         "no_results_desc": "No experts found matching your criteria.",
         "load_more": "Load More",
         "spam_warning": "Warning: Browsing users without search filters is limited to prevent spam. Please verify your search criteria.",
-        "view_profile": "View Profile"
+        "view_profile": "View Profile",
+        "view_website": "Website"
     },
     "google_auth": {
         "login_success": "Successfully logged in!",

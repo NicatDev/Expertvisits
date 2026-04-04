@@ -17,9 +17,11 @@ function ExpertsPageContent() {
     // Auth Check
     const [filters, setFilters] = useState({
         search: '',
-        skill: '',
+        profession_sub_category_id: '',
+        hard_skills: [],
+        soft_skills: [],
+        locations: [],
         degree: '',
-        city: ''
     });
 
     const [users, setUsers] = useState([]);
@@ -32,10 +34,10 @@ function ExpertsPageContent() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const params = {
-                page,
-                ...filters
-            };
+            const params = { page, ...filters };
+            if (!params.profession_sub_category_id) delete params.profession_sub_category_id;
+            if (!params.degree) delete params.degree;
+            if (!params.search) delete params.search;
             const res = await api.get('accounts/users/', { params });
             setUsers(res.data.results || res.data);
             setTotalCount(res.data.count || (res.data.results || res.data).length);
@@ -57,8 +59,11 @@ function ExpertsPageContent() {
     };
 
     const handleLoadMore = () => {
-        // Validation for spam prevention
-        const hasFilters = Object.values(filters).some(val => val && val !== '');
+        const hasFilters = Object.entries(filters).some(([key, val]) => {
+            if (key === 'profession_sub_category_id') return Boolean(val);
+            if (Array.isArray(val)) return val.length > 0;
+            return Boolean(val && val !== '');
+        });
         if (!hasFilters && !searched) {
             alert(t('experts.spam_warning'));
             return;
