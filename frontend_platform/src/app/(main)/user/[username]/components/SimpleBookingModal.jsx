@@ -6,7 +6,17 @@ import { X, Link, MapPin } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { services } from '@/lib/api';
 
-const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events = [], workingDays, workingHours, onSuccess }) => {
+const SimpleBookingModal = ({
+    isOpen,
+    onClose,
+    initialData,
+    providerId,
+    events = [],
+    workingDays,
+    workingHours,
+    onSuccess,
+    canBook = true,
+}) => {
     const { t } = useTranslation('common');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -80,6 +90,10 @@ const SimpleBookingModal = ({ isOpen, onClose, initialData, providerId, events =
 
     const handleConfirm = async () => {
         setErrors({});
+        if (!canBook) {
+            toast.info(t('public_profile.booking_unavailable_toast'));
+            return;
+        }
         if (!date || !time) {
             toast.error(t('booking_modal.select_date_error'));
             return;

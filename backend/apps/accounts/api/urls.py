@@ -5,6 +5,7 @@ from .views.users import (
 )
 from .views.categories import CategoryListAPIView, CategoryDetailAPIView
 from .views.auth import VerifyEmailAPIView, CheckAvailabilityAPIView, ResendCodeAPIView, SetPasswordAPIView
+from .views.email_change import RequestEmailChangeAPIView, ConfirmEmailChangeAPIView
 from .views.profiles import UserProfileDetailsAPIView
 from .views.google import GoogleAuthView
 
@@ -12,6 +13,8 @@ urlpatterns = [
     # User actions (must be before detail view to avoid conflict with username capture)
     path('users/me/', UserMeAPIView.as_view(), name='user-me'),
     path('users/set_password/', SetPasswordAPIView.as_view(), name='set-password'),
+    path('users/request_email_change/', RequestEmailChangeAPIView.as_view(), name='request-email-change'),
+    path('users/confirm_email_change/', ConfirmEmailChangeAPIView.as_view(), name='confirm-email-change'),
     path('users/check_availability/', CheckAvailabilityAPIView.as_view(), name='check-availability'),
     path('users/resend_code/', ResendCodeAPIView.as_view(), name='resend-code'),
     

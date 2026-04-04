@@ -13,7 +13,7 @@
         "rights_reserved": "Bütün hüquqlar qorunur."
     },
     "common": {
-        "create_post": "Post yarat",
+        "create_post": "Paylaş",
         "loading": "Yüklənir...",
         "save": "Yadda saxla",
         "cancel": "Ləğv et",
@@ -89,7 +89,7 @@
         "sort_by": "Sıralama",
         "view_mode": "Görünüş",
         "no_results": "Nəticə tapılmadı.",
-        "create_content": "Məzmun yarat",
+        "create_content": "Paylaş",
         "load_more": "Daha çox yüklə",
         "votes": "səs",
         "voted": "Səs verildi",
@@ -210,6 +210,8 @@
         "posting": "Paylaşılır...",
         "create_poll": "Sorğu Yarat",
         "poll_created": "Sorğu uğurla yaradıldı!",
+        "article_created_success": "Məqalə uğurla əlavə edildi",
+        "article_updated_success": "Məqalə uğurla yeniləndi",
         "error": "Əməliyyat uğursuz oldu",
         "poll_question": "Sual",
         "poll_question_placeholder": "Sualınızı qeyd edin...",
@@ -339,6 +341,32 @@
             "projects": "Layihələr"
         },
         "personal_info": "Şəxsi Məlumatlar",
+        "email_change": {
+            "modal_title": "E-poçt ünvanını dəyiş",
+            "step_enter_hint": "Yeni e-poçt ünvanınızı daxil edin. Ünvana təsdiq kodu göndəriləcək.",
+            "new_email_placeholder": "yeni@email.com",
+            "send_code": "Kodu göndər",
+            "code_sent": "Təsdiq kodu yeni ünvana göndərildi.",
+            "step_code_hint": "Kodu daxil edin: {{email}}",
+            "code_placeholder": "6 rəqəmli kod",
+            "back_edit_email": "E-poçtu dəyiş",
+            "confirm": "Təsdiq et",
+            "success": "E-poçt ünvanınız yeniləndi.",
+            "errors": {
+                "generic": "Əməliyyat alınmadı. Yenidən cəhd edin.",
+                "new_email_required": "Yeni e-poçt daxil edin.",
+                "code_required": "Təsdiq kodunu daxil edin.",
+                "invalid_email": "Düzgün e-poçt ünvanı daxil edin.",
+                "email_same_as_current": "Bu ünvan artıq hesabınızda qeyd olunub.",
+                "email_already_in_use": "Bu e-poçt başqa hesabda istifadə olunur.",
+                "email_send_failed": "E-poçt göndərilə bilmədi. Sonra yenidən cəhd edin.",
+                "new_email_and_code_required": "E-poçt və kod tələb olunur.",
+                "no_pending_change": "Aktiv e-poçt dəyişikliyi yoxdur. Əvvəlcə kod sifariş edin.",
+                "code_expired": "Kodun müddəti bitib. Yenidən kod göndərin.",
+                "email_mismatch": "Daxil etdiyiniz ünvan gözlənən ünvanla uyğun gəlmir.",
+                "invalid_code": "Kod yanlışdır."
+            }
+        },
         "sections": {
             "experience": "Təcrübə",
             "education": "Təhsil",
@@ -817,7 +845,8 @@
         "back_to_profile": "Profilə qayıt",
         "book_a_session": "Sessiya sifariş et",
         "select_slot_instruction": "Təqvimdə vaxt seçin və ya manual sifariş yaradın.",
-        "manual_booking": "Manual müraciət"
+        "manual_booking": "Manual müraciət",
+        "booking_unavailable_toast": "Bu mütəxəssis hazırda görüş qəbul etmir və ya təqvimində iş günlərini təyin etməyib. Randevu götürmək mümkün deyil."
     },
     "application_status": {
         "pending": "Gözləyir",

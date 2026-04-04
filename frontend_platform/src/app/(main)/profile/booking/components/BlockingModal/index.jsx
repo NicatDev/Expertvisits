@@ -7,7 +7,26 @@ import { services } from '@/lib/api';
 import { toast } from 'react-toastify';
 import styles from './style.module.scss'; // Reuse or create new
 
-const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, workingHours, events }) => {
+function fullDayHalfHourSlots() {
+    const slots = [];
+    for (let minutes = 0; minutes < 24 * 60; minutes += 30) {
+        const h = String(Math.floor(minutes / 60)).padStart(2, '0');
+        const m = String(minutes % 60).padStart(2, '0');
+        slots.push(`${h}:${m}`);
+    }
+    return slots;
+}
+
+const BlockingModal = ({
+    isOpen,
+    onClose,
+    selectedEvent,
+    providerId,
+    onSuccess,
+    workingHours,
+    events,
+    isServiceOpen = true,
+}) => {
     const { t } = useTranslation('common');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -21,28 +40,25 @@ const BlockingModal = ({ isOpen, onClose, selectedEvent, providerId, onSuccess, 
         durationOptions.push(i);
     }
 
-    // Generate Time Options
     const timeOptions = React.useMemo(() => {
-        if (!workingHours || !workingHours.start || !workingHours.end) {
-            return [];
+        if (isServiceOpen && workingHours?.start && workingHours?.end) {
+            const slots = [];
+            const [startH, startM] = workingHours.start.split(':').map(Number);
+            const [endH, endM] = workingHours.end.split(':').map(Number);
+            const current = new Date();
+            current.setHours(startH, startM, 0, 0);
+            const end = new Date();
+            end.setHours(endH, endM, 0, 0);
+            while (current < end) {
+                const h = String(current.getHours()).padStart(2, '0');
+                const m = String(current.getMinutes()).padStart(2, '0');
+                slots.push(`${h}:${m}`);
+                current.setMinutes(current.getMinutes() + 30);
+            }
+            return slots;
         }
-        const slots = [];
-        const [startH, startM] = workingHours.start.split(':').map(Number);
-        const [endH, endM] = workingHours.end.split(':').map(Number);
-
-        const current = new Date();
-        current.setHours(startH, startM, 0, 0);
-        const end = new Date();
-        end.setHours(endH, endM, 0, 0);
-
-        while (current < end) {
-            const h = String(current.getHours()).padStart(2, '0');
-            const m = String(current.getMinutes()).padStart(2, '0');
-            slots.push(`${h}:${m}`);
-            current.setMinutes(current.getMinutes() + 30);
-        }
-        return slots;
-    }, [workingHours]);
+        return fullDayHalfHourSlots();
+    }, [isServiceOpen, workingHours]);
 
     useEffect(() => {
         if (isOpen && selectedEvent) {

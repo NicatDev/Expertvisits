@@ -75,3 +75,31 @@
         width: 100%;
     }
 }
+
+/* Root-level classes so CSS Modules always export them for the JSX. */
+.btnLoading {
+    cursor: wait;
+    pointer-events: none;
+}
+
+.spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: evBtnSpin 0.7s linear infinite;
+    flex-shrink: 0;
+    vertical-align: middle;
+    opacity: 0.95;
+}
+
+:global {
+    @keyframes evBtnSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}

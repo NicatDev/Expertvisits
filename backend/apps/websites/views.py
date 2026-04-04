@@ -81,8 +81,7 @@ class UserArticlePublicDetailView(generics.RetrieveAPIView):
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.mail import send_mail
-from django.conf import settings
+from core.utils.email import send_portfolio_contact_email
 
 class UserWebsiteContactAPIView(APIView):
     """
@@ -109,25 +108,13 @@ class UserWebsiteContactAPIView(APIView):
         if not owner or not owner.email:
              return Response({"detail": "Website owner not found or has no email."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Build email content
-        email_subject = f"Expert Visits Portfolio: Yeni müraciət - {subject}"
-        email_body = (
-            f"Sizin portfolio saytınız vasitəsilə yeni mesaj göndərilib:\n\n"
-            f"Göndərən: {name}\n"
-            f"E-poçt: {email}\n"
-            f"Mövzu: {subject}\n\n"
-            f"Mesaj:\n{message}\n\n"
-            f"Hörmətlə,\n"
-            f"Expert Visits Platforması"
-        )
-
         try:
-            send_mail(
-                subject=email_subject,
-                message=email_body,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[owner.email],
-                fail_silently=False,
+            send_portfolio_contact_email(
+                owner.email,
+                name,
+                email,
+                subject,
+                message,
             )
             return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)
         except Exception as e:

@@ -24,7 +24,7 @@ const Button = ({
     return (
         <button
             type={htmlType}
-            className={`${classes} ${loading ? styles.loading : ''}`}
+            className={`${classes} ${loading ? styles.btnLoading : ''}`}
             onClick={loading ? undefined : onClick}
             disabled={loading || props.disabled}
             {...props}

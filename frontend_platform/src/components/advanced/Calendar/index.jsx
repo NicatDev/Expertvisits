@@ -7,15 +7,25 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styles from './style.module.scss';
 
-const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHours }) => {
+const Calendar = ({
+    events,
+    onDateSelect,
+    onEventClick,
+    workingDays,
+    workingHours,
+    highlightBusinessHours = true,
+}) => {
     const { i18n } = useTranslation();
 
-    // Construct businessHours object if constraints are provided
-    const businessHours = (workingDays && workingHours) ? {
-        daysOfWeek: workingDays, // [1, 2, 3, 4, 5]
-        startTime: workingHours.start || '09:00',
-        endTime: workingHours.end || '18:00'
-    } : undefined;
+    const hasDays = Array.isArray(workingDays) && workingDays.length > 0;
+    const businessHours =
+        highlightBusinessHours && hasDays && workingHours?.start && workingHours?.end
+            ? {
+                  daysOfWeek: workingDays,
+                  startTime: workingHours.start || '09:00',
+                  endTime: workingHours.end || '18:00',
+              }
+            : false;
 
     return (
         <div className={styles.calendarWrapper}>
@@ -42,7 +52,7 @@ const Calendar = ({ events, onDateSelect, onEventClick, workingDays, workingHour
 
                 // Availability Constraints
                 businessHours={businessHours}
-                selectConstraint={businessHours ? "businessHours" : undefined}
+                selectConstraint={businessHours ? 'businessHours' : undefined}
                 selectOverlap={false}
 
                 // Time Formatting (24h)

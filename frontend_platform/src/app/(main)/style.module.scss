@@ -148,7 +148,8 @@
         scrollbar-width: none;
 
         button {
-            padding: 6px 12px;
+            padding: 7px 14px;
+            min-height: 32px;
             border-radius: 20px;
             border: none;
             background: #f5f5f5;
@@ -156,7 +157,11 @@
             cursor: pointer;
             font-weight: 500;
             text-transform: capitalize;
-            font-size: 13px;
+            font-size: 14px;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
             &.active {
                 background: #e6f7ff;
@@ -215,4 +220,59 @@
 .loading {
     text-align: center;
     padding: 20px;
+}
+
+.createBtnWrapper {
+    flex-shrink: 0;
+}
+
+/* Feed: social-style publish CTA */
+.publishBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 2px 14px 2px 2px;
+    min-height: 34px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 52%, #7c3aed 100%);
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.38);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.48);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+    }
+}
+
+.publishBtnIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    flex-shrink: 0;
+}
+
+.publishBtnLabel {
+    padding-right: 2px;
+    white-space: nowrap;
+    line-height: 1.2;
 }

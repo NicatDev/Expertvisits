@@ -6,7 +6,7 @@ from apps.accounts.models import User, RegistrationSession
 from apps.accounts.api.serializers import UserSerializer
 from apps.business.api.views.companies import StandardResultsSetPagination
 import random
-from django.core.mail import send_mail
+from core.utils.email import send_verification_email
 
 class UserListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
@@ -104,13 +104,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         )
         
         try:
-            send_mail(
-                'Verify your account',
-                f'Your verification code is: {code}',
-                'expertvisits@gmail.com', 
-                [email],
-                fail_silently=False,
-            )
+            send_verification_email(email, code)
         except Exception as e:
             return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

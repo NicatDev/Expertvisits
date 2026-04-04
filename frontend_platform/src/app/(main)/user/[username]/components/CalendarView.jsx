@@ -4,25 +4,40 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-const CalendarView = ({ events, onDateSelect, workingHours, workingDays }) => {
+const toSlotTime = (t) => {
+    if (!t) return null;
+    const s = String(t);
+    return s.length === 5 ? `${s}:00` : s;
+};
 
-    // Helper to ensure integers for days (FC uses 0=Sun, 1=Mon)
-    // Assuming backend stores 0=Sun..6=Sat or similar standard. 
-    // If backend uses 1=Mon..7=Sun, we'd need conversion.
-    // Based on profile page: 0=Sunday. So 1:1 mapping.
-    const mapDayToFC = (d) => parseInt(d);
+const CalendarView = ({
+    events,
+    onDateSelect,
+    onEventClick,
+    workingHours,
+    workingDays,
+    isServiceOpen = true,
+}) => {
+    const mapDayToFC = (d) => parseInt(d, 10);
 
-    const businessHours = {
-        daysOfWeek: (workingDays || []).map(mapDayToFC),
-        startTime: workingHours?.start || '09:00',
-        endTime: workingHours?.end || '18:00',
-    };
+    const hasWorkingDays = Array.isArray(workingDays) && workingDays.length > 0;
+    const highlightAvailability =
+        isServiceOpen && hasWorkingDays && workingHours?.start && workingHours?.end;
 
-    // Determine Min/Max Time for display
-    // Add 1 hour buffer or strict? User said "yalniz is saatlari araligini gostersin" (only work hours range).
-    // So strictly start to end.
-    const slotMin = workingHours?.start || '08:00:00';
-    const slotMax = workingHours?.end || '20:00:00';
+    const businessHours = highlightAvailability
+        ? {
+              daysOfWeek: workingDays.map(mapDayToFC),
+              startTime: workingHours.start,
+              endTime: workingHours.end,
+          }
+        : false;
+
+    const slotMin = highlightAvailability
+        ? toSlotTime(workingHours.start) || '08:00:00'
+        : '00:00:00';
+    const slotMax = highlightAvailability
+        ? toSlotTime(workingHours.end) || '20:00:00'
+        : '24:00:00';
 
     return (
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
@@ -55,13 +70,14 @@ const CalendarView = ({ events, onDateSelect, workingHours, workingDays }) => {
                     right: 'timeGridWeek,timeGridDay'
                 }}
                 events={events} // Backend provided colors now
-                selectable={true}
-                selectMirror={true}
+                selectable={Boolean(highlightAvailability)}
+                selectMirror={Boolean(highlightAvailability)}
                 select={(info) => {
                     if (onDateSelect) onDateSelect(info);
                 }}
+                eventClick={onEventClick}
                 businessHours={businessHours}
-                selectConstraint="businessHours"
+                selectConstraint={businessHours ? 'businessHours' : undefined}
                 allDaySlot={false}
                 slotDuration="00:30:00"
                 slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}

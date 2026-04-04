@@ -293,7 +293,11 @@ export default function BookingPage() {
                     <Calendar
                         events={calendarEvents}
                         workingDays={profile.working_days}
-                        workingHours={{ start: profile.work_hours_start, end: profile.work_hours_end }}
+                        workingHours={{
+                            start: profile.work_hours_start || '09:00',
+                            end: profile.work_hours_end || '18:00',
+                        }}
+                        highlightBusinessHours={Boolean(profile.is_service_open)}
                         onDateSelect={(info) => {
                             setBlockingDate({ start: new Date(info.startStr), end: new Date(info.endStr) });
                             setShowBlockingModal(true);
@@ -442,7 +446,7 @@ export default function BookingPage() {
                 selectedEvent={blockingDate}
                 providerId={profile?.id}
                 onSuccess={() => { loadBookingsData(); setShowBlockingModal(false); }}
-                workingDays={profile?.working_days}
+                isServiceOpen={Boolean(profile?.is_service_open)}
                 workingHours={{ start: profile?.work_hours_start, end: profile?.work_hours_end }}
                 events={calendarEvents}
             />

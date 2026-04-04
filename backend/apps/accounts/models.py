@@ -134,6 +134,18 @@ class VerificationCode(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.code}"
 
+
+class EmailChangeRequest(models.Model):
+    """Pending email change for a logged-in user; verified via code sent to new_email."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='email_change_request')
+    new_email = models.EmailField()
+    code = models.CharField(max_length=6)
+    expires_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.user.username} -> {self.new_email}"
+
 class RegistrationSession(models.Model):
     email = models.EmailField(unique=True, db_index=True)
     code = models.CharField(max_length=6)

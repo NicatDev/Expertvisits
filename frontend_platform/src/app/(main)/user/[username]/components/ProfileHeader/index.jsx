@@ -8,6 +8,7 @@ import { usePublicProfile } from '../../context';
 import FollowListModal from '@/components/advanced/FollowListModal';
 import BookingViewWrapper from '../BookingViewWrapper';
 import { services } from '@/lib/api';
+import { toast } from 'react-toastify';
 
 const ProfileHeader = () => {
     const { t, i18n } = useTranslation('common');
@@ -34,7 +35,16 @@ const ProfileHeader = () => {
         }
     };
 
+    const canAcceptBookings =
+        Boolean(profile?.is_service_open) &&
+        Array.isArray(profile?.working_days) &&
+        profile.working_days.length > 0;
+
     const openBooking = async () => {
+        if (!canAcceptBookings) {
+            toast.info(t('public_profile.booking_unavailable_toast'));
+            return;
+        }
         setIsBookingView(true);
         await loadEvents();
     };

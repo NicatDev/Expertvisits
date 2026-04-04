@@ -3,8 +3,9 @@ import Button from '@/components/ui/Button';
 import CalendarView from './CalendarView';
 import SimpleBookingModal from './SimpleBookingModal';
 import Modal from '@/components/ui/Modal';
-import { ArrowLeft, Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { toast } from 'react-toastify';
 
 const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
     const { t } = useTranslation('common');
@@ -14,7 +15,20 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
 
     const [selectedEvent, setSelectedEvent] = useState(null);
 
+    const canAcceptBookings =
+        Boolean(profile?.is_service_open) &&
+        Array.isArray(profile?.working_days) &&
+        profile.working_days.length > 0;
+
+    const notifyBookingUnavailable = () => {
+        toast.info(t('public_profile.booking_unavailable_toast'));
+    };
+
     const handleCalendarSelect = (info) => {
+        if (!canAcceptBookings) {
+            notifyBookingUnavailable();
+            return;
+        }
         setModalData(info);
         setIsModalOpen(true);
     };
@@ -36,6 +50,10 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
     };
 
     const handleManualBooking = () => {
+        if (!canAcceptBookings) {
+            notifyBookingUnavailable();
+            return;
+        }
         setModalData(null);
         setIsModalOpen(true);
     };
@@ -66,6 +84,7 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                 events={events} // Pass events (busy slots)
                 onDateSelect={handleCalendarSelect}
                 onEventClick={handleEventClick}
+                isServiceOpen={Boolean(profile.is_service_open)}
                 workingDays={profile.working_days}
                 workingHours={{
                     start: profile.work_hours_start,
@@ -80,6 +99,7 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                 initialData={modalData}
                 providerId={profile.id}
                 events={events}
+                canBook={canAcceptBookings}
                 workingDays={profile.working_days}
                 workingHours={{
                     start: profile.work_hours_start,

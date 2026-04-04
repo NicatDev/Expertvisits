@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/i18n/client';
 import { useProfile } from './context';
-import { profiles } from '@/lib/api';
+import { profiles, auth } from '@/lib/api';
 import api from '@/lib/api/client';
 import Section from './components/Section';
 import styles from './profile.module.scss';
@@ -14,6 +14,8 @@ import {
     ExperienceModal, EducationModal, SkillModal, LanguageModal, CertificateModal
 } from '@/components/advanced/ProfileModals';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
 import { toast } from 'react-toastify';
 
 import OpenToWork from './components/OpenToWork';
@@ -41,6 +43,74 @@ export default function AboutPage() {
     const [allCategories, setAllCategories] = useState([]); // For profession edit
     const [modalState, setModalState] = useState({ type: null, data: null });
     const [confirmationModal, setConfirmationModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+
+    const [emailChangeModalOpen, setEmailChangeModalOpen] = useState(false);
+    const [emailChangeStep, setEmailChangeStep] = useState('enter');
+    const [newEmailInput, setNewEmailInput] = useState('');
+    const [emailCodeInput, setEmailCodeInput] = useState('');
+    const [emailChangeLoading, setEmailChangeLoading] = useState(false);
+
+    const emailChangeErrorToast = (detail) => {
+        const key = `profile.email_change.errors.${detail}`;
+        const msg = t(key);
+        toast.error(msg !== key ? msg : t('profile.email_change.errors.generic'));
+    };
+
+    const openEmailChangeModal = () => {
+        setEmailChangeModalOpen(true);
+        setEmailChangeStep('enter');
+        setNewEmailInput('');
+        setEmailCodeInput('');
+    };
+
+    const closeEmailChangeModal = () => {
+        setEmailChangeModalOpen(false);
+        setEmailChangeStep('enter');
+        setNewEmailInput('');
+        setEmailCodeInput('');
+    };
+
+    const handleRequestEmailChange = async () => {
+        const trimmed = newEmailInput.trim();
+        if (!trimmed) {
+            toast.error(t('profile.email_change.errors.new_email_required'));
+            return;
+        }
+        setEmailChangeLoading(true);
+        try {
+            await auth.requestEmailChange(trimmed);
+            toast.success(t('profile.email_change.code_sent'));
+            setEmailChangeStep('code');
+        } catch (err) {
+            const detail = err.response?.data?.detail;
+            if (detail) emailChangeErrorToast(detail);
+            else toast.error(t('profile.toasts.failed_update'));
+        } finally {
+            setEmailChangeLoading(false);
+        }
+    };
+
+    const handleConfirmEmailChange = async () => {
+        const trimmed = newEmailInput.trim();
+        const code = emailCodeInput.trim();
+        if (!code) {
+            toast.error(t('profile.email_change.errors.code_required'));
+            return;
+        }
+        setEmailChangeLoading(true);
+        try {
+            await auth.confirmEmailChange(trimmed, code);
+            toast.success(t('profile.email_change.success'));
+            closeEmailChangeModal();
+            refreshProfile();
+        } catch (err) {
+            const detail = err.response?.data?.detail;
+            if (detail) emailChangeErrorToast(detail);
+            else toast.error(t('profile.toasts.failed_update'));
+        } finally {
+            setEmailChangeLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (profile?.id) {
@@ -201,7 +271,12 @@ export default function AboutPage() {
                                 ) : (
                                     <>
                                         <span style={{ color: profile[field] ? '#333' : '#999' }}>{profile[field] || t('profile.not_set')}</span>
-                                        {isOwner && field !== 'email' && <Edit2 className={styles.editIcon} size={14} onClick={() => toggleEdit(field)} />}
+                                        {isOwner && field !== 'email' && (
+                                            <Edit2 className={styles.editIcon} size={14} onClick={() => toggleEdit(field)} />
+                                        )}
+                                        {isOwner && field === 'email' && (
+                                            <Edit2 className={styles.editIcon} size={14} onClick={openEmailChangeModal} />
+                                        )}
                                     </>
                                 )}
                             </div>
@@ -358,6 +433,73 @@ export default function AboutPage() {
                 title={confirmationModal.title}
                 message={confirmationModal.message}
             />
+
+            <Modal
+                isOpen={emailChangeModalOpen}
+                onClose={closeEmailChangeModal}
+                title={t('profile.email_change.modal_title')}
+                width="420px"
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {emailChangeStep === 'enter' && (
+                        <>
+                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>
+                                {t('profile.email_change.step_enter_hint')}
+                            </p>
+                            <Input
+                                type="email"
+                                value={newEmailInput}
+                                onChange={(e) => setNewEmailInput(e.target.value)}
+                                placeholder={t('profile.email_change.new_email_placeholder')}
+                                autoComplete="email"
+                            />
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                <Button type="default" onClick={closeEmailChangeModal}>
+                                    {t('profile.modals.cancel')}
+                                </Button>
+                                <Button type="primary" loading={emailChangeLoading} onClick={handleRequestEmailChange}>
+                                    {t('profile.email_change.send_code')}
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                    {emailChangeStep === 'code' && (
+                        <>
+                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>
+                                {t('profile.email_change.step_code_hint', { email: newEmailInput })}
+                            </p>
+                            <Input
+                                type="text"
+                                inputMode="numeric"
+                                value={emailCodeInput}
+                                onChange={(e) => setEmailCodeInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                placeholder={t('profile.email_change.code_placeholder')}
+                                autoComplete="one-time-code"
+                            />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setEmailChangeStep('enter');
+                                        setEmailCodeInput('');
+                                    }}
+                                    style={{ background: 'none', border: 'none', color: '#1890ff', cursor: 'pointer', padding: 0, fontSize: '0.9rem' }}
+                                >
+                                    {t('profile.email_change.back_edit_email')}
+                                </button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <Button type="default" onClick={closeEmailChangeModal}>
+                                        {t('profile.modals.cancel')}
+                                    </Button>
+                                    <Button type="primary" loading={emailChangeLoading} onClick={handleConfirmEmailChange}>
+                                        {t('profile.email_change.confirm')}
+                                    </Button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </Modal>
         </div>
     );
 }

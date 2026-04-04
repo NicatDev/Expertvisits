@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from apps.accounts.models import User, VerificationCode, RegistrationSession
 import random
-from django.core.mail import send_mail
 
 class VerifyEmailAPIView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -91,11 +90,7 @@ class ResendCodeAPIView(APIView):
             session.save()
             try:
                 from core.utils.email import send_verification_email
-                send_verification_email(
-                    email,
-                    code,
-                    language=session.user_data.get('language', 'az')
-                )
+                send_verification_email(email, code)
                 return Response({'message': 'Verification code resent successfully'}, status=status.HTTP_200_OK)
             except Exception as e:
                  return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -112,11 +107,7 @@ class ResendCodeAPIView(APIView):
         
         try:
             from core.utils.email import send_verification_email
-            send_verification_email(
-                user.email,
-                code,
-                language=user.language or 'az'
-            )
+            send_verification_email(user.email, code)
         except Exception as e:
              return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
              

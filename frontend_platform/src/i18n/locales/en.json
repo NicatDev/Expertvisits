@@ -13,7 +13,7 @@
         "rights_reserved": "All rights reserved."
     },
     "common": {
-        "create_post":"Create Post",
+        "create_post": "Publish",
         "loading": "Loading...",
         "save": "Save",
         "cancel": "Cancel",
@@ -89,7 +89,7 @@
         "sort_by": "Sort By",
         "view_mode": "View Mode",
         "no_results": "No results found.",
-        "create_content": "Create content",
+        "create_content": "Publish",
         "load_more": "Load more",
         "votes": "votes",
         "voted": "Voted",
@@ -206,10 +206,12 @@
         "option_placeholder": "Option",
         "add_option": "+ Add Option",
         "add_question": "+ Add Question",
-        "post_btn": "Post",
-        "posting": "Posting...",
+        "post_btn": "Publish",
+        "posting": "Publishing...",
         "create_poll": "Create Poll",
         "poll_created": "Poll created successfully!",
+        "article_created_success": "Article added successfully",
+        "article_updated_success": "Article updated successfully",
         "error": "Operation failed",
         "poll_question": "Question",
         "poll_question_placeholder": "Ask a question...",
@@ -335,6 +337,32 @@
             "projects": "Projects"
         },
         "personal_info": "Personal Information",
+        "email_change": {
+            "modal_title": "Change email address",
+            "step_enter_hint": "Enter your new email address. We will send a verification code there.",
+            "new_email_placeholder": "new@email.com",
+            "send_code": "Send code",
+            "code_sent": "A verification code was sent to the new address.",
+            "step_code_hint": "Enter the code we sent to {{email}}",
+            "code_placeholder": "6-digit code",
+            "back_edit_email": "Change email",
+            "confirm": "Confirm",
+            "success": "Your email address has been updated.",
+            "errors": {
+                "generic": "Something went wrong. Please try again.",
+                "new_email_required": "Please enter a new email address.",
+                "code_required": "Please enter the verification code.",
+                "invalid_email": "Please enter a valid email address.",
+                "email_same_as_current": "This is already your current email.",
+                "email_already_in_use": "This email is already registered to another account.",
+                "email_send_failed": "We could not send the email. Please try again later.",
+                "new_email_and_code_required": "Email and code are required.",
+                "no_pending_change": "There is no pending email change. Request a code first.",
+                "code_expired": "This code has expired. Request a new code.",
+                "email_mismatch": "The email does not match the pending change.",
+                "invalid_code": "That code is incorrect."
+            }
+        },
         "sections": {
             "experience": "Experience",
             "education": "Education",
@@ -826,7 +854,8 @@
         "back_to_profile": "Back to profile",
         "book_a_session": "Book a Session",
         "select_slot_instruction": "Select a slot on the calendar or create a manual booking.",
-        "manual_booking": "Manual booking"
+        "manual_booking": "Manual booking",
+        "booking_unavailable_toast": "This expert is not accepting meetings right now or has not set any available days on their calendar. Booking is not available."
     },
     "application_status": {
         "pending": "Pending",

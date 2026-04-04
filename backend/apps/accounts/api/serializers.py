@@ -79,11 +79,7 @@ class UserSerializer(serializers.ModelSerializer):
         VerificationCode.objects.create(user=user, code=code)
         
         try:
-            send_verification_email(
-                user.email,
-                code,
-                language=user.language or 'az'
-            )
+            send_verification_email(user.email, code)
         except Exception as e:
             print(f"Error sending email: {e}")
             

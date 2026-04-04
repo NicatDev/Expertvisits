@@ -69,10 +69,10 @@ export default function Filters({ values, onChange, onSearch }) {
                         onClick={() => setAdvancedOpen((o) => !o)}
                         aria-expanded={advancedOpen}
                         aria-controls="experts-advanced-filters"
+                        aria-label={t('experts.filters.toggle_advanced')}
                         title={t('experts.filters.toggle_advanced')}
                     >
-                        <ListFilter size={20} strokeWidth={2} />
-                        <span className={styles.filterToggleLabel}>{t('experts.filters.toggle_advanced')}</span>
+                        <ListFilter size={24} strokeWidth={2.75} aria-hidden />
                     </button>
                 </div>
             </div>

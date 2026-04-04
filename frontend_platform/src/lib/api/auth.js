@@ -8,6 +8,10 @@ export const auth = {
     verifyEmail: (data) => api.post('accounts/verify-email/', data),
     refreshToken: (refresh) => api.post('auth/token/refresh/', { refresh }),
     getProfile: () => api.get('accounts/users/me/'),
+    requestEmailChange: (new_email) =>
+        api.post('accounts/users/request_email_change/', { new_email }),
+    confirmEmailChange: (new_email, code) =>
+        api.post('accounts/users/confirm_email_change/', { new_email, code }),
     logout: () => {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('accessToken');

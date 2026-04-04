@@ -13,7 +13,7 @@
         "rights_reserved": "Все права защищены."
     },
     "common": {
-        "create_post":"Создать публикацию",
+        "create_post": "Опубликовать",
         "loading": "Загрузка...",
         "save": "Сохранить",
         "cancel": "Отмена",
@@ -84,7 +84,7 @@
         "latest": "Новое",
         "popular": "Популярное",
         "no_results": "Ничего не найдено.",
-        "create_content": "Создать",
+        "create_content": "Опубликовать",
         "load_more": "Загрузить еще",
         "votes": "голосов",
         "voted": "Проголосовано",
@@ -205,6 +205,8 @@
         "posting": "Публикация...",
         "create_poll": "Создать опрос",
         "poll_created": "Опрос успешно создан!",
+        "article_created_success": "Статья успешно добавлена",
+        "article_updated_success": "Статья успешно обновлена",
         "error": "Ошибка операции",
         "poll_question": "Вопрос",
         "poll_question_placeholder": "Задайте вопрос...",
@@ -339,6 +341,32 @@
             "projects": "Проекты"
         },
         "personal_info": "Личная информация",
+        "email_change": {
+            "modal_title": "Сменить email",
+            "step_enter_hint": "Введите новый адрес электронной почты. Мы отправим на него код подтверждения.",
+            "new_email_placeholder": "новый@email.com",
+            "send_code": "Отправить код",
+            "code_sent": "Код подтверждения отправлен на новый адрес.",
+            "step_code_hint": "Введите код, отправленный на {{email}}",
+            "code_placeholder": "6-значный код",
+            "back_edit_email": "Изменить email",
+            "confirm": "Подтвердить",
+            "success": "Адрес электронной почты обновлён.",
+            "errors": {
+                "generic": "Не удалось выполнить операцию. Попробуйте снова.",
+                "new_email_required": "Введите новый email.",
+                "code_required": "Введите код подтверждения.",
+                "invalid_email": "Введите корректный адрес электронной почты.",
+                "email_same_as_current": "Это уже ваш текущий email.",
+                "email_already_in_use": "Этот email уже привязан к другому аккаунту.",
+                "email_send_failed": "Не удалось отправить письмо. Попробуйте позже.",
+                "new_email_and_code_required": "Нужны email и код.",
+                "no_pending_change": "Нет активной смены email. Сначала запросите код.",
+                "code_expired": "Срок действия кода истёк. Запросите новый код.",
+                "email_mismatch": "Email не совпадает с ожидаемым.",
+                "invalid_code": "Неверный код."
+            }
+        },
         "sections": {
             "experience": "Опыт работы",
             "education": "Образование",
@@ -776,7 +804,12 @@
         "no_items": "Пока не добавлено.",
         "book_now": "Записаться",
         "follow": "Подписаться",
-        "unfollow": "Отписаться"
+        "unfollow": "Отписаться",
+        "back_to_profile": "К профилю",
+        "book_a_session": "Запись на сессию",
+        "select_slot_instruction": "Выберите время в календаре или создайте заявку вручную.",
+        "manual_booking": "Ручная заявка",
+        "booking_unavailable_toast": "Этот эксперт сейчас не принимает встречи или не указал рабочие дни в календаре. Запись недоступна."
     },
     "experts": {
         "title": "Найти экспертов",

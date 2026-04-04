@@ -90,8 +90,11 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         status_val = 'pending'
         if provider == customer:
             status_val = 'confirmed'
-            
-        serializer.save(customer=customer, status=status_val)
+
+        booking = serializer.save(customer=customer, status=status_val)
+        if provider != customer:
+            from core.utils.email import send_new_booking_request_notification
+            send_new_booking_request_notification(booking)
 
 class BookingDetailManagerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

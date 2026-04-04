@@ -10,7 +10,7 @@ import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
-import { Search, SlidersHorizontal, Check, ChevronDown, Plus } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, ChevronDown, PenSquare } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
 import PromoBanner from '@/components/widgets/PromoBanner';
@@ -173,10 +173,16 @@ export default function HomePage() {
 
                         {/* Create Post Button */}
                         <div className={styles.createBtnWrapper}>
-                            <Button type="primary" onClick={handleCreateClick} style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '20px', padding: '8px 20px', fontWeight: '600' }}>
-                                <Plus size={18} strokeWidth={2.5} />
-                                {t('common.create_post', 'Post yarat')}
-                            </Button>
+                            <button
+                                type="button"
+                                className={styles.publishBtn}
+                                onClick={handleCreateClick}
+                            >
+                                <span className={styles.publishBtnIcon} aria-hidden>
+                                    <PenSquare size={17} strokeWidth={2.25} />
+                                </span>
+                                <span className={styles.publishBtnLabel}>{t('common.create_post')}</span>
+                            </button>
                         </div>
                     </div>
 
