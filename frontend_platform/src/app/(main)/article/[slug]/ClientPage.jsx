@@ -115,7 +115,7 @@ export default function ClientPage() {
                     <div className={styles.metaWrapper}>
                         <div className={styles.meta}>
                             <div className={styles.avatar}>
-                                <Avatar user={{ username: article.author, avatar: article.author_avatar }} size={32} />
+                                <Avatar user={{ username: article.author, avatar: article.author_avatar, avatar_compressed: article.author_avatar_compressed }} size={32} />
                             </div>
                             <div className={styles.info}>
                                 <span className={styles.author}>{article.author}</span>

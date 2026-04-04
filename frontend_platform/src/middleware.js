@@ -1,7 +1,22 @@
 import { NextResponse } from 'next/server';
+import { seoLocaleFromPathname } from '@/lib/i18n/seoLocaleFromPathname';
 
 export function middleware(request) {
     const { pathname } = request.nextUrl;
+
+    const vacancyLangRedirect = pathname.match(/^\/(en|ru)\/vacancies\/?$/);
+    if (vacancyLangRedirect) {
+        const url = request.nextUrl.clone();
+        url.pathname = `/vacancies/${vacancyLangRedirect[1]}`;
+        return NextResponse.redirect(url, 301);
+    }
+
+    const companiesLangRedirect = pathname.match(/^\/(en|ru)\/companies\/?$/);
+    if (companiesLangRedirect) {
+        const url = request.nextUrl.clone();
+        url.pathname = `/companies/${companiesLangRedirect[1]}`;
+        return NextResponse.redirect(url, 301);
+    }
 
     // 1. Portfolio Proxy
     // If the path starts with /u/, we rewrite it to the portfolio app on port 3001
@@ -27,7 +42,7 @@ export function middleware(request) {
     const isPublicResource = pathname.startsWith('/_next') ||
                              pathname.startsWith('/api') || 
                              pathname.startsWith('/admin') ||
-                             pathname === '/sitemap.xml' || 
+                             pathname.startsWith('/sitemap') ||
                              pathname === '/robots.txt' ||
                              pathname.includes('.');
 
@@ -35,8 +50,16 @@ export function middleware(request) {
         return NextResponse.next();
     }
 
-    // Default: Continue with platform app
-    return NextResponse.next();
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-ev-pathname', pathname);
+    const seoLocale = seoLocaleFromPathname(pathname);
+    if (seoLocale) {
+        requestHeaders.set('x-ev-seo-locale', seoLocale);
+    }
+
+    return NextResponse.next({
+        request: { headers: requestHeaders },
+    });
 }
 
 export const config = {

@@ -1,9 +1,0 @@
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\final_layouts.txt
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\found_layouts.txt
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\layout.js
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\layout.jsx
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\companies\layout.jsx
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\experts\layout.jsx
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\profile\layout.jsx
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\user\[username]\layout.jsx
-c:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\vacancies\layout.jsx

@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 import { I18nextProvider } from 'react-i18next';
 import i18next from '@/i18n/client_raw'; // I'll create this to avoid circular dependencies
 import { LanguageContext } from './LanguageContext';
@@ -11,7 +14,7 @@ export function LanguageProvider({ children, lng }) {
       i18next.changeLanguage(lng);
   }
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (lng && i18next.language !== lng) {
       i18next.changeLanguage(lng);
     }

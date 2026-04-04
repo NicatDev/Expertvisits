@@ -3,10 +3,13 @@ import LandingPage from '../../components/LandingPage';
 export const metadata = {
     title: 'Создайте Свой Бесплатный Личный Сайт | Expert Visits',
     description: 'Зарегистрируйтесь на платформе Expert Visits, заполните свои данные и создайте свой уникальный профессиональный веб-сайт всего в 1 клик!',
+    alternates: {
+        canonical: 'https://expertvisits.com/u/ru',
+    },
     openGraph: {
         title: 'Создайте Свой Бесплатный Личный Сайт | Expert Visits',
         description: 'Зарегистрируйтесь на платформе Expert Visits, заполните свои данные и создайте свой уникальный профессиональный веб-сайт всего в 1 клик!',
-        url: 'https://expertvisits.com/ru',
+        url: 'https://expertvisits.com/u/ru',
         images: [{ url: '/logo.png', width: 800, height: 600, alt: 'Expert Visits Portfolio' }],
         locale: 'ru_RU',
         type: 'website',
@@ -30,10 +33,5 @@ export default function RussianHomePage() {
         ctaBtnAlt: 'Получить Сайт'
     };
 
-    return (
-        <>
-            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "ru";` }} suppressHydrationWarning />
-            <LandingPage t={translations} />
-        </>
-    );
+    return <LandingPage t={translations} />;
 }

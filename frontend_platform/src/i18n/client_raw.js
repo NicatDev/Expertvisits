@@ -14,7 +14,7 @@ i18next
         ...getOptions(),
         lng: undefined, // let detect language automatically
         detection: {
-            order: ['localStorage', 'htmlTag', 'cookie', 'navigator'],
+            order: ['localStorage', 'htmlTag', 'cookie'],
             caches: ['localStorage', 'cookie'], // cache user language
             cookieOptions: { path: '/', sameSite: 'strict' },
             lookupLocalStorage: 'i18nextLng'

@@ -1,0 +1,117 @@
+@import '@/styles/variables.scss';
+@import '@/styles/mixins.scss';
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-bottom: $spacing-lg;
+  padding: 6px 8px;
+  background: linear-gradient(180deg, #fafbfc 0%, #f4f6f8 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  color: $text-color;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  &:hover:not(:disabled) {
+    background: #fff;
+    color: $primary-color;
+  }
+
+  &:disabled {
+    cursor: default;
+    box-shadow: none;
+    background: transparent;
+  }
+}
+
+.arrowMuted {
+  color: #c5c8ce;
+  opacity: 0.65;
+
+  &:hover {
+    color: #c5c8ce;
+  }
+}
+
+.scroller {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
+  touch-action: pan-x;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.track {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  min-height: 40px;
+}
+
+.tab {
+  flex-shrink: 0;
+  text-decoration: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-secondary;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    color: $primary-color;
+    background: rgba(24, 144, 255, 0.06);
+  }
+}
+
+.tabActive {
+  color: $primary-color;
+  background: #fff;
+  border-color: rgba(24, 144, 255, 0.25);
+  box-shadow: 0 1px 3px rgba(24, 144, 255, 0.12);
+  font-weight: 600;
+}
+
+@include mobile {
+  .tab {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .arrow {
+    width: 32px;
+    height: 32px;
+  }
+}

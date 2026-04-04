@@ -1,7 +1,6 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState, useEffect, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './profile.module.scss';
 import ProfileContext from './context';
@@ -11,6 +10,7 @@ import { auth, profiles } from '@/lib/api';
 
 // Components
 import ProfileHeader from './components/ProfileHeader';
+import ScrollableProfileTabs from '@/components/ui/ScrollableProfileTabs';
 import FollowListModal from '@/components/advanced/FollowListModal';
 import { PasswordModal } from '@/components/advanced/ProfileModals';
 
@@ -21,7 +21,6 @@ export default function ProfileLayout({ children }) {
     const { t } = useTranslation('common');
     const { user: currentUser, refreshUser, loading: authLoading } = useAuth();
     const pathname = usePathname();
-    const router = useRouter();
 
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -64,19 +63,28 @@ export default function ProfileLayout({ children }) {
         }
     };
 
+    // Hooks must run before any conditional return (same order every render)
+    const activeTab = useMemo(() => {
+        if (pathname === '/profile' || pathname === '/profile/') return 'about';
+        const parts = pathname.split('/').filter(Boolean);
+        return parts.length ? parts[parts.length - 1] : 'about';
+    }, [pathname]);
+
+    const profileTabs = useMemo(
+        () => [
+            { href: '/profile', label: t('profile.tabs.about'), active: activeTab === 'about' },
+            { href: '/profile/services', label: t('profile.tabs.services') || 'Xidmətlər', active: activeTab === 'services' },
+            { href: '/profile/projects', label: t('profile.tabs.projects', 'Layihələr'), active: activeTab === 'projects' },
+            { href: '/profile/posts', label: t('profile.tabs.posts'), active: activeTab === 'posts' },
+            { href: '/profile/booking', label: t('profile.tabs.booking'), active: activeTab === 'booking' },
+            { href: '/profile/vacancies', label: t('profile.tabs.vacancies'), active: activeTab === 'vacancies' },
+            { href: '/profile/applications', label: t('profile.tabs.applications'), active: activeTab === 'applications' },
+        ],
+        [activeTab, t]
+    );
+
     if (authLoading || loading) return <div>{t('common.loading')}</div>;
     if (!profile) return <div>{t('profile.user_not_found')}</div>;
-
-    // Determine active tab based on pathname
-    // url: /profile -> active: about
-    // url: /profile/about -> active: about (if accessed directly, but we prefer /profile)
-    const getActiveTab = () => {
-        if (pathname === '/profile' || pathname === '/profile/') return 'about';
-        const segments = pathname.split('/');
-        const lastSegment = segments.pop();
-        return lastSegment;
-    };
-    const activeTab = getActiveTab();
 
     return (
         <ProfileContext.Provider value={{ profile, loading, refreshProfile: loadProfile, isOwner: true }}>
@@ -89,15 +97,7 @@ export default function ProfileLayout({ children }) {
                     onTriggerActionMonitor={(type) => { if (type === 'password') setPasswordModalOpen(true); }}
                 />
 
-                <div className={styles.tabs}>
-                    <Link href="/profile" className={activeTab === 'about' ? styles.activeTab : ''}>{t('profile.tabs.about')}</Link>
-                    <Link href="/profile/services" className={activeTab === 'services' ? styles.activeTab : ''}>{t('profile.tabs.services') || 'Xidmətlər'}</Link>
-                    <Link href="/profile/projects" className={activeTab === 'projects' ? styles.activeTab : ''}>{t('profile.tabs.projects', 'Layihələr')}</Link>
-                    <Link href="/profile/posts" className={activeTab === 'posts' ? styles.activeTab : ''}>{t('profile.tabs.posts')}</Link>
-                    <Link href="/profile/booking" className={activeTab === 'booking' ? styles.activeTab : ''}>{t('profile.tabs.booking')}</Link>
-                    <Link href="/profile/vacancies" className={activeTab === 'vacancies' ? styles.activeTab : ''}>{t('profile.tabs.vacancies')}</Link>
-                    <Link href="/profile/applications" className={activeTab === 'applications' ? styles.activeTab : ''}>{t('profile.tabs.applications')}</Link>
-                </div>
+                <ScrollableProfileTabs tabs={profileTabs} />
 
                 <div className={styles.tabContentOut}>
                     {children}

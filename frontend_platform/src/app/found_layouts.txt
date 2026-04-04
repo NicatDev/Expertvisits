@@ -1,6 +1,0 @@
-﻿C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\layout.jsx
-C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\companies\layout.jsx
-C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\experts\layout.jsx
-C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\profile\layout.jsx
-C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\user\[username]\layout.jsx
-C:\Users\Boss\OneDrive\Desktop\Expert_visits_all\frontend_platform\src\app\(main)\vacancies\layout.jsx

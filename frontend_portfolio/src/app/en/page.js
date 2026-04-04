@@ -3,10 +3,13 @@ import LandingPage from '../../components/LandingPage';
 export const metadata = {
     title: 'Create Your Free Personal Website | Expert Visits',
     description: 'Register on the Expert Visits platform, fill in your details, and create your unique, professional website with just 1 click!',
+    alternates: {
+        canonical: 'https://expertvisits.com/u/en',
+    },
     openGraph: {
         title: 'Create Your Free Personal Website | Expert Visits',
         description: 'Register on the Expert Visits platform, fill in your details, and create your unique, professional website with just 1 click!',
-        url: 'https://expertvisits.com/en',
+        url: 'https://expertvisits.com/u/en',
         images: [{ url: '/logo.png', width: 800, height: 600, alt: 'Expert Visits Portfolio' }],
         locale: 'en_US',
         type: 'website',
@@ -30,10 +33,5 @@ export default function EnglishHomePage() {
         ctaBtnAlt: 'Get Your Website'
     };
 
-    return (
-        <>
-            <script dangerouslySetInnerHTML={{ __html: `document.documentElement.lang = "en";` }} suppressHydrationWarning />
-            <LandingPage t={translations} />
-        </>
-    );
+    return <LandingPage t={translations} />;
 }

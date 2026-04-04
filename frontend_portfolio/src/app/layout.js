@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
-import { cookies } from 'next/headers';
-import { getUser, getArticleDetail } from "@/lib/api/portfolio";
+import { getRequestLocaleState } from "@/lib/i18n/requestLocale";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +18,10 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    const cookieStore = await cookies();
-    const fallbackLng = cookieStore.get('i18next')?.value || 'az';
-    
+    const { effectiveLng } = await getRequestLocaleState();
+
     return (
-        <html lang={fallbackLng} suppressHydrationWarning>
+        <html lang={effectiveLng} suppressHydrationWarning>
             <head>
                 <link rel="icon" href="/logo.png" sizes="any" />
             </head>

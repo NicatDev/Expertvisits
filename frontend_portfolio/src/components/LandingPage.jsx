@@ -9,7 +9,7 @@ export default function LandingPage({ t }) {
             <header className={styles.topNav}>
                 <div className={styles.logo}>Expert Visits</div>
                 <div className={styles.langSwitcher}>
-                    <Link href="/" className={styles.langLink}>AZ</Link>
+                    <Link href="/az" className={styles.langLink}>AZ</Link>
                     <Link href="/en" className={styles.langLink}>EN</Link>
                     <Link href="/ru" className={styles.langLink}>RU</Link>
                 </div>

@@ -4,12 +4,12 @@ export const metadata = {
     title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
     description: 'Expert Visits platformasında qeydiyyatdan keçin, məlumatlarınızı doldurun və 1 kliklə öz unikal və peşəkar vebsaytınızı yaradın!',
     alternates: {
-        canonical: 'https://expertvisits.com/u',
+        canonical: 'https://expertvisits.com/u/az',
     },
     openGraph: {
         title: 'Ödənişsiz Şəxsi Vebsayt Yarat | Expert Visits',
         description: 'Expert Visits platformasında qeydiyyatdan keçin, məlumatlarınızı doldurun və 1 kliklə öz unikal və peşəkar vebsaytınızı yaradın!',
-        url: 'https://expertvisits.com/u',
+        url: 'https://expertvisits.com/u/az',
         images: [{ url: '/logo.png', width: 800, height: 600, alt: 'Expert Visits Portfolio' }],
         locale: 'az_AZ',
         type: 'website',
