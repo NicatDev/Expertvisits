@@ -31,5 +31,12 @@ export default function Projects({ user }) {
         emptyText: styles.projectsEmpty,
     };
 
-    return <ProjectsHomeSection user={user} styles={mergedStyles} titleSlot={titleSlot} />;
+    return (
+        <ProjectsHomeSection
+            user={user}
+            styles={mergedStyles}
+            titleSlot={titleSlot}
+            reserveImageArea
+        />
+    );
 }

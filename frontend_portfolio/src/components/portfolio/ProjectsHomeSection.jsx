@@ -30,6 +30,7 @@ function formatProjectDate(dateVal) {
  * @param {string} [props.imageClassName]
  * @param {string} [props.dateClassName]
  * @param {string} [props.readMoreClassName] — optional hook for template-specific “read more” link
+ * @param {boolean} [props.reserveImageArea] — when true, keep a fixed image slot even without image (grid alignment)
  */
 export default function ProjectsHomeSection({
     user,
@@ -42,6 +43,7 @@ export default function ProjectsHomeSection({
     imageClassName,
     dateClassName,
     readMoreClassName,
+    reserveImageArea = false,
 }) {
     const { t } = useTranslation();
     const v = mergeSectionVisibility(user?.section_visibility);
@@ -98,10 +100,19 @@ export default function ProjectsHomeSection({
                                                 </button>
                                             ) : null}
                                         </div>
-                                        {imgSrc ? (
-                                            <div className={imgWrapCls}>
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img src={imgSrc} alt="" className={imgCls} />
+                                        {imgSrc || reserveImageArea ? (
+                                            <div
+                                                className={[
+                                                    imgWrapCls,
+                                                    !imgSrc && reserveImageArea && s.projectImageWrapEmpty,
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(' ')}
+                                            >
+                                                {imgSrc ? (
+                                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                                    <img src={imgSrc} alt="" className={imgCls} />
+                                                ) : null}
                                             </div>
                                         ) : null}
                                     </article>
