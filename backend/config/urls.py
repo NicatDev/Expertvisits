@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/services/', include('apps.services.api.urls')),
     path('api/interactions/', include('apps.interactions.api.urls')),
     path('api/chat/', include('apps.chat.api.urls')),
+    path('api/connections/', include('apps.connections.api.urls')),
+    path('api/notifications/', include('apps.notifications.api.urls')),
     path('api/websites/', include('apps.websites.urls')),
     path('api/seo/', include('seo.urls')),
 ]

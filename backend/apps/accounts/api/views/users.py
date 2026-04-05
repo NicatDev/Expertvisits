@@ -1,9 +1,13 @@
 from rest_framework import generics, permissions, filters, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Count, Exists, OuterRef
+from django.db.models import Count
 from apps.accounts.models import User, RegistrationSession
 from apps.accounts.api.serializers import UserSerializer
+from apps.connections.models import ConnectionRequest
+from apps.connections.services import disconnect_users, is_mutual_connection
+from apps.connections.utils import with_connection_annotations
+from apps.notifications.services import notify_connection_requested
 from apps.business.api.views.companies import StandardResultsSetPagination
 import random
 from core.utils.email import send_verification_email
@@ -32,14 +36,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
         if self.request.user.is_authenticated:
             queryset = queryset.exclude(id=self.request.user.id)
-            queryset = queryset.annotate(
-                is_following=Exists(
-                    User.following.through.objects.filter(
-                        from_user_id=self.request.user.id,
-                        to_user_id=OuterRef('pk')
-                    )
-                )
-            )
+            queryset = with_connection_annotations(queryset, self.request.user)
 
         # Custom Filters
         from django.db.models import Q
@@ -124,14 +121,7 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             following_count=Count('following', distinct=True)
         )
         if self.request.user.is_authenticated:
-            queryset = queryset.annotate(
-                is_following=Exists(
-                    User.following.through.objects.filter(
-                        from_user_id=self.request.user.id,
-                        to_user_id=OuterRef('pk')
-                    )
-                )
-            )
+            queryset = with_connection_annotations(queryset, self.request.user)
         return queryset
 
     def update(self, request, *args, **kwargs):
@@ -172,6 +162,7 @@ class UserMeAPIView(generics.RetrieveAPIView):
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
         )
+        queryset = with_connection_annotations(queryset, self.request.user)
         return queryset.get(pk=self.request.user.pk)
 
 class FollowAPIView(APIView):
@@ -184,10 +175,31 @@ class FollowAPIView(APIView):
              return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if request.user == target_user:
-            return Response({"error": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        request.user.following.add(target_user)
-        return Response({"status": "followed"})
+            return Response({"error": "You cannot connect to yourself"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if is_mutual_connection(request.user, target_user):
+            return Response({"status": "connected"})
+
+        if ConnectionRequest.objects.filter(
+            from_user=request.user,
+            to_user=target_user,
+            status=ConnectionRequest.Status.PENDING,
+        ).exists():
+            return Response({"status": "pending"})
+
+        if ConnectionRequest.objects.filter(
+            from_user=target_user,
+            to_user=request.user,
+            status=ConnectionRequest.Status.PENDING,
+        ).exists():
+            return Response(
+                {"status": "incoming_pending", "detail": "This user already sent you a connection request."},
+                status=status.HTTP_409_CONFLICT,
+            )
+
+        cr = ConnectionRequest.objects.create(from_user=request.user, to_user=target_user)
+        notify_connection_requested(cr)
+        return Response({"status": "pending", "request_id": cr.id})
 
 class UnfollowAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -198,8 +210,8 @@ class UnfollowAPIView(APIView):
         except User.DoesNotExist:
              return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        request.user.following.remove(target_user)
-        return Response({"status": "unfollowed"})
+        disconnect_users(request.user, target_user)
+        return Response({"status": "disconnected"})
 
 class UserFollowersAPIView(generics.ListAPIView):
      serializer_class = UserSerializer
@@ -216,16 +228,8 @@ class UserFollowersAPIView(generics.ListAPIView):
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
         )
-        # Add is_following context
         if self.request.user.is_authenticated:
-            queryset = queryset.annotate(
-                is_following=Exists(
-                    User.following.through.objects.filter(
-                        from_user_id=self.request.user.id,
-                        to_user_id=OuterRef('pk')
-                    )
-                )
-            )
+            queryset = with_connection_annotations(queryset, self.request.user)
         return queryset
 
 class UserFollowingAPIView(generics.ListAPIView):
@@ -245,12 +249,5 @@ class UserFollowingAPIView(generics.ListAPIView):
             following_count=Count('following', distinct=True)
         )
         if self.request.user.is_authenticated:
-            queryset = queryset.annotate(
-                is_following=Exists(
-                    User.following.through.objects.filter(
-                        from_user_id=self.request.user.id,
-                        to_user_id=OuterRef('pk')
-                    )
-                )
-            )
+            queryset = with_connection_annotations(queryset, self.request.user)
         return queryset

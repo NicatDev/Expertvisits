@@ -252,6 +252,12 @@ def apply_feed_filters_poll(queryset, search_query: str):
 
 
 def apply_scope_following(queryset, user, enabled: bool):
+    """Only mutual connections (both users follow each other)."""
     if enabled and user and user.is_authenticated:
-        return queryset.filter(author__in=user.following.values_list("id", flat=True))
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        follower_ids = user.followers.values_list("id", flat=True)
+        mutual_ids = user.following.filter(id__in=follower_ids).values_list("id", flat=True)
+        return queryset.filter(author__in=mutual_ids)
     return queryset

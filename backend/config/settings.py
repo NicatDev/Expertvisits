@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'apps.services',
     'apps.websites',
     'apps.chat',
+    'apps.connections',
+    'apps.notifications',
 ]
 
 MIDDLEWARE = [

@@ -8,6 +8,4 @@ urlpatterns = [
     path("rooms/create-or-get/", views.CreateOrGetChatView.as_view(), name="chat-room-create-or-get"),
     path("rooms/<int:chat_id>/messages/", views.ChatMessageListView.as_view(), name="chat-messages"),
     path("rooms/<int:chat_id>/read/", views.MarkMessagesReadView.as_view(), name="chat-messages-read"),
-    path("notifications/", views.ChatNotificationListView.as_view(), name="chat-notifications"),
-    path("notifications/read/", views.MarkNotificationsReadView.as_view(), name="chat-notifications-read"),
 ]

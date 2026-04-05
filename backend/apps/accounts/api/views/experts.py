@@ -1,9 +1,10 @@
 from rest_framework import generics, permissions, filters, pagination
 
 from rest_framework.response import Response
-from django.db.models import Count, Exists, OuterRef, Q
+from django.db.models import Count, Q
 from apps.accounts.models import User
 from apps.accounts.api.serializers import UserSerializer
+from apps.connections.utils import with_connection_annotations
 
 class ExpertListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
@@ -61,15 +62,7 @@ class ExpertListAPIView(generics.ListAPIView):
         if profession_sub_category_id:
             queryset = queryset.filter(profession_sub_category_id=profession_sub_category_id)
 
-        # Is Following Annotation
-        queryset = queryset.annotate(
-            is_following=Exists(
-                User.following.through.objects.filter(
-                    from_user_id=self.request.user.id,
-                    to_user_id=OuterRef('pk')
-                )
-            )
-        )
-        
+        queryset = with_connection_annotations(queryset, self.request.user)
+
         return queryset.order_by('-followers_count') # Default order by popularity? Or random? 
         # User didn't specify, but popularity is good for experts.

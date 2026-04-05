@@ -42,8 +42,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
-    is_following = serializers.BooleanField(read_only=True, required=False)
-    is_following = serializers.BooleanField(read_only=True, required=False)
+    is_following = serializers.SerializerMethodField()
+    connection_pending_out = serializers.SerializerMethodField()
+    connection_pending_in = serializers.SerializerMethodField()
     company_slug = serializers.SerializerMethodField()
     highest_education = serializers.SerializerMethodField()
     website_active = serializers.SerializerMethodField()
@@ -55,7 +56,8 @@ class UserSerializer(serializers.ModelSerializer):
             'phone_number', 'birth_day', 'city', 'summary', 'language', 'interests', 'avatar', 'avatar_compressed', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
-            'followers_count', 'following_count', 'is_following', 'company_slug',
+            'followers_count', 'following_count', 'is_following',
+            'connection_pending_out', 'connection_pending_in', 'company_slug',
             'highest_education',
             'open_to',
             'is_searchable', 'show_phone_number', 'notify_email_general',
@@ -94,6 +96,20 @@ class UserSerializer(serializers.ModelSerializer):
             print(f"Error sending email: {e}")
             
         return user
+    def get_is_following(self, obj):
+        """Mutual connection (both users follow each other)."""
+        i = getattr(obj, "conn_i_follow", None)
+        f = getattr(obj, "conn_follows_me", None)
+        if i is None and f is None:
+            return False
+        return bool(i and f)
+
+    def get_connection_pending_out(self, obj):
+        return bool(getattr(obj, "conn_pending_out", False))
+
+    def get_connection_pending_in(self, obj):
+        return bool(getattr(obj, "conn_pending_in", False))
+
     def get_company_slug(self, obj):
         try:
             return obj.company.slug

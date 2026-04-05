@@ -92,7 +92,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         n = await database_sync_to_async(mark_messages_read)(self.uid, cid, up_to)
         await self.send(text_data=json.dumps({"type": "mark_read_ack", "chat_id": cid, "updated": n}))
 
-    async def chat_event(self, event):
+    async def inbox_push(self, event):
         await self.send(text_data=json.dumps(event["payload"]))
 
     async def _err(self, code: str, **extra):

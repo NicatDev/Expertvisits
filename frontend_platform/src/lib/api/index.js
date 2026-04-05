@@ -6,3 +6,6 @@ export * from './interactions';
 export * from './profiles';
 export * from './accounts';
 export * from './websites';
+export * from './notifications';
+export * from './connections';
+export * from './chat';

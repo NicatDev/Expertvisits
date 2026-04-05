@@ -1,19 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count, F, Q
-from django.utils import timezone
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django.db.models import OuterRef, Subquery
+
 from apps.chat.api.serializers import (
     ChatMessageSerializer,
-    ChatNotificationSerializer,
     ChatRoomSerializer,
     CreateOrGetChatSerializer,
-    MarkNotificationsReadSerializer,
     UserSearchSerializer,
 )
-from apps.chat.models import ChatMessage, ChatNotification, ChatRoom
+from apps.chat.models import ChatMessage, ChatRoom
 from apps.chat.services import mark_messages_read
 
 User = get_user_model()
@@ -49,6 +48,11 @@ class ChatRoomListView(generics.ListAPIView):
 
     def get_queryset(self):
         u = self.request.user
+        latest_txt = (
+            ChatMessage.objects.filter(chat_id=OuterRef("pk"))
+            .order_by("-id")
+            .values("text")[:1]
+        )
         return (
             ChatRoom.objects.filter(Q(user_low=u) | Q(user_high=u))
             .select_related("user_low", "user_high")
@@ -56,7 +60,8 @@ class ChatRoomListView(generics.ListAPIView):
                 unread_count=Count(
                     "messages",
                     filter=Q(messages__recipient=u, messages__read_at__isnull=True),
-                )
+                ),
+                last_message_preview=Subquery(latest_txt),
             )
             .order_by(F("last_message_at").desc(nulls_last=True), "-created_at")
         )
@@ -127,49 +132,3 @@ class MarkMessagesReadView(APIView):
         n = mark_messages_read(uid, int(chat_id), up_to)
         return Response({"updated": n})
 
-
-class ChatNotificationListView(APIView):
-    """GET /api/chat/notifications/?limit=30&before_id="""
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        limit = min(int(request.query_params.get("limit", 30)), 100)
-        before_id = request.query_params.get("before_id")
-        qs = ChatNotification.objects.filter(recipient=user).order_by("-id")
-        if before_id:
-            try:
-                qs = qs.filter(id__lt=int(before_id))
-            except (TypeError, ValueError):
-                pass
-        items = list(qs[:limit])
-        ser = ChatNotificationSerializer(items, many=True, context={"request": request})
-        next_before_id = items[-1].id if items else None
-        return Response({"results": ser.data, "next_before_id": next_before_id})
-
-
-class MarkNotificationsReadView(APIView):
-    """PATCH /api/chat/notifications/read/"""
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def patch(self, request):
-        ser = MarkNotificationsReadSerializer(data=request.data)
-        ser.is_valid(raise_exception=True)
-        user = request.user
-        now = timezone.now()
-
-        if ser.validated_data.get("mark_all"):
-            updated = ChatNotification.objects.filter(recipient=user, read_at__isnull=True).update(
-                read_at=now
-            )
-            return Response({"updated": updated})
-
-        ids = ser.validated_data.get("ids") or []
-        if not ids:
-            return Response({"updated": 0})
-        updated = ChatNotification.objects.filter(
-            recipient=user, id__in=ids, read_at__isnull=True
-        ).update(read_at=now)
-        return Response({"updated": updated})

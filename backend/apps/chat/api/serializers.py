@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from apps.chat.models import ChatMessage, ChatNotification, ChatRoom
+from apps.chat.models import ChatMessage, ChatRoom
+from apps.chat.services import get_or_create_room
 
 User = get_user_model()
 
@@ -37,6 +38,7 @@ class UserSearchSerializer(serializers.ModelSerializer):
 class ChatRoomSerializer(serializers.ModelSerializer):
     other_user = serializers.SerializerMethodField()
     unread_count = serializers.SerializerMethodField()
+    last_message_preview = serializers.SerializerMethodField()
 
     class Meta:
         model = ChatRoom
@@ -47,11 +49,23 @@ class ChatRoomSerializer(serializers.ModelSerializer):
             "last_message_at",
             "created_at",
             "unread_count",
+            "last_message_preview",
         )
-        read_only_fields = ("id", "room_key", "other_user", "last_message_at", "created_at", "unread_count")
+        read_only_fields = (
+            "id",
+            "room_key",
+            "other_user",
+            "last_message_at",
+            "created_at",
+            "unread_count",
+            "last_message_preview",
+        )
 
     def get_unread_count(self, obj):
         return getattr(obj, "unread_count", 0)
+
+    def get_last_message_preview(self, obj):
+        return getattr(obj, "last_message_preview", "") or ""
 
     def get_other_user(self, obj):
         request = self.context.get("request")
@@ -93,23 +107,3 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         )
         read_only_fields = fields
 
-
-class ChatNotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChatNotification
-        fields = (
-            "id",
-            "kind",
-            "actor_id",
-            "chat_id",
-            "message_id",
-            "payload",
-            "read_at",
-            "created_at",
-        )
-        read_only_fields = fields
-
-
-class MarkNotificationsReadSerializer(serializers.Serializer):
-    ids = serializers.ListField(child=serializers.IntegerField(), required=False)
-    mark_all = serializers.BooleanField(default=False)

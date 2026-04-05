@@ -3,6 +3,7 @@ import "@/styles/globals.scss";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { InboxSocketProvider } from "@/lib/contexts/InboxSocketContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { LanguageProvider } from "@/lib/contexts/LanguageProvider";
 import { getRequestLocaleState } from "@/lib/i18n/requestLocale";
@@ -84,10 +85,12 @@ export default async function RootLayout({ children }) {
       <body className={inter.className} suppressHydrationWarning={true}>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
           <AuthProvider>
-            <LanguageProvider lng={effectiveLng}>
-              {children}
-              <ToastContainer />
-            </LanguageProvider>
+            <InboxSocketProvider>
+              <LanguageProvider lng={effectiveLng}>
+                {children}
+                <ToastContainer />
+              </LanguageProvider>
+            </InboxSocketProvider>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>
