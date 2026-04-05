@@ -1,6 +1,5 @@
 from django.db import models
 from apps.accounts.models import User, SubCategory
-from apps.accounts.models import User, SubCategory
 from core.utils import custom_slugify
 from core.utils.images import compress_image
 
@@ -26,6 +25,7 @@ class Article(models.Model):
     comments = GenericRelation(Comment)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
+    score = models.IntegerField(default=0, db_index=True)
 
     def save(self, *args, **kwargs):
         # Auto-detect language if not set or default
@@ -73,6 +73,7 @@ class Quiz(models.Model):
     likes = GenericRelation(Like)
     comments = GenericRelation(Comment)
     created_at = models.DateTimeField(auto_now_add=True)
+    score = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         return self.title
@@ -106,10 +107,14 @@ class QuizAttempt(models.Model):
 
 class Poll(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='polls')
+    sub_category = models.ForeignKey(
+        SubCategory, on_delete=models.SET_NULL, null=True, blank=True, db_index=True
+    )
     question = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     likes = GenericRelation(Like)
     comments = GenericRelation(Comment)
+    score = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         return self.question[:50]

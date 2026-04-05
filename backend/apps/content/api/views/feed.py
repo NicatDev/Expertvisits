@@ -1,297 +1,286 @@
-from rest_framework.views import APIView
-from rest_framework import permissions, generics
+from rest_framework import permissions
 from rest_framework.response import Response
-from django.db.models import Count, Q
-from apps.content.models import Article, Quiz, Poll
-from apps.content.api.serializers import ArticleSerializer, QuizSerializer, PollSerializer
-from itertools import chain
+from rest_framework.views import APIView
+
+from apps.content.api.serializers import ArticleSerializer, PollSerializer, QuizSerializer
+from apps.content.models import Article, Poll, Quiz
+from core.feed_scoring import (
+    annotate_engagement_counts,
+    annotate_feed_rank,
+    apply_feed_filters_article,
+    apply_feed_filters_poll,
+    apply_feed_filters_quiz,
+    apply_scope_following,
+    build_feed_cache_key,
+    feed_cache_get,
+    feed_cache_set,
+    merge_mixed_feed_candidates,
+    resolve_feed_mode,
+    should_cache_feed_request,
+)
+
+
+def _user_cache_part(request):
+    if request.user.is_authenticated:
+        uid = request.user.pk
+        prof = getattr(request.user, "profession_sub_category_id", None) or 0
+        return f"{uid}:{prof}"
+    return "anon"
+
+
+def _serialize_feed_items(request, items):
+    results = []
+    for item in items:
+        if isinstance(item, Article):
+            data = ArticleSerializer(item, context={"request": request}).data
+            data["type"] = "article"
+        elif isinstance(item, Quiz):
+            data = QuizSerializer(item, context={"request": request}).data
+            data["type"] = "quiz"
+        elif isinstance(item, Poll):
+            data = PollSerializer(item, context={"request": request}).data
+            data["type"] = "poll"
+        else:
+            continue
+        results.append(data)
+    return results
+
+
+def _article_base():
+    return Article.objects.select_related("author", "sub_category")
+
+
+def _quiz_base():
+    return Quiz.objects.select_related("author", "sub_category").prefetch_related("questions__choices")
+
+
+def _poll_base():
+    return Poll.objects.select_related("author", "sub_category").prefetch_related("options", "votes")
+
 
 class FeedAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        type_param = request.query_params.get('type', 'article')
-        ordering_param = request.query_params.get('ordering', '-created_at')
-        search_query = request.query_params.get('search', '')
-        limit = int(request.query_params.get('limit', 10))
-        page = int(request.query_params.get('page', 1))
+        type_param = request.query_params.get("type", "article")
+        ordering_param = request.query_params.get("ordering", "-created_at")
+        mode = resolve_feed_mode(ordering_param)
+        search_query = request.query_params.get("search", "")
+        limit = int(request.query_params.get("limit", 10))
+        page = int(request.query_params.get("page", 1))
+        scope_param = request.query_params.get("scope", "all")
+        following_on = scope_param == "following" and request.user.is_authenticated
 
-        if type_param == 'all':
-            # Complex merging logic
-            articles = Article.objects.select_related('author', 'sub_category').annotate(
-                likes_count=Count('likes', distinct=True), 
-                comments_count=Count('comments', distinct=True)
+        cache_key = None
+        if should_cache_feed_request(search_query, scope_param):
+            cache_key = build_feed_cache_key(
+                prefix="feed",
+                type_param=type_param,
+                mode=mode,
+                scope=scope_param,
+                page=page,
+                limit=limit,
+                user_part=_user_cache_part(request),
             )
-            quizzes = Quiz.objects.prefetch_related('questions__choices').annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comments', distinct=True)
-            )
-            polls = Poll.objects.prefetch_related('options', 'votes').annotate(
-                likes_count=Count('likes', distinct=True), 
-                comments_count=Count('comments', distinct=True)
-            )
+            hit = feed_cache_get(cache_key)
+            if hit is not None:
+                return Response(hit)
 
-            
-            scope_param = request.query_params.get('scope', 'all')
-            if scope_param == 'following' and request.user.is_authenticated:
-                following_ids = request.user.following.values_list('id', flat=True)
-                articles = articles.filter(author__in=following_ids)
-                quizzes = quizzes.filter(author__in=following_ids)
-                polls = polls.filter(author__in=following_ids)
+        if type_param == "all":
+            articles = apply_feed_filters_article(_article_base(), search_query)
+            articles = apply_scope_following(articles, request.user, following_on)
+            articles = annotate_engagement_counts(articles)
+            articles = annotate_feed_rank(articles, mode, request.user)
 
-            if search_query:
-                articles = articles.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
-                quizzes = quizzes.filter(title__icontains=search_query)
-                polls = polls.filter(question__icontains=search_query)
+            quizzes = apply_feed_filters_quiz(_quiz_base(), search_query)
+            quizzes = apply_scope_following(quizzes, request.user, following_on)
+            quizzes = annotate_engagement_counts(quizzes)
+            quizzes = annotate_feed_rank(quizzes, mode, request.user)
 
+            polls = apply_feed_filters_poll(_poll_base(), search_query)
+            polls = apply_scope_following(polls, request.user, following_on)
+            polls = annotate_engagement_counts(polls)
+            polls = annotate_feed_rank(polls, mode, request.user)
 
-            def get_sort_key(instance):
-                if ordering_param == 'popularity':
-                    return (instance.likes_count, instance.created_at)
-                return instance.created_at
-
-            combined = sorted(
-                chain(articles, quizzes, polls),
-                key=get_sort_key,
-                reverse=True
-            )
-            
-            count = len(combined)
-            start = (page - 1) * limit
-            end = start + limit
-            page_items = combined[start:end]
-            
-            results = []
-            for item in page_items:
-                if isinstance(item, Article):
-                    data = ArticleSerializer(item, context={'request': request}).data
-                    data['type'] = 'article'
-                elif isinstance(item, Quiz):
-                    data = QuizSerializer(item, context={'request': request}).data
-                    data['type'] = 'quiz'
-                elif isinstance(item, Poll):
-                    data = PollSerializer(item, context={'request': request}).data
-                    data['type'] = 'poll'
-
-                results.append(data)
-            
-            return Response({'results': results, 'count': count})
-        
+            total = articles.count() + quizzes.count() + polls.count()
+            page_items = merge_mixed_feed_candidates(articles, quizzes, polls, page, limit)
+            payload = {"results": _serialize_feed_items(request, page_items), "count": total}
         else:
-            # Single Type
-            queryset = None
-            serializer_cls = None
-            
-            if type_param == 'quiz':
-                queryset = Quiz.objects.prefetch_related('questions__choices')
-                if search_query: queryset = queryset.filter(title__icontains=search_query)
+            if type_param == "quiz":
+                queryset = apply_feed_filters_quiz(_quiz_base(), search_query)
+                queryset = apply_scope_following(queryset, request.user, following_on)
                 serializer_cls = QuizSerializer
-            
-            elif type_param == 'poll':
-                queryset = Poll.objects.prefetch_related('options', 'votes')
-                if search_query: queryset = queryset.filter(question__icontains=search_query)
+            elif type_param == "poll":
+                queryset = apply_feed_filters_poll(_poll_base(), search_query)
+                queryset = apply_scope_following(queryset, request.user, following_on)
                 serializer_cls = PollSerializer
-
-            else: # article
-                queryset = Article.objects.select_related('author', 'sub_category')
-                if search_query: queryset = queryset.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
+            else:
+                queryset = apply_feed_filters_article(_article_base(), search_query)
+                queryset = apply_scope_following(queryset, request.user, following_on)
                 serializer_cls = ArticleSerializer
 
-            scope_param = request.query_params.get('scope', 'all')
-            if scope_param == 'following' and request.user.is_authenticated:
-                queryset = queryset.filter(author__in=request.user.following.values_list('id', flat=True))
+            queryset = annotate_engagement_counts(queryset)
+            queryset = annotate_feed_rank(queryset, mode, request.user)
 
-            queryset = queryset.annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comments', distinct=True)
-            )
-
-            if ordering_param == 'popularity':
-                queryset = queryset.order_by('-likes_count', '-created_at')
-            else:
-                queryset = queryset.order_by('-created_at')
-            
-            # Pagination
-            count = queryset.count()
+            total = queryset.count()
             start = (page - 1) * limit
             end = start + limit
             items = queryset[start:end]
-            
-            data = serializer_cls(items, many=True, context={'request': request}).data
-            
-            # Inject Type
+            data = serializer_cls(items, many=True, context={"request": request}).data
             for item in data:
-                item['type'] = type_param
-            
-            return Response({'results': data, 'count': count})
+                item["type"] = type_param
+            payload = {"results": data, "count": total}
+
+        if cache_key:
+            feed_cache_set(cache_key, payload)
+        return Response(payload)
 
 
 class PublicFeedAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        type_param = request.query_params.get('type', 'all')
-        search_query = request.query_params.get('search', '')
-        user_id = request.query_params.get('user_id')
-        limit = int(request.query_params.get('limit', 3))
-        page = int(request.query_params.get('page', 1))
+        type_param = request.query_params.get("type", "all")
+        ordering_param = request.query_params.get("ordering", "-created_at")
+        mode = resolve_feed_mode(ordering_param)
+        search_query = request.query_params.get("search", "")
+        user_id = request.query_params.get("user_id")
+        limit = int(request.query_params.get("limit", 3))
+        page = int(request.query_params.get("page", 1))
 
         if not user_id:
-            return Response({'results': [], 'count': 0})
-        
-        # Similar logic to FeedAPIView but filtered by user_id
-        if type_param == 'all':
-            articles = Article.objects.filter(author_id=user_id).select_related('author', 'sub_category').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
-            quizzes = Quiz.objects.filter(author_id=user_id).prefetch_related('questions__choices').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
-            polls = Poll.objects.filter(author_id=user_id).prefetch_related('options', 'votes').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
+            return Response({"results": [], "count": 0})
 
-            
-            if search_query:
-                # Same search logic
-                articles = articles.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
-                quizzes = quizzes.filter(title__icontains=search_query)
-                polls = polls.filter(question__icontains=search_query)
+        uid = int(user_id)
 
-
-            combined = sorted(
-                chain(articles, quizzes, polls),
-                key=lambda instance: instance.created_at,
-                reverse=True
+        cache_key = None
+        if should_cache_feed_request(search_query, "all"):
+            cache_key = build_feed_cache_key(
+                prefix="pubfeed",
+                type_param=type_param,
+                mode=mode,
+                scope=f"u{uid}",
+                page=page,
+                limit=limit,
+                user_part=_user_cache_part(request),
             )
-            
-            count = len(combined)
-            start = (page - 1) * limit
-            end = start + limit
-            page_items = combined[start:end]
-            
-            results = []
-            for item in page_items:
-                if isinstance(item, Article):
-                    data = ArticleSerializer(item, context={'request': request}).data
-                    data['type'] = 'article'
-                elif isinstance(item, Quiz):
-                    data = QuizSerializer(item, context={'request': request}).data
-                    data['type'] = 'quiz'
-                elif isinstance(item, Poll):
-                    data = PollSerializer(item, context={'request': request}).data
-                    data['type'] = 'poll'
+            hit = feed_cache_get(cache_key)
+            if hit is not None:
+                return Response(hit)
 
-                results.append(data)
-            
-            return Response({'results': results, 'count': count})
-        
+        if type_param == "all":
+            articles = apply_feed_filters_article(
+                _article_base().filter(author_id=uid), search_query
+            )
+            articles = annotate_engagement_counts(articles)
+            articles = annotate_feed_rank(articles, mode, request.user)
+
+            quizzes = apply_feed_filters_quiz(_quiz_base().filter(author_id=uid), search_query)
+            quizzes = annotate_engagement_counts(quizzes)
+            quizzes = annotate_feed_rank(quizzes, mode, request.user)
+
+            polls = apply_feed_filters_poll(_poll_base().filter(author_id=uid), search_query)
+            polls = annotate_engagement_counts(polls)
+            polls = annotate_feed_rank(polls, mode, request.user)
+
+            total = articles.count() + quizzes.count() + polls.count()
+            page_items = merge_mixed_feed_candidates(articles, quizzes, polls, page, limit)
+            payload = {"results": _serialize_feed_items(request, page_items), "count": total}
         else:
-            # Single type
-            if type_param == 'quiz':
-                queryset = Quiz.objects.filter(author_id=user_id).prefetch_related('questions__choices')
+            if type_param == "quiz":
+                queryset = _quiz_base().filter(author_id=uid)
+                queryset = apply_feed_filters_quiz(queryset, search_query)
                 serializer_cls = QuizSerializer
-
-            elif type_param == 'poll':
-                queryset = Poll.objects.filter(author_id=user_id).prefetch_related('options', 'votes')
+            elif type_param == "poll":
+                queryset = _poll_base().filter(author_id=uid)
+                queryset = apply_feed_filters_poll(queryset, search_query)
                 serializer_cls = PollSerializer
-
-            else: 
-                queryset = Article.objects.filter(author_id=user_id).select_related('author', 'sub_category')
+            else:
+                queryset = _article_base().filter(author_id=uid)
+                queryset = apply_feed_filters_article(queryset, search_query)
                 serializer_cls = ArticleSerializer
 
-            if search_query:
-                # Add filters
-                pass
-            
-            queryset = queryset.annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comments', distinct=True)
-            ).order_by('-created_at')
-            
-            count = queryset.count()
-            items = queryset[(page-1)*limit : page*limit]
-            
-            data = serializer_cls(items, many=True, context={'request': request}).data
-             # Inject Type
+            queryset = annotate_engagement_counts(queryset)
+            queryset = annotate_feed_rank(queryset, mode, request.user)
+
+            total = queryset.count()
+            items = queryset[(page - 1) * limit : page * limit]
+            data = serializer_cls(items, many=True, context={"request": request}).data
             for item in data:
-                item['type'] = type_param
-                
-            return Response({'results': data, 'count': count})
+                item["type"] = type_param
+            payload = {"results": data, "count": total}
+
+        if cache_key:
+            feed_cache_set(cache_key, payload)
+        return Response(payload)
 
 
 class UserFeedAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        # reuse PublicFeed logic but for request.user
-        # For brevity, implementing directly or could inherit/reuse
-        # It's essentially "PublicFeed" with user=request.user and IsAuthenticated
-        
         user = request.user
-        type_param = request.query_params.get('type', 'all')
-        search_query = request.query_params.get('search', '')
-        limit = int(request.query_params.get('limit', 3))
-        page = int(request.query_params.get('page', 1))
+        type_param = request.query_params.get("type", "all")
+        ordering_param = request.query_params.get("ordering", "-created_at")
+        mode = resolve_feed_mode(ordering_param)
+        search_query = request.query_params.get("search", "")
+        limit = int(request.query_params.get("limit", 3))
+        page = int(request.query_params.get("page", 1))
 
-        if type_param == 'all':
-            articles = Article.objects.filter(author=user).select_related('author', 'sub_category').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
-            quizzes = Quiz.objects.filter(author=user).prefetch_related('questions__choices').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
-            polls = Poll.objects.filter(author=user).prefetch_related('options', 'votes').annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
-
-            # Search...
-            
-            combined = sorted(
-                chain(articles, quizzes, polls),
-                key=lambda instance: instance.created_at,
-                reverse=True
+        cache_key = None
+        if should_cache_feed_request(search_query, "all"):
+            cache_key = build_feed_cache_key(
+                prefix="myfeed",
+                type_param=type_param,
+                mode=mode,
+                scope="me",
+                page=page,
+                limit=limit,
+                user_part=_user_cache_part(request),
             )
-             
-            count = len(combined)
-            page_items = combined[(page-1)*limit : page*limit]
-            
-            results = []
-            for item in page_items:
-                 if isinstance(item, Article):
-                    data = ArticleSerializer(item, context={'request': request}).data
-                    data['type'] = 'article'
-                 elif isinstance(item, Quiz):
-                    data = QuizSerializer(item, context={'request': request}).data
-                    data['type'] = 'quiz'
-                 elif isinstance(item, Poll):
-                    data = PollSerializer(item, context={'request': request}).data
-                    data['type'] = 'poll'
+            hit = feed_cache_get(cache_key)
+            if hit is not None:
+                return Response(hit)
 
-                 results.append(data)
-            return Response({'results': results, 'count': count})
-        
+        if type_param == "all":
+            articles = apply_feed_filters_article(_article_base().filter(author=user), search_query)
+            articles = annotate_engagement_counts(articles)
+            articles = annotate_feed_rank(articles, mode, request.user)
+
+            quizzes = apply_feed_filters_quiz(_quiz_base().filter(author=user), search_query)
+            quizzes = annotate_engagement_counts(quizzes)
+            quizzes = annotate_feed_rank(quizzes, mode, request.user)
+
+            polls = apply_feed_filters_poll(_poll_base().filter(author=user), search_query)
+            polls = annotate_engagement_counts(polls)
+            polls = annotate_feed_rank(polls, mode, request.user)
+
+            total = articles.count() + quizzes.count() + polls.count()
+            page_items = merge_mixed_feed_candidates(articles, quizzes, polls, page, limit)
+            payload = {"results": _serialize_feed_items(request, page_items), "count": total}
         else:
-            queryset = None
-            serializer_cls = None
-            
-            if type_param == 'quiz':
-                queryset = Quiz.objects.filter(author=user).prefetch_related('questions__choices')
-                if search_query: queryset = queryset.filter(title__icontains=search_query)
+            if type_param == "quiz":
+                queryset = apply_feed_filters_quiz(_quiz_base().filter(author=user), search_query)
                 serializer_cls = QuizSerializer
-            
-            elif type_param == 'poll':
-                queryset = Poll.objects.filter(author=user).prefetch_related('options', 'votes')
-                if search_query: queryset = queryset.filter(question__icontains=search_query)
+            elif type_param == "poll":
+                queryset = apply_feed_filters_poll(_poll_base().filter(author=user), search_query)
                 serializer_cls = PollSerializer
-
-            else: # article
-                queryset = Article.objects.filter(author=user).select_related('author', 'sub_category')
-                if search_query: queryset = queryset.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
+            else:
+                queryset = apply_feed_filters_article(_article_base().filter(author=user), search_query)
                 serializer_cls = ArticleSerializer
 
-            queryset = queryset.annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comments', distinct=True)
-            ).order_by('-created_at')
-            
-            count = queryset.count()
+            queryset = annotate_engagement_counts(queryset)
+            queryset = annotate_feed_rank(queryset, mode, request.user)
+
+            total = queryset.count()
             start = (page - 1) * limit
             end = start + limit
             items = queryset[start:end]
-            
-            data = serializer_cls(items, many=True, context={'request': request}).data
-            
-            # Inject Type
+            data = serializer_cls(items, many=True, context={"request": request}).data
             for item in data:
-                item['type'] = type_param
-            
-            return Response({'results': data, 'count': count})
+                item["type"] = type_param
+            payload = {"results": data, "count": total}
+
+        if cache_key:
+            feed_cache_set(cache_key, payload)
+        return Response(payload)

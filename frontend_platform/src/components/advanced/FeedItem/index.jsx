@@ -17,6 +17,7 @@ import Modal from '../../ui/Modal';
 import { useTranslation } from '@/i18n/client';
 import { formatDate } from '@/lib/utils/date';
 import { htmlToFeedPreview } from '@/lib/utils/htmlFeedPreview';
+import { labelForSubCategory } from '@/lib/utils/subcategory';
 import PollCard from '../PollCard';
 
 const FeedItem = ({ item, onDelete }) => {
@@ -190,7 +191,6 @@ const FeedItem = ({ item, onDelete }) => {
     };
 
 
-    console.log(localItem)
     return (
         <div className={styles.feedItem}>
             {/* Header */}
@@ -214,6 +214,9 @@ const FeedItem = ({ item, onDelete }) => {
                             <div className={styles.username}>{t('feed_item.unknown_user')}</div>
                         )}
                         <div className={styles.date}>{formatDate(localItem.created_at, i18n.language)}</div>
+                        {labelForSubCategory(localItem.sub_category, i18n.language) ? (
+                            <div className={styles.profession}>{labelForSubCategory(localItem.sub_category, i18n.language)}</div>
+                        ) : null}
                     </div>
                 </div>
                 {user?.username === localItem.author && (
@@ -271,6 +274,9 @@ const FeedItem = ({ item, onDelete }) => {
                 {isQuiz && (
                     <div className={styles.quizCard}>
                         <h3>{localItem.title}</h3>
+                        {labelForSubCategory(localItem.sub_category, i18n.language) ? (
+                            <div className={styles.quizProfession}>{labelForSubCategory(localItem.sub_category, i18n.language)}</div>
+                        ) : null}
                         <p>
                             {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0} {t('feed_item.participants_count')}
                         </p>

@@ -65,12 +65,26 @@
     }
 }
 
+.infoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+}
+
+.profession {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
 .info {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
     color: #64748b;
+    flex-wrap: wrap;
 
     .author {
         font-weight: 600;

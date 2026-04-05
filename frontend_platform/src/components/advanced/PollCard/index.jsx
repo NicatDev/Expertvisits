@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import styles from './style.module.scss';
 import api from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
+import Avatar from '@/components/ui/Avatar';
+import { formatDate } from '@/lib/utils/date';
+import { labelForSubCategory } from '@/lib/utils/subcategory';
 
 const PollCard = ({ poll }) => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const { user } = useAuth();
     const [data, setData] = useState(poll);
     const [loading, setLoading] = useState(false);
 
     const hasVoted = data.user_vote !== null;
+    const professionLabel = labelForSubCategory(data.sub_category, i18n.language);
 
     const handleVote = async (optionId) => {
         if (!user) {
@@ -34,6 +39,38 @@ const PollCard = ({ poll }) => {
 
     return (
         <div className={styles.pollCard}>
+            <div className={styles.header}>
+                <div className={styles.userInfo}>
+                    {data.author ? (
+                        <Link href={`/user/${data.author}`} className={styles.avatar}>
+                            <Avatar
+                                user={{
+                                    username: data.author,
+                                    avatar: data.author_avatar,
+                                    avatar_compressed: data.author_avatar_compressed,
+                                }}
+                                size={32}
+                            />
+                        </Link>
+                    ) : (
+                        <div className={styles.avatar}>
+                            <Avatar user={{ username: t('feed_item.unknown_user') }} size={32} />
+                        </div>
+                    )}
+                    <div className={styles.meta}>
+                        {data.author ? (
+                            <Link href={`/user/${data.author}`} className={styles.username}>
+                                {data.author}
+                            </Link>
+                        ) : (
+                            <div className={styles.username}>{t('feed_item.unknown_user')}</div>
+                        )}
+                        <div className={styles.date}>{formatDate(data.created_at, i18n.language)}</div>
+                        {professionLabel ? <div className={styles.profession}>{professionLabel}</div> : null}
+                    </div>
+                </div>
+            </div>
+
             <h3>{data.question}</h3>
 
             <div className={styles.options}>

@@ -115,6 +115,28 @@ else:
     }
 
 
+# Feed ranking cache (Redis on server via REDIS_URL; else LocMem for dev)
+FEED_CACHE_TTL = int(os.environ.get("FEED_CACHE_TTL", "75"))
+FEED_MERGE_CANDIDATE_CAP = int(os.environ.get("FEED_MERGE_CANDIDATE_CAP", "2000"))
+FEED_CACHE_FOLLOWING = os.environ.get("FEED_CACHE_FOLLOWING", "").lower() in ("1", "true", "yes")
+
+REDIS_URL = os.environ.get("REDIS_URL", "").strip()
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "expertvisits-feed",
+        }
+    }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

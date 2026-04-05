@@ -6,7 +6,7 @@ from apps.content.models import Quiz, QuizAttempt
 from apps.content.api.serializers import QuizSerializer
 
 class QuizListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Quiz.objects.select_related('author').prefetch_related('questions__choices').annotate(
+    queryset = Quiz.objects.select_related('author', 'sub_category').prefetch_related('questions__choices').annotate(
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comments', distinct=True)
     ).order_by('-created_at')
@@ -14,15 +14,23 @@ class QuizListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(
+            author=self.request.user,
+            sub_category=getattr(self.request.user, 'profession_sub_category', None),
+        )
 
 class QuizDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Quiz.objects.select_related('author').prefetch_related('questions__choices').annotate(
+    queryset = Quiz.objects.select_related('author', 'sub_category').prefetch_related('questions__choices').annotate(
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comments', distinct=True)
     )
     serializer_class = QuizSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+        serializer.save(
+            sub_category=getattr(self.request.user, 'profession_sub_category', None),
+        )
 
 class QuizSubmitAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

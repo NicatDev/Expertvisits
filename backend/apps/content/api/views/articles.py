@@ -17,7 +17,10 @@ class ArticleListCreateAPIView(generics.ListCreateAPIView):
     ordering_fields = ['created_at', 'title']
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(
+            author=self.request.user,
+            sub_category=getattr(self.request.user, 'profession_sub_category', None),
+        )
 
 class ArticleDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.select_related('author', 'sub_category').annotate(
@@ -27,3 +30,8 @@ class ArticleDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
+
+    def perform_update(self, serializer):
+        serializer.save(
+            sub_category=getattr(self.request.user, 'profession_sub_category', None),
+        )

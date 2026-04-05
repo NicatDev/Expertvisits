@@ -2,12 +2,21 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from apps.content.models import Poll, PollVote, PollOption
 from apps.content.api.serializers import PollSerializer, PollCreateSerializer, PollVoteSerializer
 
 class PollListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Poll.objects.all().order_by('-created_at')
+    queryset = (
+        Poll.objects.select_related('author', 'sub_category')
+        .prefetch_related('options', 'votes')
+        .annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True),
+        )
+        .order_by('-created_at')
+    )
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -15,14 +24,25 @@ class PollListCreateAPIView(generics.ListCreateAPIView):
         return PollSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(
+            author=self.request.user,
+            sub_category=getattr(self.request.user, 'profession_sub_category', None),
+        )
 
 
 class PollVoteAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        poll = get_object_or_404(Poll, pk=pk)
+        poll = get_object_or_404(
+            Poll.objects.select_related('author', 'sub_category')
+            .prefetch_related('options', 'votes')
+            .annotate(
+                likes_count=Count('likes', distinct=True),
+                comments_count=Count('comments', distinct=True),
+            ),
+            pk=pk,
+        )
         
         # Check if user already voted
         if PollVote.objects.filter(user=request.user, poll=poll).exists():

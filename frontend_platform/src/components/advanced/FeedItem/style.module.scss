@@ -57,6 +57,13 @@
         font-size: 0.8rem;
         color: #999;
     }
+
+    .profession {
+        font-size: 0.78rem;
+        color: #2563eb;
+        font-weight: 500;
+        margin-top: 2px;
+    }
 }
 
 .moreBtn {
@@ -135,6 +142,13 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
+
+    .quizProfession {
+        font-size: 0.8rem;
+        color: #2563eb;
+        font-weight: 500;
+        margin-top: -4px;
+    }
 
     p {
         color: #64748b;

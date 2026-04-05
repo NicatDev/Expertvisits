@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from apps.accounts.api.serializers import SubCategorySerializer
 from apps.content.models import Article, Quiz, Question, Choice
 
 # Define Mixin here to minimize dependencies
@@ -43,6 +44,7 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
     slug = serializers.SlugField(read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    sub_category = SubCategorySerializer(read_only=True)
 
     class Meta:
         model = Article
@@ -116,6 +118,7 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
     questions = QuestionSerializer(many=True)
     likes_count = serializers.IntegerField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    sub_category = SubCategorySerializer(read_only=True)
 
     class Meta:
         model = Quiz
@@ -237,10 +240,26 @@ class PollSerializer(serializers.ModelSerializer, ContentSerializerMixin):
     user_vote = serializers.SerializerMethodField()
     likes_count = serializers.IntegerField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    sub_category = SubCategorySerializer(read_only=True)
 
     class Meta:
         model = Poll
-        fields = ['id', 'question', 'options', 'author', 'author_avatar', 'author_avatar_compressed', 'created_at', 'total_votes', 'user_vote', 'likes_count', 'comments_count', 'is_liked', 'latest_comment']
+        fields = [
+            'id',
+            'question',
+            'sub_category',
+            'options',
+            'author',
+            'author_avatar',
+            'author_avatar_compressed',
+            'created_at',
+            'total_votes',
+            'user_vote',
+            'likes_count',
+            'comments_count',
+            'is_liked',
+            'latest_comment',
+        ]
 
     def get_total_votes(self, obj):
         return obj.votes.count()

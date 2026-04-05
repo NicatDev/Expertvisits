@@ -88,15 +88,6 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                     />
 
                     <div className={styles.fieldGroup}>
-                        <label>{t('edit_modal.content')}</label>
-                        <RichTextEditor
-                            content={data.body}
-                            onChange={html => setData({ ...data, body: html })}
-                            placeholder={t('create_modal.content_placeholder')}
-                        />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
                         <label>{t('edit_modal.cover_image')}</label>
                         <div className={styles.uploadContainer} onClick={() => fileInputRef.current?.click()}>
                             {previewUrl ? (
@@ -120,6 +111,15 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                                 onChange={handleImageChange}
                             />
                         </div>
+                    </div>
+
+                    <div className={styles.fieldGroup}>
+                        <label>{t('edit_modal.content')}</label>
+                        <RichTextEditor
+                            content={data.body}
+                            onChange={html => setData({ ...data, body: html })}
+                            placeholder={t('create_modal.content_placeholder')}
+                        />
                     </div>
 
                     <div className={styles.actions}>

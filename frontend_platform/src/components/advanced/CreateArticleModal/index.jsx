@@ -120,15 +120,6 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
                         <Input label={t('create_modal.post_title')} value={articleData.title} onChange={e => setArticleData({ ...articleData, title: e.target.value })} />
 
                         <div className={styles.fieldGroup}>
-                            <label>{t('create_modal.content')}</label>
-                            <RichTextEditor
-                                content={articleData.body}
-                                onChange={html => setArticleData({ ...articleData, body: html })}
-                                placeholder={t('create_modal.content_placeholder')}
-                            />
-                        </div>
-
-                        <div className={styles.fieldGroup}>
                             <label>{t('create_modal.cover_image')}</label>
                             <div className={styles.uploadContainer} onClick={() => fileInputRef.current.click()}>
                                 {previewUrl ? (
@@ -157,6 +148,15 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
                                     onChange={handleImageChange}
                                 />
                             </div>
+                        </div>
+
+                        <div className={styles.fieldGroup}>
+                            <label>{t('create_modal.content')}</label>
+                            <RichTextEditor
+                                content={articleData.body}
+                                onChange={html => setArticleData({ ...articleData, body: html })}
+                                placeholder={t('create_modal.content_placeholder')}
+                            />
                         </div>
 
                         <div className={styles.actions}>

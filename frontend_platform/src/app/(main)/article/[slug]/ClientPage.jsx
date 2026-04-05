@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 
 import { formatDate } from '@/lib/utils/date';
+import { labelForSubCategory } from '@/lib/utils/subcategory';
 import ArticleBodyContent from './ArticleBodyContent';
 
 export default function ClientPage() {
@@ -103,6 +104,7 @@ export default function ClientPage() {
     if (!article) return <div style={{ textAlign: 'center', marginTop: '50px' }}>{t('article_page.not_found')}</div>;
 
     const formattedDate = formatDate(article.created_at, i18n.language);
+    const professionLabel = labelForSubCategory(article.sub_category, i18n.language);
 
     const publishedIso = article.created_at
         ? new Date(article.created_at).toISOString()
@@ -121,17 +123,22 @@ export default function ClientPage() {
                             <div className={styles.avatar}>
                                 <Avatar user={{ username: article.author, avatar: article.author_avatar, avatar_compressed: article.author_avatar_compressed }} size={32} />
                             </div>
-                            <div className={styles.info}>
-                                <span className={styles.author}>{article.author}</span>
-                                <span className={styles.dot}>•</span>
-                                {publishedIso && (
-                                    <time className={styles.date} dateTime={publishedIso}>
-                                        {formattedDate}
-                                    </time>
-                                )}
-                                {!publishedIso && (
-                                    <span className={styles.date}>{formattedDate}</span>
-                                )}
+                            <div className={styles.infoColumn}>
+                                <div className={styles.info}>
+                                    <span className={styles.author}>{article.author}</span>
+                                    <span className={styles.dot}>•</span>
+                                    {publishedIso && (
+                                        <time className={styles.date} dateTime={publishedIso}>
+                                            {formattedDate}
+                                        </time>
+                                    )}
+                                    {!publishedIso && (
+                                        <span className={styles.date}>{formattedDate}</span>
+                                    )}
+                                </div>
+                                {professionLabel ? (
+                                    <div className={styles.profession}>{professionLabel}</div>
+                                ) : null}
                             </div>
                         </div>
                     </div>
