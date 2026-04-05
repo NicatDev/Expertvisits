@@ -232,6 +232,35 @@
     }
 }
 
+.cardMine {
+    border-color: #1890ff;
+    background: linear-gradient(180deg, rgba(24, 144, 255, 0.08) 0%, #fff 55%);
+    box-shadow: 0 2px 14px rgba(24, 144, 255, 0.14);
+
+    &:hover {
+        border-color: #1890ff;
+        box-shadow: 0 12px 28px rgba(24, 144, 255, 0.18);
+    }
+
+    .cardHeader .info .nameLink h3 {
+        color: #1890ff;
+    }
+
+    .cardHeader .logoLink .logo {
+        border-color: rgba(24, 144, 255, 0.45);
+    }
+
+    .viewBtn {
+        color: #1890ff;
+        border-color: rgba(24, 144, 255, 0.35);
+
+        &:hover {
+            background-color: rgba(24, 144, 255, 0.08);
+            color: #096dd9;
+        }
+    }
+}
+
 .loading,
 .empty {
     text-align: center;

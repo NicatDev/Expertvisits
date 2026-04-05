@@ -267,7 +267,8 @@
         "login_to_like": "Please login to like",
         "post_error": "Failed to post comment",
         "like_error": "Failed to like comment",
-        "reply_placeholder": "Reply to"
+        "reply_placeholder": "Reply to",
+        "max_reply_depth": "You can reply at most twice in a thread (no replies under nested replies)."
     },
     "widgets": {
         "popular_articles": "Popular Articles",

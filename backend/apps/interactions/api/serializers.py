@@ -2,6 +2,22 @@ from rest_framework import serializers
 from apps.interactions.models import Like, Comment
 from apps.accounts.models import User
 
+# Thread root = depth 0; reply = 1; reply to reply = 2. No replies on depth 2 (max 3 visible levels).
+MAX_COMMENT_THREAD_DEPTH = 2
+
+
+def comment_ancestor_depth(comment: Comment) -> int:
+    """How many parent links from this comment up to the thread root (root comment has depth 0)."""
+    depth = 0
+    cur = comment
+    while cur.parent_id:
+        depth += 1
+        cur = Comment.objects.only("parent_id").get(pk=cur.parent_id)
+        if depth > 20:
+            break
+    return depth
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -34,6 +50,15 @@ class CommentSerializer(serializers.ModelSerializer):
         if obj.replies.exists():
             return CommentSerializer(obj.replies.all(), many=True, context=self.context).data
         return []
+
+    def validate_parent(self, value):
+        if value is None:
+            return value
+        if comment_ancestor_depth(value) >= MAX_COMMENT_THREAD_DEPTH:
+            raise serializers.ValidationError(
+                "Maximum reply depth reached (no replies on nested replies)."
+            )
+        return value
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

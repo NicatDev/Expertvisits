@@ -83,6 +83,10 @@
     gap: 12px;
     align-items: center;
 
+    @media (max-width: 1023px) {
+        margin-top: 10px;
+    }
+
     .avatar {
         width: 36px;
         height: 36px;

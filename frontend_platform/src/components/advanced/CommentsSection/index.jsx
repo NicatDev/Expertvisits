@@ -7,8 +7,10 @@ import { toast } from 'react-toastify';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 
-// Single Comment Item Component
-const CommentItem = ({ comment, contentType, objectId, onReply, onLike, t }) => {
+const MAX_REPLY_DEPTH = 2;
+
+// Single Comment Item Component (depth: 0 = root, 1 = first reply, 2 = second reply — no reply UI at 2)
+const CommentItem = ({ comment, contentType, objectId, onReply, onLike, t, depth = 0 }) => {
     const [showReplyBox, setShowReplyBox] = useState(false);
     const [replyText, setReplyText] = useState('');
     const [visibleReplies, setVisibleReplies] = useState(1);
@@ -40,14 +42,16 @@ const CommentItem = ({ comment, contentType, objectId, onReply, onLike, t }) => 
                         <button onClick={() => onLike(comment.id)} className={comment.is_liked ? styles.liked : ''}>
                             {t('comments.like_action')} {comment.likes_count > 0 && `(${comment.likes_count})`}
                         </button>
-                        <button onClick={() => setShowReplyBox(!showReplyBox)}>
-                            {t('comments.reply_action')}
-                        </button>
+                        {depth < MAX_REPLY_DEPTH ? (
+                            <button type="button" onClick={() => setShowReplyBox(!showReplyBox)}>
+                                {t('comments.reply_action')}
+                            </button>
+                        ) : null}
                         <span>{new Date(comment.created_at).toLocaleDateString()}</span>
                     </div>
 
                     {/* Reply Box */}
-                    {showReplyBox && (
+                    {depth < MAX_REPLY_DEPTH && showReplyBox && (
                         <div className={styles.replyBox}>
                             <input
                                 type="text"
@@ -71,6 +75,7 @@ const CommentItem = ({ comment, contentType, objectId, onReply, onLike, t }) => 
                                     onReply={onReply}
                                     onLike={onLike}
                                     t={t}
+                                    depth={depth + 1}
                                 />
                             ))}
 
@@ -142,7 +147,11 @@ export default function CommentsSection({ contentType, objectId, refreshTrigger,
             fetchComments();
         } catch (err) {
             console.error(err);
-            toast.error(t('comments.post_error'));
+            if (err.response?.data?.parent) {
+                toast.error(t('comments.max_reply_depth'));
+            } else {
+                toast.error(t('comments.post_error'));
+            }
         }
     };
 

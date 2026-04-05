@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.core.files import File
 from django.db import IntegrityError, transaction
+from django.db.models import Case, IntegerField, Value, When
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
@@ -25,17 +26,30 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class CompanyListAPIView(generics.ListAPIView):
-    queryset = (
-        Company.objects.select_related("owner", "who_we_are", "what_we_do", "our_values")
-        .prefetch_related("services")
-        .order_by("-founded_at")
-    )
     serializer_class = CompanySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsSetPagination
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ["company_size"]
     search_fields = ["name", "summary", "services__title"]
+
+    def get_queryset(self):
+        qs = (
+            Company.objects.select_related("owner", "who_we_are", "what_we_do", "our_values")
+            .prefetch_related("services")
+        )
+        user = self.request.user
+        if user.is_authenticated:
+            qs = qs.annotate(
+                _mine_order=Case(
+                    When(owner=user, then=Value(0)),
+                    default=Value(1),
+                    output_field=IntegerField(),
+                )
+            ).order_by("_mine_order", "-founded_at")
+        else:
+            qs = qs.order_by("-founded_at")
+        return qs
 
 
 class CompanyRegistrationStartView(APIView):

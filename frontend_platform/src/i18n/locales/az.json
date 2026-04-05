@@ -267,7 +267,8 @@
         "login_to_like": "Bəyənmək üçün daxil olun",
         "post_error": "Rəy paylaşılmadı",
         "like_error": "Bəyənmə uğursuz oldu",
-        "reply_placeholder": "Cavab yaz..."
+        "reply_placeholder": "Cavab yaz...",
+        "max_reply_depth": "Zəncirdə ən çox iki səviyyə cavab ola bilər (daxili cavablara cavab yoxdur)."
     },
     "widgets": {
         "popular_articles": "Populyar Məqalələr",

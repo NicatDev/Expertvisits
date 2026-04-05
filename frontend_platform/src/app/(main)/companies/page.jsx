@@ -190,8 +190,17 @@ export default function CompaniesPage() {
             ) : (
                 <>
                     <div className={styles.grid}>
-                        {companies.length > 0 ? companies.map(company => (
-                            <div key={company.id} className={styles.card}>
+                        {companies.length > 0 ? companies.map(company => {
+                            const isMine = Boolean(
+                                user?.id != null &&
+                                    (company.owner_id === user.id ||
+                                        (user.company_slug && user.company_slug === company.slug))
+                            );
+                            return (
+                            <div
+                                key={company.id}
+                                className={`${styles.card}${isMine ? ` ${styles.cardMine}` : ''}`}
+                            >
                                 <div className={styles.cardHeader}>
                                     {/* Logo Link to Detail */}
                                     <CompanyLogo company={company} />
@@ -232,7 +241,8 @@ export default function CompaniesPage() {
                                     {t('companies.view_company')}
                                 </Link>
                             </div>
-                        )) : (
+                            );
+                        }) : (
                             <div className={styles.empty}>
                                 <Building size={48} />
                                 <h3>{t('companies.empty.title')}</h3>
