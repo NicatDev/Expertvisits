@@ -94,3 +94,18 @@
         }
     }
 }
+
+.notifLink {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #4338ca;
+    text-decoration: none;
+    text-align: right;
+    max-width: 100px;
+    line-height: 1.3;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

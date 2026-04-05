@@ -55,6 +55,7 @@ class ChatRoomListView(generics.ListAPIView):
         )
         return (
             ChatRoom.objects.filter(Q(user_low=u) | Q(user_high=u))
+            .filter(last_message_at__isnull=False)
             .select_related("user_low", "user_high")
             .annotate(
                 unread_count=Count(

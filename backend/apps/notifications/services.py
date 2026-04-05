@@ -99,25 +99,10 @@ def notify_new_chat_message(*, msg, is_first: bool) -> InboxNotification:
         sort_weight=10,
         chat_message=msg,
     )
-    push_payload(
-        recipient_id,
-        {
-            "type": "chat_message",
-            "message": {
-                "id": msg.id,
-                "chat_id": msg.chat_id,
-                "sender_id": msg.sender_id,
-                "recipient_id": msg.recipient_id,
-                "text": msg.text,
-                "created_at": msg.created_at.isoformat(),
-                "read_at": None,
-            },
-        },
-    )
+    # Live chat lines + room list refresh: apps.chat.realtime.broadcast_chat_room_payload (after DB commit)
     push_payload(
         recipient_id,
         {"type": "inbox_notification", "notification": inbox_to_dict(n)},
     )
     push_payload(recipient_id, {"type": "badge_refresh"})
-    push_payload(recipient_id, {"type": "chat_rooms_refresh"})
     return n

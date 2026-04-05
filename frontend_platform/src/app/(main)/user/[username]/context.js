@@ -1,8 +1,11 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { accounts, interactions, services, profiles, business } from '@/lib/api';
+import { accounts, interactions } from '@/lib/api';
+import { connectionsApi } from '@/lib/api/connections';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { useTranslation } from '@/i18n/client';
+import { toast } from 'react-toastify';
 
 const PublicProfileContext = createContext();
 
@@ -10,37 +13,17 @@ export const PublicProfileProvider = ({ children }) => {
     const params = useParams();
     const { username } = params;
     const { user: currentUser } = useAuth();
+    const { t } = useTranslation('common');
 
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Follow State
     const [isFollowing, setIsFollowing] = useState(false);
     const [followersCount, setFollowersCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
 
-    // Additional Data for About Tab mainly, but good to have cached
-    // Or we can let specific pages fetch their own data if detail is heavy.
-    // Given the previous code fetched EVERYTHING upfront, let's keep it somewhat similar 
-    // but maybe lazy load heavy things?
-    // Actually, splitting pages allows fetching only what's needed.
-    // The "Header" needs profile, followers, following.
-    // "About" needs experience, education etc.
-    // "Posts" needs posts.
-    // "Vacancies" needs vacancies.
-
-    // So Context should primarily provide the User Profile & Follow status (Header info).
-
-    useEffect(() => {
-        if (username && username !== 'undefined') {
-            loadProfile(username);
-        } else {
-            setLoading(false);
-        }
-    }, [username]);
-
-    const loadProfile = async (uName) => {
+    const loadProfile = useCallback(async (uName) => {
         setLoading(true);
         try {
             const res = await accounts.getUser(uName);
@@ -56,28 +39,52 @@ export const PublicProfileProvider = ({ children }) => {
             setIsFollowing(targetUser.is_following || false);
             setFollowersCount(targetUser.followers_count || 0);
             setFollowingCount(targetUser.following_count || 0);
-
         } catch (err) {
             console.error("Load profile failed", err);
             setError(err);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (username && username !== 'undefined') {
+            loadProfile(username);
+        } else {
+            setLoading(false);
+        }
+    }, [username, loadProfile]);
 
     const handleFollow = async () => {
+        if (!profile || !currentUser) return;
         try {
             if (isFollowing) {
                 await interactions.unfollowUser(profile.username);
-                setIsFollowing(false);
-                setFollowersCount(prev => prev - 1);
-            } else {
-                await interactions.followUser(profile.username);
-                setIsFollowing(true);
-                setFollowersCount(prev => prev + 1);
+                await loadProfile(profile.username);
+                return;
+            }
+            if (profile.connection_pending_out && profile.outgoing_connection_request_id) {
+                await connectionsApi.cancel(profile.outgoing_connection_request_id);
+                await loadProfile(profile.username);
+                return;
+            }
+            if (profile.connection_pending_in) {
+                toast.info(t('inbox.pending_in_hint'));
+                return;
+            }
+            const { data } = await interactions.followUser(profile.username);
+            if (data.status === 'pending') {
+                await loadProfile(profile.username);
+            } else if (data.status === 'connected') {
+                await loadProfile(profile.username);
             }
         } catch (err) {
-            console.error("Follow action failed", err);
+            if (err.response?.status === 409) {
+                toast.info(t('inbox.incoming_conflict'));
+            } else {
+                console.error("Follow action failed", err);
+                toast.error(t('common.error_generic'));
+            }
         }
     };
 
@@ -91,7 +98,8 @@ export const PublicProfileProvider = ({ children }) => {
             followingCount,
             handleFollow,
             isMe: currentUser && profile && currentUser.username === profile.username,
-            currentUser
+            currentUser,
+            reloadProfile: () => profile && loadProfile(profile.username),
         }}>
             {children}
         </PublicProfileContext.Provider>

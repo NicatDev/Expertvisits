@@ -45,6 +45,17 @@ export function InboxSocketProvider({ children }) {
 
     useEffect(() => {
         if (!user) return undefined;
+        const onVis = () => {
+            if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+                refreshSummary();
+            }
+        };
+        document.addEventListener('visibilitychange', onVis);
+        return () => document.removeEventListener('visibilitychange', onVis);
+    }, [user, refreshSummary]);
+
+    useEffect(() => {
+        if (!user) return undefined;
 
         let closed = false;
         const connect = () => {
@@ -84,6 +95,7 @@ export function InboxSocketProvider({ children }) {
                 if (
                     t === 'badge_refresh' ||
                     t === 'inbox_notification' ||
+                    t === 'connection_request' ||
                     t === 'chat_message' ||
                     t === 'message_ack' ||
                     t === 'mark_read_ack'

@@ -15,6 +15,7 @@
     "common": {
         "create_post": "Publish",
         "loading": "Loading...",
+        "error_generic": "Something went wrong. Please try again.",
         "save": "Save",
         "cancel": "Cancel",
         "edit": "Edit",
@@ -274,6 +275,9 @@
         "loading": "Loading...",
         "follow": "Connect",
         "unfollow": "Disconnect",
+        "cancel_request": "Cancel request",
+        "pending_request": "Pending",
+        "accept_in_notifications": "Accept in notifications",
         "login_to_follow": "You must be logged in to connect",
         "promo_label": "Promote",
         "promo_title": "Create your own website",

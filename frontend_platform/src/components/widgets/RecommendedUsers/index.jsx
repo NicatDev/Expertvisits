@@ -6,6 +6,7 @@ import styles from './style.module.scss';
 import Avatar from '@/components/ui/Avatar';
 import { toast } from 'react-toastify';
 import { interactions } from '@/lib/api';
+import { connectionsApi } from '@/lib/api/connections';
 import { useTranslation } from '@/i18n/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 
@@ -25,7 +26,6 @@ const RecommendedUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            // Fetch users ordered by followers count desc
             const { data } = await api.get('/accounts/users/', {
                 params: {
                     ordering: '-followers_count',
@@ -40,6 +40,15 @@ const RecommendedUsers = () => {
         }
     };
 
+    const refreshOne = async (user) => {
+        try {
+            const { data } = await api.get(`/accounts/users/${user.username}/`);
+            setUsers((prev) => prev.map((u) => (u.id === data.id ? { ...u, ...data } : u)));
+        } catch {
+            await fetchUsers();
+        }
+    };
+
     const handleFollow = async (user) => {
         if (!currentUser) {
             toast.error(t('widgets.login_to_follow'));
@@ -48,14 +57,39 @@ const RecommendedUsers = () => {
         try {
             if (user.is_following) {
                 await interactions.unfollowUser(user.username);
-                setUsers(prev => prev.map(u => u.id === user.id ? { ...u, is_following: false, followers_count: u.followers_count - 1 } : u));
-            } else {
-                await interactions.followUser(user.username);
-                setUsers(prev => prev.map(u => u.id === user.id ? { ...u, is_following: true, followers_count: u.followers_count + 1 } : u));
+                await refreshOne(user);
+                return;
             }
+            if (user.connection_pending_out && user.outgoing_connection_request_id) {
+                await connectionsApi.cancel(user.outgoing_connection_request_id);
+                await refreshOne(user);
+                return;
+            }
+            if (user.connection_pending_in) {
+                toast.info(t('inbox.pending_in_hint'));
+                return;
+            }
+            await interactions.followUser(user.username);
+            await refreshOne(user);
         } catch (error) {
-            console.error(error);
+            if (error.response?.status === 409) {
+                toast.info(t('inbox.incoming_conflict'));
+            } else {
+                console.error(error);
+                toast.error(t('common.error_generic'));
+            }
         }
+    };
+
+    const labelFor = (user) => {
+        if (user.is_following) return t('widgets.unfollow');
+        if (user.connection_pending_in) return t('widgets.accept_in_notifications');
+        if (user.connection_pending_out) {
+            return user.outgoing_connection_request_id
+                ? t('widgets.cancel_request')
+                : t('widgets.pending_request');
+        }
+        return t('widgets.follow');
     };
 
     if (!isMounted) return <div className={styles.container}>...</div>;
@@ -77,12 +111,18 @@ const RecommendedUsers = () => {
                                 {user.profession_sub_category?.[`profession_${currentLang}`] || user.profession_sub_category?.[`name_${currentLang}`] || t('widgets.user_role')}
                             </span>
                         </div>
-                        <button
-                            className={`${styles.followBtn} ${user.is_following ? styles.following : ''}`}
-                            onClick={() => handleFollow(user)}
-                        >
-                            {user.is_following ? t('widgets.unfollow') : t('widgets.follow')}
-                        </button>
+                        {user.connection_pending_in ? (
+                            <Link href="/notifications" className={styles.notifLink}>
+                                {t('widgets.accept_in_notifications')}
+                            </Link>
+                        ) : (
+                            <button
+                                className={`${styles.followBtn} ${user.is_following ? styles.following : ''}`}
+                                onClick={() => handleFollow(user)}
+                            >
+                                {labelFor(user)}
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

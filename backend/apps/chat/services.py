@@ -1,6 +1,8 @@
 """
-Sync services: DB writes + targeted Redis fan-out via notifications.realtime.
+Chat persistence + room-scoped realtime (channel layer groups chat_<room_id>).
+User-scoped inbox (badge, inbox rows, typing, read receipt to peer) uses notifications.realtime.push_payload.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -11,7 +13,6 @@ from django.utils import timezone
 
 from apps.chat.models import ChatMessage, ChatRoom
 from apps.chat.utils import canonical_pair
-from apps.notifications.realtime import push_payload
 
 
 def message_to_dict(m: ChatMessage) -> dict[str, Any]:
@@ -51,6 +52,8 @@ def create_message(sender_id: int, chat_id: int, text: str) -> ChatMessage | Non
         return None
 
     recipient_id = room.other_user_id(sender_id)
+    is_first = not ChatMessage.objects.filter(chat_id=room.pk).exists()
+
     msg = ChatMessage.objects.create(
         chat=room,
         sender_id=sender_id,
@@ -59,19 +62,25 @@ def create_message(sender_id: int, chat_id: int, text: str) -> ChatMessage | Non
     )
     ChatRoom.objects.filter(pk=room.pk).update(last_message_at=msg.created_at)
 
-    prior_count = ChatMessage.objects.filter(chat=room).exclude(pk=msg.pk).count()
-    is_first = prior_count == 0
-
     from apps.notifications.services import notify_new_chat_message
 
     notify_new_chat_message(msg=msg, is_first=is_first)
 
-    push_payload(
-        sender_id,
-        {"type": "message_ack", "message": message_to_dict(msg)},
-    )
-    push_payload(sender_id, {"type": "chat_rooms_refresh"})
+    room_id = room.pk
+    sid = sender_id
+    rid = recipient_id
+    line = message_to_dict(msg)
 
+    def _fanout():
+        from apps.chat.realtime import broadcast_chat_room_payload
+        from apps.notifications.realtime import push_payload
+
+        broadcast_chat_room_payload(room_id, {"type": "chat_message", "message": line})
+        broadcast_chat_room_payload(room_id, {"type": "chat_rooms_refresh"})
+        push_payload(sid, {"type": "chat_rooms_refresh"})
+        push_payload(rid, {"type": "chat_rooms_refresh"})
+
+    transaction.on_commit(_fanout)
     return msg
 
 
@@ -91,17 +100,6 @@ def mark_messages_read(reader_id: int, chat_id: int, up_to_message_id: int | Non
     max_id = qs.aggregate(m=Max("id"))["m"]
     now = timezone.now()
     updated = qs.update(read_at=now)
-    if updated and max_id:
-        peer_id = room.other_user_id(reader_id)
-        push_payload(
-            peer_id,
-            {
-                "type": "read_receipt",
-                "chat_id": chat_id,
-                "message_id": max_id,
-                "reader_id": reader_id,
-            },
-        )
     if updated:
         from apps.notifications.models import InboxNotification
 
@@ -110,8 +108,29 @@ def mark_messages_read(reader_id: int, chat_id: int, up_to_message_id: int | Non
             read_at__isnull=True,
             chat_message__chat_id=chat_id,
         ).update(read_at=now)
+
+    if not updated:
+        return 0
+
+    peer_id = room.other_user_id(reader_id)
+
+    def _fanout():
+        from apps.notifications.realtime import push_payload
+
+        if max_id:
+            push_payload(
+                peer_id,
+                {
+                    "type": "read_receipt",
+                    "chat_id": chat_id,
+                    "message_id": max_id,
+                    "reader_id": reader_id,
+                },
+            )
         push_payload(reader_id, {"type": "badge_refresh"})
         push_payload(reader_id, {"type": "chat_rooms_refresh"})
+
+    transaction.on_commit(_fanout)
     return updated
 
 
@@ -123,9 +142,11 @@ def relay_typing(sender_id: int, chat_id: int, typing: bool) -> bool:
     )
     if not room:
         return False
-    peer = room.other_user_id(sender_id)
+    peer_id = room.other_user_id(sender_id)
+    from apps.notifications.realtime import push_payload
+
     push_payload(
-        peer,
+        peer_id,
         {
             "type": "typing",
             "chat_id": chat_id,

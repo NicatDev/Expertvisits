@@ -15,6 +15,7 @@
     "common": {
         "create_post": "Paylaş",
         "loading": "Yüklənir...",
+        "error_generic": "Xəta baş verdi. Yenidən cəhd edin.",
         "save": "Yadda saxla",
         "cancel": "Ləğv et",
         "edit": "Düzəliş et",
@@ -274,6 +275,9 @@
         "loading": "Yüklənir...",
         "follow": "Əlaqə istə",
         "unfollow": "Əlaqəni kəs",
+        "cancel_request": "Sorğunu ləğv et",
+        "pending_request": "Gözləyir",
+        "accept_in_notifications": "Bildirişlərdə qəbul et",
         "login_to_follow": "Əlaqə üçün daxil olun",
         "view_profile": "Profilə Bax",
         "promo_label": "Hədiyyə",

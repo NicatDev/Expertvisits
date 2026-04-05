@@ -45,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
     connection_pending_out = serializers.SerializerMethodField()
     connection_pending_in = serializers.SerializerMethodField()
+    outgoing_connection_request_id = serializers.SerializerMethodField()
     company_slug = serializers.SerializerMethodField()
     highest_education = serializers.SerializerMethodField()
     website_active = serializers.SerializerMethodField()
@@ -57,7 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
             'profession_sub_category', 'profession_sub_category_id',
             'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
             'followers_count', 'following_count', 'is_following',
-            'connection_pending_out', 'connection_pending_in', 'company_slug',
+            'connection_pending_out', 'connection_pending_in', 'outgoing_connection_request_id', 'company_slug',
             'highest_education',
             'open_to',
             'is_searchable', 'show_phone_number', 'notify_email_general',
@@ -109,6 +110,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_connection_pending_in(self, obj):
         return bool(getattr(obj, "conn_pending_in", False))
+
+    def get_outgoing_connection_request_id(self, obj):
+        v = getattr(obj, "conn_pending_out_id", None)
+        return int(v) if v is not None else None
 
     def get_company_slug(self, obj):
         try:

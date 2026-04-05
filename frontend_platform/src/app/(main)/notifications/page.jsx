@@ -67,7 +67,7 @@ export default function NotificationsPage() {
                     setNextBefore(data.next_before_id);
                 }
             } catch (e) {
-                if (!cancelled) toast.error(t('common.loading'));
+                if (!cancelled) toast.error(t('common.error_generic'));
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -84,7 +84,7 @@ export default function NotificationsPage() {
             setItems((prev) => [...prev, ...(data.results || [])]);
             setNextBefore(data.next_before_id);
         } catch {
-            toast.error(t('common.loading'));
+            toast.error(t('common.error_generic'));
         }
     };
 
@@ -99,7 +99,7 @@ export default function NotificationsPage() {
                 )
             );
         } catch {
-            toast.error(t('common.loading'));
+            toast.error(t('common.error_generic'));
         }
     };
 
@@ -109,7 +109,7 @@ export default function NotificationsPage() {
             await refreshSummary();
             setItems((prev) => prev.filter((n) => n.connection_request_id !== id));
         } catch {
-            toast.error(t('common.loading'));
+            toast.error(t('common.error_generic'));
         }
     };
 
@@ -125,7 +125,7 @@ export default function NotificationsPage() {
             const { data } = await chatApi.createOrGet(uid);
             router.push(`/chat/${data.chat_id}`);
         } catch {
-            toast.error(t('common.loading'));
+            toast.error(t('common.error_generic'));
         }
     };
 

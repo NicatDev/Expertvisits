@@ -7,15 +7,17 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './styles.module.scss';
 import Button from '../../ui/Button';
-import { Search, Globe, User, LogOut, Menu, X, ChevronDown } from 'lucide-react';
+import { Search, Globe, User, LogOut, Menu, X, ChevronDown, Bell, MessageCircle } from 'lucide-react';
 import LanguageSwitcher from '../../advanced/LanguageSwitcher';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
 import TemplateSelectionModal from '../../widgets/PromoBanner/TemplateSelectionModal';
+import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 
 const Navigation = () => {
     const { t } = useTranslation('common');
     const { user, logout } = useAuth();
+    const { notificationUnread, chatUnread } = useInboxSocket();
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -98,6 +100,31 @@ const Navigation = () => {
                     {/* Language Switcher */}
                     <LanguageSwitcher />
 
+                    {user ? (
+                        <div className={styles.inboxIcons}>
+                            <Link href="/notifications" className={styles.inboxIconLink} aria-label={t('inbox.notifications')}>
+                                <span className={styles.inboxIconWrap}>
+                                    <Bell size={22} />
+                                    {notificationUnread > 0 ? (
+                                        <span className={styles.inboxBadge}>
+                                            {notificationUnread > 99 ? '99+' : notificationUnread}
+                                        </span>
+                                    ) : null}
+                                </span>
+                            </Link>
+                            <Link href="/chat" className={styles.inboxIconLink} aria-label={t('inbox.chat')}>
+                                <span className={styles.inboxIconWrap}>
+                                    <MessageCircle size={22} />
+                                    {chatUnread > 0 ? (
+                                        <span className={styles.inboxBadge}>
+                                            {chatUnread > 99 ? '99+' : chatUnread}
+                                        </span>
+                                    ) : null}
+                                </span>
+                            </Link>
+                        </div>
+                    ) : null}
+
                     {/* Auth Dropdown */}
                     <div className={styles.dropdownWrapper}
                         ref={userMenuRef}
@@ -151,6 +178,18 @@ const Navigation = () => {
                         <Link href="/experts" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
                         <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
+                        {user ? (
+                            <>
+                                <Link href="/notifications" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
+                                    {t('inbox.notifications')}
+                                    {notificationUnread > 0 ? ` (${notificationUnread > 99 ? '99+' : notificationUnread})` : ''}
+                                </Link>
+                                <Link href="/chat" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
+                                    {t('inbox.chat')}
+                                    {chatUnread > 0 ? ` (${chatUnread > 99 ? '99+' : chatUnread})` : ''}
+                                </Link>
+                            </>
+                        ) : null}
                         <div onClick={(e) => { handleWebsiteClick(e); setIsMenuOpen(false); }} className={styles.mobileNavAction} style={{ cursor: 'pointer', padding: '12px 0', borderTop: '1px solid #eee' }}>
                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Veb-saytını yarat')}
                         </div>

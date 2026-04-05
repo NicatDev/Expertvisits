@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
@@ -116,12 +117,24 @@ const ProfileHeader = () => {
                     <div className={styles.actions}>
                         {!isMe && (
                             <>
-                                <Button
-                                    type={isFollowing ? "default" : "primary"}
-                                    onClick={handleFollow}
-                                >
-                                    {isFollowing ? t('public_profile.unfollow') : t('public_profile.follow')}
-                                </Button>
+                                {profile.connection_pending_in ? (
+                                    <Link href="/notifications" className={styles.notifHint}>
+                                        {t('widgets.accept_in_notifications')}
+                                    </Link>
+                                ) : profile.connection_pending_out ? (
+                                    <Button type="default" onClick={handleFollow}>
+                                        {profile.outgoing_connection_request_id
+                                            ? t('widgets.cancel_request')
+                                            : t('widgets.pending_request')}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        type={isFollowing ? "default" : "primary"}
+                                        onClick={handleFollow}
+                                    >
+                                        {isFollowing ? t('public_profile.unfollow') : t('public_profile.follow')}
+                                    </Button>
+                                )}
                                 <Button type="default" onClick={openBooking}>
                                     {t('public_profile.book_now')}
                                 </Button>

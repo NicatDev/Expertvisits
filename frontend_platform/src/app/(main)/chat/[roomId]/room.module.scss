@@ -1,0 +1,90 @@
+.page {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    min-height: 400px;
+    background: #e8eaed;
+    border-radius: 12px;
+    overflow: hidden;
+
+    @media (max-width: 600px) {
+        height: calc(100vh - 100px);
+        border-radius: 0;
+        margin: 0 -8px;
+    }
+}
+
+.topBar {
+    padding: 12px 14px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.back {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bubble {
+    max-width: 85%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.mine {
+    align-self: flex-end;
+    background: #2563eb;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.theirs {
+    align-self: flex-start;
+    background: #fff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+}
+
+.composer {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+}
+
+.input {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.sendBtn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+    font-weight: 600;
+    cursor: pointer;
+}

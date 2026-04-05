@@ -111,4 +111,21 @@
     display: flex;
     gap: $spacing-md;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.notifHint {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover {
+        background: #e0e7ff;
+    }
 }

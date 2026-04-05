@@ -6,6 +6,11 @@ def user_ws_group(user_id: int) -> str:
     return f"user_{user_id}"
 
 
+def chat_room_group(room_id: int) -> str:
+    """Channels group for all WS clients subscribed to this 1:1 room (both participants)."""
+    return f"chat_{room_id}"
+
+
 class ChatRoom(models.Model):
     """
     1:1 room. user_low_id < user_high_id always; room_key = f"{low}_{high}" for stable idempotency.
