@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         auth.logout();
         setUser(null);
-        router.push('/');
+        router.replace('/');
         setTimeout(() => router.refresh(), 100);
     };
 

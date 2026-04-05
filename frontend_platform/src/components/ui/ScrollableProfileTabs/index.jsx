@@ -7,6 +7,8 @@ import styles from './style.module.scss';
 
 const SCROLL_STEP = 220;
 const EDGE_EPS = 2;
+/** After a drag-scroll, skip one link click; must be cleared or navigation stays broken forever. */
+const SUPPRESS_CLICK_MS = 350;
 
 export default function ScrollableProfileTabs({ tabs, className = '' }) {
   const scrollerRef = useRef(null);
@@ -20,6 +22,7 @@ export default function ScrollableProfileTabs({ tabs, className = '' }) {
     pointerId: null,
   });
   const suppressClickRef = useRef(false);
+  const suppressClickTimerRef = useRef(null);
 
   const updateEdges = useCallback(() => {
     const el = scrollerRef.current;
@@ -38,6 +41,15 @@ export default function ScrollableProfileTabs({ tabs, className = '' }) {
     ro.observe(el);
     return () => ro.disconnect();
   }, [updateEdges, tabs]);
+
+  useEffect(
+    () => () => {
+      if (suppressClickTimerRef.current != null) {
+        window.clearTimeout(suppressClickTimerRef.current);
+      }
+    },
+    []
+  );
 
   useLayoutEffect(() => {
     const root = scrollerRef.current;
@@ -99,7 +111,14 @@ export default function ScrollableProfileTabs({ tabs, className = '' }) {
       }
     }
     if (moved) {
+      if (suppressClickTimerRef.current != null) {
+        window.clearTimeout(suppressClickTimerRef.current);
+      }
       suppressClickRef.current = true;
+      suppressClickTimerRef.current = window.setTimeout(() => {
+        suppressClickRef.current = false;
+        suppressClickTimerRef.current = null;
+      }, SUPPRESS_CLICK_MS);
     }
     dragRef.current.moved = false;
     updateEdges();
@@ -109,6 +128,11 @@ export default function ScrollableProfileTabs({ tabs, className = '' }) {
     if (suppressClickRef.current) {
       e.preventDefault();
       e.stopPropagation();
+      suppressClickRef.current = false;
+      if (suppressClickTimerRef.current != null) {
+        window.clearTimeout(suppressClickTimerRef.current);
+        suppressClickTimerRef.current = null;
+      }
     }
   };
 
