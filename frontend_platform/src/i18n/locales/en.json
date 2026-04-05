@@ -929,7 +929,17 @@
         "back_to_list": "Back to list",
         "pending_out": "Pending",
         "pending_in_hint": "Accept from notifications",
-        "incoming_conflict": "This user already sent you a request — check notifications."
+        "incoming_conflict": "This user already sent you a request — check notifications.",
+        "new_chat_title": "New message",
+        "search_people_placeholder": "Name or username…",
+        "search_min_hint": "Type at least 2 characters to search.",
+        "no_users_found": "No users found.",
+        "chat_list_help": "Tap «New message» to search for a user and open a chat. From their profile, use «Message» to jump straight into the conversation.",
+        "start_conversation": "Start a conversation",
+        "view_profile": "View profile",
+        "message_user": "Message",
+        "load_older_messages": "Older messages",
+        "emoji_picker": "Choose emoji"
     },
     "seo": {
         "home_h1": "Expert Visits - Professional Experts, Companies and Job Vacancies Platform",

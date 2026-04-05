@@ -47,9 +47,12 @@ class InboxListView(APIView):
                 qs = qs.filter(id__lt=int(before_id))
             except (TypeError, ValueError):
                 pass
-        items = list(qs[:limit])
+        items = list(qs[: limit + 1])
+        has_more = len(items) > limit
+        if has_more:
+            items = items[:limit]
         ser = InboxNotificationSerializer(items, many=True, context={"request": request})
-        next_before_id = items[-1].id if items else None
+        next_before_id = items[-1].id if has_more and items else None
         return Response({"results": ser.data, "next_before_id": next_before_id})
 
 

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
@@ -9,13 +10,16 @@ import { usePublicProfile } from '../../context';
 import FollowListModal from '@/components/advanced/FollowListModal';
 import BookingViewWrapper from '../BookingViewWrapper';
 import { services } from '@/lib/api';
+import { chatApi } from '@/lib/api/chat';
 import { toast } from 'react-toastify';
 
 const ProfileHeader = () => {
     const { t, i18n } = useTranslation('common');
+    const router = useRouter();
     const { profile, isFollowing, followersCount, followingCount, handleFollow, isMe } = usePublicProfile();
 
     const [showFollowModal, setShowFollowModal] = useState(false);
+    const [chatOpening, setChatOpening] = useState(false);
     const [followType, setFollowType] = useState('followers');
     const [isBookingView, setIsBookingView] = useState(false);
     const [calendarEvents, setCalendarEvents] = useState([]);
@@ -50,7 +54,36 @@ const ProfileHeader = () => {
         await loadEvents();
     };
 
+    const openChatWithUser = async () => {
+        if (!profile) return;
+        setChatOpening(true);
+        try {
+            const { data } = await chatApi.createOrGet(profile.id);
+            router.push(`/chat/${data.chat_id}`);
+        } catch {
+            toast.error(t('common.error_generic'));
+        } finally {
+            setChatOpening(false);
+        }
+    };
+
     if (!profile) return null;
+
+    const visitWebsiteHref = `https://expertvisits.com/u/${profile.username}`;
+    const visitWebsiteBtnStyle = {
+        background: 'rgba(255,255,255,0.95)',
+        color: '#111',
+        fontWeight: 600,
+        border: 'none',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+        borderRadius: '10px',
+    };
+
+    const renderVisitWebsiteButton = (extraStyle = {}) => (
+        <Button type="default" style={{ ...visitWebsiteBtnStyle, ...extraStyle }}>
+            {t('widgets.visit_website') || 'Vebsayta Keçid Et'}
+        </Button>
+    );
 
     return (
         <div className={styles.container}>
@@ -62,28 +95,23 @@ const ProfileHeader = () => {
                         <div className={styles.defaultCover} style={{ background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)' }} />
                     )}
 
-                    {(profile.website_active) && (
-                        <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1000 }}>
-                            <a href={`https://expertvisits.com/u/${profile.username}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                                <Button 
-                                    type="default" 
-                                    style={{ 
-                                        background: 'rgba(255,255,255,0.95)', 
-                                        color: '#111', 
-                                        fontWeight: 600, 
-                                        border: 'none', 
-                                        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                                        borderRadius: '10px'
-                                    }}
-                                >
-                                    {t('widgets.visit_website') || 'Vebsayta Keçid Et'}
-                                </Button>
+                    {profile.website_active ? (
+                        <div className={styles.visitOnCover}>
+                            <a href={visitWebsiteHref} target="_blank" rel="noopener noreferrer">
+                                {renderVisitWebsiteButton()}
                             </a>
                         </div>
-                    )}
+                    ) : null}
                 </div>
 
                 <div className={styles.info}>
+                    {profile.website_active ? (
+                        <div className={styles.visitMobile}>
+                            <a href={visitWebsiteHref} target="_blank" rel="noopener noreferrer">
+                                {renderVisitWebsiteButton({ width: '100%' })}
+                            </a>
+                        </div>
+                    ) : null}
                     <div className={styles.avatarContainer}>
                         <Avatar user={profile} size={85} className={styles.avatar} />
                     </div>
@@ -135,6 +163,13 @@ const ProfileHeader = () => {
                                         {isFollowing ? t('public_profile.unfollow') : t('public_profile.follow')}
                                     </Button>
                                 )}
+                                <Button
+                                    type="default"
+                                    onClick={openChatWithUser}
+                                    disabled={chatOpening}
+                                >
+                                    {t('inbox.message_user')}
+                                </Button>
                                 <Button type="default" onClick={openBooking}>
                                     {t('public_profile.book_now')}
                                 </Button>

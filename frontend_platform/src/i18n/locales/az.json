@@ -920,7 +920,17 @@
         "back_to_list": "Siyahıya qayıt",
         "pending_out": "Gözləyir",
         "pending_in_hint": "Bildirişlərdən qəbul edin",
-        "incoming_conflict": "Bu istifadəçi artıq sizə sorğu göndərib — bildirişlərə baxın."
+        "incoming_conflict": "Bu istifadəçi artıq sizə sorğu göndərib — bildirişlərə baxın.",
+        "new_chat_title": "Yeni mesaj",
+        "search_people_placeholder": "Ad, soyad və ya istifadəçi adı…",
+        "search_min_hint": "Axtarış üçün ən azı 2 simvol yazın.",
+        "no_users_found": "Heç kim tapılmadı.",
+        "chat_list_help": "Yeni yazışma üçün «Yeni mesaj» düyməsini istifadə edin: istifadəçini axtarıb seçin — otaq açılır və mesaj yaza bilərsiniz. Profildə də «Mesaj» ilə birbaşa çata keçə bilərsiniz.",
+        "start_conversation": "Yazışmaya başla",
+        "view_profile": "Profilə bax",
+        "message_user": "Mesaj",
+        "load_older_messages": "Əvvəlki mesajlar",
+        "emoji_picker": "Emoji seç"
     },
     "seo": {
         "home_h1": "Expert Visits - Peşəkar Mütəxəssislər, Şirkətlər və İş Elanları Platforması",

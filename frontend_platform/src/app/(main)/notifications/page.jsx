@@ -14,6 +14,8 @@ import Avatar from '@/components/ui/Avatar';
 import { toast } from 'react-toastify';
 import styles from './page.module.scss';
 
+const PAGE_LIMIT = 30;
+
 function kindLabel(kind, t) {
     switch (kind) {
         case 'connection_request':
@@ -29,8 +31,23 @@ function kindLabel(kind, t) {
     }
 }
 
+function formatNotifTime(iso, locale) {
+    if (!iso) return '';
+    try {
+        const d = new Date(iso);
+        return d.toLocaleString(locale || undefined, {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    } catch {
+        return '';
+    }
+}
+
 export default function NotificationsPage() {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const { user, loading: authLoading } = useAuth();
     const { refreshSummary } = useInboxSocket();
     const router = useRouter();
@@ -41,7 +58,7 @@ export default function NotificationsPage() {
     const load = useCallback(
         async (beforeId) => {
             const { data } = await notificationsApi.inbox({
-                limit: 30,
+                limit: PAGE_LIMIT,
                 ...(beforeId ? { before_id: beforeId } : {}),
             });
             return data;
@@ -129,12 +146,18 @@ export default function NotificationsPage() {
         }
     };
 
+    const goProfile = (username) => {
+        if (username) router.push(`/user/${username}`);
+    };
+
     if (!user && !authLoading) return null;
 
+    const showLoadMore = Boolean(nextBefore) && items.length > 0;
+
     return (
-        <div className={styles.page}>
+        <div className={styles.shell}>
             <div className={styles.header}>
-                <Bell size={22} />
+                <Bell size={26} strokeWidth={2} className={styles.headerIcon} />
                 <h1>{t('inbox.notifications')}</h1>
             </div>
             {loading ? (
@@ -146,22 +169,48 @@ export default function NotificationsPage() {
                     {items.map((n) => (
                         <li key={n.id} className={styles.card}>
                             <div className={styles.cardTop}>
-                                <Avatar
-                                    user={{
-                                        username: n.actor_username || '',
-                                        avatar: n.actor_avatar,
-                                        avatar_compressed: n.actor_avatar_compressed,
-                                    }}
-                                    size={44}
-                                />
+                                {n.actor_username ? (
+                                    <Link
+                                        href={`/user/${n.actor_username}`}
+                                        className={styles.avatarLink}
+                                        aria-label={t('inbox.view_profile')}
+                                    >
+                                        <Avatar
+                                            user={{
+                                                username: n.actor_username || '',
+                                                avatar: n.actor_avatar,
+                                                avatar_compressed: n.actor_avatar_compressed,
+                                            }}
+                                            size={48}
+                                        />
+                                    </Link>
+                                ) : (
+                                    <Avatar
+                                        user={{
+                                            username: n.actor_username || '',
+                                            avatar: n.actor_avatar,
+                                            avatar_compressed: n.actor_avatar_compressed,
+                                        }}
+                                        size={48}
+                                    />
+                                )}
                                 <div className={styles.cardBody}>
-                                    <div className={styles.kind}>{kindLabel(n.kind, t)}</div>
-                                    <div className={styles.actor}>
-                                        {(n.actor_first_name || '') + ' ' + (n.actor_last_name || '')}
-                                        {n.actor_username ? (
-                                            <span className={styles.un}> @{n.actor_username}</span>
-                                        ) : null}
+                                    <div className={styles.metaRow}>
+                                        <span className={styles.kind}>{kindLabel(n.kind, t)}</span>
+                                        <span className={styles.time}>
+                                            {formatNotifTime(n.created_at, i18n.language)}
+                                        </span>
                                     </div>
+                                    {n.actor_username ? (
+                                        <Link href={`/user/${n.actor_username}`} className={styles.actor}>
+                                            {(n.actor_first_name || '') + ' ' + (n.actor_last_name || '')}
+                                            <span className={styles.un}> @{n.actor_username}</span>
+                                        </Link>
+                                    ) : (
+                                        <span className={styles.actor}>
+                                            {(n.actor_first_name || '') + ' ' + (n.actor_last_name || '')}
+                                        </span>
+                                    )}
                                     {n.body ? <p className={styles.preview}>{n.body}</p> : null}
                                 </div>
                             </div>
@@ -185,20 +234,31 @@ export default function NotificationsPage() {
                                     </>
                                 ) : null}
                                 {(n.kind === 'chat_message' || n.kind === 'chat_request') && (
-                                    <button
-                                        type="button"
-                                        className={styles.btnPrimary}
-                                        onClick={() => openChatFromNotif(n)}
-                                    >
-                                        {t('inbox.open_chat')}
-                                    </button>
+                                    <>
+                                        <button
+                                            type="button"
+                                            className={styles.btnPrimary}
+                                            onClick={() => openChatFromNotif(n)}
+                                        >
+                                            {t('inbox.open_chat')}
+                                        </button>
+                                        {n.actor_username ? (
+                                            <button
+                                                type="button"
+                                                className={styles.btnLink}
+                                                onClick={() => goProfile(n.actor_username)}
+                                            >
+                                                {t('inbox.view_profile')}
+                                            </button>
+                                        ) : null}
+                                    </>
                                 )}
                             </div>
                         </li>
                     ))}
                 </ul>
             )}
-            {nextBefore ? (
+            {showLoadMore ? (
                 <button type="button" className={styles.loadMore} onClick={loadMore}>
                     {t('inbox.load_more')}
                 </button>

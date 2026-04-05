@@ -20,6 +20,8 @@
     height: 200px;
     background-color: #f0f2f5;
     overflow: hidden;
+    isolation: isolate;
+    z-index: 0;
 }
 
 .defaultCover {
@@ -42,7 +44,7 @@
     padding: 10px 10px;
 
 
-    @include mobile {
+    @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
         text-align: center;
@@ -57,14 +59,60 @@
     border: 3px solid #fff;
     background: #fff;
     flex-shrink: 0;
-    z-index: 5;
+    z-index: 3;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 
-    @include mobile {
+    @media (max-width: 768px) {
         position: relative;
         top: -45px;
         left: auto;
         margin-bottom: -35px;
+    }
+}
+
+/* Cover üstündə — yalnız geniş ekran; mobil/tabletdə tab və menyunun altına çıxmır */
+.visitOnCover {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 2;
+    max-width: calc(100% - 24px);
+    display: flex;
+    justify-content: flex-start;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+
+    a {
+        text-decoration: none;
+        max-width: 100%;
+    }
+
+    :global(button) {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Mobil / burger menyu: cover üstündə yox — info bölməsində, tabların üstünə çıxmır */
+.visitMobile {
+    display: none;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 8px;
+    order: -1;
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+
+    a {
+        text-decoration: none;
+        width: 100%;
+        max-width: 100%;
     }
 }
 
@@ -90,7 +138,7 @@
     margin-bottom: $spacing-sm;
     // margin-left: 100px; // Offset for avatar removed since avatar is static position now
 
-    @include mobile {
+    @media (max-width: 768px) {
         margin-left: 0;
     }
 
@@ -112,6 +160,10 @@
     gap: $spacing-md;
     align-items: center;
     flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+    }
 }
 
 .notifHint {

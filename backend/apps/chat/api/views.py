@@ -114,10 +114,13 @@ class ChatMessageListView(APIView):
                 qs = qs.filter(id__lt=int(before_id))
             except (TypeError, ValueError):
                 pass
-        messages = list(qs[:limit])
-        messages.reverse()
-        ser = ChatMessageSerializer(messages, many=True, context={"request": request})
-        next_before_id = messages[0].id if messages else None
+        batch = list(qs[: limit + 1])
+        has_more = len(batch) > limit
+        if has_more:
+            batch = batch[:limit]
+        batch.reverse()
+        ser = ChatMessageSerializer(batch, many=True, context={"request": request})
+        next_before_id = batch[0].id if has_more and batch else None
         return Response({"results": ser.data, "next_before_id": next_before_id})
 
 

@@ -3,11 +3,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, PenSquare } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { chatApi } from '@/lib/api/chat';
 import Avatar from '@/components/ui/Avatar';
+import NewChatModal from '@/components/inbox/NewChatModal';
 import styles from './chat.module.scss';
 
 function mergeMessageIntoRooms(prev, m, userId) {
@@ -36,6 +37,7 @@ export default function ChatListPage() {
     const router = useRouter();
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [newOpen, setNewOpen] = useState(false);
 
     const fetchRooms = useCallback(async () => {
         if (!user) return;
@@ -82,15 +84,29 @@ export default function ChatListPage() {
     if (!user && !authLoading) return null;
 
     return (
-        <div className={styles.page}>
-            <div className={styles.header}>
-                <MessageCircle size={22} />
-                <h1>{t('inbox.chat')}</h1>
-            </div>
+        <div className={styles.shell}>
+            <header className={styles.top}>
+                <div className={styles.titleRow}>
+                    <MessageCircle size={26} strokeWidth={2} className={styles.titleIcon} />
+                    <h1>{t('inbox.chat')}</h1>
+                </div>
+                <button type="button" className={styles.newBtn} onClick={() => setNewOpen(true)}>
+                    <PenSquare size={18} />
+                    <span>{t('inbox.new_chat_title')}</span>
+                </button>
+            </header>
+
+            <p className={styles.help}>{t('inbox.chat_list_help')}</p>
+
             {loading ? (
                 <p className={styles.muted}>{t('common.loading')}</p>
             ) : rooms.length === 0 ? (
-                <p className={styles.muted}>{t('inbox.empty_chat')}</p>
+                <div className={styles.empty}>
+                    <p>{t('inbox.empty_chat')}</p>
+                    <button type="button" className={styles.emptyCta} onClick={() => setNewOpen(true)}>
+                        {t('inbox.start_conversation')}
+                    </button>
+                </div>
             ) : (
                 <ul className={styles.list}>
                     {rooms.map((r) => (
@@ -104,7 +120,7 @@ export default function ChatListPage() {
                                         avatar: r.other_user?.profile_image,
                                         avatar_compressed: r.other_user?.profile_image_compressed,
                                     }}
-                                    size={48}
+                                    size={52}
                                 />
                                 <div className={styles.rowBody}>
                                     <div className={styles.rowTop}>
@@ -124,6 +140,12 @@ export default function ChatListPage() {
                     ))}
                 </ul>
             )}
+
+            <NewChatModal
+                open={newOpen}
+                onClose={() => setNewOpen(false)}
+                onChatStarted={(chatId) => router.push(`/chat/${chatId}`)}
+            />
         </div>
     );
 }

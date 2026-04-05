@@ -4,7 +4,8 @@
     height: 60px;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1100;
+    isolation: isolate;
     /* Removed padding-top if any existed globally */
 }
 
@@ -203,13 +204,14 @@
     top: 60px;
     left: 0;
     right: 0;
+    z-index: 20;
     background: #fff;
     border-bottom: 1px solid #eee;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 
     a {
         text-decoration: none;
