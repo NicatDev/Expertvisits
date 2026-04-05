@@ -128,10 +128,22 @@
             color: #1e293b;
         }
 
-        ul,
-        ol {
-            padding-left: 1.5em;
+        ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-left: 1.75em;
             margin-bottom: 1em;
+        }
+
+        ol {
+            list-style-type: decimal;
+            list-style-position: outside;
+            padding-left: 1.75em;
+            margin-bottom: 1em;
+        }
+
+        li {
+            display: list-item;
         }
 
         li p {
