@@ -1,7 +1,8 @@
 @import "@/styles/variables.scss";
 @import "@/styles/mixins.scss";
 
-$modal-z-index: 1000;
+/* Above Navigation sticky bar (z-index 1100) */
+$modal-z-index: 2000;
 
 .overlay {
     position: fixed;
@@ -14,18 +15,21 @@ $modal-z-index: 1000;
     align-items: center;
     justify-content: center;
     z-index: $modal-z-index;
+    padding: 12px;
+    box-sizing: border-box;
 }
 
 .modal {
     background: #fff;
     border-radius: $border-radius-base;
     width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-width: 560px;
+    max-height: min(520px, calc(100dvh - 24px));
     box-shadow: $box-shadow-base;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .header {
@@ -54,15 +58,22 @@ $modal-z-index: 1000;
     }
 }
 
+.modalBody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .loadingContainer {
-    padding: 60px;
+    padding: 40px 24px;
     text-align: center;
     color: #666;
     font-size: 16px;
 }
 
 .warningContent {
-    padding: 40px;
+    padding: 28px 24px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -129,10 +140,50 @@ $modal-z-index: 1000;
 }
 
 .form {
+    padding: $spacing-md $spacing-lg $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}
+
+.verifyStep {
     padding: $spacing-lg;
     display: flex;
     flex-direction: column;
-    gap: $spacing-lg;
+    gap: $spacing-md;
+}
+
+.verifyHint {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.verifyEmailStrong {
+    font-weight: 600;
+    color: $text-color;
+    word-break: break-all;
+}
+
+.codeInput {
+    padding: 12px 14px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-color;
+    }
+
+    &.error {
+        border-color: #f5222d;
+        background-color: #fff1f0;
+    }
 }
 
 .eligibilityBanner {

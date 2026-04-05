@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import Link from 'next/link';
 import { Edit2, Trash2 } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
@@ -58,7 +59,6 @@ const ProfileHeader = ({
     const [actionModal, setActionModal] = useState({ isOpen: false, type: null });
     const [confirmationModal, setConfirmationModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
 
-    const [templateModalOpen, setTemplateModalOpen] = useState(false);
     const [websiteData, setWebsiteData] = useState(null);
 
     React.useEffect(() => {
@@ -67,21 +67,11 @@ const ProfileHeader = ({
                 websites_api.getTemplate().then(res => setWebsiteData(res.data)).catch(console.error);
             });
         }
-    }, [onUpdateProfile, templateModalOpen]);
+    }, [onUpdateProfile]);
 
     return (
         <>
         <div className={styles.header}>
-            {templateModalOpen && (
-                <div style={{ position: 'fixed', zIndex: 1000000 }}>
-                    <React.Suspense fallback={null}>
-                        {React.createElement(
-                            React.lazy(() => import('@/components/widgets/PromoBanner/TemplateSelectionModal')),
-                            { isOpen: templateModalOpen, onClose: () => setTemplateModalOpen(false) }
-                        )}
-                    </React.Suspense>
-                </div>
-            )}
             {/* Confirmation Modal */}
             {confirmationModal.isOpen && (
                 <div style={{
@@ -220,6 +210,11 @@ const ProfileHeader = ({
                 </div>
 
                 <div className={styles.actions}>
+                    <Link href="/website-template" style={{ textDecoration: 'none' }}>
+                        <Button type="default">
+                            {websiteData?.is_active ? t('widgets.manage_website') : t('widgets.create_website')}
+                        </Button>
+                    </Link>
                     <Button onClick={() => onTriggerActionMonitor('password')} type="default">{t('profile.change_password')}</Button>
                 </div>
             </div>

@@ -52,7 +52,6 @@ def create_message(sender_id: int, chat_id: int, text: str) -> ChatMessage | Non
         return None
 
     recipient_id = room.other_user_id(sender_id)
-    is_first = not ChatMessage.objects.filter(chat_id=room.pk).exists()
 
     msg = ChatMessage.objects.create(
         chat=room,
@@ -61,10 +60,6 @@ def create_message(sender_id: int, chat_id: int, text: str) -> ChatMessage | Non
         text=text,
     )
     ChatRoom.objects.filter(pk=room.pk).update(last_message_at=msg.created_at)
-
-    from apps.notifications.services import notify_new_chat_message
-
-    notify_new_chat_message(msg=msg, is_first=is_first)
 
     room_id = room.pk
     line = message_to_dict(msg)

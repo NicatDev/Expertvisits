@@ -17,7 +17,11 @@ export const business = {
 
     // Companies
     getCompanies: (params = {}) => client.get('/business/companies/', { params }),
-    createCompany: (data) => client.post('/business/companies/', data),
+    /** Step 1: multipart form (same fields as before); sends verification email to company email. */
+    startCompanyRegistration: (data) => client.post('/business/companies/start-registration/', data),
+    /** Step 2: JSON { code } */
+    completeCompanyRegistration: (payload) =>
+        client.post('/business/companies/complete-registration/', payload),
     getCompany: (slug) => client.get(`/business/companies/${slug}/`),
     updateCompany: (slug, data) => client.patch(`/business/companies/${slug}/`, data),
 

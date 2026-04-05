@@ -22,7 +22,7 @@ export default function UserVacanciesPage() {
     const loadVacancies = async (userId) => {
         setLoading(true);
         try {
-            const vacRes = await business.getVacancies({ company__owner: userId });
+            const vacRes = await business.getVacancies({ posted_by: userId });
             setVacancies(vacRes.data.results || vacRes.data || []);
         } catch (err) {
             console.error(err);

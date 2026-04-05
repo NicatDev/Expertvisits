@@ -285,6 +285,10 @@
         "user_role": "İstifadəçi",
         "create_website_modal_title": "Portfolio Vebsaytını Yarat",
         "edit_website_modal_title": "Vebsaytını Redaktə Et",
+        "current_website_label": "Cari vebsaytınız:",
+        "qr_portfolio_title": "Portfolio QR kodu",
+        "qr_portfolio_hint": "İctimai portfolio səhifənizi açmaq üçün skan edin. Çap və ya paylaşım üçün şəkli yükləyə bilərsiniz.",
+        "download_qr": "QR yüklə (PNG)",
         "select_template": "Şablon seçin:",
         "template1_name": "Tünd Modern",
         "template2_name": "İşıqlı İnteraktiv",
@@ -512,6 +516,12 @@
         "description": "Təsviri",
         "no_description": "Bu vakansiya üçün ətraflı təsvir yoxdur.",
         "overview": "İş icmalı",
+        "contact": "Əlaqə",
+        "contact_phone_label": "Telefon",
+        "contact_email_label": "E-poçt",
+        "contact_website_label": "Vebsayt",
+        "view_company_profile": "Şirkət səhifəsi",
+        "individual_posting_badge": "Fərdi elan",
         "location": "Ünvan",
         "salary": "Maaş",
         "job_type": "İş növü",
@@ -555,6 +565,19 @@
             "no_companies_title": "Şirkət Tapılmadı",
             "no_companies_desc": "Vakansiya paylaşmaq üçün əvvəlcə şirkət qeydiyyatdan keçirməlisiniz. Zəhmət olmasa şirkət profili yaradın.",
             "go_to_companies": "Şirkətlərə Keç",
+            "posting_as": "Kim adından yerləşdirilir",
+            "as_company": "Şirkət adından",
+            "as_individual": "Şəxsən (biznes və əlaqə)",
+            "no_company_pick_individual": "Şirkətiniz yoxdursa «Şəxsən» seçin — şirkət qeydiyyatı məcburi deyil.",
+            "business_name": "Biznes / göstəriləcək ad",
+            "business_name_ph": "Məs. komanda, layihə və ya fərdi brend",
+            "contact_email": "Əlaqə e-poçtu",
+            "contact_phone": "Əlaqə telefonu",
+            "contact_website": "Vebsayt (istəyə bağlı)",
+            "employer_logo": "Logo",
+            "employer_logo_hint": "İstəyə bağlı — siyahı və vakansiya səhifəsində görünər.",
+            "upload_logo": "Logo yüklə",
+            "vacancy_info": "Vakansiya",
             "company_role": "Şirkət və Vəzifə",
             "company": "Şirkət",
             "title_label": "Vəzifə",
@@ -674,12 +697,24 @@
                 "upload_logo": "Logo Yüklə",
                 "no_logo": "Logo Yoxdur",
                 "creating": "Yaradılır...",
+                "sending_code": "Göndərilir...",
+                "continue_verify": "Davam et — e-poçtu təsdiqlə",
                 "success": {
                     "posted": "Şirkət uğurla qeydiyyatdan keçirildi!"
                 },
                 "errors": {
                     "save_failed": "Şirkət qeydiyyatı zamanı xəta baş verdi."
                 }
+            },
+            "verify": {
+                "title": "E-poçtu təsdiqləyin",
+                "description": "Şirkət qeydiyyatını tamamlamaq üçün bu ünvana göndərilən 6 rəqəmli kodu daxil edin:",
+                "code_label": "Təsdiq kodu",
+                "finish": "Şirkəti yarat",
+                "back": "Geri",
+                "sent_toast": "Təsdiq kodu e-poçtunuza göndərildi.",
+                "email_send_failed": "E-poçt göndərilə bilmədi. Sonra yenidən cəhd edin.",
+                "code_invalid": "6 rəqəmli kodu daxil edin."
             }
         },
         "edit_modal": {
@@ -913,6 +948,8 @@
         "connection_accepted": "Əlaqə qəbul edildi",
         "new_message": "Yeni mesaj",
         "chat_request": "Yeni çat",
+        "vacancy_application": "Vakansiyaya müraciət",
+        "view_vacancy": "Vakansiyaya bax",
         "unread": "Oxunmamış",
         "load_more": "Daha çox",
         "send": "Göndər",
@@ -930,7 +967,9 @@
         "view_profile": "Profilə bax",
         "message_user": "Mesaj",
         "load_older_messages": "Əvvəlki mesajlar",
-        "emoji_picker": "Emoji seç"
+        "emoji_picker": "Emoji seç",
+        "message_seen": "Oxundu",
+        "message_not_seen": "Hələ oxunmayıb"
     },
     "seo": {
         "home_h1": "Expert Visits - Peşəkar Mütəxəssislər, Şirkətlər və İş Elanları Platforması",

@@ -26,6 +26,8 @@ function kindLabel(kind, t) {
             return t('inbox.chat_request');
         case 'chat_message':
             return t('inbox.new_message');
+        case 'vacancy_application':
+            return t('inbox.vacancy_application');
         default:
             return kind;
     }
@@ -253,6 +255,17 @@ export default function NotificationsPage() {
                                         ) : null}
                                     </>
                                 )}
+                                {n.kind === 'vacancy_application' && n.data?.vacancy_slug ? (
+                                    <button
+                                        type="button"
+                                        className={styles.btnPrimary}
+                                        onClick={() =>
+                                            router.push(`/vacancies/${n.data.vacancy_slug}`)
+                                        }
+                                    >
+                                        {t('inbox.view_vacancy')}
+                                    </button>
+                                ) : null}
                             </div>
                         </li>
                     ))}

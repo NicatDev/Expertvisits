@@ -6,10 +6,34 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import ApplyModal from '@/components/advanced/ApplyModal';
 import { notFound } from 'next/navigation';
-import { MapPin, Briefcase, DollarSign, Clock, Building, Calendar, Share2, CheckCircle } from 'lucide-react';
+import { MapPin, Briefcase, DollarSign, Clock, Building, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
+
+function buildPublisher(vacancy) {
+    if (vacancy.publisher) return vacancy.publisher;
+    if (vacancy.company) {
+        return {
+            type: 'company',
+            name: vacancy.company.name,
+            slug: vacancy.company.slug,
+            logo: vacancy.company.logo,
+            email: vacancy.company.email,
+            phone: vacancy.company.phone,
+            website_url: vacancy.company.website_url,
+        };
+    }
+    return {
+        type: 'individual',
+        name: vacancy.company_name || vacancy.employer_display_name || '',
+        slug: null,
+        logo: vacancy.employer_logo,
+        email: vacancy.employer_email,
+        phone: vacancy.employer_phone,
+        website_url: vacancy.employer_website,
+    };
+}
 
 export default function DetailClient({ vacancy }) {
     const { t, i18n } = useTranslation('common');
@@ -66,22 +90,42 @@ export default function DetailClient({ vacancy }) {
 
     if (!vacancy) return null;
 
+    const publisher = buildPublisher(vacancy);
+    const displayName = publisher.name || vacancy.company_name || '';
+    const isOwner = Boolean(vacancy.is_owner);
+
     return (
         <div className={styles.container}>
             {/* Header Section */}
             <div className={styles.headerPanel}>
                 <div className={styles.headerContent}>
                     <div className={styles.identity}>
-                        {vacancy.company?.logo ? (
-                            <img src={vacancy.company.logo} alt={vacancy.company.name} className={styles.logo} />
+                        {publisher.logo ? (
+                            <img src={publisher.logo} alt={displayName} className={styles.logo} />
                         ) : (
                             <div className={styles.logoPlaceholder}>
-                                {(vacancy.company_name || vacancy.company?.name || 'C').charAt(0)}
+                                {(displayName || 'C').charAt(0)}
                             </div>
                         )}
                         <div className={styles.titleBlock}>
                             <h1 className={styles.title}>{vacancy.title}</h1>
-                            <span className={styles.companyName}>{vacancy.company_name || vacancy.company?.name}</span>
+                            <div className={styles.employerRow}>
+                                {publisher.type === 'company' && publisher.slug ? (
+                                    <a href={`/company/${publisher.slug}`} className={styles.companyName}>
+                                        {displayName}
+                                    </a>
+                                ) : (
+                                    <span className={styles.companyName}>{displayName}</span>
+                                )}
+                                {publisher.type === 'individual' ? (
+                                    <span className={styles.individualBadge}>{t('vacancy_detail.individual_posting_badge')}</span>
+                                ) : null}
+                            </div>
+                            {publisher.type === 'company' && publisher.slug ? (
+                                <a href={`/company/${publisher.slug}`} className={styles.companyPageLink}>
+                                    <ExternalLink size={14} /> {t('vacancy_detail.view_company_profile')}
+                                </a>
+                            ) : null}
                         </div>
                     </div>
 
@@ -136,9 +180,7 @@ export default function DetailClient({ vacancy }) {
                     {/* Additional sections can go here */}
 
                     {/* Applicants Section (Visible only to owner) */}
-                    {(vacancy.is_owner || (user && (user.id === vacancy.company?.owner || user.id === vacancy.posted_by))) && (
-                        <ApplicantsList vacancyId={vacancy.id} />
-                    )}
+                    {isOwner && <ApplicantsList vacancyId={vacancy.id} />}
                 </div>
 
                 {/* Sidebar: Job Overview / Details */}
@@ -183,6 +225,43 @@ export default function DetailClient({ vacancy }) {
                             </li>
                         </ul>
                     </div>
+
+                    {(publisher.phone || publisher.email || publisher.website_url) ? (
+                        <div className={`${styles.card} ${styles.contactCard}`}>
+                            <h2>{t('vacancy_detail.contact')}</h2>
+                            <ul className={styles.overviewList}>
+                                {publisher.phone ? (
+                                    <li>
+                                        <Phone size={20} className={styles.icon} />
+                                        <div>
+                                            <span className={styles.label}>{t('vacancy_detail.contact_phone_label')}</span>
+                                            <a href={`tel:${publisher.phone}`} className={styles.valueLink}>{publisher.phone}</a>
+                                        </div>
+                                    </li>
+                                ) : null}
+                                {publisher.email ? (
+                                    <li>
+                                        <Mail size={20} className={styles.icon} />
+                                        <div>
+                                            <span className={styles.label}>{t('vacancy_detail.contact_email_label')}</span>
+                                            <a href={`mailto:${publisher.email}`} className={styles.valueLink}>{publisher.email}</a>
+                                        </div>
+                                    </li>
+                                ) : null}
+                                {publisher.website_url ? (
+                                    <li>
+                                        <Globe size={20} className={styles.icon} />
+                                        <div>
+                                            <span className={styles.label}>{t('vacancy_detail.contact_website_label')}</span>
+                                            <a href={publisher.website_url} target="_blank" rel="noopener noreferrer" className={styles.valueLink}>
+                                                {publisher.website_url.replace(/^https?:\/\//, '')}
+                                            </a>
+                                        </div>
+                                    </li>
+                                ) : null}
+                            </ul>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 

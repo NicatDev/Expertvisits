@@ -10,6 +10,7 @@ class InboxNotification(models.Model):
         CONNECTION_ACCEPTED = "connection_accepted", "Connection accepted"
         CHAT_REQUEST = "chat_request", "First chat message"
         CHAT_MESSAGE = "chat_message", "New chat message"
+        VACANCY_APPLICATION = "vacancy_application", "Vacancy application"
 
     recipient = models.ForeignKey(
         settings.AUTH_USER_MODEL,

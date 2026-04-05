@@ -279,11 +279,17 @@
         "promo_label": "Бонус",
         "promo_title": "Создайте свой сайт",
         "create_website_modal_title": "Создайте свой вебсайт-портфолио",
+        "edit_website_modal_title": "Редактировать сайт-портфолио",
+        "current_website_label": "Ваш сайт:",
+        "qr_portfolio_title": "QR-код портфолио",
+        "qr_portfolio_hint": "Отсканируйте, чтобы открыть публичную страницу портфолио. Скачайте изображение для печати или рассылки.",
+        "download_qr": "Скачать QR (PNG)",
         "select_template": "Выберите шаблон:",
         "template1_name": "Темный Модерн",
         "template2_name": "Светлый Интерактив",
         "template3_name": "Корпоративный",
         "template4_name": "Cyberpunk",
+        "template5_name": "Медицинский",
         "save_template": "Сохранить",
         "saving": "Сохранение...",
         "success_msg": "Шаблон успешно сохранен!",
@@ -621,6 +627,12 @@
         "description": "Описание",
         "no_description": "Для этой вакансии нет подробного описания.",
         "overview": "Обзор вакансии",
+        "contact": "Контакты",
+        "contact_phone_label": "Телефон",
+        "contact_email_label": "Email",
+        "contact_website_label": "Сайт",
+        "view_company_profile": "Страница компании",
+        "individual_posting_badge": "Частное объявление",
         "location": "Местоположение",
         "salary": "Зарплата",
         "job_type": "Тип занятости",
@@ -663,6 +675,19 @@
             "no_companies_title": "Компании не найдены",
             "no_companies_desc": "Вам нужно зарегистрировать компанию, прежде чем вы сможете разместить вакансию. Пожалуйста, создайте профиль компании.",
             "go_to_companies": "Перейти к Компаниям",
+            "posting_as": "Разместить от имени",
+            "as_company": "Компании",
+            "as_individual": "Себя (бизнес и контакты)",
+            "no_company_pick_individual": "Нет компании? Выберите «Себя» — регистрация компании не обязательна.",
+            "business_name": "Название / отображаемое имя",
+            "business_name_ph": "Например, команда, проект или личный бренд",
+            "contact_email": "Контактный email",
+            "contact_phone": "Контактный телефон",
+            "contact_website": "Сайт (необязательно)",
+            "employer_logo": "Логотип",
+            "employer_logo_hint": "Необязательно — в списке и на странице вакансии.",
+            "upload_logo": "Загрузить лого",
+            "vacancy_info": "Вакансия",
             "company_role": "Компания и Роль",
             "company": "Компания",
             "title_label": "Название",
@@ -781,7 +806,25 @@
                 "logo": "Логотип",
                 "upload_logo": "Загрузить лого",
                 "no_logo": "Нет лого",
-                "creating": "Создание..."
+                "creating": "Создание...",
+                "sending_code": "Отправка...",
+                "continue_verify": "Далее — подтвердить email",
+                "success": {
+                    "posted": "Компания успешно зарегистрирована!"
+                },
+                "errors": {
+                    "save_failed": "Не удалось создать компанию."
+                }
+            },
+            "verify": {
+                "title": "Подтвердите email",
+                "description": "Введите 6-значный код, отправленный на:",
+                "code_label": "Код подтверждения",
+                "finish": "Создать компанию",
+                "back": "Назад",
+                "sent_toast": "Код отправлен на почту.",
+                "email_send_failed": "Не удалось отправить письмо. Попробуйте позже.",
+                "code_invalid": "Введите 6-значный код."
             }
         }
     },
@@ -873,6 +916,8 @@
         "connection_accepted": "Связь принята",
         "new_message": "Новое сообщение",
         "chat_request": "Новый чат",
+        "vacancy_application": "Отклик на вакансию",
+        "view_vacancy": "Открыть вакансию",
         "unread": "Непрочитанные",
         "load_more": "Ещё",
         "send": "Отправить",
@@ -890,7 +935,9 @@
         "view_profile": "Профиль",
         "message_user": "Сообщение",
         "load_older_messages": "Ранние сообщения",
-        "emoji_picker": "Выбрать эмодзи"
+        "emoji_picker": "Выбрать эмодзи",
+        "message_seen": "Прочитано",
+        "message_not_seen": "Ещё не прочитано"
     },
     "seo": {
         "home_h1": "Expert Visits - Платформа для профессиональных экспертов, компаний и вакансий",

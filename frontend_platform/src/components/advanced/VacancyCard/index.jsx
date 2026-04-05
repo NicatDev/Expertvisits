@@ -9,9 +9,34 @@ import ApplyModal from '@/components/advanced/ApplyModal';
 import ApplicantsModal from '@/components/advanced/ApplicantsModal';
 import { useTranslation } from '@/i18n/client';
 
+function buildPublisher(vacancy) {
+    if (vacancy.publisher) return vacancy.publisher;
+    if (vacancy.company) {
+        return {
+            type: 'company',
+            name: vacancy.company.name,
+            slug: vacancy.company.slug,
+            logo: vacancy.company.logo,
+            email: vacancy.company.email,
+            phone: vacancy.company.phone,
+            website_url: vacancy.company.website_url,
+        };
+    }
+    return {
+        type: 'individual',
+        name: vacancy.company_name || vacancy.employer_display_name || '',
+        slug: null,
+        logo: vacancy.employer_logo,
+        email: vacancy.employer_email,
+        phone: vacancy.employer_phone,
+        website_url: vacancy.employer_website,
+    };
+}
+
 const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
     const { t } = useTranslation('common');
     const { user } = useAuth();
+    const publisher = buildPublisher(vacancy);
     const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
     const [showApplyModal, setShowApplyModal] = useState(false);
     const [showApplicantsModal, setShowApplicantsModal] = useState(false);
@@ -41,15 +66,24 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
         <div className={styles.card}>
             <div className={styles.header}>
                 <div className={styles.companyLogo}>
-                    {vacancy.company?.logo ? (
-                        <img src={vacancy.company.logo} alt={vacancy.company.name} />
+                    {publisher.logo ? (
+                        <img src={publisher.logo} alt={publisher.name || ''} />
                     ) : (
-                        <div className={styles.placeholderLogo}>{vacancy.company?.name?.[0]}</div>
+                        <div className={styles.placeholderLogo}>{(publisher.name || 'C').charAt(0)}</div>
                     )}
                 </div>
                 <div className={styles.info}>
                     <Link href={`/vacancies/${vacancy.slug}`} className={styles.title}>{vacancy.title}</Link>
-                    <Link href={`/company/${vacancy.company?.slug}`} className={styles.companyName}>{vacancy.company?.name}</Link>
+                    {publisher.type === 'company' && publisher.slug ? (
+                        <Link href={`/company/${publisher.slug}`} className={styles.companyName}>
+                            {publisher.name}
+                        </Link>
+                    ) : (
+                        <span className={styles.companyName}>{publisher.name}</span>
+                    )}
+                    {publisher.type === 'individual' ? (
+                        <span className={styles.individualBadge}>{t('vacancy_detail.individual_posting_badge')}</span>
+                    ) : null}
                 </div>
                 <div className={styles.typeBadge}>
                     {vacancy.job_type === 'full-time' ? t('vacancies.full_time') : t('vacancies.part_time')}

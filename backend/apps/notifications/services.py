@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from apps.connections.models import ConnectionRequest
 from apps.notifications.models import InboxNotification
 from apps.notifications.realtime import push_payload
+from core.utils.email import send_connection_request_email, send_vacancy_application_email
 
 User = get_user_model()
 
@@ -47,6 +48,7 @@ def inbox_to_dict(n: InboxNotification, request=None) -> dict[str, Any]:
 def notify_connection_requested(req: ConnectionRequest) -> InboxNotification:
     target = req.to_user
     actor = req.from_user
+    send_connection_request_email(req)
     n = InboxNotification.objects.create(
         recipient=target,
         actor=actor,
@@ -65,6 +67,52 @@ def notify_connection_requested(req: ConnectionRequest) -> InboxNotification:
     return n
 
 
+def notify_vacancy_application(application_id: int) -> None:
+    """Email + inbox row for the vacancy owner when a user submits an application."""
+    from apps.business.models import VacancyApplication
+
+    try:
+        application = VacancyApplication.objects.select_related(
+            "vacancy",
+            "vacancy__company",
+            "vacancy__company__owner",
+            "vacancy__posted_by",
+            "applicant",
+        ).get(pk=application_id)
+    except VacancyApplication.DoesNotExist:
+        return
+
+    vacancy = application.vacancy
+    applicant = application.applicant
+    owner = vacancy.posted_by
+    if owner is None and vacancy.company_id:
+        owner = vacancy.company.owner
+    if owner is None or owner.id == applicant.id:
+        return
+
+    send_vacancy_application_email(application)
+
+    preview = (application.motivation_letter or "").strip().replace("\n", " ")
+    if len(preview) > 200:
+        preview = preview[:197].rstrip() + "..."
+
+    n = InboxNotification.objects.create(
+        recipient=owner,
+        actor=applicant,
+        kind=InboxNotification.Kind.VACANCY_APPLICATION,
+        title="",
+        body=preview,
+        data={
+            "vacancy_id": vacancy.id,
+            "vacancy_slug": vacancy.slug or "",
+            "application_id": application.id,
+        },
+        sort_weight=40,
+    )
+    push_payload(owner.id, {"type": "inbox_notification", "notification": inbox_to_dict(n)})
+    push_payload(owner.id, {"type": "badge_refresh"})
+
+
 def notify_connection_accepted(req: ConnectionRequest) -> None:
     """Inform the original requester that connection was accepted."""
     actor = req.to_user
@@ -81,28 +129,3 @@ def notify_connection_accepted(req: ConnectionRequest) -> None:
     )
     push_payload(recipient.id, {"type": "inbox_notification", "notification": inbox_to_dict(n)})
     push_payload(recipient.id, {"type": "badge_refresh"})
-
-
-def notify_new_chat_message(*, msg, is_first: bool) -> InboxNotification:
-    recipient_id = msg.recipient_id
-    kind = (
-        InboxNotification.Kind.CHAT_REQUEST if is_first else InboxNotification.Kind.CHAT_MESSAGE
-    )
-    preview = (msg.text or "")[:200]
-    n = InboxNotification.objects.create(
-        recipient_id=recipient_id,
-        actor_id=msg.sender_id,
-        kind=kind,
-        title="",
-        body=preview,
-        data={"chat_id": msg.chat_id, "preview": preview},
-        sort_weight=10,
-        chat_message=msg,
-    )
-    # Live chat lines + room list refresh: apps.chat.realtime.broadcast_chat_room_payload (after DB commit)
-    push_payload(
-        recipient_id,
-        {"type": "inbox_notification", "notification": inbox_to_dict(n)},
-    )
-    push_payload(recipient_id, {"type": "badge_refresh"})
-    return n

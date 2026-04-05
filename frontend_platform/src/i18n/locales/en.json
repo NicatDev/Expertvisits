@@ -283,6 +283,11 @@
         "promo_title": "Create your own website",
         "user_role": "User",
         "create_website_modal_title": "Create your Portfolio",
+        "edit_website_modal_title": "Edit your portfolio website",
+        "current_website_label": "Your website:",
+        "qr_portfolio_title": "Portfolio QR code",
+        "qr_portfolio_hint": "Scan to open your public portfolio. Download the image to print or share.",
+        "download_qr": "Download QR (PNG)",
         "select_template": "Select a template:",
         "template1_name": "Dark Modern",
         "template2_name": "Light Interactive",
@@ -622,6 +627,12 @@
         "description": "Description",
         "no_description": "No detailed description provided for this vacancy.",
         "overview": "Job Overview",
+        "contact": "Contact",
+        "contact_phone_label": "Phone",
+        "contact_email_label": "Email",
+        "contact_website_label": "Website",
+        "view_company_profile": "Company page",
+        "individual_posting_badge": "Individual listing",
         "location": "Location",
         "salary": "Salary",
         "job_type": "Job Type",
@@ -681,6 +692,19 @@
             "no_companies_title": "No Companies Found",
             "no_companies_desc": "You need to register a company before you can post a vacancy. Please create a company profile first.",
             "go_to_companies": "Go to Companies",
+            "posting_as": "Post on behalf of",
+            "as_company": "A company",
+            "as_individual": "Yourself (business & contact details)",
+            "no_company_pick_individual": "No company yet? Choose “Yourself” — company registration is not required.",
+            "business_name": "Business / display name",
+            "business_name_ph": "e.g. team, project, or personal brand",
+            "contact_email": "Contact email",
+            "contact_phone": "Contact phone",
+            "contact_website": "Website (optional)",
+            "employer_logo": "Logo",
+            "employer_logo_hint": "Optional — shown on the listing and vacancy page.",
+            "upload_logo": "Upload logo",
+            "vacancy_info": "Vacancy",
             "company_role": "Company & Role",
             "company": "Company",
             "title_label": "Title",
@@ -800,12 +824,24 @@
                 "upload_logo": "Upload Logo",
                 "no_logo": "No Logo",
                 "creating": "Creating...",
+                "sending_code": "Sending...",
+                "continue_verify": "Continue — verify email",
                 "success": {
                     "posted": "Company successfully registered!"
                 },
                 "errors": {
                     "save_failed": "Failed to create company."
                 }
+            },
+            "verify": {
+                "title": "Verify your email",
+                "description": "Enter the 6-digit code we sent to:",
+                "code_label": "Verification code",
+                "finish": "Create company",
+                "back": "Back",
+                "sent_toast": "Verification code sent to your inbox.",
+                "email_send_failed": "Could not send email. Try again later.",
+                "code_invalid": "Enter the 6-digit code."
             }
         },
         "edit_modal": {
@@ -922,6 +958,8 @@
         "connection_accepted": "Connection accepted",
         "new_message": "New message",
         "chat_request": "New chat",
+        "vacancy_application": "Vacancy application",
+        "view_vacancy": "View vacancy",
         "unread": "Unread",
         "load_more": "Load more",
         "send": "Send",
@@ -939,7 +977,9 @@
         "view_profile": "View profile",
         "message_user": "Message",
         "load_older_messages": "Older messages",
-        "emoji_picker": "Choose emoji"
+        "emoji_picker": "Choose emoji",
+        "message_seen": "Seen",
+        "message_not_seen": "Not seen yet"
     },
     "seo": {
         "home_h1": "Expert Visits - Professional Experts, Companies and Job Vacancies Platform",

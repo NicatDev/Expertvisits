@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from apps.accounts.models import User
+from apps.connections.services import public_phone_for_viewer
 from apps.profiles.models import Experience, Education, Skill, Language, Certificate, Service
 from apps.profiles.api.serializers import (
     ExperienceSerializer, EducationSerializer, SkillSerializer,
@@ -30,6 +31,9 @@ class UserProfileDetailsAPIView(APIView):
         # we are doing 5 queries. It's acceptable for a detail view.
         # Alternatively, we can do parallel async or just simple sequential queries as is.
         
+        viewer = request.user if request.user.is_authenticated else None
+        phone_out = public_phone_for_viewer(viewer=viewer, profile_user=user)
+
         data = {
             'id': user.id,
             'summary': user.summary,
@@ -37,7 +41,6 @@ class UserProfileDetailsAPIView(APIView):
             'last_name': user.last_name,
             'username': user.username,
             'email': user.email,
-            'phone_number': user.phone_number,
             'birth_day': user.birth_day,
             'city': user.city,
             'profession_sub_category': getattr(user.profession_sub_category, 'id', None) if user.profession_sub_category else None,
@@ -49,4 +52,6 @@ class UserProfileDetailsAPIView(APIView):
             'certificates': CertificateSerializer(Certificate.objects.filter(user=user), many=True).data,
             'services': ServiceSerializer(Service.objects.filter(user=user), many=True).data,
         }
+        if phone_out is not None:
+            data["phone_number"] = phone_out
         return Response(data)

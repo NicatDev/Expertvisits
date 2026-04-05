@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.accounts.models import User, Category, SubCategory
+from apps.connections.services import public_phone_for_viewer
 
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -172,13 +173,12 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         request = self.context.get('request')
-        
-        # Hide phone number if show_phone_number is False and requester is not the owner
-        if not instance.show_phone_number:
-            if request and request.user != instance:
-                ret.pop('phone_number', None)
-            elif not request: # Case where request is missing? Assume hide? Or internal?
-                # Usually keep if internal
-                pass
-        
+        viewer = request.user if request and request.user.is_authenticated else None
+
+        resolved = public_phone_for_viewer(viewer=viewer, profile_user=instance)
+        if resolved is None:
+            ret.pop("phone_number", None)
+        else:
+            ret["phone_number"] = resolved
+
         return ret

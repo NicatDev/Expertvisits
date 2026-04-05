@@ -133,8 +133,24 @@
     pointer-events: none;
 }
 
-.bubble {
+.bubbleCol {
+    display: flex;
+    flex-direction: column;
     max-width: min(85%, 520px);
+    gap: 4px;
+}
+
+.bubbleColMine {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.bubbleColTheirs {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.bubble {
     padding: 12px 16px;
     border-radius: 18px;
     font-size: 0.95rem;
@@ -142,21 +158,39 @@
     word-break: break-word;
 }
 
-.mine {
-    align-self: flex-end;
+.bubbleMine {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #fff;
     border-bottom-right-radius: 6px;
     box-shadow: 0 2px 12px rgba(37, 99, 235, 0.25);
 }
 
-.theirs {
-    align-self: flex-start;
+.bubbleTheirs {
     background: #fff;
     color: #111827;
     border: 1px solid #e5e7eb;
     border-bottom-left-radius: 6px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.bubbleMeta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    color: #9ca3af;
+    padding: 0 2px;
+}
+
+.readTicks {
+    display: inline-flex;
+    align-items: center;
+    color: #d1d5db;
+
+    &.read {
+        color: #7dd3fc;
+    }
 }
 
 .composer {

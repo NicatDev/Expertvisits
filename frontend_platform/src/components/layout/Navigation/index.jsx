@@ -6,12 +6,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './styles.module.scss';
-import Button from '../../ui/Button';
-import { Search, Globe, User, LogOut, Menu, X, ChevronDown, Bell, MessageCircle } from 'lucide-react';
+import { User, Menu, X, Bell, MessageCircle } from 'lucide-react';
 import LanguageSwitcher from '../../advanced/LanguageSwitcher';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
-import TemplateSelectionModal from '../../widgets/PromoBanner/TemplateSelectionModal';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 
 const Navigation = () => {
@@ -23,7 +21,6 @@ const Navigation = () => {
     const [showUserMenu, setShowUserMenu] = useState(false);
     
     const [websiteData, setWebsiteData] = useState(null);
-    const [isWebsiteModalOpen, setIsWebsiteModalOpen] = useState(false);
     const userMenuRef = useRef(null);
 
     useEffect(() => {
@@ -49,13 +46,11 @@ const Navigation = () => {
         }
     }, [user]);
 
-    const handleWebsiteClick = (e) => {
-        e.preventDefault();
+    const guardWebsiteNav = (e) => {
         if (!user) {
-            toast.info(t('auth.login_required') || 'Giriş etməlisiniz');
-            return;
+            e.preventDefault();
+            toast.info(t('auth.login_required'));
         }
-        setIsWebsiteModalOpen(true);
     };
 
     return (
@@ -81,20 +76,29 @@ const Navigation = () => {
                 <div className={styles.actions}>
                     {/* Create Website Button */}
                     <div className={styles.desktopOnly}>
-                        <Button 
-                            onClick={handleWebsiteClick}
-                            style={{ 
-                                background: websiteData?.is_active ? 'rgba(79, 70, 229, 0.1)' : 'linear-gradient(135deg, #6366f1, #a855f7)',
+                        <Link
+                            href="/website-template"
+                            onClick={guardWebsiteNav}
+                            className={styles.websiteNavLink}
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: websiteData?.is_active
+                                    ? 'rgba(79, 70, 229, 0.1)'
+                                    : 'linear-gradient(135deg, #6366f1, #a855f7)',
                                 color: websiteData?.is_active ? '#4f46e5' : '#fff',
                                 border: websiteData?.is_active ? '1px solid #4f46e5' : 'none',
                                 fontWeight: 600,
                                 whiteSpace: 'nowrap',
                                 padding: '8px 16px',
-                                fontSize: '13px'
+                                fontSize: '13px',
+                                borderRadius: '8px',
+                                textDecoration: 'none',
                             }}
                         >
-                            {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Öz vebsaytını yarat')}
-                        </Button>
+                            {websiteData?.is_active ? t('widgets.manage_website') : t('widgets.create_website')}
+                        </Link>
                     </div>
 
                     {/* Language Switcher */}
@@ -190,20 +194,22 @@ const Navigation = () => {
                                 </Link>
                             </>
                         ) : null}
-                        <div onClick={(e) => { handleWebsiteClick(e); setIsMenuOpen(false); }} className={styles.mobileNavAction} style={{ cursor: 'pointer', padding: '12px 0', borderTop: '1px solid #eee' }}>
-                           {websiteData?.is_active ? (t('widgets.manage_website') || 'Mənim Vebsaytım') : (t('widgets.create_website') || 'Veb-saytını yarat')}
-                        </div>
+                        <Link
+                            href="/website-template"
+                            onClick={(e) => {
+                                guardWebsiteNav(e);
+                                if (user) setIsMenuOpen(false);
+                            }}
+                            className={styles.mobileNavAction}
+                            style={{ display: 'block', padding: '12px 0', borderTop: '1px solid #eee' }}
+                        >
+                            {websiteData?.is_active ? t('widgets.manage_website') : t('widgets.create_website')}
+                        </Link>
                     </div>
                 )
             }
 
-            {isWebsiteModalOpen && (
-                <TemplateSelectionModal 
-                    isOpen={isWebsiteModalOpen} 
-                    onClose={() => setIsWebsiteModalOpen(false)} 
-                />
-            )}
-        </nav >
+        </nav>
     );
 };
 

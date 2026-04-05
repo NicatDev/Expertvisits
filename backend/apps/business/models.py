@@ -50,6 +50,38 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
+
+class CompanyRegistrationPending(models.Model):
+    """Holds company draft until the company email is verified (6-digit code)."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="company_registration_pending",
+    )
+    email = models.EmailField(db_index=True)
+    code = models.CharField(max_length=6)
+    expires_at = models.DateTimeField(db_index=True)
+    name = models.CharField(max_length=255)
+    summary = models.TextField()
+    founded_at = models.DateField()
+    company_size = models.CharField(max_length=20, choices=Company.SIZE_CHOICES, default="1-10")
+    phone = models.CharField(max_length=50, blank=True, null=True)
+    address = models.CharField(max_length=500, blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    logo = models.ImageField(upload_to="company_registration_logos/", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "-created_at"]),
+        ]
+
+    def __str__(self):
+        return f"{self.user_id} → {self.email}"
+
+
 class CompanyNews(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='news')
     title = models.CharField(max_length=255)
@@ -78,8 +110,29 @@ class Vacancy(models.Model):
     JOB_TYPE = [('full-time', 'Full-time'), ('part-time', 'Part-time')]
     WORK_MODE = [('remote', 'Remote'), ('hybrid', 'Hybrid'), ('office', 'Office')]
 
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vacancies')
+    class PostedAs(models.TextChoices):
+        COMPANY = "company", "Company"
+        INDIVIDUAL = "individual", "Individual"
+
+    posted_as = models.CharField(
+        max_length=20,
+        choices=PostedAs.choices,
+        default=PostedAs.COMPANY,
+        db_index=True,
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="vacancies",
+        null=True,
+        blank=True,
+    )
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_vacancies', null=True, blank=True)
+    employer_display_name = models.CharField(max_length=255, blank=True)
+    employer_email = models.EmailField(blank=True)
+    employer_phone = models.CharField(max_length=50, blank=True)
+    employer_website = models.URLField(blank=True, null=True)
+    employer_logo = models.ImageField(upload_to="vacancy_employer_logos/", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True)
     listing_type = models.CharField(choices=LISTING_TYPE, max_length=20, db_index=True)
@@ -88,8 +141,16 @@ class Vacancy(models.Model):
     def save(self, *args, **kwargs):
         # Auto-detect language if not set or default
         if not self.language or self.language == 'az':
-            text_to_detect = f"{self.title} {self.description[:500]}"
+            desc = (self.description or "")[:500]
+            text_to_detect = f"{self.title} {desc}"
             self.language = detect_language(text_to_detect)
+
+        if self.pk:
+            old = Vacancy.objects.filter(pk=self.pk).first()
+            if old and old.employer_logo != self.employer_logo and self.employer_logo:
+                compress_image(self.employer_logo)
+        elif self.employer_logo:
+            compress_image(self.employer_logo)
 
         if not self.slug:
             from core.utils import custom_slugify

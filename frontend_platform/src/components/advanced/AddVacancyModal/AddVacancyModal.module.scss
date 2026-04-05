@@ -3,6 +3,134 @@
     flex-direction: column;
     gap: 16px;
     padding: 8px 0;
+    max-height: min(70vh, 640px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.submitBtn {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.postingMode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media (min-width: 480px) {
+    .postingMode {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+.radioOption {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+    transition: border-color 0.2s, background 0.2s;
+
+    input {
+        flex-shrink: 0;
+    }
+
+    span {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+}
+
+.radioActive {
+    border-color: #1890ff;
+    background: rgba(24, 144, 255, 0.06);
+}
+
+.hintWarn {
+    margin: 0;
+    font-size: 13px;
+    color: #d46b08;
+    line-height: 1.4;
+}
+
+.individualBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.req {
+    color: #f5222d;
+}
+
+.fieldError {
+    color: #f5222d;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.logoRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.logoPreview {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.logoPlaceholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 14px;
+}
+
+.fileBtn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    background: #f9f9f9;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #555;
+
+    input {
+        display: none;
+    }
+
+    &:hover {
+        border-color: #1890ff;
+        color: #1890ff;
+    }
+}
+
+.logoHint {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #888;
 }
 
 .row {
@@ -13,6 +141,11 @@
 
     >* {
         flex: 1;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 

@@ -1,4 +1,9 @@
-from .companies import CompanyListCreateAPIView, CompanyDetailAPIView
+from .companies import (
+    CompanyListAPIView,
+    CompanyDetailAPIView,
+    CompanyRegistrationStartView,
+    CompanyRegistrationCompleteView,
+)
 from .vacancies import (
     VacancyListCreateAPIView, VacancyDetailAPIView, 
     MyVacanciesAPIView, VacancyApplicantsAPIView, VacancyCheckAppliedAPIView

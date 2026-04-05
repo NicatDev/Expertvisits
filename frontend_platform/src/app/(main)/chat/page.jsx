@@ -96,7 +96,6 @@ export default function ChatListPage() {
                 </button>
             </header>
 
-            <p className={styles.help}>{t('inbox.chat_list_help')}</p>
 
             {loading ? (
                 <p className={styles.muted}>{t('common.loading')}</p>

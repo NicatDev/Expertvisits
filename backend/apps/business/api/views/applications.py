@@ -1,8 +1,13 @@
+from django.db import transaction
+
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from apps.business.models import VacancyApplication
 from apps.business.api.serializers import VacancyApplicationSerializer
+from apps.business.api.views.vacancies import _user_owns_vacancy
+from apps.notifications.services import notify_vacancy_application
 
 class ApplicationListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = VacancyApplicationSerializer
@@ -22,7 +27,9 @@ class ApplicationListCreateAPIView(generics.ListCreateAPIView):
         vacancy = serializer.validated_data['vacancy']
         if VacancyApplication.objects.filter(vacancy=vacancy, applicant=self.request.user).exists():
             raise serializers.ValidationError("You have already applied to this vacancy.")
-        serializer.save(applicant=self.request.user)
+        application = serializer.save(applicant=self.request.user)
+        app_id = application.pk
+        transaction.on_commit(lambda: notify_vacancy_application(app_id))
 
 class ApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = VacancyApplication.objects.select_related(
@@ -40,7 +47,7 @@ class ApplicationStatusAPIView(APIView):
         except VacancyApplication.DoesNotExist:
              return Response({"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if application.vacancy.company.owner != request.user and application.vacancy.posted_by != request.user:
+        if not _user_owns_vacancy(request.user, application.vacancy):
             return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
         
         new_status = request.data.get('status')

@@ -1,7 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.business.api.views import (
-    CompanyListCreateAPIView, CompanyDetailAPIView,
+    CompanyListAPIView,
+    CompanyDetailAPIView,
+    CompanyRegistrationStartView,
+    CompanyRegistrationCompleteView,
     VacancyListCreateAPIView, VacancyDetailAPIView, 
     MyVacanciesAPIView, VacancyApplicantsAPIView, VacancyCheckAppliedAPIView,
     ApplicationListCreateAPIView, ApplicationDetailAPIView, ApplicationStatusAPIView,
@@ -14,8 +17,18 @@ from apps.business.api.views import (
 
 urlpatterns = [
     # Companies
-    path('companies/', CompanyListCreateAPIView.as_view(), name='company-list'),
-    path('companies/<slug:slug>/', CompanyDetailAPIView.as_view(), name='company-detail'),
+    path(
+        "companies/start-registration/",
+        CompanyRegistrationStartView.as_view(),
+        name="company-start-registration",
+    ),
+    path(
+        "companies/complete-registration/",
+        CompanyRegistrationCompleteView.as_view(),
+        name="company-complete-registration",
+    ),
+    path("companies/", CompanyListAPIView.as_view(), name="company-list"),
+    path("companies/<slug:slug>/", CompanyDetailAPIView.as_view(), name="company-detail"),
 
     # Vacancies
     path('vacancies/', VacancyListCreateAPIView.as_view(), name='vacancy-list'),

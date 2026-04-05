@@ -2,24 +2,58 @@ from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import SAFE_METHODS
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Exists, OuterRef, Value, BooleanField, Q
 from apps.business.models import Vacancy, VacancyApplication
 from apps.business.api.serializers import VacancySerializer, VacancyApplicationSerializer
 from .companies import StandardResultsSetPagination
 
+
+def _user_owns_vacancy(user, vacancy: Vacancy) -> bool:
+    if not user.is_authenticated:
+        return False
+    if vacancy.posted_by_id == user.id:
+        return True
+    if vacancy.company_id and vacancy.company.owner_id == user.id:
+        return True
+    return False
+
+
 class VacancyListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = VacancySerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
-    search_fields = ['title', 'company__name', 'location', 'description']
-    filterset_fields = ['listing_type', 'job_type', 'work_mode', 'company', 'location']
+    search_fields = [
+        "title",
+        "company__name",
+        "employer_display_name",
+        "location",
+        "description",
+    ]
+    filterset_fields = [
+        "listing_type",
+        "job_type",
+        "work_mode",
+        "company",
+        "location",
+        "posted_as",
+        "posted_by",
+    ]
     ordering_fields = ['posted_at', 'expires_at']
 
     def get_queryset(self):
         queryset = Vacancy.objects.select_related(
-            'company', 'company__owner', 'company__who_we_are', 'company__what_we_do', 'company__our_values', 'sub_category'
+            "company",
+            "company__owner",
+            "company__who_we_are",
+            "company__what_we_do",
+            "company__our_values",
+            "sub_category",
+            "posted_by",
         ).prefetch_related('company__services').order_by('-posted_at')
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
@@ -35,21 +69,33 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        company = serializer.validated_data.get('company')
-        if company.owner != self.request.user:
-            raise permissions.PermissionDenied("You can only post vacancies for companies you own.")
         serializer.save(posted_by=self.request.user)
 
 
 class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = VacancySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     lookup_field = 'slug'
+
+    def check_object_permissions(self, request, obj):
+        if request.method not in SAFE_METHODS:
+            if not request.user.is_authenticated:
+                self.permission_denied(request)
+            if not _user_owns_vacancy(request.user, obj):
+                self.permission_denied(request)
+        super().check_object_permissions(request, obj)
 
     def get_queryset(self):
         # Allow detail view to access same annotated queryset
         queryset = Vacancy.objects.select_related(
-            'company', 'company__owner', 'company__who_we_are', 'company__what_we_do', 'company__our_values', 'sub_category'
+            "company",
+            "company__owner",
+            "company__who_we_are",
+            "company__what_we_do",
+            "company__our_values",
+            "sub_category",
+            "posted_by",
         ).prefetch_related('company__services')
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
@@ -88,7 +134,13 @@ class MyVacanciesAPIView(generics.ListAPIView):
         return Vacancy.objects.filter(
             Q(company__owner=self.request.user) | Q(posted_by=self.request.user)
         ).select_related(
-            'company', 'company__owner', 'company__who_we_are', 'company__what_we_do', 'company__our_values', 'sub_category'
+            "company",
+            "company__owner",
+            "company__who_we_are",
+            "company__what_we_do",
+            "company__our_values",
+            "sub_category",
+            "posted_by",
         ).prefetch_related('company__services').order_by('-posted_at')
 
 class VacancyApplicantsAPIView(APIView):
@@ -104,7 +156,7 @@ class VacancyApplicantsAPIView(APIView):
         if not vacancy:
              return Response([]) # Or 404
 
-        if vacancy.company.owner != request.user and vacancy.posted_by != request.user:
+        if not _user_owns_vacancy(request.user, vacancy):
              return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
         
         applications = VacancyApplication.objects.filter(vacancy=vacancy).select_related('applicant')

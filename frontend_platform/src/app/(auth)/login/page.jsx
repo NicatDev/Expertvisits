@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext'; // Import useAuth
 import { auth } from '@/lib/api';
 import Button from '@/components/ui/Button';
@@ -13,6 +13,7 @@ import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
 export default function LoginPage() {
     const { t } = useTranslation('common');
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { login } = useAuth(); // Destructure login
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [loading, setLoading] = useState(false);
@@ -30,7 +31,14 @@ export default function LoginPage() {
         try {
             // Use context login instead of direct api call
             await login(formData.username, formData.password);
-            router.push('/');
+            const nextRaw = searchParams.get('next');
+            const safeNext =
+                nextRaw &&
+                nextRaw.startsWith('/') &&
+                !nextRaw.startsWith('//')
+                    ? nextRaw
+                    : null;
+            router.push(safeNext || '/');
         } catch (err) {
             setError(t('auth_page.errors.invalid_credentials'));
         } finally {

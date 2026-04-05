@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
     try {
         const res = await business.getVacancy(slug);
         const vacancy = res.data;
-        const companyName = vacancy.company_name || vacancy.company?.name || '';
+        const companyName = vacancy.company_name || vacancy.publisher?.name || vacancy.company?.name || '';
         
         // Prioritize the detected language of the vacancy
         const vacancyLng = vacancy.language || 'az';
@@ -46,7 +46,9 @@ export async function generateMetadata({ params }) {
             openGraph: {
                 title: title,
                 description: description,
-                images: vacancy.company?.logo ? [{ url: vacancy.company.logo }] : [],
+                images: (vacancy.publisher?.logo || vacancy.company?.logo)
+                    ? [{ url: vacancy.publisher?.logo || vacancy.company?.logo }]
+                    : [],
                 type: "website",
                 locale: localeMap[vacancyLng] || 'az_AZ',
             }

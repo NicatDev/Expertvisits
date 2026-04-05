@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { Check, CheckCheck } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { LanguageContext } from '@/lib/contexts/LanguageContext';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 import { chatApi } from '@/lib/api/chat';
@@ -13,10 +15,19 @@ import styles from './room.module.scss';
 
 const PAGE_SIZE = 50;
 
+function formatChatMessageTime(iso, lng) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const loc = lng === 'az' ? 'az-AZ' : lng === 'ru' ? 'ru-RU' : 'en-US';
+    return d.toLocaleString(loc, { dateStyle: 'short', timeStyle: 'short' });
+}
+
 export default function ChatRoomPage() {
     const params = useParams();
     const roomId = params?.roomId;
     const { t } = useTranslation('common');
+    const { lng } = useContext(LanguageContext);
     const { user, loading: authLoading } = useAuth();
     const { sendWs, refreshSummary } = useInboxSocket();
     const router = useRouter();
@@ -132,6 +143,18 @@ export default function ChatRoomPage() {
     useEffect(() => {
         const h = (e) => {
             const p = e.detail;
+            if (p?.type === 'read_receipt' && String(p.chat_id) === String(roomId) && user?.id) {
+                const maxId = p.message_id;
+                if (maxId == null) return;
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg.sender_id === user.id && msg.id <= maxId
+                            ? { ...msg, read_at: msg.read_at || new Date().toISOString() }
+                            : msg
+                    )
+                );
+                return;
+            }
             const m = p?.message;
             if (!m || String(m.chat_id) !== String(roomId)) return;
             if (p.type === 'message_ack' || p.type === 'chat_message') {
@@ -144,7 +167,7 @@ export default function ChatRoomPage() {
         };
         window.addEventListener('chat-live-message', h);
         return () => window.removeEventListener('chat-live-message', h);
-    }, [roomId, scrollThreadToBottom]);
+    }, [roomId, scrollThreadToBottom, user?.id]);
 
     const topSentinelRef = useRef(null);
     useEffect(() => {
@@ -240,16 +263,53 @@ export default function ChatRoomPage() {
                             {loadingOlder ? t('common.loading') : t('inbox.load_older_messages')}
                         </button>
                     ) : null}
-                    {messages.map((m) => (
-                        <div
-                            key={m.id}
-                            className={`${styles.bubble} ${
-                                m.sender_id === user?.id ? styles.mine : styles.theirs
-                            }`}
-                        >
-                            {m.text}
-                        </div>
-                    ))}
+                    {messages.map((m, idx) => {
+                        const isMine = m.sender_id === user?.id;
+                        const isLast = idx === messages.length - 1;
+                        const showReadTicks = isLast && isMine;
+                        return (
+                            <div
+                                key={m.id}
+                                className={`${styles.bubbleCol} ${
+                                    isMine ? styles.bubbleColMine : styles.bubbleColTheirs
+                                }`}
+                            >
+                                <div
+                                    className={`${styles.bubble} ${
+                                        isMine ? styles.bubbleMine : styles.bubbleTheirs
+                                    }`}
+                                >
+                                    {m.text}
+                                </div>
+                                <div className={styles.bubbleMeta}>
+                                    <time dateTime={m.created_at}>
+                                        {formatChatMessageTime(m.created_at, lng)}
+                                    </time>
+                                    {showReadTicks ? (
+                                        <span
+                                            className={`${styles.readTicks} ${m.read_at ? styles.read : ''}`}
+                                            title={
+                                                m.read_at
+                                                    ? t('inbox.message_seen')
+                                                    : t('inbox.message_not_seen')
+                                            }
+                                            aria-label={
+                                                m.read_at
+                                                    ? t('inbox.message_seen')
+                                                    : t('inbox.message_not_seen')
+                                            }
+                                        >
+                                            {m.read_at ? (
+                                                <CheckCheck size={15} strokeWidth={2.5} />
+                                            ) : (
+                                                <Check size={15} strokeWidth={2.5} />
+                                            )}
+                                        </span>
+                                    ) : null}
+                                </div>
+                            </div>
+                        );
+                    })}
                     <div ref={bottomRef} />
                 </div>
                 <div className={styles.composer}>
