@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third-party
+    'channels',
     'rest_framework',
     'corsheaders',
     'django_filters',
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
     'apps.business',
     'apps.services',
     'apps.websites',
+    'apps.chat',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +93,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
+
+# Channels: prefer CHANNEL_LAYER_REDIS_URL (e.g. redis://127.0.0.1:6379/2) separate from cache DB.
+_channel_redis = (
+    os.environ.get('CHANNEL_LAYER_REDIS_URL', '').strip()
+    or os.environ.get('REDIS_URL', '').strip()
+    or 'redis://127.0.0.1:6379/2'
+)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [_channel_redis],
+            'capacity': 3000,
+            'expiry': 15,
+        },
+    },
+}
 
 
 # Database
