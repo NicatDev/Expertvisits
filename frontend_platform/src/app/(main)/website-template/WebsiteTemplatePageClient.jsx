@@ -15,10 +15,20 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { websites_api, content, profiles } from '@/lib/api';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import modalStyles from '@/components/widgets/PromoBanner/modal.module.scss';
 import pageStyles from './website-template.module.scss';
+
+const MIN_SECTION_ITEMS = 3;
+
+function groupFromSectionKey(key) {
+    if (key.startsWith('services_')) return 'services';
+    if (key.startsWith('projects_')) return 'projects';
+    if (key.startsWith('articles_')) return 'articles';
+    return null;
+}
 
 export default function WebsiteTemplatePageClient() {
     const { t } = useTranslation('common');
@@ -29,10 +39,13 @@ export default function WebsiteTemplatePageClient() {
     const [loading, setLoading] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [articlesCount, setArticlesCount] = useState(0);
+    const [servicesCount, setServicesCount] = useState(0);
+    const [projectsCount, setProjectsCount] = useState(0);
     const [progress, setProgress] = useState(0);
     const [isFetching, setIsFetching] = useState(true);
     const [qrDataUrl, setQrDataUrl] = useState('');
     const [qrLoading, setQrLoading] = useState(false);
+    const [sectionVisibility, setSectionVisibility] = useState(() => mergeSectionVisibility({}));
 
     const portfolioUrl = currentUser?.username
         ? `https://expertvisits.com/u/${currentUser.username}`
@@ -66,6 +79,7 @@ export default function WebsiteTemplatePageClient() {
         try {
             const { data } = await websites_api.getTemplate();
             if (data?.template_id != null) setSelected(parseInt(data.template_id, 10));
+            setSectionVisibility(mergeSectionVisibility(data?.section_visibility));
             const active = Boolean(data?.is_active);
             setIsActive(active);
             return active;
@@ -90,7 +104,7 @@ export default function WebsiteTemplatePageClient() {
 
         const run = async () => {
             fetchArticlesCount();
-            await fetchProfileData();
+            await fetchProfileAndCounts();
             const active = await syncTemplate();
             if (cancelled) return;
             const url = currentUser.username
@@ -105,12 +119,20 @@ export default function WebsiteTemplatePageClient() {
         };
     }, [authLoading, currentUser?.id, currentUser?.username, router, t, syncTemplate, syncQr]);
 
-    const fetchProfileData = async () => {
+    const fetchProfileAndCounts = async () => {
         if (!currentUser) return;
         try {
-            const { data } = await profiles.getProfileDetails(currentUser.id, {
-                params: { t: new Date().getTime() },
-            });
+            const [detailsRes, projectsRes] = await Promise.all([
+                profiles.getProfileDetails(currentUser.id, {
+                    params: { t: new Date().getTime() },
+                }),
+                profiles.getProjects({ params: { user_id: currentUser.id } }),
+            ]);
+            const data = detailsRes.data;
+            const pr = projectsRes.data;
+            const projectList = Array.isArray(pr) ? pr : pr?.results || [];
+            setServicesCount(Array.isArray(data.services) ? data.services.length : 0);
+            setProjectsCount(projectList.length);
 
             const summary = data.summary !== undefined ? data.summary : currentUser.summary;
             const phone =
@@ -155,15 +177,66 @@ export default function WebsiteTemplatePageClient() {
         }
     };
 
+    const canEnableSectionGroup = (group) => {
+        if (group === 'services') return servicesCount >= MIN_SECTION_ITEMS;
+        if (group === 'projects') return projectsCount >= MIN_SECTION_ITEMS;
+        if (group === 'articles') return articlesCount >= MIN_SECTION_ITEMS;
+        return true;
+    };
+
+    const isSectionToggleDisabled = (key, checked) => {
+        if (checked) return false;
+        const g = groupFromSectionKey(key);
+        if (!g) return false;
+        return !canEnableSectionGroup(g);
+    };
+
+    const handleSectionToggle = (key, nextChecked) => {
+        if (nextChecked) {
+            const g = groupFromSectionKey(key);
+            if (g === 'services' && servicesCount < MIN_SECTION_ITEMS) {
+                toast.warning(t('widgets.section_enable_toast_services'));
+                return;
+            }
+            if (g === 'projects' && projectsCount < MIN_SECTION_ITEMS) {
+                toast.warning(t('widgets.section_enable_toast_projects'));
+                return;
+            }
+            if (g === 'articles' && articlesCount < MIN_SECTION_ITEMS) {
+                toast.warning(t('widgets.section_enable_toast_articles'));
+                return;
+            }
+        }
+        setSectionVisibility((prev) => ({ ...prev, [key]: nextChecked }));
+    };
+
+    const validateSectionVisibilityForSave = () => {
+        const v = sectionVisibility;
+        if ((v.services_on_home || v.services_page) && servicesCount < MIN_SECTION_ITEMS) {
+            toast.error(t('widgets.section_save_toast_services'));
+            return false;
+        }
+        if ((v.projects_on_home || v.projects_page) && projectsCount < MIN_SECTION_ITEMS) {
+            toast.error(t('widgets.section_save_toast_projects'));
+            return false;
+        }
+        if ((v.articles_on_home || v.articles_page) && articlesCount < MIN_SECTION_ITEMS) {
+            toast.error(t('widgets.section_save_toast_articles'));
+            return false;
+        }
+        return true;
+    };
+
     const handleSave = async () => {
         if (progress < 60) {
             toast.error(t('widgets.profile_completion_desc'));
             return;
         }
+        if (!validateSectionVisibilityForSave()) return;
 
         setLoading(true);
         try {
-            await websites_api.updateTemplate(selected);
+            await websites_api.updateTemplate(selected, sectionVisibility);
             toast.success(t('widgets.success_msg'));
             const active = await syncTemplate();
             await syncQr(active, portfolioUrl);
@@ -207,6 +280,11 @@ export default function WebsiteTemplatePageClient() {
             </div>
         );
     }
+
+    const showSectionRequirementsHint =
+        servicesCount < MIN_SECTION_ITEMS ||
+        projectsCount < MIN_SECTION_ITEMS ||
+        articlesCount < MIN_SECTION_ITEMS;
 
     const qrBlock =
         isActive &&
@@ -418,6 +496,73 @@ export default function WebsiteTemplatePageClient() {
                         <div className={modalStyles.disclaimer} style={{ marginBottom: '24px' }}>
                             {t('widgets.contact_disclaimer')}
                         </div>
+
+                        <div className={pageStyles.sectionToggles}>
+                            <p className={pageStyles.sectionTogglesTitle}>
+                                {t('widgets.portfolio_sections_title')}
+                            </p>
+                            {[
+                                ['services_on_home', 'widgets.sec_services_home'],
+                                ['services_page', 'widgets.sec_services_page'],
+                                ['projects_on_home', 'widgets.sec_projects_home'],
+                                ['projects_page', 'widgets.sec_projects_page'],
+                                ['articles_on_home', 'widgets.sec_articles_home'],
+                                ['articles_page', 'widgets.sec_articles_page'],
+                            ].map(([key, labelKey]) => {
+                                const checked = Boolean(sectionVisibility[key]);
+                                return (
+                                    <label key={key} className={pageStyles.toggleRow}>
+                                        <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            disabled={isSectionToggleDisabled(key, checked)}
+                                            onChange={(e) =>
+                                                handleSectionToggle(key, e.target.checked)
+                                            }
+                                        />
+                                        <span>{t(labelKey)}</span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+
+                        {showSectionRequirementsHint ? (
+                            <div className={pageStyles.sectionRequirements}>
+                                {servicesCount < MIN_SECTION_ITEMS ? (
+                                    <p>
+                                        {t('widgets.section_warn_services', {
+                                            count: servicesCount,
+                                            min: MIN_SECTION_ITEMS,
+                                        })}{' '}
+                                        <Link href="/profile/services">
+                                            {t('widgets.section_link_services')}
+                                        </Link>
+                                    </p>
+                                ) : null}
+                                {projectsCount < MIN_SECTION_ITEMS ? (
+                                    <p>
+                                        {t('widgets.section_warn_projects', {
+                                            count: projectsCount,
+                                            min: MIN_SECTION_ITEMS,
+                                        })}{' '}
+                                        <Link href="/profile/projects">
+                                            {t('widgets.section_link_projects')}
+                                        </Link>
+                                    </p>
+                                ) : null}
+                                {articlesCount < MIN_SECTION_ITEMS ? (
+                                    <p>
+                                        {t('widgets.section_warn_articles', {
+                                            count: articlesCount,
+                                            min: MIN_SECTION_ITEMS,
+                                        })}{' '}
+                                        <Link href="/profile/posts">
+                                            {t('widgets.section_link_articles')}
+                                        </Link>
+                                    </p>
+                                ) : null}
+                            </div>
+                        ) : null}
 
                         <div
                             style={{

@@ -192,3 +192,54 @@
     }
   }
 }
+
+.projects {
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.projectsContainer {
+  width: 100%;
+}
+
+.projects .sectionTitle {
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--t4-primary, #22d3ee);
+}
+
+.projectsGrid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.projectCard {
+  padding: 1.25rem;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--t4-border, rgba(34, 211, 238, 0.2));
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+  }
+  p {
+    margin: 0;
+    color: #94a3b8;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+}
+
+.emptyText {
+  color: #64748b;
+  text-align: center;
+  padding: 2rem 1rem;
+  line-height: 1.5;
+}

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { accounts, interactions } from '@/lib/api';
 import { connectionsApi } from '@/lib/api/connections';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
 
@@ -13,6 +14,7 @@ export const PublicProfileProvider = ({ children }) => {
     const params = useParams();
     const { username } = params;
     const { user: currentUser } = useAuth();
+    const { refreshSummary } = useInboxSocket();
     const { t } = useTranslation('common');
 
     const [profile, setProfile] = useState(null);
@@ -69,7 +71,19 @@ export const PublicProfileProvider = ({ children }) => {
                 return;
             }
             if (profile.connection_pending_in) {
-                toast.info(t('inbox.pending_in_hint'));
+                if (profile.incoming_connection_request_id) {
+                    try {
+                        await connectionsApi.accept(profile.incoming_connection_request_id);
+                        toast.success(t('application_status.accepted'));
+                        await refreshSummary();
+                        await loadProfile(profile.username);
+                    } catch (err) {
+                        console.error(err);
+                        toast.error(t('common.error_generic'));
+                    }
+                } else {
+                    toast.info(t('inbox.pending_in_hint'));
+                }
                 return;
             }
             const { data } = await interactions.followUser(profile.username);

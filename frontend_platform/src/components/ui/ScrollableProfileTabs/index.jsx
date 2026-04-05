@@ -68,6 +68,12 @@ export default function ScrollableProfileTabs({ tabs, className = '' }) {
 
   const onPointerDown = (e) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const t = e.target;
+    // Do not capture pointer or start drag when the user is clicking a tab link — otherwise
+    // setPointerCapture on the scroller breaks the click / Next.js <Link> navigation.
+    if (t instanceof Element && t.closest('a[href]')) {
+      return;
+    }
     const el = scrollerRef.current;
     if (!el) return;
     dragRef.current = {

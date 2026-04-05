@@ -2,6 +2,12 @@ import api from './client';
 
 export const websites_api = {
     getTemplate: () => api.get('/websites/'),
-    updateTemplate: (templateId) => api.post('/websites/', { template_id: templateId }),
+    updateTemplate: (templateId, sectionVisibility) =>
+        api.post('/websites/', {
+            template_id: templateId,
+            ...(sectionVisibility && typeof sectionVisibility === 'object'
+                ? { section_visibility: sectionVisibility }
+                : {}),
+        }),
     deactivateTemplate: () => api.delete('/websites/'),
 };

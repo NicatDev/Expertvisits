@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { buildPortfolioNavLinks } from '@/lib/buildPortfolioNavLinks';
 import styles from '../styles/template3.module.scss';
 
 export default function Navbar({ data, user }) {
@@ -24,11 +25,7 @@ export default function Navbar({ data, user }) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navLinks = [
-        { label: t('nav.home', { defaultValue: 'Home' }), path: `/${username}` },
-        ...(user?.articles_count >= 3 ? [{ label: t('portfolio.myWritings', { defaultValue: 'Articles' }), path: `/${username}/articles` }] : []),
-        { label: t('nav.contact', { defaultValue: 'Contact' }), path: `/${username}/contact` },
-    ];
+    const navLinks = buildPortfolioNavLinks(user, t);
 
     const toggleLanguage = (lang) => {
         document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;

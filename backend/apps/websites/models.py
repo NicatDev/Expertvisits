@@ -12,6 +12,7 @@ class UserWebsite(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
+    section_visibility = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Website for {self.user.username} (Template: {self.template_id})"

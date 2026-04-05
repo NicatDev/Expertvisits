@@ -6,6 +6,9 @@ import { Mail, Briefcase, GraduationCap, Cpu, Users, Settings, ArrowRight, Shiel
 import { useTranslation } from '@/i18n/client';
 import styles from '../styles/home.module.scss';
 import Services from '../sections/Services';
+import Projects from '../sections/Projects';
+import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 
 export default function Home({ user }) {
     if (!user) return null;
@@ -36,6 +39,7 @@ export default function Home({ user }) {
 
     if (!isMounted) return null;
 
+    const v = mergeSectionVisibility(user?.section_visibility);
     let sectionIdx = 1;
 
     return (
@@ -226,7 +230,7 @@ export default function Home({ user }) {
             )}
 
             {/* SERVICES SECTION */}
-            {services.length > 0 && (
+            {v.services_on_home && services.length > 0 && (
                 <section className={styles.section}>
                     <h2 className={styles.cyberTitle}>
                         <span className={styles.prefix}>0{sectionIdx++}.</span> {t('portfolio.services')}
@@ -241,6 +245,9 @@ export default function Home({ user }) {
                     </div>
                 </section>
             )}
+
+            {v.projects_on_home ? <Projects user={user} /> : null}
+            <ArticlesHomePreview user={user} />
 
         </div>
     );

@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/api/portfolio";
 import { getTemplateArticles } from "@/templates";
 import { notFound } from "next/navigation";
+import { mergeSectionVisibility } from "@/lib/sectionVisibility";
 
 import { cookies } from 'next/headers';
 
@@ -47,7 +48,8 @@ export default async function UserArticlesPage({ params }) {
         return notFound();
     }
 
-    if (!user || user.articles_count < 3) return notFound();
+    const v = mergeSectionVisibility(user?.section_visibility);
+    if (!user || user.articles_count < 3 || !v.articles_page) return notFound();
 
     const TemplateArticles = getTemplateArticles(user.template_id);
 

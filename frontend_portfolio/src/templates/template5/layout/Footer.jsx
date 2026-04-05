@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, Globe } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { buildPortfolioNavLinks } from '@/lib/buildPortfolioNavLinks';
 import styles from '../styles/layout.module.scss';
 
 export default function Footer({ user }) {
@@ -21,6 +22,8 @@ export default function Footer({ user }) {
 
     if (!isMounted) return null;
 
+    const exploreLinks = buildPortfolioNavLinks(user, t);
+
     return (
         <footer className={styles.footer}>
             <div className={styles.footerContainer}>
@@ -37,11 +40,11 @@ export default function Footer({ user }) {
                     <div className={styles.footerLinks}>
                         <h4>{t('nav.explore') || 'Menu'}</h4>
                         <ul>
-                            <li><Link href={`/${username}`}>{t('nav.home')}</Link></li>
-                            {user.articles_count >= 3 && (
-                                <li><Link href={`/${username}/articles`}>{t('portfolio.myWritings')}</Link></li>
-                            )}
-                            <li><Link href={`/${username}/contact`}>{t('nav.contact')}</Link></li>
+                            {exploreLinks.map((link) => (
+                                <li key={link.path}>
+                                    <Link href={link.path}>{link.label}</Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     

@@ -226,15 +226,6 @@ class WhoWeAre(models.Model):
             compress_image(self.image)
         super().save(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        if self.pk:
-            old = OurValues.objects.filter(pk=self.pk).first()
-            if old and old.image != self.image:
-                compress_image(self.image)
-        else:
-            compress_image(self.image)
-        super().save(*args, **kwargs)
-
 class WhatWeDo(models.Model):
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='what_we_do')
     title = models.CharField(max_length=255)

@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { Mail, MapPin, Phone, Award, ShieldCheck, Stethoscope, ChevronRight, Binary, GraduationCap, Briefcase, Globe, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import Services from '../sections/Services';
+import Projects from '../sections/Projects';
+import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 import styles from '../styles/home.module.scss';
 import Link from 'next/link';
 
@@ -27,6 +30,7 @@ export default function Home({ user }) {
 
     if (!isMounted) return null;
 
+    const v = mergeSectionVisibility(user?.section_visibility);
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
     const username = profile.username;
     const specialist = profile.profession_sub_category?.[`profession_${currentLang}`] || profile.profession_sub_category?.profession || 'Specialist Physician';
@@ -132,11 +136,14 @@ export default function Home({ user }) {
             </section>
 
             {/* SERVICES */}
-            {user.services && user.services.length > 0 && (
+            {v.services_on_home && user.services && user.services.length > 0 && (
                 <section id="services">
                     <Services data={user.services} />
                 </section>
             )}
+
+            {v.projects_on_home ? <Projects user={user} /> : null}
+            <ArticlesHomePreview user={user} />
 
             {/* EXPERIENCE & EDUCATION */}
             <section className={styles.experienceSection}>

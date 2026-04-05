@@ -37,14 +37,14 @@ export async function getUserPortfolio(username) {
  * Get public articles for a portfolio user
  * @param {Object} params { username, url, search }
  */
-export async function getArticles({ username, url, search }) {
+export async function getArticles({ username, url, search, page_size }) {
     if (url) {
-        // Handle pagination full url from DRF
         const response = await apiClient.get(url);
         return response.data;
     }
     const params = {};
     if (search) params.search = search;
+    if (page_size != null) params.page_size = page_size;
     const response = await apiClient.get(`/websites/${username}/articles/`, { params });
     return response.data;
 }

@@ -128,11 +128,9 @@ export default function HomePage() {
         <div className={styles.container}>
             {/* Left Sidebar: Recommended Users & Custom Stats */}
             <aside className={styles.leftSidebar}>
-                {/* 1. Recommended Users */}
+               
                 <RecommendedUsers />
-
-                {/* 2. Promo Banner */}
-                <PromoBanner />
+                 <PromoBanner />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}
 

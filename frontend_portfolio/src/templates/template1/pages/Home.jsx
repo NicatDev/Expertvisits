@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { Mail, MapPin, Briefcase, GraduationCap, ArrowRight, Book, ShieldCheck, Cpu, Users } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import Services from '../sections/Services';
+import Projects from '../sections/Projects';
+import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 import styles from '../styles/home.module.scss';
 import t1Styles from '../styles/template1.module.scss';
 
@@ -52,6 +55,8 @@ export default function Home({ user }) {
     let sectionIndex = 1;
 
     if (!isMounted) return null;
+
+    const v = mergeSectionVisibility(user?.section_visibility);
 
     return (
         <div className={styles.pageContainer}>
@@ -133,7 +138,7 @@ export default function Home({ user }) {
             )}
 
             {/* Services Section */}
-            {user.services && user.services.length > 0 && (
+            {v.services_on_home && user.services && user.services.length > 0 && (
                 <Services data={user.services} sectionIndex={sectionIndex++} />
             )}
 
@@ -240,6 +245,9 @@ export default function Home({ user }) {
                     </div>
                 </section>
             )}
+
+            {v.projects_on_home ? <Projects user={user} /> : null}
+            <ArticlesHomePreview user={user} />
 
             {/* CTA Section */}
             <section className={styles.contactSection}>

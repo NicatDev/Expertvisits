@@ -30,10 +30,16 @@ def with_connection_annotations(queryset, user):
         to_user_id=OuterRef("pk"),
         status=ConnectionRequest.Status.PENDING,
     ).values("id")[:1]
+    pin_id_sq = ConnectionRequest.objects.filter(
+        from_user_id=OuterRef("pk"),
+        to_user_id=user.id,
+        status=ConnectionRequest.Status.PENDING,
+    ).values("id")[:1]
     return queryset.annotate(
         conn_i_follow=Exists(i_follow),
         conn_follows_me=Exists(follows_me),
         conn_pending_out=Exists(pout),
         conn_pending_in=Exists(pin),
         conn_pending_out_id=Subquery(pout_id_sq),
+        conn_pending_in_id=Subquery(pin_id_sq),
     )

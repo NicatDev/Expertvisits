@@ -2,7 +2,9 @@ from rest_framework import serializers
 from apps.accounts.models import User
 from apps.websites.models import UserWebsite
 from apps.content.models import Article
-from apps.profiles.models import Experience, Education, Skill, Language, Certificate, Service
+from apps.profiles.models import Experience, Education, Skill, Language, Certificate, Service, Project
+from apps.profiles.api.serializers import ProjectSerializer
+from apps.websites.section_visibility import merge_section_visibility
 from apps.accounts.api.serializers import SubCategorySerializer
 
 class WebsiteUserSerializer(serializers.ModelSerializer):
@@ -52,18 +54,27 @@ class UserWebsiteSerializer(serializers.ModelSerializer):
     languages = serializers.SerializerMethodField()
     certificates = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
+    projects = serializers.SerializerMethodField()
     articles_count = serializers.SerializerMethodField()
-    
+    section_visibility = serializers.SerializerMethodField()
+
     class Meta:
         model = UserWebsite
         fields = [
-            'user', 'template_id', 'banner', 
+            'user', 'template_id', 'banner',
             'experiences', 'educations', 'skills', 'languages', 'certificates', 'services',
-            'articles_count'
+            'projects', 'articles_count', 'section_visibility',
         ]
 
     def get_articles_count(self, obj):
         return obj.user.articles.count()
+
+    def get_section_visibility(self, obj):
+        return merge_section_visibility(obj.section_visibility or {})
+
+    def get_projects(self, obj):
+        qs = obj.user.projects.all().order_by('-date')
+        return ProjectSerializer(qs, many=True).data
 
     def get_services(self, obj):
         qs = obj.user.services.all().order_by('-id')

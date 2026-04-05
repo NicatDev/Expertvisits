@@ -56,6 +56,8 @@ export default function NotificationsPage() {
     const [items, setItems] = useState([]);
     const [nextBefore, setNextBefore] = useState(null);
     const [loading, setLoading] = useState(true);
+    /** @type {Record<number, 'accepted' | 'declined'>} notification id -> outcome */
+    const [connectionOutcomeByNotifId, setConnectionOutcomeByNotifId] = useState({});
 
     const load = useCallback(
         async (beforeId) => {
@@ -107,26 +109,26 @@ export default function NotificationsPage() {
         }
     };
 
-    const acceptConn = async (id) => {
+    const acceptConn = async (n) => {
+        const id = n.connection_request_id;
+        if (!id) return;
         try {
             await connectionsApi.accept(id);
             toast.success(t('application_status.accepted'));
             await refreshSummary();
-            setItems((prev) =>
-                prev.map((n) =>
-                    n.connection_request_id === id ? { ...n, read_at: new Date().toISOString() } : n
-                )
-            );
+            setConnectionOutcomeByNotifId((prev) => ({ ...prev, [n.id]: 'accepted' }));
         } catch {
             toast.error(t('common.error_generic'));
         }
     };
 
-    const declineConn = async (id) => {
+    const declineConn = async (n) => {
+        const id = n.connection_request_id;
+        if (!id) return;
         try {
             await connectionsApi.decline(id);
             await refreshSummary();
-            setItems((prev) => prev.filter((n) => n.connection_request_id !== id));
+            setConnectionOutcomeByNotifId((prev) => ({ ...prev, [n.id]: 'declined' }));
         } catch {
             toast.error(t('common.error_generic'));
         }
@@ -168,7 +170,9 @@ export default function NotificationsPage() {
                 <p className={styles.muted}>{t('inbox.empty_notifications')}</p>
             ) : (
                 <ul className={styles.list}>
-                    {items.map((n) => (
+                    {items.map((n) => {
+                        const connOutcome = connectionOutcomeByNotifId[n.id];
+                        return (
                         <li key={n.id} className={styles.card}>
                             <div className={styles.cardTop}>
                                 {n.actor_username ? (
@@ -218,22 +222,32 @@ export default function NotificationsPage() {
                             </div>
                             <div className={styles.actions}>
                                 {n.kind === 'connection_request' && n.connection_request_id ? (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className={styles.btnPrimary}
-                                            onClick={() => acceptConn(n.connection_request_id)}
-                                        >
-                                            {t('inbox.accept')}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={styles.btnGhost}
-                                            onClick={() => declineConn(n.connection_request_id)}
-                                        >
-                                            {t('inbox.decline')}
-                                        </button>
-                                    </>
+                                    connOutcome === 'accepted' ? (
+                                        <span className={styles.resolvedStatus}>
+                                            {t('inbox.connection_resolved_accepted')}
+                                        </span>
+                                    ) : connOutcome === 'declined' ? (
+                                        <span className={styles.resolvedStatus}>
+                                            {t('inbox.connection_resolved_declined')}
+                                        </span>
+                                    ) : (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className={styles.btnPrimary}
+                                                onClick={() => acceptConn(n)}
+                                            >
+                                                {t('inbox.accept')}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={styles.btnGhost}
+                                                onClick={() => declineConn(n)}
+                                            >
+                                                {t('inbox.decline')}
+                                            </button>
+                                        </>
+                                    )
                                 ) : null}
                                 {(n.kind === 'chat_message' || n.kind === 'chat_request') && (
                                     <>
@@ -268,7 +282,8 @@ export default function NotificationsPage() {
                                 ) : null}
                             </div>
                         </li>
-                    ))}
+                        );
+                    })}
                 </ul>
             )}
             {showLoadMore ? (

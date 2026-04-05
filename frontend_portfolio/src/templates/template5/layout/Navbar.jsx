@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { buildPortfolioNavLinks } from '@/lib/buildPortfolioNavLinks';
 import styles from '../styles/layout.module.scss';
 
 export default function Navbar({ user }) {
@@ -39,11 +40,10 @@ export default function Navbar({ user }) {
 
     if (!isMounted) return null;
 
-    const navLinks = [
-        { name: t('nav.home'), href: `/${username}` },
-        ...(user.articles_count >= 3 ? [{ name: t('portfolio.myWritings'), href: `/${username}/articles` }] : []),
-        { name: t('nav.contact'), href: `/${username}/contact` }
-    ];
+    const navLinks = buildPortfolioNavLinks(user, t).map((l) => ({
+        name: l.label,
+        href: l.path,
+    }));
 
     const isActive = (path) => pathname === path;
 

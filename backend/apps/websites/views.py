@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 
 from apps.websites.models import UserWebsite
+from apps.websites.section_visibility import merge_section_visibility
 from .serializers import UserWebsiteSerializer, ArticlePublicSerializer
 from apps.content.models import Article
 
@@ -134,22 +135,41 @@ class UserWebsiteManageAPIView(APIView):
     def get(self, request):
         try:
             website = UserWebsite.objects.get(user=request.user)
-            return Response({"template_id": website.template_id, "is_active": website.is_active}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "template_id": website.template_id,
+                    "is_active": website.is_active,
+                    "section_visibility": merge_section_visibility(website.section_visibility or {}),
+                },
+                status=status.HTTP_200_OK,
+            )
         except UserWebsite.DoesNotExist:
-            return Response({"template_id": None, "is_active": False}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "template_id": None,
+                    "is_active": False,
+                    "section_visibility": merge_section_visibility({}),
+                },
+                status=status.HTTP_200_OK,
+            )
 
     def post(self, request):
         template_id = request.data.get('template_id')
         if not template_id:
             return Response({"detail": "template_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+        defaults = {
+            "template_id": template_id,
+            "is_active": True,
+            "is_deleted": False,
+        }
+        raw_vis = request.data.get("section_visibility")
+        if isinstance(raw_vis, dict):
+            defaults["section_visibility"] = merge_section_visibility(raw_vis)
+
         website, created = UserWebsite.objects.update_or_create(
             user=request.user,
-            defaults={
-                'template_id': template_id,
-                'is_active': True,
-                'is_deleted': False
-            }
+            defaults=defaults,
         )
 
         return Response({"detail": "Portfolio website saved successfully."}, status=status.HTTP_200_OK)

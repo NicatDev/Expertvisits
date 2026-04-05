@@ -3,7 +3,7 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { Check, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Check, CheckCheck } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { LanguageContext } from '@/lib/contexts/LanguageContext';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -225,8 +225,13 @@ export default function ChatRoomPage() {
         <div className={styles.shell}>
             <div className={styles.card}>
                 <div className={styles.topBar}>
-                    <Link href="/chat" className={styles.back}>
-                        ← {t('inbox.back_to_list')}
+                    <Link
+                        href="/chat"
+                        className={styles.back}
+                        aria-label={t('inbox.back_to_list')}
+                        title={t('inbox.back_to_list')}
+                    >
+                        <ArrowLeft size={22} strokeWidth={2.25} aria-hidden />
                     </Link>
                     {peer?.username ? (
                         <Link href={`/user/${peer.username}`} className={styles.peer}>

@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { Mail, MapPin, Phone, ArrowUpRight, ShieldCheck, Cpu, Users, GraduationCap, Briefcase, Globe, Award, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import Services from '../sections/Services';
+import Projects from '../sections/Projects';
+import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 import styles from '../styles/home.module.scss';
 
 export default function Home({ user }) {
@@ -32,6 +35,8 @@ export default function Home({ user }) {
     const displayHardSkills = [...hardSkills, ...otherSkills];
     
     if (!isMounted) return null;
+
+    const v = mergeSectionVisibility(user?.section_visibility);
 
     return (
         <>
@@ -103,7 +108,7 @@ export default function Home({ user }) {
                 )}
 
                 {/* ===== SERVICES ===== */}
-                {user.services && user.services.length > 0 && (
+                {v.services_on_home && user.services && user.services.length > 0 && (
                     <Services data={user.services} />
                 )}
 
@@ -228,6 +233,9 @@ export default function Home({ user }) {
                         </div>
                     </section>
                 )}
+
+                {v.projects_on_home ? <Projects user={user} /> : null}
+                <ArticlesHomePreview user={user} />
 
                 {/* ===== FOOTER CTA ===== */}
                 <section className={styles.ctaBanner}>

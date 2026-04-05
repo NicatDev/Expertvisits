@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
@@ -146,9 +145,11 @@ const ProfileHeader = () => {
                         {!isMe && (
                             <>
                                 {profile.connection_pending_in ? (
-                                    <Link href="/notifications" className={styles.notifHint}>
-                                        {t('widgets.accept_in_notifications')}
-                                    </Link>
+                                    <Button type="primary" onClick={handleFollow}>
+                                        {profile.incoming_connection_request_id
+                                            ? t('inbox.accept')
+                                            : t('widgets.pending_request')}
+                                    </Button>
                                 ) : profile.connection_pending_out ? (
                                     <Button type="default" onClick={handleFollow}>
                                         {profile.outgoing_connection_request_id

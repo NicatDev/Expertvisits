@@ -43,15 +43,19 @@
 }
 
 .back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #2563eb;
-    font-weight: 600;
     text-decoration: none;
-    font-size: 0.875rem;
-    white-space: nowrap;
-    padding: 6px 0;
+    padding: 8px;
+    margin: -8px 4px -8px -8px;
+    border-radius: 10px;
+    flex-shrink: 0;
 
     &:hover {
-        text-decoration: underline;
+        background: #eff6ff;
+        color: #1d4ed8;
     }
 }
 

@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { Mail, MapPin, ArrowUpRight, ShieldCheck, Cpu, Users, GraduationCap, Briefcase, Globe } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import Services from '../sections/Services';
+import Projects from '../sections/Projects';
+import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
+import { mergeSectionVisibility } from '@/lib/sectionVisibility';
 import styles from '../styles/home.module.scss';
 import t2Styles from '../styles/template2.module.scss';
 
@@ -33,6 +36,8 @@ export default function Home({ user }) {
     const displayHardSkills = [...hardSkills, ...otherSkills];
     
     if (!isMounted) return null;
+
+    const v = mergeSectionVisibility(user?.section_visibility);
 
     return (
         <>
@@ -113,7 +118,7 @@ export default function Home({ user }) {
                 )}
 
                 {/* Services Section */}
-                {user.services && user.services.length > 0 && (
+                {v.services_on_home && user.services && user.services.length > 0 && (
                     <Services data={user.services} />
                 )}
 
@@ -214,6 +219,9 @@ export default function Home({ user }) {
                         </div>
                     </section>
                 )}
+
+                {v.projects_on_home ? <Projects user={user} /> : null}
+                <ArticlesHomePreview user={user} />
 
                 {/* MEGA FOOTER CTA */}
                 <section className={styles.megaFooter}>

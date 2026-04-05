@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Home, FileText, Mail, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, Home, FileText, Mail, Briefcase, FolderKanban } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { buildPortfolioNavLinks } from '@/lib/buildPortfolioNavLinks';
 import styles from '../styles/template4.module.scss';
 
 export default function Navbar({ user }) {
@@ -20,11 +21,17 @@ export default function Navbar({ user }) {
         setIsMounted(true);
     }, []);
 
-    const navLinks = [
-        { label: t('nav.home', { defaultValue: 'Home' }), path: `/${username}`, icon: <Home size={20} /> },
-        ...(user?.articles_count >= 3 ? [{ label: t('portfolio.myWritings', { defaultValue: 'Articles' }), path: `/${username}/articles`, icon: <FileText size={20} /> }] : []),
-        { label: t('nav.contact', { defaultValue: 'Contact' }), path: `/${username}/contact`, icon: <Mail size={20} /> },
-    ];
+    const navLinks = useMemo(() => {
+        const base = buildPortfolioNavLinks(user, t);
+        return base.map((l) => {
+            let icon = <Home size={20} />;
+            if (l.path.endsWith('/services')) icon = <Briefcase size={20} />;
+            else if (l.path.endsWith('/projects')) icon = <FolderKanban size={20} />;
+            else if (l.path.endsWith('/articles')) icon = <FileText size={20} />;
+            else if (l.path.endsWith('/contact')) icon = <Mail size={20} />;
+            return { ...l, icon };
+        });
+    }, [user, t]);
 
     const toggleLanguage = (lang) => {
         document.cookie = `i18next=${lang}; path=/; max-age=31536000; SameSite=Lax`;

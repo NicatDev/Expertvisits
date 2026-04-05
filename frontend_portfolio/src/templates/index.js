@@ -56,6 +56,22 @@ const contactPages = {
     5: dynamic(() => import("@/templates/template5/pages/Contact"), { loading: () => <TemplateLoader /> }),
 };
 
+const servicesPages = {
+    1: dynamic(() => import("@/templates/template1/pages/Services"), { loading: () => <TemplateLoader /> }),
+    2: dynamic(() => import("@/templates/template2/pages/Services"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/Services"), { loading: () => <TemplateLoader /> }),
+    4: dynamic(() => import("@/templates/template4/pages/Services"), { loading: () => <TemplateLoader /> }),
+    5: dynamic(() => import("@/templates/template5/pages/Services"), { loading: () => <TemplateLoader /> }),
+};
+
+const projectsPages = {
+    1: dynamic(() => import("@/templates/template1/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    2: dynamic(() => import("@/templates/template2/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    3: dynamic(() => import("@/templates/template3/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    4: dynamic(() => import("@/templates/template4/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    5: dynamic(() => import("@/templates/template5/pages/Projects"), { loading: () => <TemplateLoader /> }),
+};
+
 export function getTemplateLayout(templateName) {
     return layouts[templateName] || layouts[1];
 }
@@ -76,10 +92,20 @@ export function getTemplateContact(templateName) {
     return contactPages[templateName] || contactPages[1];
 }
 
+export function getTemplateServices(templateName) {
+    return servicesPages[templateName] || servicesPages[1];
+}
+
+export function getTemplateProjects(templateName) {
+    return projectsPages[templateName] || projectsPages[1];
+}
+
 export const templatesConfig = {
     layouts,
     homePages,
     articlesPages,
     articleDetailPages,
-    contactPages
+    contactPages,
+    servicesPages,
+    projectsPages,
 };
