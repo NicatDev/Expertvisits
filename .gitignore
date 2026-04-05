@@ -1,0 +1,71 @@
+# --- OS & editors ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Node.js / Next.js (any app under repo) ---
+**/node_modules/
+**/.pnp
+**/.pnp.*
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/versions
+
+**/.next/
+**/out/
+**/build/
+**/coverage/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+**/.vercel
+**/*.tsbuildinfo
+
+# --- Python / Django ---
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/*.so
+.Python
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
+**/.eggs/
+**/*.egg-info/
+**/dist/
+**/*.egg
+
+# Django collectstatic output (local / deploy)
+backend/staticfiles/
+
+# Local DB (if used)
+*.sqlite3
+*.sqlite3-journal
+
+# Logs
+**/*.log
+backend/logs/
+
+# Tests / typing
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- Misc ---
+*.pem
+*.tmp
+*.temp
+
+# Note: Django migrations (**/migrations/*.py except __init__.py) should stay tracked.
