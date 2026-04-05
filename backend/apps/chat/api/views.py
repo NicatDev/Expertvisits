@@ -84,13 +84,10 @@ class CreateOrGetChatView(APIView):
         )
 
 
-class ChatMessageListView(generics.ListAPIView):
-    """
-    GET /api/chat/rooms/<chat_id>/messages/?before_id=&limit=
-    """
+class ChatMessageListView(APIView):
+    """GET /api/chat/rooms/<chat_id>/messages/?before_id=&limit="""
 
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ChatMessageSerializer
 
     def get(self, request, *args, **kwargs):
         chat_id = int(kwargs["chat_id"])
