@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from '@/i18n/client';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -13,6 +13,23 @@ import styles from '../profile.module.scss';
 import { services, profiles } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { useProfile } from '../context';
+import {
+    everyHalfHourSlots,
+    formatLocalDateShort,
+    formatLocalTimeHm,
+    formatLocalBookingRange,
+    normalizeHm,
+    withSlotFallback,
+} from '@/lib/time24h';
+
+const workHoursSelectStyle = {
+    width: '120px',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid #d9d9d9',
+    fontSize: '14px',
+    background: '#fff',
+};
 
 export default function BookingPage() {
     const { t } = useTranslation('common');
@@ -43,12 +60,14 @@ export default function BookingPage() {
 
     // Single unified useEffect - the duplicate below handles all tabs
 
+    const workHourSlotOptions = useMemo(() => everyHalfHourSlots(), []);
+
     useEffect(() => {
         if (profile) {
             const initialData = {
                 is_service_open: profile.is_service_open,
-                work_hours_start: profile.work_hours_start,
-                work_hours_end: profile.work_hours_end,
+                work_hours_start: normalizeHm(profile.work_hours_start || ''),
+                work_hours_end: normalizeHm(profile.work_hours_end || ''),
                 working_days: profile.working_days || []
             };
             setLocalAvailability(initialData);
@@ -136,8 +155,8 @@ export default function BookingPage() {
 
     const handleAvailabilitySave = async () => {
         const data = {
-            work_hours_start: localAvailability.work_hours_start,
-            work_hours_end: localAvailability.work_hours_end,
+            work_hours_start: normalizeHm(localAvailability.work_hours_start) || localAvailability.work_hours_start,
+            work_hours_end: normalizeHm(localAvailability.work_hours_end) || localAvailability.work_hours_end,
             working_days: localAvailability.working_days,
             is_service_open: localAvailability.is_service_open
         };
@@ -234,23 +253,51 @@ export default function BookingPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 <span style={{ whiteSpace: 'nowrap' }}>{t('profile.booking.start')}</span>
-                                                <Input
-                                                    type="time"
+                                                <select
+                                                    aria-label={t('profile.booking.start')}
+                                                    style={workHoursSelectStyle}
                                                     value={localAvailability.work_hours_start || ''}
-                                                    onChange={e => setLocalAvailability(prev => ({ ...prev, work_hours_start: e.target.value }))}
-                                                    style={{ width: '120px' }}
-                                                    wrapperStyle={{ marginBottom: 0 }}
-                                                />
+                                                    onChange={(e) =>
+                                                        setLocalAvailability((prev) => ({
+                                                            ...prev,
+                                                            work_hours_start: e.target.value,
+                                                        }))
+                                                    }
+                                                >
+                                                    <option value="">—</option>
+                                                    {withSlotFallback(
+                                                        workHourSlotOptions,
+                                                        localAvailability.work_hours_start
+                                                    ).map((slot) => (
+                                                        <option key={`start-${slot}`} value={slot}>
+                                                            {slot}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 <span style={{ whiteSpace: 'nowrap' }}>{t('profile.booking.end')}</span>
-                                                <Input
-                                                    type="time"
+                                                <select
+                                                    aria-label={t('profile.booking.end')}
+                                                    style={workHoursSelectStyle}
                                                     value={localAvailability.work_hours_end || ''}
-                                                    onChange={e => setLocalAvailability(prev => ({ ...prev, work_hours_end: e.target.value }))}
-                                                    style={{ width: '120px' }}
-                                                    wrapperStyle={{ marginBottom: 0 }}
-                                                />
+                                                    onChange={(e) =>
+                                                        setLocalAvailability((prev) => ({
+                                                            ...prev,
+                                                            work_hours_end: e.target.value,
+                                                        }))
+                                                    }
+                                                >
+                                                    <option value="">—</option>
+                                                    {withSlotFallback(
+                                                        workHourSlotOptions,
+                                                        localAvailability.work_hours_end
+                                                    ).map((slot) => (
+                                                        <option key={`end-${slot}`} value={slot}>
+                                                            {slot}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -350,8 +397,8 @@ export default function BookingPage() {
                                     </div>
                                     <div style={{ background: '#f9f9f9', padding: '10px', borderRadius: '6px', width: '100%' }}>
                                         <div style={{ display: 'flex', gap: '16px', fontSize: '0.9rem', marginBottom: '4px' }}>
-                                            <span>📅 {new Date(req.requested_datetime).toLocaleDateString()}</span>
-                                            <span>⏰ {new Date(req.requested_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <span>📅 {formatLocalDateShort(req.requested_datetime)}</span>
+                                            <span>⏰ {formatLocalTimeHm(req.requested_datetime)}</span>
                                             <span>⏳ {req.duration_minutes} min</span>
                                         </div>
                                         {req.note && <p style={{ margin: '4px 0 0 0', color: '#555', fontSize: '0.9rem' }}>"{req.note}"</p>}
@@ -426,8 +473,8 @@ export default function BookingPage() {
                                         </div>
                                         <div style={{ background: '#f9f9f9', padding: '10px', borderRadius: '6px', width: '100%' }}>
                                             <div style={{ display: 'flex', gap: '16px', fontSize: '0.9rem', marginBottom: '4px' }}>
-                                                <span>📅 {new Date(booking.requested_datetime).toLocaleDateString()}</span>
-                                                <span>⏰ {new Date(booking.requested_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                <span>📅 {formatLocalDateShort(booking.requested_datetime)}</span>
+                                                <span>⏰ {formatLocalTimeHm(booking.requested_datetime)}</span>
                                                 <span>⏳ {booking.duration_minutes} min</span>
                                             </div>
                                             {booking.note && <p style={{ margin: '4px 0 0 0', color: '#555', fontSize: '0.9rem' }}>"{booking.note}"</p>}
@@ -461,7 +508,7 @@ export default function BookingPage() {
                         <div style={{ padding: '20px' }}>
                             <h3 style={{ marginTop: 0 }}>{paramModal.data.title}</h3>
                             <p><strong>{t('profile.booking.status')}</strong> <span style={{ textTransform: 'capitalize' }}>{paramModal.data.status}</span></p>
-                            <p><strong>{t('profile.booking.time')}</strong> {paramModal.data.start.toLocaleString()} - {paramModal.data.end.toLocaleTimeString()}</p>
+                            <p><strong>{t('profile.booking.time')}</strong> {formatLocalBookingRange(paramModal.data.start, paramModal.data.end)}</p>
                             {paramModal.data.note && <p><strong>{t('profile.booking.note')}</strong> {paramModal.data.note}</p>}
                             {paramModal.data.meet_link && (
                                 <p><strong>{t('booking_modal.meet_link')}</strong>{' '}

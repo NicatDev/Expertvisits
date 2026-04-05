@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { X, Link, MapPin } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { services } from '@/lib/api';
+import { workingHoursHalfHourSlots, withSlotFallback } from '@/lib/time24h';
+
+const timeSelectStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '6px',
+    border: '1px solid #d9d9d9',
+    fontSize: '14px',
+    background: '#fff',
+};
 
 const SimpleBookingModal = ({
     isOpen,
@@ -26,6 +36,11 @@ const SimpleBookingModal = ({
     const [location, setLocation] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+
+    const timeSlotOptions = useMemo(() => {
+        const base = workingHoursHalfHourSlots(workingHours?.start, workingHours?.end);
+        return base;
+    }, [workingHours?.start, workingHours?.end]);
 
     useEffect(() => {
         if (isOpen && initialData) {
@@ -164,7 +179,19 @@ const SimpleBookingModal = ({
                     </div>
                     <div>
                         <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.time')}</label>
-                        <Input type="time" value={time} onChange={e => setTime(e.target.value)} />
+                        <select
+                            style={timeSelectStyle}
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
+                            aria-label={t('booking_modal.time')}
+                        >
+                            <option value="">{t('booking_modal.select_time')}</option>
+                            {withSlotFallback(timeSlotOptions, time).map((slot) => (
+                                <option key={slot} value={slot}>
+                                    {slot}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
                         <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>{t('booking_modal.duration')}</label>

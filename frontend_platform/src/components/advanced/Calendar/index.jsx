@@ -55,17 +55,19 @@ const Calendar = ({
                 selectConstraint={businessHours ? 'businessHours' : undefined}
                 selectOverlap={false}
 
-                // Time Formatting (24h)
+                // Time Formatting — always 24 h (local), independent of i18n locale
                 slotLabelFormat={{
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,
-                    meridiem: false
+                    hourCycle: 'h23',
+                    meridiem: false,
                 }}
                 eventTimeFormat={{
                     hour: '2-digit',
                     minute: '2-digit',
-                    hour12: false
+                    hour12: false,
+                    hourCycle: 'h23',
                 }}
                 displayEventTime={false}
 

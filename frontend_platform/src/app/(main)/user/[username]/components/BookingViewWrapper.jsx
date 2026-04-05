@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { formatLocalBookingRange } from '@/lib/time24h';
 import Button from '@/components/ui/Button';
 import CalendarView from './CalendarView';
 import SimpleBookingModal from './SimpleBookingModal';
@@ -120,7 +121,7 @@ const BookingViewWrapper = ({ profile, events, onBack, onBookingSuccess }) => {
                     }} onClick={() => setSelectedEvent(null)}>
                         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', minWidth: '300px' }} onClick={e => e.stopPropagation()}>
                             <h3>{selectedEvent.title}</h3>
-                            <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>Time:</strong> {selectedEvent.start.toLocaleString()} - {selectedEvent.end.toLocaleTimeString()}</p>
+                            <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>{t('profile.booking.time', { defaultValue: 'Time' })}:</strong> {formatLocalBookingRange(selectedEvent.start, selectedEvent.end)}</p>
                             {selectedEvent.meetLink && (
                                 <p style={{ marginTop: '4px', marginBottom: '4px' }}><strong>{t('booking_modal.meet_link')}:</strong> <a href={selectedEvent.meetLink} target="_blank" rel="noreferrer" style={{ color: '#1890ff', textDecoration: 'underline' }}>{selectedEvent.meetLink}</a></p>
                             )}

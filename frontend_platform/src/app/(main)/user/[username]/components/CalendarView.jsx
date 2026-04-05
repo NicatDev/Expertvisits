@@ -80,8 +80,19 @@ const CalendarView = ({
                 selectConstraint={businessHours ? 'businessHours' : undefined}
                 allDaySlot={false}
                 slotDuration="00:30:00"
-                slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
-                eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+                slotLabelFormat={{
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    hourCycle: 'h23',
+                    meridiem: false,
+                }}
+                eventTimeFormat={{
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    hourCycle: 'h23',
+                }}
                 displayEventTime={false}
                 height="auto"
                 slotMinTime={slotMin}
