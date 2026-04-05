@@ -286,33 +286,53 @@ export default function WebsiteTemplatePageClient() {
         projectsCount < MIN_SECTION_ITEMS ||
         articlesCount < MIN_SECTION_ITEMS;
 
-    const qrBlock =
-        isActive &&
-        portfolioUrl && (
-            <div className={pageStyles.qrCard}>
-                <h2 className={pageStyles.qrTitle}>{t('widgets.qr_portfolio_title')}</h2>
-                <p className={pageStyles.qrHint}>{t('widgets.qr_portfolio_hint')}</p>
-                <div className={pageStyles.qrImageWrap}>
-                    {qrLoading ? (
-                        <div className={pageStyles.qrPlaceholder}>{t('common.loading')}</div>
-                    ) : qrDataUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={qrDataUrl} alt="" className={pageStyles.qrImage} />
-                    ) : (
-                        <div className={pageStyles.qrPlaceholder}>{t('common.loading')}</div>
-                    )}
-                </div>
-                <button
-                    type="button"
-                    className={pageStyles.downloadQrBtn}
-                    onClick={downloadQr}
-                    disabled={qrLoading || !qrDataUrl}
-                >
-                    <Download size={18} />
-                    {t('widgets.download_qr')}
-                </button>
-            </div>
-        );
+    const qrSiteReady = isActive && Boolean(portfolioUrl);
+
+    const qrBlock = (
+        <div className={pageStyles.qrCard}>
+            <h2 className={pageStyles.qrTitle}>{t('widgets.qr_portfolio_title')}</h2>
+            {qrSiteReady ? (
+                <>
+                    <p className={pageStyles.qrHint}>{t('widgets.qr_portfolio_hint')}</p>
+                    <div className={pageStyles.qrImageWrap}>
+                        {qrLoading ? (
+                            <div className={pageStyles.qrPlaceholder}>{t('common.loading')}</div>
+                        ) : qrDataUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={qrDataUrl} alt="" className={pageStyles.qrImage} />
+                        ) : (
+                            <div className={pageStyles.qrPlaceholder}>
+                                {t('widgets.qr_not_available')}
+                            </div>
+                        )}
+                    </div>
+                    <button
+                        type="button"
+                        className={pageStyles.downloadQrBtn}
+                        onClick={downloadQr}
+                        disabled={qrLoading || !qrDataUrl}
+                    >
+                        <Download size={18} />
+                        {t('widgets.download_qr')}
+                    </button>
+                </>
+            ) : (
+                <>
+                    <p className={pageStyles.qrHint}>{t('widgets.qr_no_website_hint')}</p>
+                    <div className={pageStyles.qrImageWrap}>
+                        <div
+                            className={pageStyles.qrPlaceholder}
+                            aria-label={t('widgets.qr_not_available')}
+                        />
+                    </div>
+                    <button type="button" className={pageStyles.downloadQrBtn} disabled>
+                        <Download size={18} />
+                        {t('widgets.download_qr')}
+                    </button>
+                </>
+            )}
+        </div>
+    );
 
     return (
         <div className={pageStyles.page}>
