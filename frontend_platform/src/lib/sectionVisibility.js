@@ -1,11 +1,11 @@
 /** Mirrors backend apps.websites.section_visibility.DEFAULT_SECTION_VISIBILITY */
 export const DEFAULT_SECTION_VISIBILITY = {
-    services_on_home: true,
-    services_page: true,
-    projects_on_home: true,
-    projects_page: true,
-    articles_on_home: true,
-    articles_page: true,
+    services_on_home: false,
+    services_page: false,
+    projects_on_home: false,
+    projects_page: false,
+    articles_on_home: false,
+    articles_page: false,
 };
 
 export function mergeSectionVisibility(raw) {

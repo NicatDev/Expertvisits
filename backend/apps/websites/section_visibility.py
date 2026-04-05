@@ -4,12 +4,12 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 DEFAULT_SECTION_VISIBILITY = {
-    "services_on_home": True,
-    "services_page": True,
-    "projects_on_home": True,
-    "projects_page": True,
-    "articles_on_home": True,
-    "articles_page": True,
+    "services_on_home": False,
+    "services_page": False,
+    "projects_on_home": False,
+    "projects_page": False,
+    "articles_on_home": False,
+    "articles_page": False,
 }
 
 
