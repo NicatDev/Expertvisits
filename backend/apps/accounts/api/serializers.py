@@ -4,14 +4,24 @@ from apps.accounts.models import User, Category, SubCategory
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ['id', 'slug', 'name_az', 'name_en', 'name_ru', 'profession_az', 'profession_en', 'profession_ru']
+        fields = [
+            'id',
+            'slug',
+            'external_id',
+            'name_az',
+            'name_en',
+            'name_ru',
+            'profession_az',
+            'profession_en',
+            'profession_ru',
+        ]
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ['id', 'slug', 'subcategories', 'name_az', 'name_en', 'name_ru']
+        fields = ['id', 'slug', 'external_id', 'subcategories', 'name_az', 'name_en', 'name_ru']
 
 class UserSerializer(serializers.ModelSerializer):
     profession_sub_category = SubCategorySerializer(read_only=True)

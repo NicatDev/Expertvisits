@@ -27,14 +27,29 @@ class Command(BaseCommand):
             category_en = item['name_en']
             category_ru = item['name_ru']
             subcategories = item['subcategories']
+            cat_ext = item.get('externalId') or item.get('external_id')
+            if isinstance(cat_ext, str):
+                cat_ext = cat_ext.strip() or None
+            else:
+                cat_ext = None
 
-            category, created = Category.objects.get_or_create(
-                name_az=category_az,
-                defaults={
-                    'name_en': category_en,
-                    'name_ru': category_ru,
-                }
-            )
+            if cat_ext:
+                category, created = Category.objects.get_or_create(
+                    external_id=cat_ext,
+                    defaults={
+                        'name_az': category_az,
+                        'name_en': category_en,
+                        'name_ru': category_ru,
+                    },
+                )
+            else:
+                category, created = Category.objects.get_or_create(
+                    name_az=category_az,
+                    defaults={
+                        'name_en': category_en,
+                        'name_ru': category_ru,
+                    },
+                )
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Created category: {category_az}'))
             else:
@@ -47,19 +62,38 @@ class Command(BaseCommand):
                 prof_az = sub.get('profession_az', '')
                 prof_en = sub.get('profession_en', '')
                 prof_ru = sub.get('profession_ru', '')
+                sub_ext = sub.get('externalId') or sub.get('external_id')
+                if isinstance(sub_ext, str):
+                    sub_ext = sub_ext.strip() or None
+                else:
+                    sub_ext = None
 
-                # Update or Create SubCategory
-                sub_cat, sub_created = SubCategory.objects.get_or_create(
-                    category=category,
-                    name_az=sub_az,
-                    defaults={
-                        'name_en': sub_en,
-                        'name_ru': sub_ru,
-                        'profession_az': prof_az,
-                        'profession_en': prof_en,
-                        'profession_ru': prof_ru,
-                    }
-                )
+                sub_defaults = {
+                    'category': category,
+                    'name_az': sub_az,
+                    'name_en': sub_en,
+                    'name_ru': sub_ru,
+                    'profession_az': prof_az,
+                    'profession_en': prof_en,
+                    'profession_ru': prof_ru,
+                }
+                if sub_ext:
+                    sub_cat, sub_created = SubCategory.objects.get_or_create(
+                        external_id=sub_ext,
+                        defaults=sub_defaults,
+                    )
+                else:
+                    sub_cat, sub_created = SubCategory.objects.get_or_create(
+                        category=category,
+                        name_az=sub_az,
+                        defaults={
+                            'name_en': sub_en,
+                            'name_ru': sub_ru,
+                            'profession_az': prof_az,
+                            'profession_en': prof_en,
+                            'profession_ru': prof_ru,
+                        },
+                    )
 
                 if sub_created:
                     self.stdout.write(self.style.SUCCESS(f'  Created subcategory: {sub_az} ({prof_az})'))

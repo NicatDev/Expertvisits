@@ -8,6 +8,9 @@ class Category(models.Model):
     name_az = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
+    external_id = models.CharField(
+        max_length=64, unique=True, null=True, blank=True, db_index=True
+    )
     slug = models.SlugField(unique=True, db_index=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -30,6 +33,9 @@ class SubCategory(models.Model):
     profession_az = models.CharField(max_length=100, null=True, blank=True)
     profession_en = models.CharField(max_length=100, null=True, blank=True)
     profession_ru = models.CharField(max_length=100, null=True, blank=True)
+    external_id = models.CharField(
+        max_length=64, unique=True, null=True, blank=True, db_index=True
+    )
     slug = models.SlugField(unique=True, db_index=True, blank=True)
 
     def save(self, *args, **kwargs):
