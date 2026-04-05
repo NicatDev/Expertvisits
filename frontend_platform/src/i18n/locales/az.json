@@ -74,7 +74,11 @@
         "load_error": "Məqaləni yükləmək mümkün olmadı",
         "not_found": "Məqalə tapılmadı.",
         "likes_count": "{{count}} Bəyənmə",
-        "comments_count": "{{count}} Rəy"
+        "comments_count": "{{count}} Rəy",
+        "code_block_group": "Kod nümunəsi",
+        "copy_code": "Kodu kopyala",
+        "code_copied": "Kod mübadilə buferinə kopyalandı",
+        "copy_failed": "Kopyalama alınmadı"
     },
     "feed": {
         "placeholder": "Məqalə və ya test paylaş...",

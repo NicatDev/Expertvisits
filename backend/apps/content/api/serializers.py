@@ -50,8 +50,53 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     def validate_body(self, value):
         import bleach
-        allowed_tags = ['h2', 'h3', 'h4', 'p', 'b', 'strong', 'i', 'em', 'u', 'br']
-        cleaned_body = bleach.clean(value, tags=allowed_tags, strip=True)
+
+        # TipTap / rich text: əvvəl yalnız məhdud teqlər idi → pre/code/blockquote/siyahılar
+        # silinirdi, detal səhifədə bloklar adi mətn kimi görünürdü.
+        allowed_tags = [
+            'h2',
+            'h3',
+            'h4',
+            'p',
+            'br',
+            'b',
+            'strong',
+            'i',
+            'em',
+            'u',
+            's',
+            'strike',
+            'del',
+            'blockquote',
+            'ul',
+            'ol',
+            'li',
+            'pre',
+            'code',
+            'a',
+            'hr',
+            'table',
+            'thead',
+            'tbody',
+            'tr',
+            'th',
+            'td',
+            'caption',
+        ]
+        allowed_attributes = {
+            'a': ['href', 'title', 'rel', 'target'],
+            'code': ['class'],
+            'pre': ['class'],
+            'th': ['colspan', 'rowspan'],
+            'td': ['colspan', 'rowspan'],
+        }
+        cleaned_body = bleach.clean(
+            value,
+            tags=allowed_tags,
+            attributes=allowed_attributes,
+            strip=True,
+            protocols=['http', 'https', 'mailto'],
+        )
         return cleaned_body
 
 class ChoiceSerializer(serializers.ModelSerializer):

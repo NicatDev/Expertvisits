@@ -61,9 +61,28 @@
 .contentArea {
     min-height: 280px;
     max-height: min(560px, 58vh);
-    overflow-y: auto;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
     padding: 1rem;
     cursor: text;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 6px;
+
+        &:hover {
+            background: #94a3b8;
+        }
+    }
 
     @media (min-width: 900px) {
         min-height: 360px;

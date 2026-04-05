@@ -19,7 +19,26 @@
     padding: 24px;
     position: relative;
     max-height: 90vh;
-    overflow-y: auto;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 6px;
+
+        &:hover {
+            background: #94a3b8;
+        }
+    }
 
     @media (max-width: 640px) {
         width: 100%;

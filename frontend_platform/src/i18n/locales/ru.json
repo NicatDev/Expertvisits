@@ -74,7 +74,11 @@
         "load_error": "Не удалось загрузить статью",
         "not_found": "Статья не найдена.",
         "likes_count": "{{count}} Лайков",
-        "comments_count": "{{count}} Комментариев"
+        "comments_count": "{{count}} Комментариев",
+        "code_block_group": "Пример кода",
+        "copy_code": "Копировать код",
+        "code_copied": "Код скопирован в буфер обмена",
+        "copy_failed": "Не удалось скопировать"
     },
     "feed": {
         "placeholder": "Создать пост или опрос...",

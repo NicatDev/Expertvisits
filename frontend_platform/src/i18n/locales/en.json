@@ -74,7 +74,11 @@
         "load_error": "Failed to load article",
         "not_found": "Article not found.",
         "likes_count": "{{count}} Likes",
-        "comments_count": "{{count}} Comments"
+        "comments_count": "{{count}} Comments",
+        "code_block_group": "Code sample",
+        "copy_code": "Copy code",
+        "code_copied": "Code copied to clipboard",
+        "copy_failed": "Could not copy"
     },
     "feed": {
         "placeholder": "Start a post, or quiz...",

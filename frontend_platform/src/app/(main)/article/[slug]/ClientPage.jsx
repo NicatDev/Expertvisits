@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 
 import { formatDate } from '@/lib/utils/date';
+import ArticleBodyContent from './ArticleBodyContent';
 
 export default function ClientPage() {
     const { t, i18n } = useTranslation('common');
@@ -145,11 +146,7 @@ export default function ClientPage() {
                     </div>
                 )}
 
-                <section
-                    className={styles.body}
-                    aria-label={t('create_modal.content') || 'Article content'}
-                    dangerouslySetInnerHTML={{ __html: article.body }}
-                />
+                <ArticleBodyContent html={article.body} ariaLabel={t('create_modal.content')} />
 
                 {/* Actions Bar (Like, Comment) */}
                 <div className={styles.actions}>
