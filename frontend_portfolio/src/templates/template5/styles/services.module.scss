@@ -3,18 +3,38 @@
 
 .servicesSection {
   padding: 60px 0;
-  background: white;
-  
+  background: var(--t5-bg-alt, #fff);
+
   @include mobile {
     padding: 40px 0;
   }
+}
+
+.projectsSection {
+  padding: 60px 0;
+  background: var(--t5-bg, #f8fafc);
+
+  @include mobile {
+    padding: 40px 0;
+  }
+}
+
+.projectsEmpty {
+  text-align: center;
+  color: var(--t5-text-light, #64748b);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+  padding: 0 clamp(12px, 4vw, 20px);
+  font-size: 15px;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 4vw, 24px);
+  box-sizing: border-box;
 }
 
 .sectionHeader {
@@ -36,36 +56,83 @@
   }
 }
 
+.sectionTitle {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+  color: var(--t5-text, #1e293b);
+}
+
 .serviceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
-  
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: clamp(20px, 4vw, 30px);
+
   @include mobile {
     grid-template-columns: 1fr;
   }
 }
 
 .serviceCard {
-  background: white;
-  padding: 40px;
+  background: var(--t5-bg-alt, #fff);
+  padding: clamp(24px, 5vw, 40px);
   border-radius: 24px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--t5-border, #f1f5f9);
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-  
+  box-shadow: var(--t5-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.05));
+
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     border-color: var(--t5-primary);
   }
+}
+
+.projectHomeCard {
+  background: var(--t5-bg-alt, #fff);
+  border-radius: 24px;
+  border: 1px solid var(--t5-border, #f1f5f9);
+  overflow: hidden;
+  box-shadow: var(--t5-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.05));
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--t5-primary);
+    box-shadow: 0 16px 24px -8px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.projectHomeImageWrap {
+  aspect-ratio: 16 / 9;
+  background: var(--t5-bg, #f1f5f9);
+  overflow: hidden;
+}
+
+.projectHomeImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.projectHomeBody {
+  padding: clamp(20px, 4vw, 28px);
+}
+
+.projectHomeDate {
+  display: block;
+  font-size: 13px;
+  color: var(--t5-text-light, #64748b);
+  margin: -8px 0 12px;
 }
 
 .serviceIcon {
   width: 60px;
   height: 60px;
-  background: #f0f9ff;
+  background: rgba(14, 165, 233, 0.1);
   color: var(--t5-primary);
   border-radius: 16px;
   display: flex;
@@ -75,13 +142,14 @@
 }
 
 .serviceTitle {
-  font-size: 22px;
+  font-size: clamp(18px, 4vw, 22px);
   font-weight: 700;
   margin-bottom: 16px;
+  color: var(--t5-text, #1e293b);
 }
 
 .serviceDescription {
-  color: #64748b;
+  color: var(--t5-text-light, #64748b);
   line-height: 1.6;
   font-size: 15px;
   margin-bottom: 24px;
@@ -113,12 +181,12 @@
 }
 
 .modalContent {
-  background: white;
+  background: var(--t5-bg-alt, #fff);
   width: 100%;
-  max-width: 600px;
+  max-width: min(600px, 100%);
   border-radius: 32px;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -177,7 +245,7 @@
 .fullDescription {
   font-size: 16px;
   line-height: 1.8;
-  color: #475569;
+  color: var(--t5-text-light, #475569);
   margin-bottom: 40px;
   text-align: left;
 }
@@ -220,7 +288,7 @@
   
   p {
     font-size: 15px;
-    color: #334155;
+    color: var(--t5-text, #334155);
     margin: 0;
   }
 }

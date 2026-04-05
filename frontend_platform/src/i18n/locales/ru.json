@@ -962,7 +962,9 @@
         "load_older_messages": "Ранние сообщения",
         "emoji_picker": "Выбрать эмодзи",
         "message_seen": "Прочитано",
-        "message_not_seen": "Ещё не прочитано"
+        "message_not_seen": "Ещё не прочитано",
+        "delete_notification": "Удалить",
+        "delete_notification_aria": "Удалить уведомление"
     },
     "seo": {
         "home_h1": "Expert Visits - Платформа для профессиональных экспертов, компаний и вакансий",

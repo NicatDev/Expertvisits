@@ -234,6 +234,30 @@
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+
+    .projectImageWrap {
+        margin: -1.25rem -1.25rem 1rem;
+        aspect-ratio: 16 / 9;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+    }
+
+    .projectImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .projectDate {
+        display: block;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.45);
+        margin: 0 0 0.5rem;
+    }
+
     h3 {
         margin: 0 0 0.5rem;
         font-size: 1.1rem;

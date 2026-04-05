@@ -1004,7 +1004,9 @@
         "load_older_messages": "Older messages",
         "emoji_picker": "Choose emoji",
         "message_seen": "Seen",
-        "message_not_seen": "Not seen yet"
+        "message_not_seen": "Not seen yet",
+        "delete_notification": "Delete",
+        "delete_notification_aria": "Delete notification"
     },
     "seo": {
         "home_h1": "Expert Visits - Professional Experts, Companies and Job Vacancies Platform",

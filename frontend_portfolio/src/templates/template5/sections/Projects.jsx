@@ -1,10 +1,21 @@
 "use client";
 
-import React from 'react';
-import { FolderKanban } from 'lucide-react';
-import { useTranslation } from '@/i18n/client';
-import { mergeSectionVisibility } from '@/lib/sectionVisibility';
-import styles from '../styles/services.module.scss';
+import React from "react";
+import { useTranslation } from "@/i18n/client";
+import { mergeSectionVisibility } from "@/lib/sectionVisibility";
+import { resolvePortfolioMediaUrl } from "@/lib/portfolioMedia";
+import styles from "../styles/services.module.scss";
+
+function formatProjectDate(dateVal) {
+    if (!dateVal) return "";
+    try {
+        const d = typeof dateVal === "string" ? new Date(dateVal) : dateVal;
+        if (Number.isNaN(d.getTime())) return String(dateVal);
+        return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    } catch {
+        return String(dateVal);
+    }
+}
 
 export default function Projects({ user }) {
     const { t } = useTranslation();
@@ -14,39 +25,43 @@ export default function Projects({ user }) {
     const projects = user?.projects || [];
 
     return (
-        <section id="projects" className={styles.servicesSection} style={{ background: '#f8fafc' }}>
+        <section id="projects" className={styles.projectsSection}>
             <div className={styles.container}>
                 <div className={styles.sectionHeader}>
-                    <span className={styles.subTitle}>{t('portfolio.projects')}</span>
-                    <h2 className={styles.sectionTitle}>{t('portfolio.projectsSectionTitle')}</h2>
+                    <span className={styles.subTitle}>{t("portfolio.navProjects")}</span>
+                    <h2 className={styles.sectionTitle}>{t("portfolio.projectsSectionTitle")}</h2>
                 </div>
 
                 {projects.length === 0 ? (
-                    <p
-                        style={{
-                            textAlign: 'center',
-                            color: '#64748b',
-                            maxWidth: 560,
-                            margin: '0 auto',
-                            lineHeight: 1.5,
-                        }}
-                    >
-                        {t('portfolio.projectsEmptyHome')}
-                    </p>
+                    <p className={styles.projectsEmpty}>{t("portfolio.projectsEmptyHome")}</p>
                 ) : (
                     <div className={styles.serviceGrid}>
-                        {projects.map((p) => (
-                            <div key={p.id} className={styles.serviceCard} style={{ cursor: 'default' }}>
-                                <div className={styles.serviceIcon}>
-                                    <FolderKanban size={28} />
-                                </div>
-                                <h3 className={styles.serviceTitle}>{p.title}</h3>
-                                <p className={styles.serviceDescription}>
-                                    {(p.description || '').substring(0, 160)}
-                                    {(p.description || '').length > 160 ? '…' : ''}
-                                </p>
-                            </div>
-                        ))}
+                        {projects.map((p) => {
+                            const imgSrc = resolvePortfolioMediaUrl(p.image);
+                            return (
+                                <article key={p.id} className={styles.projectHomeCard}>
+                                    {imgSrc ? (
+                                        <div className={styles.projectHomeImageWrap}>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={imgSrc} alt="" className={styles.projectHomeImage} />
+                                        </div>
+                                    ) : null}
+                                    <div className={styles.projectHomeBody}>
+                                        <h3 className={styles.serviceTitle}>{p.title}</h3>
+                                        {p.date ? (
+                                            <time className={styles.projectHomeDate} dateTime={String(p.date)}>
+                                                {formatProjectDate(p.date)}
+                                            </time>
+                                        ) : null}
+                                        <p className={styles.serviceDescription}>
+                                            {(p.description || "").length > 160
+                                                ? `${(p.description || "").substring(0, 160)}…`
+                                                : p.description || ""}
+                                        </p>
+                                    </div>
+                                </article>
+                            );
+                        })}
                     </div>
                 )}
             </div>

@@ -111,7 +111,7 @@ export default function DetailClient({ vacancy }) {
                             <h1 className={styles.title}>{vacancy.title}</h1>
                             <div className={styles.employerRow}>
                                 {publisher.type === 'company' && publisher.slug ? (
-                                    <a href={`/company/${publisher.slug}`} className={styles.companyName}>
+                                    <a href={`/companies/${publisher.slug}`} className={styles.companyName}>
                                         {displayName}
                                     </a>
                                 ) : (
@@ -122,7 +122,7 @@ export default function DetailClient({ vacancy }) {
                                 ) : null}
                             </div>
                             {publisher.type === 'company' && publisher.slug ? (
-                                <a href={`/company/${publisher.slug}`} className={styles.companyPageLink}>
+                                <a href={`/companies/${publisher.slug}`} className={styles.companyPageLink}>
                                     <ExternalLink size={14} /> {t('vacancy_detail.view_company_profile')}
                                 </a>
                             ) : null}

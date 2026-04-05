@@ -18,8 +18,8 @@ export default function Services({ data }) {
         <section id="services" className={styles.servicesSection}>
             <div className={styles.container}>
                 <div className={styles.sectionHeader}>
-                    <span className={styles.subTitle}>{t('nav.services')}</span>
-                    <h2 className={styles.sectionTitle}>{t('portfolio.medicalExcellenceServices')}</h2>
+                    <span className={styles.subTitle}>{t('portfolio.servicesSectionSubtitle')}</span>
+                    <h2 className={styles.sectionTitle}>{t('portfolio.servicesSectionTitle')}</h2>
                 </div>
 
                 <div className={styles.serviceGrid}>
@@ -27,9 +27,13 @@ export default function Services({ data }) {
                         <div key={idx} className={styles.serviceCard} onClick={() => setSelectedService(service)}>
                             <div className={styles.serviceIcon}>{getIcon(idx)}</div>
                             <h3 className={styles.serviceTitle}>{service.title}</h3>
-                            <p className={styles.serviceDescription}>{service.description?.substring(0, 100)}...</p>
+                            <p className={styles.serviceDescription}>
+                                {service.description && service.description.length > 100
+                                    ? `${service.description.substring(0, 100)}…`
+                                    : service.description || ''}
+                            </p>
                             <span className={styles.readMore}>
-                                {t('portfolio.readMore') || 'Daha çox'} <ChevronRight size={16} />
+                                {t('portfolio.readMore')} <ChevronRight size={16} />
                             </span>
                         </div>
                     ))}
@@ -49,12 +53,16 @@ export default function Services({ data }) {
                            
                            {selectedService.steps && selectedService.steps.length > 0 && (
                                <div className={styles.stepsWrapper}>
-                                   <h4>{t('portfolio.processSteps') || 'Müalicə Mərhələləri'}</h4>
+                                   <h4>{t('portfolio.processSteps')}</h4>
                                    <div className={styles.stepsList}>
                                        {selectedService.steps.map((step, sIdx) => (
                                            <div key={sIdx} className={styles.stepItem}>
                                                <span className={styles.stepNumber}>{sIdx + 1}</span>
-                                               <p>{step}</p>
+                                               <p>
+                                                   {typeof step === 'string'
+                                                       ? step
+                                                       : step?.title || step?.text || ''}
+                                               </p>
                                            </div>
                                        ))}
                                    </div>
@@ -62,7 +70,7 @@ export default function Services({ data }) {
                            )}
                            
                            <button className={styles.modalAction} onClick={() => setSelectedService(null)}>
-                               {t('portfolio.understood') || 'Başa düşdüm'}
+                               {t('portfolio.understood')}
                            </button>
                         </div>
                     </div>

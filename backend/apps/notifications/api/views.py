@@ -69,6 +69,20 @@ class InboxMarkAllReadView(APIView):
         return Response({"updated": n})
 
 
+class InboxNotificationDeleteView(APIView):
+    """DELETE /api/notifications/inbox/<id>/ — remove one row for the current user."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        user = request.user
+        deleted, _ = InboxNotification.objects.filter(recipient=user, pk=pk).delete()
+        if not deleted:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        push_payload(user.id, {"type": "badge_refresh"})
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class InboxMarkReadView(APIView):
     """PATCH /api/notifications/inbox/read/ — ids or mark_all."""
 

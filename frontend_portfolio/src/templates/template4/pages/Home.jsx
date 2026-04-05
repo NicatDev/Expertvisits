@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Mail, Briefcase, GraduationCap, Cpu, Users, Settings, ArrowRight, ShieldCheck, Globe } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import styles from '../styles/home.module.scss';
-import Services from '../sections/Services';
 import Projects from '../sections/Projects';
 import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
 import { mergeSectionVisibility } from '@/lib/sectionVisibility';

@@ -123,6 +123,13 @@
         "author": "Author",
         "recentPosts": "Recent Articles",
         "search": "Search",
-        "minRead": "min read"
+        "minRead": "min read",
+        "servicesPageTitle": "Services",
+        "projectsPageTitle": "Projects",
+        "emptyServicesPage": "No services to show yet.",
+        "emptyProjectsPage": "No projects to show yet.",
+        "backToHome": "Back to home",
+        "servicesSectionTitle": "Services I offer",
+        "servicesSectionSubtitle": "Services"
     }
 }

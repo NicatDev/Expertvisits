@@ -75,7 +75,7 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
                 <div className={styles.info}>
                     <Link href={`/vacancies/${vacancy.slug}`} className={styles.title}>{vacancy.title}</Link>
                     {publisher.type === 'company' && publisher.slug ? (
-                        <Link href={`/company/${publisher.slug}`} className={styles.companyName}>
+                        <Link href={`/companies/${publisher.slug}`} className={styles.companyName}>
                             {publisher.name}
                         </Link>
                     ) : (

@@ -61,6 +61,35 @@
     display: flex;
     gap: 14px;
     align-items: flex-start;
+    position: relative;
+}
+
+.btnDelete {
+    flex-shrink: 0;
+    margin-left: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: #f9fafb;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+
+    &:hover:not(:disabled) {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 }
 
 .avatarLink {

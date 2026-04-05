@@ -994,7 +994,9 @@
         "load_older_messages": "Əvvəlki mesajlar",
         "emoji_picker": "Emoji seç",
         "message_seen": "Oxundu",
-        "message_not_seen": "Hələ oxunmayıb"
+        "message_not_seen": "Hələ oxunmayıb",
+        "delete_notification": "Sil",
+        "delete_notification_aria": "Bildirişi sil"
     },
     "seo": {
         "home_h1": "Expert Visits - Peşəkar Mütəxəssislər, Şirkətlər və İş Elanları Platforması",

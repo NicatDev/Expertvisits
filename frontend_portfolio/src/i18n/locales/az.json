@@ -123,6 +123,13 @@
         "author": "Müəllif",
         "recentPosts": "Son Paylaşımlar",
         "search": "Axtar",
-        "minRead": "dəq oxu"
+        "minRead": "dəq oxu",
+        "servicesPageTitle": "Xidmətlər",
+        "projectsPageTitle": "Layihələr",
+        "emptyServicesPage": "Hələ göstəriləcək xidmət yoxdur.",
+        "emptyProjectsPage": "Hələ göstəriləcək layihə yoxdur.",
+        "backToHome": "Ana səhifəyə qayıt",
+        "servicesSectionTitle": "Təqdim etdiyim xidmətlər",
+        "servicesSectionSubtitle": "Xidmətlər"
     }
 }

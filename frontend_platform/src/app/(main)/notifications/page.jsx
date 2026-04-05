@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Bell } from 'lucide-react';
+import { Bell, Trash2 } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
@@ -58,6 +58,8 @@ export default function NotificationsPage() {
     const [loading, setLoading] = useState(true);
     /** @type {Record<number, 'accepted' | 'declined'>} notification id -> outcome */
     const [connectionOutcomeByNotifId, setConnectionOutcomeByNotifId] = useState({});
+    /** ids currently being deleted (disable button, avoid double submit) */
+    const [deletingIds, setDeletingIds] = useState(() => new Set());
 
     const load = useCallback(
         async (beforeId) => {
@@ -134,6 +136,34 @@ export default function NotificationsPage() {
         }
     };
 
+    const deleteNotification = async (n) => {
+        let proceed = false;
+        setDeletingIds((prev) => {
+            if (prev.has(n.id)) return prev;
+            proceed = true;
+            return new Set(prev).add(n.id);
+        });
+        if (!proceed) return;
+        try {
+            await notificationsApi.deleteInbox(n.id);
+            setItems((prev) => prev.filter((x) => x.id !== n.id));
+            setConnectionOutcomeByNotifId((prev) => {
+                const next = { ...prev };
+                delete next[n.id];
+                return next;
+            });
+            await refreshSummary();
+        } catch {
+            toast.error(t('common.error_generic'));
+        } finally {
+            setDeletingIds((prev) => {
+                const next = new Set(prev);
+                next.delete(n.id);
+                return next;
+            });
+        }
+    };
+
     const openChatFromNotif = async (n) => {
         const uid = n.actor_id;
         const chatId = n.data?.chat_id;
@@ -172,6 +202,7 @@ export default function NotificationsPage() {
                 <ul className={styles.list}>
                     {items.map((n) => {
                         const connOutcome = connectionOutcomeByNotifId[n.id];
+                        const isDeleting = deletingIds.has(n.id);
                         return (
                         <li key={n.id} className={styles.card}>
                             <div className={styles.cardTop}>
@@ -219,6 +250,16 @@ export default function NotificationsPage() {
                                     )}
                                     {n.body ? <p className={styles.preview}>{n.body}</p> : null}
                                 </div>
+                                <button
+                                    type="button"
+                                    className={styles.btnDelete}
+                                    onClick={() => deleteNotification(n)}
+                                    disabled={isDeleting}
+                                    aria-label={t('inbox.delete_notification_aria')}
+                                    title={t('inbox.delete_notification')}
+                                >
+                                    <Trash2 size={18} strokeWidth={2} aria-hidden />
+                                </button>
                             </div>
                             <div className={styles.actions}>
                                 {n.kind === 'connection_request' && n.connection_request_id ? (
