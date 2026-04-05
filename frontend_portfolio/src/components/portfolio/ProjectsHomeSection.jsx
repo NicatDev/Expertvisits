@@ -1,8 +1,11 @@
 'use client';
 
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from '@/i18n/client';
 import { mergeSectionVisibility } from '@/lib/sectionVisibility';
-import { resolvePortfolioMediaUrl } from '@/lib/portfolioMedia';
+import { resolvePortfolioMediaUrl, isDarkPortfolioTemplate } from '@/lib/portfolioMedia';
+import { truncateDescription } from '@/lib/portfolioText';
+import PortfolioContentModal from './PortfolioContentModal';
 
 function formatProjectDate(dateVal) {
     if (!dateVal) return '';
@@ -17,51 +20,112 @@ function formatProjectDate(dateVal) {
 
 /**
  * @param {object} props
- * @param {object} props.user — website payload from API
- * @param {object} props.styles — CSS module from template (projects, projectsContainer, …)
+ * @param {object} props.user
+ * @param {object} props.styles — CSS module (projects, projectsContainer, projectsGrid, projectCard, …)
+ * @param {React.ReactNode} [props.titleSlot]
+ * @param {string} [props.sectionClassName] — outer section class (default: styles.projects)
+ * @param {string} [props.gridClassName]
+ * @param {string} [props.cardClassName]
+ * @param {string} [props.imageWrapClassName]
+ * @param {string} [props.imageClassName]
+ * @param {string} [props.dateClassName]
+ * @param {string} [props.readMoreClassName] — optional hook for template-specific “read more” link
  */
-export default function ProjectsHomeSection({ user, styles: s }) {
+export default function ProjectsHomeSection({
+    user,
+    styles: s,
+    titleSlot,
+    sectionClassName,
+    gridClassName,
+    cardClassName,
+    imageWrapClassName,
+    imageClassName,
+    dateClassName,
+    readMoreClassName,
+}) {
     const { t } = useTranslation();
     const v = mergeSectionVisibility(user?.section_visibility);
-    if (!v.projects_on_home) return null;
+    const [open, setOpen] = useState(null);
+
+    const darkModal = isDarkPortfolioTemplate(user?.template_id);
 
     const projects = user?.projects || [];
 
+    const sectionCls = sectionClassName || s.projects;
+    const gridCls = gridClassName || s.projectsGrid;
+    const cardCls = cardClassName || s.projectCard;
+    const imgWrapCls = imageWrapClassName || s.projectImageWrap;
+    const imgCls = imageClassName || s.projectImage;
+    const dateCls = dateClassName || s.projectDate;
+    const readMoreCls = readMoreClassName || s.projectReadMore;
+
+    const defaultTitle = useMemo(
+        () => (
+            <h2 className={s.sectionTitle}>{t('portfolio.projects')}</h2>
+        ),
+        [s.sectionTitle, t]
+    );
+
+    if (!v.projects_on_home) return null;
+
     return (
-        <section id="projects" className={s.projects}>
-            <div className={s.projectsContainer}>
-                <h2 className={s.sectionTitle}>{t('portfolio.projects')}</h2>
-                {projects.length > 0 ? (
-                    <div className={s.projectsGrid}>
-                        {projects.map((project) => {
-                            const imgSrc = resolvePortfolioMediaUrl(project.image);
-                            return (
-                                <article key={project.id} className={s.projectCard}>
-                                    {imgSrc ? (
-                                        <div className={s.projectImageWrap}>
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={imgSrc}
-                                                alt=""
-                                                className={s.projectImage}
-                                            />
+        <>
+            <section id="projects" className={sectionCls}>
+                <div className={s.projectsContainer}>
+                    {titleSlot ?? defaultTitle}
+                    {projects.length > 0 ? (
+                        <div className={gridCls}>
+                            {projects.map((project) => {
+                                const imgSrc = resolvePortfolioMediaUrl(project.image);
+                                const { excerpt, needsMore, full } = truncateDescription(project.description);
+                                return (
+                                    <article key={project.id} className={cardCls}>
+                                        <div className={s.projectTextBlock}>
+                                            <h3>{project.title}</h3>
+                                            {project.date ? (
+                                                <time className={dateCls} dateTime={String(project.date)}>
+                                                    {formatProjectDate(project.date)}
+                                                </time>
+                                            ) : null}
+                                            <p className={s.projectExcerpt}>{needsMore ? excerpt : full}</p>
+                                            {needsMore ? (
+                                                <button
+                                                    type="button"
+                                                    className={readMoreCls}
+                                                    onClick={() => setOpen(project)}
+                                                >
+                                                    {t('portfolio.readMore')}
+                                                </button>
+                                            ) : null}
                                         </div>
-                                    ) : null}
-                                    <h3>{project.title}</h3>
-                                    {project.date ? (
-                                        <time className={s.projectDate} dateTime={String(project.date)}>
-                                            {formatProjectDate(project.date)}
-                                        </time>
-                                    ) : null}
-                                    <p>{project.description}</p>
-                                </article>
-                            );
-                        })}
-                    </div>
-                ) : (
-                    <p className={s.emptyText}>{t('portfolio.projectsEmptyHome')}</p>
-                )}
-            </div>
-        </section>
+                                        {imgSrc ? (
+                                            <div className={imgWrapCls}>
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={imgSrc} alt="" className={imgCls} />
+                                            </div>
+                                        ) : null}
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className={s.emptyText}>{t('portfolio.projectsEmptyHome')}</p>
+                    )}
+                </div>
+            </section>
+
+            <PortfolioContentModal
+                isOpen={Boolean(open)}
+                onClose={() => setOpen(null)}
+                title={open?.title}
+                meta={open?.date ? `${t('portfolio.issued')} ${formatProjectDate(open.date)}` : null}
+                body={open?.description}
+                imageUrl={open ? resolvePortfolioMediaUrl(open.image) : ''}
+                imageAlt={open?.title}
+                projectUrl={open?.url}
+                visitLabel={t('portfolio.visitProject')}
+                dark={darkModal}
+            />
+        </>
     );
 }

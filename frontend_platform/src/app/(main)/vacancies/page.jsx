@@ -92,7 +92,7 @@ export default function VacanciesPage() {
                     />
                 </div>
 
-                <div style={{ width: '250px' }}>
+                <div className={styles.filterItem}>
                     <LocationSelect
                         value={searchLocation}
                         onChange={val => { setSearchLocation(val); setPage(1); }}

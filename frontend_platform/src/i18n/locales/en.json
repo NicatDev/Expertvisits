@@ -637,7 +637,9 @@
             "description_label": "Description",
             "date_label": "Date",
             "image_label": "Image (Optional)",
-            "upload_image": "Upload Image"
+            "upload_image": "Upload Image",
+            "url_label": "Project link (optional)",
+            "visit_link": "Visit project"
         }
     },
     "vacancy_detail": {
@@ -746,6 +748,7 @@
             "updating": "Updating...",
             "errors": {
                 "select_company": "Please select a company.",
+                "select_location_from_list": "Choose a city from the suggestions list (typing alone is not enough).",
                 "required": "This field is required.",
                 "fill_required": "Please fill required fields.",
                 "check_form": "Please check the form for errors.",

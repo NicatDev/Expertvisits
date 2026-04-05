@@ -246,7 +246,7 @@ export default function Home({ user }) {
                 </section>
             )}
 
-            {v.projects_on_home ? <Projects user={user} /> : null}
+            {v.projects_on_home ? <Projects user={user} sectionIndex={sectionIndex++} /> : null}
             <ArticlesHomePreview user={user} />
 
             {/* CTA Section */}

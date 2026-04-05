@@ -125,6 +125,10 @@
         "emptyServicesPage": "Услуги пока не добавлены.",
         "emptyProjectsPage": "Проекты пока не добавлены.",
         "backToHome": "На главную",
+        "visitProject": "Открыть проект",
+        "searchServicesPlaceholder": "Поиск услуг по названию или описанию…",
+        "searchProjectsPlaceholder": "Поиск проектов по названию или описанию…",
+        "noSearchResults": "Ничего не найдено.",
         "servicesSectionTitle": "Услуги, которые я предлагаю",
         "servicesSectionSubtitle": "Услуги"
     }

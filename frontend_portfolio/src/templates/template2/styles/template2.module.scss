@@ -148,12 +148,42 @@
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .projectTextBlock {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .projectExcerpt {
+        margin: 0;
+        color: #64748b;
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .projectReadMore {
+        margin-top: 0.75rem;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #4f46e5;
+        text-align: left;
+    }
 
     .projectImageWrap {
-        margin: -1.25rem -1.25rem 1rem;
+        margin: 1rem 0 0;
+        align-self: center;
+        width: 100%;
+        max-width: min(100%, 420px);
         aspect-ratio: 16 / 9;
         background: #f1f5f9;
-        border-radius: 12px 12px 0 0;
+        border-radius: 10px;
         overflow: hidden;
     }
 
@@ -175,12 +205,6 @@
         margin: 0 0 0.5rem;
         font-size: 1.1rem;
         color: #111827;
-    }
-    p {
-        margin: 0;
-        color: #64748b;
-        line-height: 1.5;
-        font-size: 0.95rem;
     }
 }
 

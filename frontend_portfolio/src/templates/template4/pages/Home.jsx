@@ -8,6 +8,8 @@ import styles from '../styles/home.module.scss';
 import Projects from '../sections/Projects';
 import ArticlesHomePreview from '@/components/portfolio/ArticlesHomePreview';
 import { mergeSectionVisibility } from '@/lib/sectionVisibility';
+import { truncateDescription } from '@/lib/portfolioText';
+import PortfolioContentModal from '@/components/portfolio/PortfolioContentModal';
 
 export default function Home({ user }) {
     if (!user) return null;
@@ -23,6 +25,7 @@ export default function Home({ user }) {
     const { t, i18n } = useTranslation();
     const currentLang = i18n.language || 'az';
     const [isMounted, setIsMounted] = useState(false);
+    const [serviceModal, setServiceModal] = useState(null);
     
     const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
 
@@ -235,17 +238,68 @@ export default function Home({ user }) {
                         <span className={styles.prefix}>0{sectionIdx++}.</span> {t('portfolio.services')}
                     </h2>
                     <div className={styles.servicesGrid}>
-                        {services.map((service, index) => (
-                            <div key={service.id || index} className={styles.cyberCard}>
-                                <h3 className={styles.serviceTitle}>_ {service.title}</h3>
-                                {service.description && <p className={styles.serviceDesc}>{service.description}</p>}
-                            </div>
-                        ))}
+                        {services.map((service, index) => {
+                            const { excerpt, needsMore } = truncateDescription(service.description);
+                            return (
+                                <div
+                                    key={service.id || index}
+                                    className={styles.cyberCard}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => setServiceModal(service)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setServiceModal(service);
+                                        }
+                                    }}
+                                >
+                                    <h3 className={styles.serviceTitle}>_ {service.title}</h3>
+                                    {service.description ? (
+                                        <p className={styles.serviceDesc}>
+                                            {needsMore ? excerpt : service.description}
+                                        </p>
+                                    ) : null}
+                                    {needsMore ? (
+                                        <button
+                                            type="button"
+                                            style={{
+                                                marginTop: '10px',
+                                                padding: 0,
+                                                border: 'none',
+                                                background: 'none',
+                                                cursor: 'pointer',
+                                                font: 'inherit',
+                                                fontWeight: 600,
+                                                fontSize: '0.9rem',
+                                                color: 'var(--t4-primary, #22d3ee)',
+                                                textAlign: 'left',
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setServiceModal(service);
+                                            }}
+                                        >
+                                            {t('portfolio.readMore')}
+                                        </button>
+                                    ) : null}
+                                </div>
+                            );
+                        })}
                     </div>
+                    <PortfolioContentModal
+                        isOpen={Boolean(serviceModal)}
+                        onClose={() => setServiceModal(null)}
+                        title={serviceModal?.title}
+                        body={serviceModal?.description}
+                        steps={serviceModal?.steps}
+                        dark
+                    />
                 </section>
             )}
 
-            {v.projects_on_home ? <Projects user={user} /> : null}
+            {v.projects_on_home ? <Projects user={user} sectionIndex={sectionIdx++} /> : null}
             <ArticlesHomePreview user={user} />
 
         </div>

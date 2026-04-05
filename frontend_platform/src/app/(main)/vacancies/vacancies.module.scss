@@ -2,6 +2,10 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px;
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
 }
 
 .header {
@@ -36,8 +40,10 @@
             font-size: clamp(1.25rem, 5vw, 1.75rem);
         }
 
-        > button {
+        button {
             width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             justify-content: center;
         }
     }
@@ -48,12 +54,38 @@
     gap: 16px;
     margin-bottom: 32px;
     flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+
+        > * {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+    }
+}
+
+.filterItem {
+    width: 250px;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 }
 
 .searchWrapper {
     flex: 2;
     min-width: 300px;
     position: relative;
+
+    @media (max-width: 768px) {
+        flex: none;
+        min-width: 0;
+    }
 
     .searchIcon {
         position: absolute;

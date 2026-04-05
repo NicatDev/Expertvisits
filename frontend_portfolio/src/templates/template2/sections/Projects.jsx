@@ -1,8 +1,12 @@
 'use client';
 
+import React from 'react';
+import { useTranslation } from '@/i18n/client';
 import styles from '../styles/template2.module.scss';
 import ProjectsHomeSection from '@/components/portfolio/ProjectsHomeSection';
 
 export default function Projects({ user }) {
-    return <ProjectsHomeSection user={user} styles={styles} />;
+    const { t } = useTranslation();
+    const titleSlot = <h2 className={styles.sectionTitle}>{t('portfolio.projects')}</h2>;
+    return <ProjectsHomeSection user={user} styles={styles} titleSlot={titleSlot} />;
 }

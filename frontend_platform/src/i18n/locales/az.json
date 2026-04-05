@@ -603,7 +603,7 @@
             "vacancy_info": "Vakansiya",
             "company_role": "Şirkət və Vəzifə",
             "company": "Şirkət",
-            "title_label": "Vəzifə",
+            "title_label": "Başlıq",
             "salary_range": "Maaş Aralığı",
             "job_details": "İş Təfərrüatları",
             "listing_type": "Elan Növü",
@@ -619,6 +619,7 @@
             "updating": "Yenilənir...",
             "errors": {
                 "select_company": "Zəhmət olmasa şirkət seçin.",
+                "select_location_from_list": "Şəhəri təkliflər siyahısından seçin (yalnız yazmaq kifayət deyil).",
                 "required": "Bu sahə mütləqdir.",
                 "fill_required": "Zəhmət olmasa tələb olunan sahələri doldurun.",
                 "check_form": "Zəhmət olmasa formadakı xətaları yoxlayın.",
@@ -876,7 +877,9 @@
             "description_label": "Məlumat",
             "date_label": "Tarix",
             "image_label": "Şəkil (Opsional)",
-            "upload_image": "Şəkil Yüklə"
+            "upload_image": "Şəkil Yüklə",
+            "url_label": "Layihə linki (istəyə bağlı)",
+            "visit_link": "Layihəyə keç"
         }
     },
     "public_profile": {

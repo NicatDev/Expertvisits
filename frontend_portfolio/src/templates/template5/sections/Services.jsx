@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, ChevronRight, Briefcase, ShieldCheck, Activity, Award, UserCheck, Globe, Star } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
+import { truncateDescription } from '@/lib/portfolioText';
 import styles from '../styles/services.module.scss';
 
 export default function Services({ data }) {
@@ -23,20 +24,35 @@ export default function Services({ data }) {
                 </div>
 
                 <div className={styles.serviceGrid}>
-                    {data.map((service, idx) => (
-                        <div key={idx} className={styles.serviceCard} onClick={() => setSelectedService(service)}>
-                            <div className={styles.serviceIcon}>{getIcon(idx)}</div>
-                            <h3 className={styles.serviceTitle}>{service.title}</h3>
-                            <p className={styles.serviceDescription}>
-                                {service.description && service.description.length > 100
-                                    ? `${service.description.substring(0, 100)}…`
-                                    : service.description || ''}
-                            </p>
-                            <span className={styles.readMore}>
-                                {t('portfolio.readMore')} <ChevronRight size={16} />
-                            </span>
-                        </div>
-                    ))}
+                    {data.map((service, idx) => {
+                        const { excerpt, needsMore } = truncateDescription(service.description);
+                        return (
+                            <div
+                                key={idx}
+                                className={styles.serviceCard}
+                                onClick={() => setSelectedService(service)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        setSelectedService(service);
+                                    }
+                                }}
+                            >
+                                <div className={styles.serviceIcon}>{getIcon(idx)}</div>
+                                <h3 className={styles.serviceTitle}>{service.title}</h3>
+                                <p className={styles.serviceDescription}>
+                                    {needsMore ? excerpt : service.description || ''}
+                                </p>
+                                {needsMore ? (
+                                    <span className={styles.readMore}>
+                                        {t('portfolio.readMore')} <ChevronRight size={16} />
+                                    </span>
+                                ) : null}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 

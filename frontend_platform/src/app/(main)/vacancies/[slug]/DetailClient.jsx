@@ -216,13 +216,7 @@ export default function DetailClient({ vacancy }) {
                                     <span className={styles.value}>{translateEnum('vacancies', vacancy.work_mode)}</span>
                                 </div>
                             </li>
-                            <li>
-                                <Building size={20} className={styles.icon} />
-                                <div>
-                                    <span className={styles.label}>{t('vacancy_detail.industry')}</span>
-                                    <span className={styles.value}>{vacancy.sub_category?.name || 'Technology'}</span>
-                                </div>
-                            </li>
+                          
                         </ul>
                     </div>
 

@@ -91,6 +91,7 @@ class Project(models.Model):
     description = models.TextField()
     date = models.DateField()
     image = models.ImageField(upload_to='projects/images/', null=True, blank=True)
+    url = models.URLField(max_length=500, blank=True)
 
     class Meta:
         ordering = ['-date']

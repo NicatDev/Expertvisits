@@ -129,6 +129,10 @@
         "emptyServicesPage": "No services to show yet.",
         "emptyProjectsPage": "No projects to show yet.",
         "backToHome": "Back to home",
+        "visitProject": "Visit project",
+        "searchServicesPlaceholder": "Search services by title or description…",
+        "searchProjectsPlaceholder": "Search projects by title or description…",
+        "noSearchResults": "Nothing matches your search.",
         "servicesSectionTitle": "Services I offer",
         "servicesSectionSubtitle": "Services"
     }

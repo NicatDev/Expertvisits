@@ -8,6 +8,10 @@ import styles from './AddVacancyModal.module.scss';
 import LocationSelect from '@/components/ui/LocationSelect';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
+import {
+    coerceLocationToValidDisplayName,
+    isValidLocationDisplayName,
+} from '@/lib/locationCatalog';
 
 const emptyEmployer = () => ({
     employer_display_name: '',
@@ -34,7 +38,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
         listing_type: 'job',
         job_type: 'full-time',
         work_mode: 'office',
-        location: 'Baku',
+        location: '',
         salary_range: '',
         description: '',
         expires_at: '',
@@ -61,7 +65,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                 listing_type: initialData.listing_type,
                 job_type: initialData.job_type,
                 work_mode: initialData.work_mode,
-                location: initialData.location,
+                location: coerceLocationToValidDisplayName(initialData.location || '') || '',
                 salary_range: initialData.salary_range || '',
                 description: initialData.description || '',
                 expires_at: initialData.expires_at,
@@ -85,7 +89,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                 listing_type: 'job',
                 job_type: 'full-time',
                 work_mode: 'office',
-                location: 'Baku',
+                location: '',
                 salary_range: '',
                 description: '',
                 expires_at: '',
@@ -204,7 +208,11 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
         }
 
         if (!formData.title) newErrors.title = t('vacancies.add_modal.errors.required');
-        if (!formData.location) newErrors.location = t('vacancies.add_modal.errors.required');
+        if (!formData.location) {
+            newErrors.location = t('vacancies.add_modal.errors.required');
+        } else if (!isValidLocationDisplayName(formData.location)) {
+            newErrors.location = t('vacancies.add_modal.errors.select_location_from_list');
+        }
         if (!formData.expires_at) newErrors.expires_at = t('vacancies.add_modal.errors.required');
         if (!formData.description) newErrors.description = t('vacancies.add_modal.errors.required');
 
@@ -444,6 +452,7 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
                                     value={formData.location}
                                     onChange={(val) => handleChange('location', val)}
                                     placeholder={t('auth_page.select_city')}
+                                    strict
                                 />
                             </div>
                             {errors.location && <span className={styles.fieldError}>{errors.location}</span>}

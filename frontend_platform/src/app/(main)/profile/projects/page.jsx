@@ -10,6 +10,7 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import ImageCropModal from '@/components/ui/ImageCropModal';
 import { toast } from 'react-toastify';
+import { ExternalLink } from 'lucide-react';
 
 // Local Form Modal wrapper 
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
@@ -40,7 +41,7 @@ const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodySt
 
 const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
     const { t } = useTranslation('common');
-    const [formData, setFormData] = useState({ title: '', description: '', date: '' });
+    const [formData, setFormData] = useState({ title: '', description: '', date: '', url: '' });
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     
@@ -51,11 +52,16 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
 
     useEffect(() => {
         if (initialData) {
-            setFormData({ title: initialData.title, description: initialData.description, date: initialData.date });
+            setFormData({
+                title: initialData.title,
+                description: initialData.description,
+                date: initialData.date,
+                url: initialData.url || '',
+            });
             setImagePreview(initialData.image || null);
             setImageFile(null);
         } else {
-            setFormData({ title: '', description: '', date: '' });
+            setFormData({ title: '', description: '', date: '', url: '' });
             setImagePreview(null);
             setImageFile(null);
         }
@@ -88,6 +94,7 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
         submitData.append('title', formData.title);
         submitData.append('description', formData.description);
         submitData.append('date', formData.date);
+        submitData.append('url', (formData.url || '').trim());
 
         if (imageFile) {
             submitData.append('image', imageFile);
@@ -114,6 +121,13 @@ const ProjectModal = ({ isOpen, onClose, initialData, onSave }) => {
                     />
                 </div>
                 <Input type="date" label={t('profile_modals.project.date_label')} value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} required />
+                <Input
+                    type="url"
+                    label={t('profile_modals.project.url_label')}
+                    value={formData.url}
+                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                    placeholder="https://"
+                />
 
                 <div style={{ marginTop: '10px' }}>
                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>{t('profile_modals.project.image_label')}</label>
@@ -290,14 +304,59 @@ export default function ProjectsPage() {
             {/* Detail View Modal */}
             {viewModalProject && (
                 <Modal isOpen={!!viewModalProject} onClose={closeViewModal} title={viewModalProject.title} bodyStyle={{ padding: '20px' }}>
-                    {viewModalProject.image && (
-                        <div style={{ width: '100%', maxHeight: '400px', overflow: 'hidden', background: '#f3f4f6', borderRadius: '12px', marginBottom: '20px' }}>
-                            <img src={viewModalProject.image} alt={viewModalProject.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-                        </div>
-                    )}
                     <div style={{ padding: '0 4px' }}>
-                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>{t('profile_modals.project.date_label')}: {viewModalProject.date}</div>
-                        <p style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: 0 }}>{viewModalProject.description}</p>
+                        <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>
+                            {t('profile_modals.project.date_label')}: {viewModalProject.date}
+                        </div>
+                        <p style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>
+                            {viewModalProject.description}
+                        </p>
+                        {viewModalProject.image ? (
+                            <div
+                                style={{
+                                    textAlign: 'center',
+                                    marginBottom: '16px',
+                                }}
+                            >
+                                <img
+                                    src={viewModalProject.image}
+                                    alt=""
+                                    style={{
+                                        maxWidth: 'min(100%, 420px)',
+                                        width: '100%',
+                                        height: 'auto',
+                                        maxHeight: '280px',
+                                        objectFit: 'contain',
+                                        borderRadius: '12px',
+                                        background: '#f3f4f6',
+                                        display: 'inline-block',
+                                        verticalAlign: 'middle',
+                                    }}
+                                />
+                            </div>
+                        ) : null}
+                        {viewModalProject.url ? (
+                            <a
+                                href={viewModalProject.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '10px 18px',
+                                    borderRadius: '10px',
+                                    background: '#2563eb',
+                                    color: '#fff',
+                                    fontWeight: 600,
+                                    fontSize: '0.9rem',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                <ExternalLink size={18} />
+                                {t('profile_modals.project.visit_link')}
+                            </a>
+                        ) : null}
                     </div>
                 </Modal>
             )}
