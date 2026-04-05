@@ -13,13 +13,19 @@
 
 .modal {
     background: #fff;
-    width: 100%;
-    max-width: 600px;
+    width: min(920px, 94vw);
+    max-width: 920px;
     border-radius: 12px;
     padding: 24px;
     position: relative;
     max-height: 90vh;
     overflow-y: auto;
+
+    @media (max-width: 640px) {
+        width: 100%;
+        max-width: none;
+        margin: 0 12px;
+    }
 
     h2 {
         margin-bottom: 24px;

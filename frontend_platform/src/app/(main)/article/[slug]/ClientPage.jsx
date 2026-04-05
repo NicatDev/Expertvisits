@@ -103,9 +103,12 @@ export default function ClientPage() {
 
     const formattedDate = formatDate(article.created_at, i18n.language);
 
+    const publishedIso = article.created_at
+        ? new Date(article.created_at).toISOString()
+        : undefined;
     return (
         <div style={{ minHeight: '100vh', background: '#f5f5f5', padding: '24px' }}>
-            <div className={styles.container}>
+            <article className={styles.container} lang={article.language || 'az'}>
                 <div className={styles.backBtn} onClick={() => router.back()}>
                     <ChevronLeft size={20} />
                     <span>{t('auth_page.back')}</span>
@@ -120,7 +123,14 @@ export default function ClientPage() {
                             <div className={styles.info}>
                                 <span className={styles.author}>{article.author}</span>
                                 <span className={styles.dot}>•</span>
-                                <span className={styles.date}>{formattedDate}</span>
+                                {publishedIso && (
+                                    <time className={styles.date} dateTime={publishedIso}>
+                                        {formattedDate}
+                                    </time>
+                                )}
+                                {!publishedIso && (
+                                    <span className={styles.date}>{formattedDate}</span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -135,8 +145,9 @@ export default function ClientPage() {
                     </div>
                 )}
 
-                <div
+                <section
                     className={styles.body}
+                    aria-label={t('create_modal.content') || 'Article content'}
                     dangerouslySetInnerHTML={{ __html: article.body }}
                 />
 
@@ -182,7 +193,7 @@ export default function ClientPage() {
                         refreshTrigger={refreshCommentsTrigger}
                     />
                 </div>
-            </div>
+            </article>
 
             <LikesModal
                 isOpen={showLikesModal}

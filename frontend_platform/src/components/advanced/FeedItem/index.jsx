@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '../../ui/Button';
 import { Heart, MessageCircle, Share2, MoreHorizontal, PlayCircle, Send, CheckCircle, Edit2, Trash2 } from 'lucide-react';
 import Avatar from '../../ui/Avatar';
@@ -16,6 +16,7 @@ import ParticipantsListModal from '../ParticipantsListModal';
 import Modal from '../../ui/Modal';
 import { useTranslation } from '@/i18n/client';
 import { formatDate } from '@/lib/utils/date';
+import { htmlToFeedPreview } from '@/lib/utils/htmlFeedPreview';
 import PollCard from '../PollCard';
 
 const FeedItem = ({ item, onDelete }) => {
@@ -44,6 +45,11 @@ const FeedItem = ({ item, onDelete }) => {
     // Basic detection of type based on fields
     const isArticle = localItem.body !== undefined;
     const isQuiz = localItem.questions !== undefined;
+
+    const articleFeedPreview = useMemo(
+        () => (isArticle && localItem.body ? htmlToFeedPreview(localItem.body, 320) : { text: '', truncated: false }),
+        [isArticle, localItem.body]
+    );
 
     const [showLikesModal, setShowLikesModal] = useState(false);
     const [showComments, setShowComments] = useState(true);
@@ -253,18 +259,8 @@ const FeedItem = ({ item, onDelete }) => {
                             </Link>
                         </h3>
 
-                        {/* Wait, directly setting innerHTML with truncated string is bad. 
-                            Better to render a sanitized Div with limited height. 
-                            Let's use a helper or just render full body with CSS line-clamp? 
-                            If I render full body with CSS line clamp, it handles HTML better. 
-                            But valid HTML structure might break flex/grid. 
-                            Let's try rendering full body but constrained.
-                        */}
-                        <div
-                            className={styles.articleBody}
-                            dangerouslySetInnerHTML={{ __html: localItem.body }}
-                        />
-                        {localItem.body.length > 300 && (
+                        <p className={styles.articlePreview}>{articleFeedPreview.text}</p>
+                        {articleFeedPreview.truncated && (
                             <Link href={`/article/${localItem.slug}`} className={styles.readMore}>
                                 {t('feed_item.view_more')}
                             </Link>

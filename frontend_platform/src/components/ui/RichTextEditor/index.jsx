@@ -2,7 +2,22 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Heading from '@tiptap/extension-heading';
-import { Bold, Italic, Underline as UnderlineIcon, Heading2, Heading3, Heading4 } from 'lucide-react';
+import Placeholder from '@tiptap/extension-placeholder';
+import {
+    Bold,
+    Italic,
+    Underline as UnderlineIcon,
+    Heading2,
+    Heading3,
+    Heading4,
+    List,
+    ListOrdered,
+    Quote,
+    Strikethrough,
+    Code,
+    SquareCode,
+    Minus,
+} from 'lucide-react';
 import styles from './style.module.scss';
 import { useEffect } from 'react';
 
@@ -39,6 +54,15 @@ const MenuBar = ({ editor }) => {
             >
                 <UnderlineIcon size={18} />
             </button>
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                disabled={!editor.can().chain().focus().toggleStrike().run()}
+                className={editor.isActive('strike') ? styles.active : ''}
+                title="Strikethrough"
+            >
+                <Strikethrough size={18} />
+            </button>
             <div className={styles.divider} />
             <button
                 type="button"
@@ -64,6 +88,57 @@ const MenuBar = ({ editor }) => {
             >
                 <Heading4 size={18} />
             </button>
+            <div className={styles.divider} />
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                className={editor.isActive('bulletList') ? styles.active : ''}
+                title="Bullet list"
+            >
+                <List size={18} />
+            </button>
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                className={editor.isActive('orderedList') ? styles.active : ''}
+                title="Numbered list"
+            >
+                <ListOrdered size={18} />
+            </button>
+            <div className={styles.divider} />
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                className={editor.isActive('blockquote') ? styles.active : ''}
+                title="Quote"
+            >
+                <Quote size={18} />
+            </button>
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleCode().run()}
+                disabled={!editor.can().chain().focus().toggleCode().run()}
+                className={editor.isActive('code') ? styles.active : ''}
+                title="Inline code"
+            >
+                <Code size={18} />
+            </button>
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                className={editor.isActive('codeBlock') ? styles.active : ''}
+                title="Code block"
+            >
+                <SquareCode size={18} />
+            </button>
+            <div className={styles.divider} />
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                title="Horizontal line"
+            >
+                <Minus size={18} />
+            </button>
         </div>
     );
 };
@@ -72,15 +147,18 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
-                heading: false, // Disable default heading to use configured one
+                heading: false,
             }),
             Heading.configure({
                 levels: [2, 3, 4],
             }),
             Underline,
+            Placeholder.configure({
+                placeholder: placeholder || '',
+            }),
         ],
         content: content,
-        immediatelyRender: false, // Fix hydration mismatch
+        immediatelyRender: false,
         onUpdate: ({ editor }) => {
             onChange(editor.getHTML());
         },
@@ -91,23 +169,18 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
         },
     });
 
-    // Update content if it changes externally (e.g. initial load or form reset)
     useEffect(() => {
         if (editor && content !== undefined) {
             const currentHtml = editor.getHTML();
             if (content !== currentHtml) {
-                // Explicitly allow clearing the editor from the outside
                 if (content === '' || content === '<p></p>') {
                     editor.commands.setContent(content);
-                } 
-                // Only update on initial load to avoid cursor jumps while typing
-                else if (editor.getText() === '') {
+                } else if (editor.getText() === '') {
                     editor.commands.setContent(content);
                 }
             }
         }
     }, [content, editor]);
-
 
     return (
         <div className={styles.richTextEditor}>

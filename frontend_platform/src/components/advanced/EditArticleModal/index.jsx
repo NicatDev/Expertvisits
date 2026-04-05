@@ -92,6 +92,7 @@ export default function EditArticleModal({ isOpen, onClose, article, onSuccess }
                         <RichTextEditor
                             content={data.body}
                             onChange={html => setData({ ...data, body: html })}
+                            placeholder={t('create_modal.content_placeholder')}
                         />
                     </div>
 

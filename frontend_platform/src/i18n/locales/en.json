@@ -199,6 +199,7 @@
         "post_title": "Title",
         "cover_image": "Cover Image",
         "content": "Content",
+        "content_placeholder": "Write your article here…",
         "upload_placeholder": "Click to upload cover image",
         "quiz_title": "Quiz Title",
         "question_label": "Question",

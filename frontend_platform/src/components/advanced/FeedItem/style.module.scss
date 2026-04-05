@@ -84,36 +84,18 @@
     }
 }
 
-.articleBody {
+/* HTML əvəzinə düz mətn + pre-line: abzaslar görünür, bir dəfəlik string hesabı (useMemo) */
+.articlePreview {
     color: #4b5563;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-top: 8px;
-
-    /* Limit height/lines for feed */
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin: 8px 0 0;
+    white-space: pre-line;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-
-    p {
-        margin: 0;
-        display: inline;
-    }
-
-    h2,
-    h3,
-    h4 {
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    /* Prevent images in preview from taking space */
-    img {
-        display: none;
-    }
+    word-break: break-word;
 }
 
 .readMore {

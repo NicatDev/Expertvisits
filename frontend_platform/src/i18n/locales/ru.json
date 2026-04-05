@@ -194,6 +194,7 @@
         "post_title": "Заголовок",
         "cover_image": "Обложка",
         "content": "Содержание",
+        "content_placeholder": "Напишите текст статьи здесь…",
         "upload_placeholder": "Нажмите для загрузки обложки",
         "quiz_title": "Название опроса",
         "question_label": "Вопрос",

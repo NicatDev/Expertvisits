@@ -199,6 +199,7 @@
         "post_title": "Başlıq",
         "cover_image": "Örtük Şəkli",
         "content": "Məzmun",
+        "content_placeholder": "Məqalənizi burada yazın…",
         "upload_placeholder": "Örtük şəkli yükləmək üçün klikləyin",
         "quiz_title": "Test Başlığı",
         "question_label": "Sual",
