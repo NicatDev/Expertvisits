@@ -68,6 +68,6 @@ htmlcov/
 *.tmp
 *.temp
 
-# Note: Django migrations (**/migrations/*.py except __init__.py) should stay tracked.
-*/migrations/*.py
-!*/migrations/__init__.py
+# Django: migration modules (generated); __init__.py stays in repo
+**/migrations/*.py
+!**/migrations/__init__.py
