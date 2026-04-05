@@ -39,7 +39,7 @@ class ChatRoom(models.Model):
                 name="chat_chatroom_unique_pair",
             ),
             models.CheckConstraint(
-                check=models.Q(user_low_id__lt=models.F("user_high_id")),
+                condition=models.Q(user_low_id__lt=models.F("user_high_id")),
                 name="chat_chatroom_low_before_high",
             ),
         ]
