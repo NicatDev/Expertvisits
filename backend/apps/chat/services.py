@@ -67,18 +67,12 @@ def create_message(sender_id: int, chat_id: int, text: str) -> ChatMessage | Non
     notify_new_chat_message(msg=msg, is_first=is_first)
 
     room_id = room.pk
-    sid = sender_id
-    rid = recipient_id
     line = message_to_dict(msg)
 
     def _fanout():
         from apps.chat.realtime import broadcast_chat_room_payload
-        from apps.notifications.realtime import push_payload
 
         broadcast_chat_room_payload(room_id, {"type": "chat_message", "message": line})
-        broadcast_chat_room_payload(room_id, {"type": "chat_rooms_refresh"})
-        push_payload(sid, {"type": "chat_rooms_refresh"})
-        push_payload(rid, {"type": "chat_rooms_refresh"})
 
     transaction.on_commit(_fanout)
     return msg
@@ -128,7 +122,6 @@ def mark_messages_read(reader_id: int, chat_id: int, up_to_message_id: int | Non
                 },
             )
         push_payload(reader_id, {"type": "badge_refresh"})
-        push_payload(reader_id, {"type": "chat_rooms_refresh"})
 
     transaction.on_commit(_fanout)
     return updated

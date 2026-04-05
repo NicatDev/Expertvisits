@@ -30,7 +30,7 @@ export default async function robots() {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: ['/admin/', '/api/'],
+            disallow: ['/admin/', '/api/', '/chat', '/notifications'],
         },
         sitemap,
     };

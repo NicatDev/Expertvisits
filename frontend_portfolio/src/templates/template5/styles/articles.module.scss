@@ -2,12 +2,12 @@
 @import '../../../styles/mixins.scss';
 
 .articlesWrapper {
-  padding: 150px 0 80px;
+  padding: 72px 0 56px;
   background: #f8fafc;
   min-height: 80vh;
-  
+
   @include mobile {
-    padding: 120px 0 60px;
+    padding: 56px 0 40px;
   }
 }
 

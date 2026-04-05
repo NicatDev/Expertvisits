@@ -107,12 +107,6 @@ export function InboxSocketProvider({ children }) {
                         window.dispatchEvent(new CustomEvent('chat-live-message', { detail: payload }));
                     }
                 }
-                if (t === 'chat_rooms_refresh') {
-                    if (typeof window !== 'undefined') {
-                        window.dispatchEvent(new CustomEvent('chat-rooms-refresh'));
-                    }
-                    scheduleRefresh();
-                }
             };
         };
 
