@@ -249,4 +249,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'expertvisits@gmail.com'
 EMAIL_HOST_PASSWORD = 'webb eufs sgwr jcbi'  # Google App Password
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = 'info@expertvisits.com'
