@@ -6,8 +6,8 @@
 .row {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
 }
 
@@ -18,23 +18,24 @@
 
 .toggle {
   flex-shrink: 0;
+  margin-left: auto;
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  margin-top: 2px;
+  margin-top: 0;
   padding: 0;
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  background: #fafafa;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
   cursor: pointer;
-  color: #555;
-  transition: background 0.2s, border-color 0.2s;
+  color: #64748b;
+  transition: color 0.2s, background 0.2s;
 
   &:hover {
-    background: #f0f7ff;
-    border-color: #1890ff;
+    background: rgba(0, 0, 0, 0.05);
     color: #1890ff;
   }
 
@@ -70,19 +71,25 @@
 
 .listOwner {
   margin-top: 10px;
-  padding-left: 1.1rem;
+  margin-bottom: 0;
+  padding-left: 1.35rem;
+  list-style-type: disc;
+  list-style-position: outside;
   color: #444;
   font-size: 14px;
   line-height: 1.55;
 
   li {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    padding-left: 0.25rem;
+
+    &::marker {
+      color: #64748b;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
-@media (max-width: 640px) {
-  .toggle {
-    width: 36px;
-    height: 36px;
-  }
-}
