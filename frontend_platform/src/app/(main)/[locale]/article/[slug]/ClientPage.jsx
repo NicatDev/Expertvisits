@@ -15,25 +15,29 @@ import { formatDate } from '@/lib/utils/date';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
 import ArticleBodyContent from './ArticleBodyContent';
 
-export default function ClientPage() {
+export default function ClientPage({ slug: slugProp, initialArticle = null }) {
     const { t, i18n } = useTranslation('common');
-    // ...
-    // ...
-    // slug is passed from Server Component
     const params = useParams();
-    const slug = params?.slug;
+    const slug = slugProp ?? params?.slug;
     const router = useRouter();
     const { user } = useAuth();
-    const [article, setArticle] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [article, setArticle] = useState(initialArticle);
+    const [loading, setLoading] = useState(!initialArticle);
     const [fetchError, setFetchError] = useState(false);
     const [showLikesModal, setShowLikesModal] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [refreshCommentsTrigger, setRefreshCommentsTrigger] = useState(0);
 
     useEffect(() => {
-        if (slug) fetchArticle();
-    }, [slug]);
+        if (!slug) return;
+        if (initialArticle) {
+            setArticle(initialArticle);
+            setLoading(false);
+            setFetchError(false);
+            return;
+        }
+        fetchArticle();
+    }, [slug, initialArticle]);
 
     const fetchArticle = async () => {
         setFetchError(false);

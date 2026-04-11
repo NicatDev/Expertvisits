@@ -2,22 +2,9 @@ import ClientPage from './ClientPage';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
+import { getArticleBySlug } from '@/lib/api/getArticleBySlug';
 
-const API_URL = 'https://api.expertvisits.com';
 const FALLBACK_IMAGE = `${SITE_ORIGIN}/logo.png`;
-
-async function getArticle(slug) {
-  if (!slug) return;
-  try {
-    const res = await fetch(`${API_URL}/api/content/articles/${slug}/`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
 
 function stripHtml(html) {
   if (!html) return '';
@@ -33,18 +20,11 @@ export async function generateMetadata({ params }) {
   const { slug, locale: routeLocale } = await params;
   const cookieStore = await cookies();
   const systemLng = cookieStore.get('i18next')?.value || 'az';
-  const article = await getArticle(slug);
+
+  const article = await getArticleBySlug(slug, routeLocale || systemLng);
 
   if (!article) {
-    const notFoundTitles = {
-      az: 'Məqalə tapılmadı | Expert Visits',
-      ru: 'Статья не найдена | Expert Visits',
-      en: 'Article Not Found | Expert Visits',
-    };
-    return {
-      title: notFoundTitles[systemLng] || notFoundTitles.az,
-      robots: { index: false },
-    };
+    notFound();
   }
 
   const articleLng = article.language || 'az';
@@ -109,11 +89,13 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ArticlePage({ params }) {
-  const { slug } = await params;
-  const article = await getArticle(slug);
+  const { slug, locale: routeLocale } = await params;
+  const article = await getArticleBySlug(slug, routeLocale || 'az');
+
   if (!article) {
     notFound();
   }
+
   const lang = article?.language || 'az';
 
   const jsonLd = article
@@ -152,7 +134,7 @@ export default async function ArticlePage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <ClientPage slug={slug} />
+      <ClientPage slug={slug} initialArticle={article} />
     </>
   );
 }

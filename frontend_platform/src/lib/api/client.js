@@ -43,10 +43,23 @@ const processQueue = (error, token = null) => {
     failedQueue = [];
 };
 
+function isCanceledRequest(error) {
+    if (!error) return false;
+    if (axios.isCancel(error)) return true;
+    if (error.code === 'ERR_CANCELED' || error.code === 'ECONNABORTED') return true;
+    if (error.name === 'CanceledError' || error.name === 'AbortError') return true;
+    const msg = (error.message || '').toLowerCase();
+    return msg === 'canceled' || msg === 'cancelled' || msg.includes('aborted');
+}
+
 // Response interceptor
 api.interceptors.response.use((response) => {
     return response;
 }, async (error) => {
+    if (isCanceledRequest(error)) {
+        return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
 
     // Prevent infinite loops

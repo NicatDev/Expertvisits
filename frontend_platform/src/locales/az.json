@@ -99,6 +99,9 @@
     },
     "article_page": {
         "load_error": "Məqaləni yükləmək mümkün olmadı",
+        "error_title": "Məqalə yüklənmədi",
+        "error_body": "Server müvəqqəti əlçatan olmaya bilər. Bir az sonra yenidən cəhd edin.",
+        "error_retry": "Yenidən cəhd et",
         "not_found": "Məqalə tapılmadı.",
         "likes_count": "{{count}} Bəyənmə",
         "comments_count": "{{count}} Rəy",
@@ -589,12 +592,28 @@
             "update_failed": "Status yenilənmədi"
         }
     },
+    "vacancy_page": {
+        "error_title": "Vakansiya yüklənmədi",
+        "error_body": "Server müvəqqəti əlçatan olmaya bilər. Bir az sonra yenidən cəhd edin.",
+        "error_retry": "Yenidən cəhd et"
+    },
     "vacancies": {
         "title": "Vakansiyalar",
         "filters_hidden": "Axtarış filtrləri",
         "list_hidden": "Vakansiyaların siyahısı",
+        "filters_title": "Filtrlər",
+        "list_title": "Vakansiyalar",
         "subtitle": "Xəyalınızdakı işi və ya təcrübəni tapın",
         "post_vacancy": "Vakansiya yerləşdir",
+        "search_btn": "Axtar",
+        "filters": {
+            "title": "Axtarış filtrləri",
+            "search": "Açar sözlər",
+            "toggle_advanced": "Filtr",
+            "clear": "Təmizlə",
+            "job_type": "İş növü",
+            "work_mode": "İş rejimi"
+        },
         "search_placeholder": "Vəzifə, şirkət üzrə axtar...",
         "filter_city": "Şəhər üzrə filtrlə",
         "all_job_types": "Bütün İş Növləri",

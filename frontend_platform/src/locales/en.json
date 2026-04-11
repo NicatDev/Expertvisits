@@ -99,6 +99,9 @@
     },
     "article_page": {
         "load_error": "Failed to load article",
+        "error_title": "Could not load article",
+        "error_body": "The server may be temporarily unavailable. Please try again in a moment.",
+        "error_retry": "Try again",
         "not_found": "Article not found.",
         "likes_count": "{{count}} Likes",
         "comments_count": "{{count}} Comments",
@@ -723,12 +726,28 @@
             "update_failed": "Failed to update status"
         }
     },
+    "vacancy_page": {
+        "error_title": "Could not load vacancy",
+        "error_body": "The server may be temporarily unavailable. Please try again in a moment.",
+        "error_retry": "Try again"
+    },
     "vacancies": {
         "title": "Vacancies",
         "filters_hidden": "Search filters",
         "list_hidden": "Vacancies list",
+        "filters_title": "Filters",
+        "list_title": "Vacancies",
         "subtitle": "Find your dream job or internship",
         "post_vacancy": "Post Vacancy",
+        "search_btn": "Search",
+        "filters": {
+            "title": "Search filters",
+            "search": "Keywords",
+            "toggle_advanced": "Filters",
+            "clear": "Clear",
+            "job_type": "Job type",
+            "work_mode": "Work mode"
+        },
         "search_placeholder": "Search by title, company...",
         "filter_city": "Filter by City",
         "all_job_types": "All Job Types",
