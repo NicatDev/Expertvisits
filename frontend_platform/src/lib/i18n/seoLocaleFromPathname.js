@@ -1,20 +1,9 @@
-const SEO_LANGS = new Set(['en', 'ru']);
+import { localeFromPathname } from '@/lib/i18n/routing';
 
 /**
- * Returns en|ru when the URL path is an SEO locale route; otherwise null.
- * Unprefixed routes (/, /experts, /vacancies) use cookie / default instead.
+ * Locale derived from URL (first segment). Used by middleware for x-ev headers.
+ * Returns null for non-localized routes.
  */
 export function seoLocaleFromPathname(pathname) {
-  if (!pathname || pathname === '/') return null;
-  const parts = pathname.split('/').filter(Boolean);
-  if (parts.length === 0) return null;
-
-  const [a, b] = parts;
-
-  if (SEO_LANGS.has(a)) return a;
-  if ((a === 'experts' || a === 'vacancies' || a === 'companies') && b && SEO_LANGS.has(b)) {
-    return b;
-  }
-
-  return null;
+  return localeFromPathname(pathname);
 }

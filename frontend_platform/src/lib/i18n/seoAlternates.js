@@ -1,101 +1,39 @@
+import {
+  defaultLocale,
+  localeFromPathname,
+  pathnameWithoutLocale,
+  withLocale,
+} from '@/lib/i18n/routing';
+
 const base = (baseUrl) => baseUrl.replace(/\/$/, '');
 
 /**
- * hreflang map for SEO locale page families; undefined when not a known cluster.
+ * Full hreflang cluster for localized marketing URLs only.
+ * Returns undefined for routes without a locale prefix (/login, …).
  */
 export function hreflangAlternatesForPathname(baseUrl, pathname) {
+  const loc = localeFromPathname(pathname || '/');
+  if (!loc) return undefined;
+
   const root = base(baseUrl);
-  const parts = (pathname || '/').split('/').filter(Boolean);
+  const rest = pathnameWithoutLocale(pathname || '/');
 
-  if (parts.length === 0) {
-    return {
-      az: `${root}/`,
-      en: `${root}/en`,
-      ru: `${root}/ru`,
-      'x-default': `${root}/`,
-    };
-  }
+  const azUrl = `${root}${withLocale('az', rest)}`;
+  const enUrl = `${root}${withLocale('en', rest)}`;
+  const ruUrl = `${root}${withLocale('ru', rest)}`;
 
-  const [a, b, c] = parts;
-
-  if (parts.length === 1 && (a === 'en' || a === 'ru')) {
-    return {
-      az: `${root}/`,
-      en: `${root}/en`,
-      ru: `${root}/ru`,
-      'x-default': `${root}/`,
-    };
-  }
-
-  if ((a === 'en' || a === 'ru') && b === 'vacancies' && !c) {
-    return {
-      az: `${root}/vacancies`,
-      en: `${root}/vacancies/en`,
-      ru: `${root}/vacancies/ru`,
-      'x-default': `${root}/vacancies`,
-    };
-  }
-
-  if (a === 'experts' && parts.length === 1) {
-    return {
-      az: `${root}/experts`,
-      en: `${root}/experts/en`,
-      ru: `${root}/experts/ru`,
-      'x-default': `${root}/experts`,
-    };
-  }
-
-  if (a === 'experts' && parts.length === 2 && (b === 'en' || b === 'ru')) {
-    return {
-      az: `${root}/experts`,
-      en: `${root}/experts/en`,
-      ru: `${root}/experts/ru`,
-      'x-default': `${root}/experts`,
-    };
-  }
-
-  if (a === 'vacancies' && parts.length === 1) {
-    return {
-      az: `${root}/vacancies`,
-      en: `${root}/vacancies/en`,
-      ru: `${root}/vacancies/ru`,
-      'x-default': `${root}/vacancies`,
-    };
-  }
-
-  if (a === 'vacancies' && parts.length === 2 && (b === 'en' || b === 'ru')) {
-    return {
-      az: `${root}/vacancies`,
-      en: `${root}/vacancies/en`,
-      ru: `${root}/vacancies/ru`,
-      'x-default': `${root}/vacancies`,
-    };
-  }
-
-  if (a === 'companies' && parts.length === 1) {
-    return {
-      az: `${root}/companies`,
-      en: `${root}/companies/en`,
-      ru: `${root}/companies/ru`,
-      'x-default': `${root}/companies`,
-    };
-  }
-
-  if (a === 'companies' && parts.length === 2 && (b === 'en' || b === 'ru')) {
-    return {
-      az: `${root}/companies`,
-      en: `${root}/companies/en`,
-      ru: `${root}/companies/ru`,
-      'x-default': `${root}/companies`,
-    };
-  }
-
-  return undefined;
+  return {
+    az: azUrl,
+    en: enUrl,
+    ru: ruUrl,
+    'x-default': `${root}${withLocale(defaultLocale, rest)}`,
+  };
 }
 
 export function canonicalUrlForPathname(baseUrl, pathname) {
   const root = base(baseUrl);
-  const p = pathname || '/';
-  if (p === '/') return `${root}/`;
-  return `${root}${p.startsWith('/') ? p : `/${p}`}`;
+  const raw = pathname || '/';
+  const pathPart = raw.split('?')[0];
+  if (!pathPart || pathPart === '/') return `${root}/`;
+  return `${root}${pathPart.startsWith('/') ? pathPart : `/${pathPart}`}`;
 }

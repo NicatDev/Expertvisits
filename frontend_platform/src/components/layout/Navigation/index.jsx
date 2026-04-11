@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
+import { useLocalizedPath } from '@/hooks/useLocalePath';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './styles.module.scss';
 import { User, Menu, X, Bell, MessageCircle } from 'lucide-react';
@@ -13,7 +15,18 @@ import { toast } from 'react-toastify';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 
 const Navigation = () => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname);
+    const locale = pathLocale || i18n.resolvedLanguage || defaultLocale;
+    const homeHref = withLocale(locale, '/');
+    const expertsHref = withLocale(locale, '/experts');
+    const vacanciesHref = withLocale(locale, '/vacancies');
+    const companiesHref = withLocale(locale, '/companies');
+    const websiteTemplateHref = withLocale(locale, '/website-template');
+    const profileHref = useLocalizedPath('/profile');
+    const notificationsHref = useLocalizedPath('/notifications');
+    const chatHref = useLocalizedPath('/chat');
     const { user, logout } = useAuth();
     const { notificationUnread, chatUnread } = useInboxSocket();
     const router = useRouter();
@@ -57,17 +70,17 @@ const Navigation = () => {
         <nav className={styles.navbar}>
             <div className={styles.container}>
                 {/* Left: Logo */}
-                <Link href="/" className={styles.logo}>
+                <Link href={homeHref} className={styles.logo}>
                     <Image src="/logo.png" alt="Expert Visits" width={40} height={40} priority unoptimized />
                     <span className={styles.brandName}>Expert Visits</span>
                 </Link>
 
                 {/* Center: Desktop Menu */}
                 <div className={styles.centerMenu}>
-                    <Link href="/" className={styles.navLink} suppressHydrationWarning>{t('nav.home')}</Link>
-                    <Link href="/experts" className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
-                    <Link href="/vacancies" className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
-                    <Link href="/companies" className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
+                    <Link href={homeHref} className={styles.navLink} suppressHydrationWarning>{t('nav.home')}</Link>
+                    <Link href={expertsHref} className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
+                    <Link href={vacanciesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
+                    <Link href={companiesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
                     
                   
                 </div>
@@ -77,7 +90,7 @@ const Navigation = () => {
                     {/* Create Website Button */}
                     <div className={styles.desktopOnly}>
                         <Link
-                            href="/website-template"
+                            href={websiteTemplateHref}
                             onClick={guardWebsiteNav}
                             className={styles.websiteNavLink}
                             style={{
@@ -106,7 +119,7 @@ const Navigation = () => {
 
                     {user ? (
                         <div className={styles.inboxIcons}>
-                            <Link href="/notifications" className={styles.inboxIconLink} aria-label={t('inbox.notifications')}>
+                            <Link href={notificationsHref} className={styles.inboxIconLink} aria-label={t('inbox.notifications')}>
                                 <span className={styles.inboxIconWrap}>
                                     <Bell size={22} />
                                     {notificationUnread > 0 ? (
@@ -116,7 +129,7 @@ const Navigation = () => {
                                     ) : null}
                                 </span>
                             </Link>
-                            <Link href="/chat" className={styles.inboxIconLink} aria-label={t('inbox.chat')}>
+                            <Link href={chatHref} className={styles.inboxIconLink} aria-label={t('inbox.chat')}>
                                 <span className={styles.inboxIconWrap}>
                                     <MessageCircle size={22} />
                                     {chatUnread > 0 ? (
@@ -154,7 +167,7 @@ const Navigation = () => {
                             <div className={styles.dropdownMenu} style={{ right: 0, minWidth: '150px' }}>
                                 {user ? (
                                     <>
-                                        <button onClick={() => router.push('/profile')} suppressHydrationWarning>{t('nav.profile')}</button>
+                                        <button onClick={() => router.push(profileHref)} suppressHydrationWarning>{t('nav.profile')}</button>
                                         <button onClick={logout} style={{ color: 'red' }} suppressHydrationWarning>{t('auth.logout')}</button>
                                     </>
                                 ) : (
@@ -178,24 +191,24 @@ const Navigation = () => {
             {
                 isMenuOpen && (
                     <div className={styles.mobileMenu}>
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
-                        <Link href="/experts" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
-                        <Link href="/vacancies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
-                        <Link href="/companies" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
+                        <Link href={homeHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.home')}</Link>
+                        <Link href={expertsHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
+                        <Link href={vacanciesHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
+                        <Link href={companiesHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
                         {user ? (
                             <>
-                                <Link href="/notifications" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
+                                <Link href={notificationsHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
                                     {t('inbox.notifications')}
                                     {notificationUnread > 0 ? ` (${notificationUnread > 99 ? '99+' : notificationUnread})` : ''}
                                 </Link>
-                                <Link href="/chat" onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
+                                <Link href={chatHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
                                     {t('inbox.chat')}
                                     {chatUnread > 0 ? ` (${chatUnread > 99 ? '99+' : chatUnread})` : ''}
                                 </Link>
                             </>
                         ) : null}
                         <Link
-                            href="/website-template"
+                            href={websiteTemplateHref}
                             onClick={(e) => {
                                 guardWebsiteNav(e);
                                 if (user) setIsMenuOpen(false);

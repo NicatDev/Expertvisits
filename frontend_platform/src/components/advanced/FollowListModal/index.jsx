@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Modal from '../../ui/Modal';
 import Button from '../../ui/Button';
@@ -8,9 +10,14 @@ import { User } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 const FollowListModal = ({ isOpen, onClose, username, type }) => {
     const { t } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const userPublicHref = (u) => withLocale(pathLocale, `/user/${encodeURIComponent(u)}`);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const { user: currentUser } = useAuth();
@@ -70,7 +77,7 @@ const FollowListModal = ({ isOpen, onClose, username, type }) => {
                         {users.length === 0 && <p style={{ padding: '20px', textAlign: 'center', color: '#888' }}>{t('follow_modal.no_users')}</p>}
                         {users.map(u => (
                             <div key={u.id} className={styles.userRow}>
-                                <Link href={`/user/${u.username}`} onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, textDecoration: 'none', color: 'inherit' }}>
+                                <Link href={userPublicHref(u.username)} onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, textDecoration: 'none', color: 'inherit' }}>
                                     {u.avatar ? (
                                         <img src={u.avatar} className={styles.avatar} alt={u.username} />
                                     ) : (

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -7,9 +9,14 @@ import { User, Check, X, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import styles from './ApplicantsModal.module.scss';
 import { useTranslation } from '@/i18n/client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
     const { t } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const userPublicHref = (u) => (u ? withLocale(pathLocale, `/user/${encodeURIComponent(u)}`) : '#');
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedApp, setExpandedApp] = useState(null); // ID of expanded application (motivation letter)
@@ -69,7 +76,7 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
                         {applicants.map(app => (
                             <div key={app.id} className={styles.item}>
                                 <div className={styles.header}>
-                                    <Link href={`/user/${app.applicant_details?.username}`} className={styles.userInfo} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
+                                    <Link href={userPublicHref(app.applicant_details?.username)} className={styles.userInfo} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
                                         {app.applicant_details.avatar ? (
                                             <img src={app.applicant_details.avatar} alt="Avatar" className={styles.avatar} />
                                         ) : (

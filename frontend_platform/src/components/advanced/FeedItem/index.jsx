@@ -15,6 +15,8 @@ import EditArticleModal from '../EditArticleModal';
 import ParticipantsListModal from '../ParticipantsListModal';
 import Modal from '../../ui/Modal';
 import { useTranslation } from '@/i18n/client';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { formatDate } from '@/lib/utils/date';
 import { htmlToFeedPreview } from '@/lib/utils/htmlFeedPreview';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
@@ -26,8 +28,8 @@ const FeedItem = ({ item, onDelete }) => {
     }
     const { t, i18n } = useTranslation('common');
     const { user } = useAuth();
-
-
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname);
 
     // Local state but initialized from props.
     const [likesCount, setLikesCount] = useState(item.likes_count || 0);
@@ -46,6 +48,15 @@ const FeedItem = ({ item, onDelete }) => {
     // Basic detection of type based on fields
     const isArticle = localItem.body !== undefined;
     const isQuiz = localItem.questions !== undefined;
+
+    // UI locale from URL only — not article.language (SEO alternate URLs are separate; same for share link)
+    const articleLinkLocale = pathLocale || defaultLocale;
+    const userPublicHref = (username) =>
+        username ? withLocale(articleLinkLocale, `/user/${encodeURIComponent(username)}`) : null;
+    const articleHref =
+        isArticle && localItem.slug
+            ? withLocale(articleLinkLocale, `/article/${localItem.slug}`)
+            : null;
 
     const articleFeedPreview = useMemo(
         () => (isArticle && localItem.body ? htmlToFeedPreview(localItem.body, 320) : { text: '', truncated: false }),
@@ -97,8 +108,8 @@ const FeedItem = ({ item, onDelete }) => {
     };
 
     const handleShare = () => {
-        const url = isArticle && localItem.slug
-            ? `${window.location.origin}/article/${localItem.slug}`
+        const url = isArticle && localItem.slug && articleHref
+            ? `${window.location.origin}${articleHref}`
             : `${window.location.origin}/post/${typeStr}/${localItem.id}`;
         navigator.clipboard.writeText(url);
         toast.info(t('feed_item.toast.link_copied'));
@@ -197,7 +208,7 @@ const FeedItem = ({ item, onDelete }) => {
             <div className={styles.header}>
                 <div className={styles.userInfo}>
                     {localItem.author ? (
-                        <Link href={`/user/${localItem.author}`} className={styles.avatar}>
+                        <Link href={userPublicHref(localItem.author)} className={styles.avatar}>
                             <Avatar user={{ username: localItem.author, avatar: localItem.author_avatar, avatar_compressed: localItem.author_avatar_compressed }} size={32} />
                         </Link>
                     ) : (
@@ -207,7 +218,7 @@ const FeedItem = ({ item, onDelete }) => {
                     )}
                     <div className={styles.meta}>
                         {localItem.author ? (
-                            <Link href={`/user/${localItem.author}`} className={styles.username} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link href={userPublicHref(localItem.author)} className={styles.username} style={{ textDecoration: 'none', color: 'inherit' }}>
                                 {localItem.author}
                             </Link>
                         ) : (
@@ -251,20 +262,20 @@ const FeedItem = ({ item, onDelete }) => {
             <div className={styles.contentBody}>
                 {isArticle && (
                     <>
-                        {localItem.image && (
-                            <Link href={`/article/${localItem.slug}`} className={styles.coverImage}>
+                        {localItem.image && articleHref && (
+                            <Link href={articleHref} className={styles.coverImage}>
                                 <img src={localItem.image} alt="Cover" />
                             </Link>
                         )}
                         <h3>
-                            <Link href={`/article/${localItem.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link href={articleHref || '#'} style={{ textDecoration: 'none', color: 'inherit' }}>
                                 {localItem.title}
                             </Link>
                         </h3>
 
                         <p className={styles.articlePreview}>{articleFeedPreview.text}</p>
                         {articleFeedPreview.truncated && (
-                            <Link href={`/article/${localItem.slug}`} className={styles.readMore}>
+                            <Link href={articleHref || '#'} className={styles.readMore}>
                                 {t('feed_item.view_more')}
                             </Link>
                         )}

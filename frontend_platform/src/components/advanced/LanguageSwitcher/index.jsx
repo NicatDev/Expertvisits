@@ -2,16 +2,16 @@
 
 import { useTranslation } from '@/i18n/client';
 import { useState, useRef, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './style.module.scss';
 import { Globe } from 'lucide-react';
+import { localeFromPathname, swapLocaleInPathname } from '@/lib/i18n/routing';
 
 const languages = [
     { code: 'az', label: 'AZ' },
     { code: 'en', label: 'EN' },
     { code: 'ru', label: 'RU' }
 ];
-
-import { usePathname, useRouter } from 'next/navigation';
 
 export default function LanguageSwitcher() {
     const { i18n } = useTranslation('common');
@@ -24,13 +24,18 @@ export default function LanguageSwitcher() {
 
     const handleLanguageChange = (code) => {
         i18n.changeLanguage(code);
-        document.cookie = `i18next=${code}; path=/; max-age=31536000; SameSite=Lax`; 
-        
-        router.refresh(); // Refresh to update server components with new cookie
+        document.cookie = `i18next=${code}; path=/; max-age=31536000; SameSite=Lax`;
+
+        const pathLocale = localeFromPathname(pathname);
+        if (pathLocale) {
+            const nextPath = swapLocaleInPathname(pathname, code);
+            router.push(nextPath);
+        } else {
+            router.refresh();
+        }
         setIsOpen(false);
     };
 
-    // Close on click outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (containerRef.current && !containerRef.current.contains(event.target)) {

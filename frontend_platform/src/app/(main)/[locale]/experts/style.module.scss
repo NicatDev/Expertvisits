@@ -1,0 +1,109 @@
+@import '../../../../styles/variables.scss';
+@import '../../../../styles/mixins.scss';
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mobile {
+        padding: 16px;
+    }
+}
+
+.header {
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #111;
+    }
+
+    p {
+        color: #666;
+    }
+}
+
+.mainLayout {
+    display: flex;
+    gap: 30px;
+
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+.sidebar {
+    width: 300px;
+    flex-shrink: 0;
+
+    @include mobile {
+        width: 100%;
+    }
+}
+
+.content {
+    flex: 1;
+}
+
+.filtersPlaceholder {
+    width: 100%;
+    min-height: 200px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filtersSkeletonLine,
+.filtersSkeletonLineShort {
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #eee 0%, #f5f5f5 50%, #eee 100%);
+    background-size: 200% 100%;
+    animation: expertsShimmer 1.2s ease-in-out infinite;
+}
+
+.filtersSkeletonLine {
+    width: 100%;
+}
+
+.filtersSkeletonLineShort {
+    width: 55%;
+}
+
+@keyframes expertsShimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.loadMore {
+    display: block;
+    margin: 40px auto;
+    padding: 12px 30px;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        color: $primary-color;
+    }
+}

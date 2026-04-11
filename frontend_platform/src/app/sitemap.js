@@ -1,5 +1,5 @@
 const BASE_URL = 'https://expertvisits.com';
-const LANGS = ['en', 'ru'];
+const LOCALES = ['az', 'en', 'ru'];
 
 const API_BASE =
     (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) ||
@@ -31,7 +31,10 @@ function entryFromItem(url, item, overrides = {}) {
     };
 }
 
-/** Expand API static_urls + dynamic_urls into MetadataRoute.Sitemap entries. */
+/**
+ * Maps legacy API paths to locale-prefixed public URLs.
+ * Article/vacancy entries use `language` on the item when the API provides it (else `az`).
+ */
 function expandSitemapEntries(sitemapData, seen) {
     const urls = [];
     const seenLocal = seen ?? new Set();
@@ -40,55 +43,56 @@ function expandSitemapEntries(sitemapData, seen) {
         const u = normStaticPath(item.url);
         if (u === '/about') continue;
 
-        pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${u === '/' ? '/' : u}`, item, {
-            priority: u === '/' ? 1.0 : item.priority ?? 0.8,
-            changeFrequency: item.changefreq || 'daily',
-        }));
-
         if (u === '/') {
-            LANGS.forEach((lang) => {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${lang}`, item, {
-                    changeFrequency: 'daily',
-                    priority: 0.9,
-                }));
+            LOCALES.forEach((lang) => {
+                pushUnique(
+                    urls,
+                    seenLocal,
+                    entryFromItem(`${BASE_URL}/${lang}`, item, {
+                        changeFrequency: 'daily',
+                        priority: lang === 'az' ? 1.0 : 0.95,
+                    })
+                );
             });
-            ['az', 'en', 'ru'].forEach((lang) => {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/u/${lang}`, item, {
-                    changeFrequency: 'monthly',
-                    priority: lang === 'az' ? 0.9 : 0.85,
-                }));
-            });
-            continue;
-        }
-
-        if (u === '/experts') {
-            LANGS.forEach((lang) => {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/experts/${lang}`, item, {
-                    changeFrequency: item.changefreq || 'daily',
-                    priority: 0.75,
-                }));
+            LOCALES.forEach((lang) => {
+                pushUnique(
+                    urls,
+                    seenLocal,
+                    entryFromItem(`${BASE_URL}/u/${lang}`, item, {
+                        changeFrequency: 'monthly',
+                        priority: lang === 'az' ? 0.9 : 0.85,
+                    })
+                );
             });
             continue;
         }
 
-        if (u === '/vacancies') {
-            LANGS.forEach((lang) => {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/vacancies/${lang}`, item, {
-                    changeFrequency: item.changefreq || 'hourly',
-                    priority: 0.85,
-                }));
+        if (u === '/experts' || u === '/vacancies' || u === '/companies') {
+            const pri =
+                u === '/vacancies'
+                    ? { priority: 0.85, changefreq: 'hourly' }
+                    : { priority: 0.75, changefreq: 'daily' };
+            LOCALES.forEach((lang) => {
+                pushUnique(
+                    urls,
+                    seenLocal,
+                    entryFromItem(`${BASE_URL}/${lang}${u}`, item, {
+                        changeFrequency: pri.changefreq,
+                        priority: pri.priority,
+                    })
+                );
             });
             continue;
         }
 
-        if (u === '/companies') {
-            LANGS.forEach((lang) => {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/companies/${lang}`, item, {
-                    changeFrequency: item.changefreq || 'daily',
-                    priority: 0.75,
-                }));
-            });
-        }
+        pushUnique(
+            urls,
+            seenLocal,
+            entryFromItem(`${BASE_URL}${u.startsWith('/') ? u : `/${u}`}`, item, {
+                priority: item.priority ?? 0.7,
+                changeFrequency: item.changefreq || 'weekly',
+            })
+        );
     }
 
     for (const item of sitemapData.dynamic_urls || []) {
@@ -96,22 +100,33 @@ function expandSitemapEntries(sitemapData, seen) {
         if (!path.startsWith('/')) continue;
 
         if (path.startsWith('/article/')) {
-            const slug = path.slice('/article/'.length);
+            const slug = path.slice('/article/'.length).replace(/\/$/, '');
             if (!slug) continue;
-            pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${path}`, item));
+            const lang = item.language || 'az';
+            pushUnique(
+                urls,
+                seenLocal,
+                entryFromItem(`${BASE_URL}/${lang}/article/${slug}`, item)
+            );
             continue;
         }
 
         const vacancyDetail = path.match(/^\/vacancies\/([^/]+)$/);
         if (vacancyDetail) {
             const seg = vacancyDetail[1];
-            if (seg !== 'en' && seg !== 'ru') {
-                pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${path}`, item));
-            }
+            if (seg === 'en' || seg === 'ru' || seg === 'az') continue;
+            const lang = item.language || 'az';
+            pushUnique(
+                urls,
+                seenLocal,
+                entryFromItem(`${BASE_URL}/${lang}/vacancies/${seg}`, item)
+            );
             continue;
         }
 
-        pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${path}`, item));
+        const hasLocalePrefix = /^\/(az|en|ru)\//.test(path);
+        const fullPath = hasLocalePrefix ? path : `/az${path}`;
+        pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${fullPath}`, item));
     }
 
     return urls;

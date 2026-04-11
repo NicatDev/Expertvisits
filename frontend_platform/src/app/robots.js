@@ -1,16 +1,16 @@
-const SITE_ORIGIN = 'https://expertvisits.com';
-
-const API_BASE =
-    (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) ||
-    'https://api.expertvisits.com/api/';
-
-function apiUrl(path) {
-    const base = API_BASE.replace(/\/?$/, '/');
-    const p = path.replace(/^\//, '');
-    return `${base}${p}`;
-}
+import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
 
 async function fetchSitemapChunkCount() {
+    const API_BASE =
+        (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) ||
+        'https://api.expertvisits.com/api/';
+
+    function apiUrl(path) {
+        const base = API_BASE.replace(/\/?$/, '/');
+        const p = path.replace(/^\//, '');
+        return `${base}${p}`;
+    }
+
     try {
         const res = await fetch(apiUrl('seo/sitemap/meta/'), { next: { revalidate: 60 } });
         if (!res.ok) return 1;
@@ -22,16 +22,15 @@ async function fetchSitemapChunkCount() {
 }
 
 export default async function robots() {
-    const n = await fetchSitemapChunkCount();
+    await fetchSitemapChunkCount();
     const origin = SITE_ORIGIN.replace(/\/$/, '');
-    const sitemap = Array.from({ length: n }, (_, i) => `${origin}/sitemap/${i}.xml`);
 
     return {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: ['/admin/', '/api/', '/chat', '/notifications'],
+            disallow: ['/admin/', '/api/', '/*/chat', '/*/notifications'],
         },
-        sitemap,
+        sitemap: `${origin}/sitemap.xml`,
     };
 }

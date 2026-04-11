@@ -1,11 +1,12 @@
-export const fallbackLng = 'az';
-export const languages = ['az', 'en', 'ru'];
+import { defaultLocale, locales } from '@/lib/i18n/routing';
+
+export const fallbackLng = defaultLocale;
+export const languages = locales;
 export const defaultNS = 'common';
 export const cookieName = 'i18next';
 
 export function getOptions(lng = fallbackLng, ns = defaultNS) {
     return {
-        // debug: true,
         supportedLngs: languages,
         fallbackLng,
         lng,

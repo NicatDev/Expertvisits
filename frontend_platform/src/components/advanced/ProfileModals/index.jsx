@@ -3,6 +3,8 @@ import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useTranslation } from '@/i18n/client';
+import { Plus, Trash2 } from 'lucide-react';
+import { responsibilitiesToFormLines } from '@/lib/utils/experienceResponsibilities';
 
 // Reusable Form Modal Wrapper
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
@@ -34,29 +36,114 @@ const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodySt
 export const ExperienceModal = ({ isOpen, onClose, initialData, onSave }) => {
     const { t } = useTranslation('common');
     const [formData, setFormData] = useState({ position: '', company_name: '', start_date: '', end_date: '' });
+    const [lines, setLines] = useState(['']);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (initialData) setFormData(initialData);
-        else setFormData({ position: '', company_name: '', start_date: '', end_date: '' });
+        if (initialData) {
+            const { responsibilities, ...rest } = initialData;
+            setFormData(rest);
+            setLines(responsibilitiesToFormLines(responsibilities));
+        } else {
+            setFormData({ position: '', company_name: '', start_date: '', end_date: '' });
+            setLines(['']);
+        }
     }, [initialData, isOpen]);
+
+    const updateLine = (index, value) => {
+        setLines((prev) => prev.map((l, i) => (i === index ? value : l)));
+    };
+
+    const addLine = () => setLines((prev) => [...prev, '']);
+
+    const removeLine = (index) => {
+        setLines((prev) => (prev.length <= 1 ? [''] : prev.filter((_, i) => i !== index)));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const submitData = { ...formData, end_date: formData.end_date || null };
+        const responsibilities = lines.map((l) => l.trim()).filter(Boolean);
+        const submitData = {
+            ...formData,
+            end_date: formData.end_date || null,
+            responsibilities,
+        };
         await onSave(submitData);
         setLoading(false);
         onClose();
     };
 
     return (
-        <FormModal isOpen={isOpen} onClose={onClose} title={initialData ? t('profile_modals.experience.edit') : t('profile_modals.experience.add')} onSubmit={handleSubmit} loading={loading}>
+        <FormModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={initialData?.id ? t('profile_modals.experience.edit') : t('profile_modals.experience.add')}
+            onSubmit={handleSubmit}
+            loading={loading}
+            bodyStyle={{ maxHeight: 'min(80vh, 640px)', overflowY: 'auto' }}
+        >
             <Input label={t('profile_modals.experience.position')} value={formData.position} onChange={e => setFormData({ ...formData, position: e.target.value })} required />
             <Input label={t('profile_modals.experience.company')} value={formData.company_name} onChange={e => setFormData({ ...formData, company_name: e.target.value })} required />
-            <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                 <Input type="date" label={t('profile_modals.experience.start')} value={formData.start_date} onChange={e => setFormData({ ...formData, start_date: e.target.value })} required />
                 <Input type="date" label={t('profile_modals.experience.end')} value={formData.end_date} onChange={e => setFormData({ ...formData, end_date: e.target.value })} />
+            </div>
+
+            <div style={{ marginTop: '4px' }}>
+                <span style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#333' }}>
+                    {t('profile_modals.experience.responsibilities_heading')}
+                </span>
+                <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#888', lineHeight: 1.45 }}>
+                    {t('profile_modals.experience.responsibilities_hint')}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {lines.map((line, index) => (
+                        <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                            <textarea
+                                value={line}
+                                onChange={(e) => updateLine(index, e.target.value)}
+                                placeholder={t('profile_modals.experience.line_placeholder')}
+                                rows={2}
+                                style={{
+                                    flex: 1,
+                                    minWidth: 0,
+                                    padding: '10px 12px',
+                                    border: '1px solid #d9d9d9',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    fontFamily: 'inherit',
+                                    resize: 'vertical',
+                                    minHeight: '44px',
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => removeLine(index)}
+                                disabled={lines.length <= 1}
+                                aria-label={t('profile_modals.experience.remove_line')}
+                                style={{
+                                    flexShrink: 0,
+                                    width: 40,
+                                    height: 40,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #eee',
+                                    borderRadius: '8px',
+                                    background: lines.length <= 1 ? '#f5f5f5' : '#fff',
+                                    cursor: lines.length <= 1 ? 'not-allowed' : 'pointer',
+                                    color: lines.length <= 1 ? '#ccc' : '#999',
+                                }}
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <Button type="default" htmlType="button" size="small" onClick={addLine} icon={<Plus size={16} />} style={{ marginTop: '12px' }}>
+                    {t('profile_modals.experience.add_line')}
+                </Button>
             </div>
         </FormModal>
     );

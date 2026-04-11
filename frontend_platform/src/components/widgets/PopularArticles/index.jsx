@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import api from '@/lib/api/client';
 import styles from './style.module.scss';
 import { Heart } from 'lucide-react';
@@ -8,6 +10,8 @@ import { useTranslation } from '@/i18n/client';
 
 const PopularArticles = () => {
     const { t } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname);
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -50,7 +54,11 @@ const PopularArticles = () => {
             <h3 className={styles.title}>{t('widgets.popular_articles')}</h3>
             <div className={styles.list}>
                 {articles.map(article => (
-                    <Link href={`/article/${article.slug}`} key={article.id} className={styles.item}>
+                    <Link
+                        href={withLocale(pathLocale || defaultLocale, `/article/${article.slug}`)}
+                        key={article.id}
+                        className={styles.item}
+                    >
                         {article.image && (
                             <img src={article.image} alt={article.title} className={styles.image} />
                         )}

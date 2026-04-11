@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from '../app/CreateSiteModal.module.scss';
+import { useLocalizedPath } from '@/hooks/useLocalePath';
 
 // Helper to calculate progress based on required fields
 const calculateProgress = (profile) => {
@@ -17,6 +20,7 @@ const calculateProgress = (profile) => {
 };
 
 export default function CreateSiteModal({ isOpen, onClose }) {
+  const profileHref = useLocalizedPath('/profile');
   const [profile, setProfile] = useState(null);
   const [articles, setArticles] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -73,7 +77,7 @@ export default function CreateSiteModal({ isOpen, onClose }) {
               <p className={styles.warning}>Profilinizin ən azı 60% tamamlanması lazımdır. Əks halda sayt boş qalacaq.</p>
             )}
             <div className={styles.links}>
-              <Link href="/profile"><a className={styles.link}>Profilinizi redaktə edin</a></Link>
+              <Link href={profileHref}><a className={styles.link}>Profilinizi redaktə edin</a></Link>
             </div>
             {articles.length < 3 && (
               <p className={styles.info}>3 məqaləniz yoxdur – məqalə səhifəniz boş qalacaq, amma bloq məhdudiyyəti yoxdur.</p>

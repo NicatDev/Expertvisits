@@ -10,9 +10,13 @@ import { connectionsApi } from '@/lib/api/connections';
 import { useTranslation } from '@/i18n/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 const RecommendedUsers = () => {
     const { t, i18n } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
     const currentLang = i18n.language || 'az';
     const { user: currentUser } = useAuth();
     const { refreshSummary } = useInboxSocket();
@@ -135,7 +139,7 @@ const RecommendedUsers = () => {
                         <div className={styles.itemRow}>
                             <Avatar user={user} size={40} className={styles.avatar} />
                             <div className={styles.info}>
-                                <Link href={`/user/${user.username}`} className={styles.name}>
+                                <Link href={withLocale(pathLocale, `/user/${encodeURIComponent(user.username)}`)} className={styles.name}>
                                     {user.first_name} {user.last_name}
                                 </Link>
                                 <span

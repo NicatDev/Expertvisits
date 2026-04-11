@@ -8,9 +8,15 @@ import { useTranslation } from '@/i18n/client';
 import Avatar from '@/components/ui/Avatar';
 import { formatDate } from '@/lib/utils/date';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 const PollCard = ({ poll }) => {
     const { t, i18n } = useTranslation('common');
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const userPublicHref = (username) =>
+        username ? withLocale(pathLocale, `/user/${encodeURIComponent(username)}`) : null;
     const { user } = useAuth();
     const [data, setData] = useState(poll);
     const [loading, setLoading] = useState(false);
@@ -42,7 +48,7 @@ const PollCard = ({ poll }) => {
             <div className={styles.header}>
                 <div className={styles.userInfo}>
                     {data.author ? (
-                        <Link href={`/user/${data.author}`} className={styles.avatar}>
+                        <Link href={userPublicHref(data.author)} className={styles.avatar}>
                             <Avatar
                                 user={{
                                     username: data.author,
@@ -59,7 +65,7 @@ const PollCard = ({ poll }) => {
                     )}
                     <div className={styles.meta}>
                         {data.author ? (
-                            <Link href={`/user/${data.author}`} className={styles.username}>
+                            <Link href={userPublicHref(data.author)} className={styles.username}>
                                 {data.author}
                             </Link>
                         ) : (

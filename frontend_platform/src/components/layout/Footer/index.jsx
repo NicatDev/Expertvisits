@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { Shield, FileText, HelpCircle } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import styles from './style.module.scss';
@@ -8,6 +10,12 @@ import LegalModal from './LegalModal';
 
 const Footer = () => {
     const { t, i18n } = useTranslation();
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname);
+    const locale = pathLocale || i18n.resolvedLanguage || defaultLocale;
+    const companiesHref = withLocale(locale, '/companies');
+    const vacanciesHref = withLocale(locale, '/vacancies');
+    const expertsHref = withLocale(locale, '/experts');
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'privacy' });
 
     const openModal = (e, type) => {
@@ -34,9 +42,9 @@ const Footer = () => {
                 {/* Support */}
                 <div className={styles.column}>
                     <h4>{t('footer.support')}</h4>
-                    <Link href="/companies"><span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><HelpCircle size={14} /> {t('footer.companies')}</span></Link>
-                    <Link href="/vacancies">{t('footer.vacancies')}</Link>
-                    <Link href="/experts">{t('footer.experts')}</Link>
+                    <Link href={companiesHref}><span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><HelpCircle size={14} /> {t('footer.companies')}</span></Link>
+                    <Link href={vacanciesHref}>{t('footer.vacancies')}</Link>
+                    <Link href={expertsHref}>{t('footer.experts')}</Link>
                 </div>
 
                 {/* Connect */}

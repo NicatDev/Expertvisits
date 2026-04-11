@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, Briefcase, DollarSign, CheckCircle } from 'lucide-react';
 import styles from './VacancyCard.module.scss';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { business } from '@/lib/api';
 import Button from '@/components/ui/Button';
@@ -36,7 +38,13 @@ function buildPublisher(vacancy) {
 const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
     const { t } = useTranslation('common');
     const { user } = useAuth();
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname);
     const publisher = buildPublisher(vacancy);
+    const vacancyHref = withLocale(pathLocale || defaultLocale, `/vacancies/${vacancy.slug}`);
+    const companyHref = publisher?.slug
+        ? withLocale(pathLocale || defaultLocale, `/companies/${publisher.slug}`)
+        : null;
     const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
     const [showApplyModal, setShowApplyModal] = useState(false);
     const [showApplicantsModal, setShowApplicantsModal] = useState(false);
@@ -73,9 +81,9 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
                     )}
                 </div>
                 <div className={styles.info}>
-                    <Link href={`/vacancies/${vacancy.slug}`} className={styles.title}>{vacancy.title}</Link>
-                    {publisher.type === 'company' && publisher.slug ? (
-                        <Link href={`/companies/${publisher.slug}`} className={styles.companyName}>
+                    <Link href={vacancyHref} className={styles.title}>{vacancy.title}</Link>
+                    {publisher.type === 'company' && publisher.slug && companyHref ? (
+                        <Link href={companyHref} className={styles.companyName}>
                             {publisher.name}
                         </Link>
                     ) : (
