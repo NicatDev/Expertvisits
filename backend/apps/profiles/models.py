@@ -7,6 +7,8 @@ class Experience(models.Model):
     company_name = models.CharField(max_length=255, db_index=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+    # Sətir siyahısı: şirkətdə vəzifə üzrə qısa mətnlər (frontend JSON massiv kimi göndərir)
+    responsibilities = models.JSONField(default=list, blank=True)
 
     class Meta:
         ordering = ['-start_date']

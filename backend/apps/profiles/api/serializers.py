@@ -4,7 +4,7 @@ from apps.profiles.models import Experience, Education, Skill, QuickNote, Langua
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
-        fields = ['id', 'position', 'company_name', 'start_date', 'end_date']
+        fields = ['id', 'position', 'company_name', 'start_date', 'end_date', 'responsibilities']
 
 class EducationSerializer(serializers.ModelSerializer):
     degree_type_display = serializers.CharField(source='get_degree_type_display', read_only=True)
