@@ -19,6 +19,8 @@ const layouts = {
     4: dynamic(() => import("@/templates/template4/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/layout/TemplateLayout"), { loading: () => <TemplateLoader /> }),
 };
 
 // Home pages for the root portfolio URL (/[username]/)
@@ -29,6 +31,8 @@ const homePages = {
     4: dynamic(() => import("@/templates/template4/pages/Home"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/Home"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/Home"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/Home"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/Home"), { loading: () => <TemplateLoader /> }),
 };
 
 // Articles list pages (/[username]/articles/)
@@ -39,6 +43,8 @@ const articlesPages = {
     4: dynamic(() => import("@/templates/template4/pages/Articles"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/Articles"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/Articles"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/Articles"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/Articles"), { loading: () => <TemplateLoader /> }),
 };
 
 // Article Detail pages (/[username]/articles/[slug]/)
@@ -49,6 +55,8 @@ const articleDetailPages = {
     4: dynamic(() => import("@/templates/template4/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/ArticleDetail"), { loading: () => <TemplateLoader /> }),
 };
 
 // Contact pages (/[username]/contact/)
@@ -59,6 +67,8 @@ const contactPages = {
     4: dynamic(() => import("@/templates/template4/pages/Contact"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/Contact"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/Contact"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/Contact"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/Contact"), { loading: () => <TemplateLoader /> }),
 };
 
 const servicesPages = {
@@ -68,6 +78,8 @@ const servicesPages = {
     4: dynamic(() => import("@/templates/template4/pages/Services"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/Services"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/Services"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/Services"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/Services"), { loading: () => <TemplateLoader /> }),
 };
 
 const projectsPages = {
@@ -77,6 +89,8 @@ const projectsPages = {
     4: dynamic(() => import("@/templates/template4/pages/Projects"), { loading: () => <TemplateLoader /> }),
     5: dynamic(() => import("@/templates/template5/pages/Projects"), { loading: () => <TemplateLoader /> }),
     6: dynamic(() => import("@/templates/template6/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    7: dynamic(() => import("@/templates/template7/pages/Projects"), { loading: () => <TemplateLoader /> }),
+    8: dynamic(() => import("@/templates/template8/pages/Projects"), { loading: () => <TemplateLoader /> }),
 };
 
 export function getTemplateLayout(templateName) {

@@ -11,6 +11,8 @@ import {
     Sidebar,
     Stethoscope,
     Code,
+    Palette,
+    Gamepad2,
     ArrowLeft,
     Download,
 } from 'lucide-react';
@@ -530,6 +532,42 @@ export default function WebsiteTemplatePageClient() {
                                         {t('widgets.template6_name')}
                                     </span>
                                     {selected === 6 && (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    )}
+                                </div>
+
+                                <div
+                                    className={`${pageStyles.option} ${selected === 7 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelected(7)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => e.key === 'Enter' && setSelected(7)}
+                                >
+                                    <div className={pageStyles.iconBox}>
+                                        <Palette size={24} />
+                                    </div>
+                                    <span className={pageStyles.templateName}>
+                                        {t('widgets.template7_name')}
+                                    </span>
+                                    {selected === 7 && (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    )}
+                                </div>
+
+                                <div
+                                    className={`${pageStyles.option} ${selected === 8 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelected(8)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => e.key === 'Enter' && setSelected(8)}
+                                >
+                                    <div className={pageStyles.iconBox}>
+                                        <Gamepad2 size={24} />
+                                    </div>
+                                    <span className={pageStyles.templateName}>
+                                        {t('widgets.template8_name')}
+                                    </span>
+                                    {selected === 8 && (
                                         <CheckCircle className={pageStyles.checkIcon} size={20} />
                                     )}
                                 </div>

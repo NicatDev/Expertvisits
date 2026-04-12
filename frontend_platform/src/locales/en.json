@@ -302,6 +302,8 @@
         "template4_name": "Cyberpunk",
         "template5_name": "Medical / Doctor",
         "template6_name": "Developer / Code",
+        "template7_name": "Designer / Editorial",
+        "template8_name": "Game UI / HUD",
         "save_template": "Save template",
         "saving": "Saving...",
         "success_msg": "Template saved successfully!",

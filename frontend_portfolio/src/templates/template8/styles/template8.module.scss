@@ -1,0 +1,56 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/mixins.scss';
+
+/* Subtle hex grid — game map feel */
+@mixin hudGrid {
+  background-color: var(--t8-bg);
+  background-image:
+    linear-gradient(rgba(45, 58, 85, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 58, 85, 0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.templateRoot {
+  min-height: 100vh;
+  @include hudGrid;
+  color: var(--t8-text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  letter-spacing: 0.03em;
+}
+
+.mainContent {
+  padding-top: 106px;
+  flex: 1;
+  position: relative;
+
+  @include mobile {
+    padding-top: 70px;
+  }
+}
+
+.section {
+  padding: 80px 0;
+
+  @include mobile {
+    padding: 60px 0;
+  }
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}

@@ -197,13 +197,31 @@ const Navigation = () => {
                         <Link href={companiesHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
                         {user ? (
                             <>
-                                <Link href={notificationsHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
-                                    {t('inbox.notifications')}
-                                    {notificationUnread > 0 ? ` (${notificationUnread > 99 ? '99+' : notificationUnread})` : ''}
+                                <Link
+                                    href={notificationsHref}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className={styles.mobileMenuInboxLink}
+                                    suppressHydrationWarning
+                                >
+                                    <Bell size={20} className={styles.mobileMenuInboxIcon} aria-hidden />
+                                    <span>
+                                        {t('inbox.notifications')}
+                                        {notificationUnread > 0
+                                            ? ` (${notificationUnread > 99 ? '99+' : notificationUnread})`
+                                            : ''}
+                                    </span>
                                 </Link>
-                                <Link href={chatHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>
-                                    {t('inbox.chat')}
-                                    {chatUnread > 0 ? ` (${chatUnread > 99 ? '99+' : chatUnread})` : ''}
+                                <Link
+                                    href={chatHref}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className={styles.mobileMenuInboxLink}
+                                    suppressHydrationWarning
+                                >
+                                    <MessageCircle size={20} className={styles.mobileMenuInboxIcon} aria-hidden />
+                                    <span>
+                                        {t('inbox.chat')}
+                                        {chatUnread > 0 ? ` (${chatUnread > 99 ? '99+' : chatUnread})` : ''}
+                                    </span>
                                 </Link>
                             </>
                         ) : null}
@@ -213,8 +231,7 @@ const Navigation = () => {
                                 guardWebsiteNav(e);
                                 if (user) setIsMenuOpen(false);
                             }}
-                            className={styles.mobileNavAction}
-                            style={{ display: 'block', padding: '12px 0', borderTop: '1px solid #eee' }}
+                            className={styles.mobileWebsiteCta}
                         >
                             {websiteData?.is_active ? t('widgets.manage_website') : t('widgets.create_website')}
                         </Link>

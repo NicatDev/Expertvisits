@@ -224,14 +224,36 @@
         }
     }
 
-    .mobileNavAction {
-        font-weight: 600;
-        color: #4f46e5;
-        padding: 12px 8px;
-        transition: all 0.2s;
-        
+    .mobileMenuInboxLink {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobileMenuInboxIcon {
+        flex-shrink: 0;
+        color: #475569;
+    }
+
+    /* Full-width gradient CTA — mobile burger only */
+    .mobileWebsiteCta {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 4px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 700;
+        color: #fff !important;
+        background: linear-gradient(125deg, #312e81 0%, #4f46e5 40%, #0d9488 100%);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+        transition: filter 0.2s ease, box-shadow 0.2s ease;
+
         &:hover {
-            background: #f5f3ff;
+            filter: brightness(1.06);
+            box-shadow: 0 8px 26px rgba(13, 148, 136, 0.35);
+            background: linear-gradient(125deg, #312e81 0%, #4f46e5 40%, #0d9488 100%) !important;
         }
     }
 }

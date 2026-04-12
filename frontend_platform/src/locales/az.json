@@ -303,6 +303,8 @@
         "template4_name": "Cyberpunk",
         "template5_name": "Tibbi / Həkim",
         "template6_name": "Developer / Kod",
+        "template7_name": "Dizayner / Editorial",
+        "template8_name": "Oyun UI / HUD",
         "save_template": "Yadda saxla",
         "saving": "Yadda saxlanılır...",
         "success_msg": "Şablon uğurla yadda saxlanıldı!",

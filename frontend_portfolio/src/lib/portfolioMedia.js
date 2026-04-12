@@ -19,5 +19,5 @@ export function resolvePortfolioMediaUrl(src) {
 
 export function isDarkPortfolioTemplate(templateId) {
     const id = Number(templateId);
-    return id === 1 || id === 3 || id === 4 || id === 6;
+    return id === 1 || id === 3 || id === 4 || id === 6 || id === 8;
 }

@@ -298,6 +298,8 @@
         "template4_name": "Cyberpunk",
         "template5_name": "Медицинский",
         "template6_name": "Разработчик / Код",
+        "template7_name": "Дизайнер / Editorial",
+        "template8_name": "Игровой UI / HUD",
         "save_template": "Сохранить",
         "saving": "Сохранение...",
         "success_msg": "Шаблон успешно сохранен!",
