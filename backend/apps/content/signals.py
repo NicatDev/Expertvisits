@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from core.utils.storage_cleanup import delete_filefield_file, filefield_names_differ
 
-from .models import Article, Poll, Quiz
+from .models import Article, Poll, PollVote, Quiz
 
 
 @receiver(pre_save, sender=Article)
@@ -41,6 +41,15 @@ def content_created_bump_feed_cache(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Poll)
 @receiver(post_delete, sender=Quiz)
 def content_deleted_bump_feed_cache(sender, instance, **kwargs):
+    from core.feed_scoring import bump_feed_cache_version
+
+    bump_feed_cache_version()
+
+
+@receiver(post_save, sender=PollVote)
+@receiver(post_delete, sender=PollVote)
+def poll_vote_bump_feed_cache(sender, instance, **kwargs):
+    """Səs verildikdə / silindikdə feed keşində poll.user_vote və faizlər köhnə qalmasın."""
     from core.feed_scoring import bump_feed_cache_version
 
     bump_feed_cache_version()
