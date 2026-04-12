@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { ChevronLeft, PlayCircle, CheckCircle, Heart, MessageCircle } from 'lucide-react';
+import { ChevronLeft, PlayCircle, CheckCircle, Heart, MessageCircle, Send } from 'lucide-react';
 import { content } from '@/lib/api';
 import api from '@/lib/api/client';
 import Avatar from '@/components/ui/Avatar';
@@ -34,6 +34,7 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     const [reviewData, setReviewData] = useState(null);
     const [showLikesModal, setShowLikesModal] = useState(false);
     const [commentsTrigger, setCommentsTrigger] = useState(0);
+    const [commentText, setCommentText] = useState('');
 
     const userPublicHref = (username) =>
         username ? withLocale(pathLocale, `/user/${encodeURIComponent(username)}`) : '#';
@@ -85,12 +86,34 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                 model: 'quiz',
                 object_id: quiz.id,
             });
-            const { data } = await content.getQuiz(slug);
-            setQuiz(data);
         } catch (err) {
             console.error(err);
             setQuiz((prev) => ({ ...prev, is_liked: isLiked, likes_count: quiz.likes_count }));
             toast.error(t('feed_item.toast.failed_like'));
+        }
+    };
+
+    const handlePostComment = async () => {
+        if (!user) {
+            setCommentText('');
+            toast.error(t('feed_item.toast.login_comment'));
+            return;
+        }
+        if (!commentText.trim()) return;
+
+        try {
+            await api.post('/interactions/comments/', {
+                model: 'quiz',
+                object_id: quiz.id,
+                text: commentText,
+            });
+            setCommentText('');
+            toast.success(t('feed_item.toast.comment_posted'));
+            setCommentsTrigger((c) => c + 1);
+            setQuiz((prev) => ({ ...prev, comments_count: (prev.comments_count || 0) + 1 }));
+        } catch (err) {
+            console.error(err);
+            toast.error(t('feed_item.toast.failed_comment'));
         }
     };
 
@@ -219,28 +242,50 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                     </section>
                 ) : null}
 
-                <div className={styles.engagement}>
-                    <button type="button" className={quiz.is_liked ? styles.liked : ''} onClick={handleLike}>
-                        <Heart size={20} fill={quiz.is_liked ? '#1890ff' : 'none'} />
-                        <span>{t('feed_item.like_action')}</span>
-                    </button>
-                    <button type="button" className={styles.likeCountBtn} onClick={() => setShowLikesModal(true)}>
-                        {quiz.likes_count ?? 0} {t('feed_item.likes')}
-                    </button>
-                    <span className={styles.commentCount}>
-                        <MessageCircle size={20} />
-                        {quiz.comments_count ?? 0} {t('feed_item.comments')}
-                    </span>
+                {/* Məqalə detalı ilə eyni: bəyənmə sayı, rəy sayı, rəy inputu, sonra şərhlər */}
+                <div className={styles.detailEngagement}>
+                    <div className={styles.detailEngagementRow}>
+                        <button
+                            type="button"
+                            className={quiz.is_liked ? styles.detailLikeActive : styles.detailLikeBtn}
+                            onClick={handleLike}
+                        >
+                            <Heart size={20} fill={quiz.is_liked ? '#1890ff' : 'none'} />
+                            <span>
+                                {t('article_page.likes_count', { count: quiz.likes_count || 0 })}
+                            </span>
+                        </button>
+                        <div className={styles.detailCommentsStat}>
+                            <MessageCircle size={20} aria-hidden />
+                            <span>
+                                {t('article_page.comments_count', { count: quiz.comments_count || 0 })}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className={styles.detailCommentInput}>
+                        <Avatar user={user} size={32} />
+                        <div className={styles.detailCommentInputInner}>
+                            <input
+                                type="text"
+                                placeholder={t('feed_item.write_comment')}
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handlePostComment()}
+                            />
+                            <button type="button" onClick={handlePostComment} aria-label={t('feed_item.comment_action')}>
+                                <Send size={16} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <CommentsSection
+                        contentType="quiz"
+                        objectId={quiz.id}
+                        refreshTrigger={commentsTrigger}
+                    />
                 </div>
             </article>
-
-            <section className={styles.commentsWrap}>
-                <CommentsSection
-                    contentType="quiz"
-                    objectId={quiz.id}
-                    refreshTrigger={commentsTrigger}
-                />
-            </section>
 
             <LikesModal
                 isOpen={showLikesModal}

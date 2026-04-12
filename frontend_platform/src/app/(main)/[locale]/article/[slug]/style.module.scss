@@ -334,58 +334,6 @@
         }
     }
 
-    /* Kod bloku + kopyala (ArticleBodyContent) */
-    .codeBlockOuter {
-        margin: 1.75rem 0;
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid #334155;
-        background: #0f172a;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    }
-
-    .codeToolbar {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 8px;
-        padding: 6px 10px;
-        background: #1e293b;
-        border-bottom: 1px solid #334155;
-    }
-
-    .codeCopyBtn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 32px;
-        padding: 0;
-        border: none;
-        border-radius: 6px;
-        background: transparent;
-        color: #94a3b8;
-        cursor: pointer;
-        transition: background 0.15s, color 0.15s;
-
-        &:hover {
-            background: #334155;
-            color: #e2e8f0;
-        }
-
-        &:focus-visible {
-            outline: 2px solid #60a5fa;
-            outline-offset: 2px;
-        }
-    }
-
-    .codeBlockOuter pre {
-        margin: 0 !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none;
-    }
-
     hr {
         border: none;
         border-top: 1px solid #e2e8f0;
@@ -507,6 +455,65 @@
     sub {
         bottom: -0.2em;
     }
+}
+
+/* Kod bloku + kopyala: ən üst səviyyə — imperativ DOM-a təyin olunan siniflər .body içində iç-içə qayda olmadan tətbiq olunsun */
+.codeBlockOuter {
+    margin: 1.75rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #334155;
+    background: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.codeToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-height: 40px;
+    padding: 6px 10px;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    flex-shrink: 0;
+}
+
+.codeCopyBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: #334155;
+        color: #e2e8f0;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #60a5fa;
+        outline-offset: 2px;
+    }
+
+    svg {
+        display: block;
+        flex-shrink: 0;
+    }
+}
+
+.codeBlockOuter pre {
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none;
 }
 
 .actions {

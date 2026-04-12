@@ -19,6 +19,7 @@ export const content = {
     },
     deleteArticle: (slug) => api.delete(`content/articles/${slug}/`),
 
+    getPoll: (id) => api.get(`content/polls/${id}/`),
     getUserQuizzes: (userId) => api.get('content/quizzes/', { params: { author: userId } }),
     getQuiz: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/`),
     createQuiz: (data) => api.post('content/quizzes/', data),

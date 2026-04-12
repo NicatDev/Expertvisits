@@ -11,7 +11,7 @@ import { labelForSubCategory } from '@/lib/utils/subcategory';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
-const PollCard = ({ poll, onFeedRefresh }) => {
+const PollCard = ({ poll, onFeedItemRefresh }) => {
     const { t, i18n } = useTranslation('common');
     const pathname = usePathname();
     const pathLocale = localeFromPathname(pathname) || defaultLocale;
@@ -39,7 +39,7 @@ const PollCard = ({ poll, onFeedRefresh }) => {
             const res = await api.post(`/content/polls/${data.id}/vote/`, { option: optionId });
             setData(res.data);
             toast.success(t('feed.toast.vote_success') || 'Vote recorded!');
-            onFeedRefresh?.();
+            onFeedItemRefresh?.({ type: 'poll', id: res.data.id });
         } catch (err) {
             console.error(err);
             toast.error(t('feed.toast.vote_failed') || 'Failed to vote');

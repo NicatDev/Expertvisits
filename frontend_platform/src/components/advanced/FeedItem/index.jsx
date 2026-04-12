@@ -22,9 +22,9 @@ import { htmlToFeedPreview } from '@/lib/utils/htmlFeedPreview';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
 import PollCard from '../PollCard';
 
-const FeedItem = ({ item, onDelete, onFeedRefresh }) => {
+const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
     if (item.type === 'poll') {
-        return <PollCard poll={item} onFeedRefresh={onFeedRefresh} />;
+        return <PollCard poll={item} onFeedItemRefresh={onFeedItemRefresh} />;
     }
     const { t, i18n } = useTranslation('common');
     const { user } = useAuth();
@@ -108,9 +108,10 @@ const FeedItem = ({ item, onDelete, onFeedRefresh }) => {
 
             setLocalItem(data);
             if (data.likes_count !== undefined) setLikesCount(data.likes_count);
-            // participation updates automatically via localItem state
+            return data;
         } catch (err) {
             console.error("Failed to refresh item", err);
+            return null;
         }
     };
 
@@ -343,12 +344,6 @@ const FeedItem = ({ item, onDelete, onFeedRefresh }) => {
                                     {t('feed_item.view_results')}
                                 </Button>
                             ) : null}
-                            {quizDetailHref && localItem.my_attempt_count > 1 ? (
-                                <Link href={quizDetailHref} className={styles.quizDetailLink}>
-                                    {t('feed_item.all_attempts_detail')}
-                                </Link>
-                            ) : null}
-
                             {user?.username === localItem.author && (
                                 <Button type="default" onClick={() => setShowParticipantsModal(true)}>
                                     {t('feed_item.view_participants')}
@@ -426,16 +421,17 @@ const FeedItem = ({ item, onDelete, onFeedRefresh }) => {
                 quiz={isQuiz ? (reviewData || localItem) : null}
                 reviewMode={!!reviewData}
                 onSuccess={async () => {
-                    await refreshItem();
-                    onFeedRefresh?.();
+                    const data = await refreshItem();
+                    if (data && isQuiz) onFeedItemRefresh?.({ ...data, type: 'quiz' });
                 }}
             />
 
             <ParticipantsListModal
                 isOpen={showParticipantsModal}
-                onClose={() => {
+                onClose={async () => {
                     setShowParticipantsModal(false);
-                    refreshItem();
+                    const data = await refreshItem();
+                    if (data && isQuiz) onFeedItemRefresh?.({ ...data, type: 'quiz' });
                 }}
                 quizSlug={localItem.slug}
                 onSelectParticipant={async (userId) => {

@@ -117,6 +117,33 @@ export default function HomePageClient() {
         loadFeed(page + 1, false);
     };
 
+    /** Ana səhifədə yalnız bir elementi API-dən yenilə (bütün feed-i yox). */
+    const refreshFeedItem = async (item) => {
+        if (!item?.id) return;
+        const t = item.type || 'article';
+        try {
+            let data;
+            if (t === 'poll') {
+                const { data: d } = await content.getPoll(item.id);
+                data = { ...d, type: 'poll' };
+            } else if (t === 'quiz') {
+                if (!item.slug) return;
+                const { data: d } = await content.getQuiz(item.slug);
+                data = { ...d, type: 'quiz' };
+            } else {
+                if (!item.slug) return;
+                const { data: d } = await content.getArticle(item.slug);
+                data = { ...d, type: 'article' };
+            }
+            const key = `${t}-${item.id}`;
+            setArticles((prev) =>
+                prev.map((a) => (`${a.type || 'article'}-${a.id}` === key ? data : a))
+            );
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handleCreateClick = () => {
         if (!user) {
             toast.info("Please login to create content");
@@ -293,6 +320,7 @@ export default function HomePageClient() {
                                 key={`${article.type || 'article'}-${article.id}`}
                                 item={article}
                                 onFeedRefresh={() => loadFeed(1, true, {})}
+                                onFeedItemRefresh={refreshFeedItem}
                             />
                         )) : (
                             <div className={styles.emptyState}>

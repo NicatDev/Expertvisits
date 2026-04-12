@@ -277,10 +277,11 @@ class PollOptionSerializer(serializers.ModelSerializer):
         return round((obj.votes.count() / total_votes) * 100)
 
     def get_is_voted(self, obj):
-        user = self.context.get('request').user if 'request' in self.context else None
-        if user and user.is_authenticated:
-             return obj.votes.filter(user=user).exists()
-        return False
+        request = self.context.get('request') if self.context else None
+        user = request.user if request and request.user.is_authenticated else None
+        if not user:
+            return False
+        return PollVote.objects.filter(option_id=obj.pk, user_id=user.pk).exists()
 
 
 class PollSerializer(serializers.ModelSerializer, ContentSerializerMixin):
@@ -315,12 +316,15 @@ class PollSerializer(serializers.ModelSerializer, ContentSerializerMixin):
         return obj.votes.count()
 
     def get_user_vote(self, obj):
-        user = self.context.get('request').user if 'request' in self.context else None
-        if user and user.is_authenticated:
-            vote = obj.votes.filter(user=user).first()
-            if vote:
-                return vote.option.id
-        return None
+        request = self.context.get('request') if self.context else None
+        if not request or not request.user.is_authenticated:
+            return None
+        option_id = (
+            PollVote.objects.filter(poll_id=obj.pk, user_id=request.user.pk)
+            .values_list('option_id', flat=True)
+            .first()
+        )
+        return option_id
 
 class PollCreateSerializer(serializers.ModelSerializer):
     options = serializers.ListField(child=serializers.CharField(), write_only=True)

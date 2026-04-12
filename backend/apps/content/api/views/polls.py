@@ -6,17 +6,21 @@ from django.db.models import Count
 from apps.content.models import Poll, PollVote, PollOption
 from apps.content.api.serializers import PollSerializer, PollCreateSerializer, PollVoteSerializer
 
-class PollListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = (
+
+def _poll_queryset():
+    return (
         Poll.objects.select_related('author', 'sub_category')
         .prefetch_related('options', 'votes')
         .annotate(
             likes_count=Count('likes', distinct=True),
             comments_count=Count('comments', distinct=True),
         )
-        .order_by('-created_at')
     )
+
+
+class PollListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = _poll_queryset().order_by('-created_at')
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -30,19 +34,17 @@ class PollListCreateAPIView(generics.ListCreateAPIView):
         )
 
 
+class PollRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = _poll_queryset()
+    serializer_class = PollSerializer
+
+
 class PollVoteAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        poll = get_object_or_404(
-            Poll.objects.select_related('author', 'sub_category')
-            .prefetch_related('options', 'votes')
-            .annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comments', distinct=True),
-            ),
-            pk=pk,
-        )
+        poll = get_object_or_404(_poll_queryset(), pk=pk)
         
         # Check if user already voted
         if PollVote.objects.filter(user=request.user, poll=poll).exists():
@@ -60,15 +62,7 @@ class PollVoteAPIView(APIView):
 
             # Köhnə `poll` üzərindəki prefetch cache səsverməni və user_vote-u saxlayır;
             # DB-dən təzə yüklə ki, faizlər və istifadəçi seçimi düzgün qayıtsın.
-            poll = (
-                Poll.objects.select_related('author', 'sub_category')
-                .prefetch_related('options', 'votes')
-                .annotate(
-                    likes_count=Count('likes', distinct=True),
-                    comments_count=Count('comments', distinct=True),
-                )
-                .get(pk=poll.pk)
-            )
+            poll = _poll_queryset().get(pk=poll.pk)
             poll_serializer = PollSerializer(poll, context={'request': request})
             return Response(poll_serializer.data, status=status.HTTP_201_CREATED)
         

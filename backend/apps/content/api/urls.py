@@ -6,7 +6,7 @@ from apps.content.api.views import (
     QuizMyAttemptsAPIView,
     FeedAPIView, UserFeedAPIView, PublicFeedAPIView, ArticleStatsAPIView
 )
-from apps.content.api.views.polls import PollListCreateAPIView, PollVoteAPIView
+from apps.content.api.views.polls import PollListCreateAPIView, PollRetrieveAPIView, PollVoteAPIView
 
 urlpatterns = [
     # Articles
@@ -25,6 +25,7 @@ urlpatterns = [
     # Polls
     path('polls/', PollListCreateAPIView.as_view(), name='poll-list'),
     path('polls/<int:pk>/vote/', PollVoteAPIView.as_view(), name='poll-vote'),
+    path('polls/<int:pk>/', PollRetrieveAPIView.as_view(), name='poll-detail'),
 
 
 
