@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { ChevronLeft, PlayCircle, CheckCircle, Heart, MessageCircle, Send } from 'lucide-react';
 import { content } from '@/lib/api';
 import api from '@/lib/api/client';
@@ -23,9 +23,9 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     const { t, i18n } = useTranslation('common');
     const params = useParams();
     const slug = slugProp ?? params?.slug;
-    const router = useRouter();
     const pathname = usePathname();
     const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const homeHref = withLocale(pathLocale, '/');
 
     const { user, loading: authLoading } = useAuth();
     const [quiz, setQuiz] = useState(initialQuiz);
@@ -134,10 +134,10 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     return (
         <div style={{ minHeight: '100vh', background: '#f5f5f5', padding: '24px' }}>
             <article className={styles.pageShell} lang={i18n.language || 'az'}>
-                <div className={styles.backBtn} onClick={() => router.back()}>
+                <Link href={homeHref} className={styles.backBtn}>
                     <ChevronLeft size={20} />
-                    <span>{t('auth_page.back')}</span>
-                </div>
+                    <span>{t('quiz_page.back')}</span>
+                </Link>
                 <header className={styles.header}>
                     <div className={styles.authorRow}>
                         {quiz.author ? (
