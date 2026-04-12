@@ -57,8 +57,18 @@ class PollVoteAPIView(APIView):
                  return Response({"detail": "Invalid option for this poll."}, status=status.HTTP_400_BAD_REQUEST)
 
             PollVote.objects.create(user=request.user, poll=poll, option=option)
-            
-            # Return updated poll data
+
+            # Köhnə `poll` üzərindəki prefetch cache səsverməni və user_vote-u saxlayır;
+            # DB-dən təzə yüklə ki, faizlər və istifadəçi seçimi düzgün qayıtsın.
+            poll = (
+                Poll.objects.select_related('author', 'sub_category')
+                .prefetch_related('options', 'votes')
+                .annotate(
+                    likes_count=Count('likes', distinct=True),
+                    comments_count=Count('comments', distinct=True),
+                )
+                .get(pk=poll.pk)
+            )
             poll_serializer = PollSerializer(poll, context={'request': request})
             return Response(poll_serializer.data, status=status.HTTP_201_CREATED)
         

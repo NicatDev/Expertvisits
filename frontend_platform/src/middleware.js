@@ -86,6 +86,13 @@ export function middleware(request) {
     return NextResponse.redirect(url, 308);
   }
 
+  const quizLegacy = pathname.match(/^\/quiz\/([^/]+)\/?$/);
+  if (quizLegacy) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/az/quiz/${quizLegacy[1]}`;
+    return NextResponse.redirect(url, 308);
+  }
+
   const vacancySlug = pathname.match(/^\/vacancies\/([^/]+)\/?$/);
   if (vacancySlug) {
     const seg = vacancySlug[1];

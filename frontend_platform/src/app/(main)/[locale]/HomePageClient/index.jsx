@@ -289,7 +289,11 @@ export default function HomePageClient() {
                 ) : (
                     <div className={styles.feedList}>
                         {articles.length > 0 ? articles.map(article => (
-                            <FeedItem key={`${article.type || 'article'}-${article.id}`} item={article} />
+                            <FeedItem
+                                key={`${article.type || 'article'}-${article.id}`}
+                                item={article}
+                                onFeedRefresh={() => loadFeed(1, true, {})}
+                            />
                         )) : (
                             <div className={styles.emptyState}>
                                 <NoContent message={t('feed.no_results')} />
@@ -340,24 +344,24 @@ export default function HomePageClient() {
                 isOpen={showArticleModal}
                 onClose={() => setShowArticleModal(false)}
                 onSuccess={() => {
-                    setFilterType('article');
-                    loadFeed(1, true, { type: 'article' });
+                    setFilterType('all');
+                    loadFeed(1, true, { type: 'all' });
                 }}
             />
             <CreatePollModal
                 isOpen={showPollModal}
                 onClose={() => setShowPollModal(false)}
                 onSuccess={() => {
-                    setFilterType('poll');
-                    loadFeed(1, true, { type: 'poll' });
+                    setFilterType('all');
+                    loadFeed(1, true, { type: 'all' });
                 }}
             />
             <CreateQuizModal
                 isOpen={showQuizModal}
                 onClose={() => setShowQuizModal(false)}
                 onSuccess={() => {
-                    setFilterType('quiz');
-                    loadFeed(1, true, { type: 'quiz' });
+                    setFilterType('all');
+                    loadFeed(1, true, { type: 'all' });
                 }}
             />
         </div>

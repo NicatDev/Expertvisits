@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './style.module.scss';
 import api from '@/lib/api/client';
@@ -11,7 +11,7 @@ import { labelForSubCategory } from '@/lib/utils/subcategory';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
-const PollCard = ({ poll }) => {
+const PollCard = ({ poll, onFeedRefresh }) => {
     const { t, i18n } = useTranslation('common');
     const pathname = usePathname();
     const pathLocale = localeFromPathname(pathname) || defaultLocale;
@@ -21,12 +21,16 @@ const PollCard = ({ poll }) => {
     const [data, setData] = useState(poll);
     const [loading, setLoading] = useState(false);
 
-    const hasVoted = data.user_vote !== null;
+    useEffect(() => {
+        setData(poll);
+    }, [poll]);
+
+    const hasVoted = data.user_vote != null;
     const professionLabel = labelForSubCategory(data.sub_category, i18n.language);
 
     const handleVote = async (optionId) => {
         if (!user) {
-            toast.info(t('feed.toast.login_participate') || "Please login to vote");
+            toast.info(t('feed.toast.login_participate') || 'Please login to vote');
             return;
         }
 
@@ -34,10 +38,11 @@ const PollCard = ({ poll }) => {
         try {
             const res = await api.post(`/content/polls/${data.id}/vote/`, { option: optionId });
             setData(res.data);
-            toast.success(t('feed.toast.vote_success') || "Vote recorded!");
+            toast.success(t('feed.toast.vote_success') || 'Vote recorded!');
+            onFeedRefresh?.();
         } catch (err) {
             console.error(err);
-            toast.error(t('feed.toast.vote_failed') || "Failed to vote");
+            toast.error(t('feed.toast.vote_failed') || 'Failed to vote');
         } finally {
             setLoading(false);
         }
@@ -82,10 +87,10 @@ const PollCard = ({ poll }) => {
             <div className={styles.options}>
                 {hasVoted ? (
                     // Results View
-                    data.options.map(opt => (
+                    data.options.map((opt) => (
                         <div
                             key={opt.id}
-                            className={`${styles.resultItem} ${data.user_vote === opt.id ? styles.selected : ''}`}
+                            className={`${styles.resultItem} ${Number(data.user_vote) === Number(opt.id) ? styles.selected : ''}`}
                         >
                             <div className={styles.progressBar} style={{ width: `${opt.percentage}%` }}></div>
                             <div className={styles.content}>
@@ -96,7 +101,7 @@ const PollCard = ({ poll }) => {
                     ))
                 ) : (
                     // Voting View
-                    data.options.map(opt => (
+                    data.options.map((opt) => (
                         <button
                             key={opt.id}
                             className={styles.optionBtn}
@@ -110,8 +115,10 @@ const PollCard = ({ poll }) => {
             </div>
 
             <div className={styles.footer}>
-                <span>{data.total_votes} {t('feed.votes') || "votes"}</span>
-                {hasVoted && <span>{t('feed.voted') || "Voted"}</span>}
+                <span>
+                    {data.total_votes} {t('feed.votes') || 'votes'}
+                </span>
+                {hasVoted && <span>{t('feed.voted') || 'Voted'}</span>}
             </div>
         </div>
     );

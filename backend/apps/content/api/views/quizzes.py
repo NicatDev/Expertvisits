@@ -40,6 +40,17 @@ class QuizDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             return QuizDetailSerializer
         return QuizSerializer
 
+    def retrieve(self, request, *args, **kwargs):
+        """?omit=detail — SSR/metadata üçün yüngül cavab (stats və my_attempts olmadan)."""
+        instance = self.get_object()
+        omit = request.query_params.get('omit', '')
+        parts = {p.strip() for p in omit.split(',') if p.strip()}
+        if request.method == 'GET' and 'detail' in parts:
+            serializer = QuizSerializer(instance, context={'request': request})
+        else:
+            serializer = QuizDetailSerializer(instance, context={'request': request})
+        return Response(serializer.data)
+
     def perform_update(self, serializer):
         serializer.save(
             sub_category=getattr(self.request.user, 'profession_sub_category', None),

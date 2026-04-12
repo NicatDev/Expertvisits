@@ -245,7 +245,10 @@
         "max_options": "Maksimum 4 seçim icazəlidir",
         "fill_required": "Zəhmət olmasa bütün xanaları doldurun",
         "poll_tab": "Sorğu",
-        "poll_desc": "Rəyləri tez toplayın."
+        "poll_desc": "Rəyləri tez toplayın.",
+        "title_required": "Başlıq boş ola bilməz",
+        "field_language": "Dil",
+        "field_slug": "Slug"
     },
     "edit_modal": {
         "title": "Məqaləyə Düzəliş Et",

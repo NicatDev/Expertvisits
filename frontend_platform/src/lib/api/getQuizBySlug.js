@@ -12,7 +12,7 @@ export const getQuizBySlug = cache(async (slug, locale = 'az', options = {}) => 
   if (!slug || typeof slug !== 'string') return null;
 
   const base = getApiBase();
-  const url = `${base}/content/quizzes/${encodeURIComponent(slug)}/`;
+  const url = `${base}/content/quizzes/${encodeURIComponent(slug)}/?omit=detail`;
 
   const headers = {
     Accept: 'application/json',

@@ -245,7 +245,10 @@
         "max_options": "Max 4 options allowed",
         "fill_required": "Please fill all fields",
         "poll_tab": "Poll",
-        "poll_desc": "Gather opinions quickly."
+        "poll_desc": "Gather opinions quickly.",
+        "title_required": "Title cannot be empty",
+        "field_language": "Language",
+        "field_slug": "URL slug"
     },
     "edit_modal": {
         "title": "Edit Article",

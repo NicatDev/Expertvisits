@@ -22,9 +22,9 @@ import { htmlToFeedPreview } from '@/lib/utils/htmlFeedPreview';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
 import PollCard from '../PollCard';
 
-const FeedItem = ({ item, onDelete }) => {
+const FeedItem = ({ item, onDelete, onFeedRefresh }) => {
     if (item.type === 'poll') {
-        return <PollCard poll={item} />;
+        return <PollCard poll={item} onFeedRefresh={onFeedRefresh} />;
     }
     const { t, i18n } = useTranslation('common');
     const { user } = useAuth();
@@ -425,12 +425,18 @@ const FeedItem = ({ item, onDelete }) => {
                 }}
                 quiz={isQuiz ? (reviewData || localItem) : null}
                 reviewMode={!!reviewData}
-                onSuccess={() => refreshItem()}
+                onSuccess={async () => {
+                    await refreshItem();
+                    onFeedRefresh?.();
+                }}
             />
 
             <ParticipantsListModal
                 isOpen={showParticipantsModal}
-                onClose={() => setShowParticipantsModal(false)}
+                onClose={() => {
+                    setShowParticipantsModal(false);
+                    refreshItem();
+                }}
                 quizSlug={localItem.slug}
                 onSelectParticipant={async (userId) => {
                     try {

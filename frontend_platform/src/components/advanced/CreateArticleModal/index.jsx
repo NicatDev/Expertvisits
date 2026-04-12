@@ -9,6 +9,39 @@ import ImageCropModal from '@/components/ui/ImageCropModal';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 
+function firstApiErrorMessage(val) {
+    if (val == null) return null;
+    if (Array.isArray(val)) return val.filter(Boolean)[0] ?? null;
+    if (typeof val === 'object') {
+        const k = Object.keys(val)[0];
+        if (k) return firstApiErrorMessage(val[k]);
+    }
+    return String(val);
+}
+
+function formatArticleApiError(err, t) {
+    const d = err?.response?.data;
+    if (!d) return t('create_modal.error');
+    if (typeof d === 'string') return d;
+    if (d.detail && typeof d.detail === 'string') return d.detail;
+    if (Array.isArray(d.non_field_errors) && d.non_field_errors.length) {
+        return d.non_field_errors[0];
+    }
+    const fieldLabels = {
+        title: t('create_modal.post_title'),
+        body: t('create_modal.content'),
+        image: t('create_modal.cover_image'),
+        language: t('create_modal.field_language'),
+        slug: t('create_modal.field_slug'),
+    };
+    for (const key of Object.keys(d)) {
+        const label = fieldLabels[key] || key;
+        const msg = firstApiErrorMessage(d[key]);
+        if (msg) return `${label}: ${msg}`;
+    }
+    return t('create_modal.error');
+}
+
 export default function CreateArticleModal({ isOpen, onClose, onSuccess, initialData = null }) {
     const { t } = useTranslation('common');
     const [loading, setLoading] = useState(false);
@@ -80,10 +113,14 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
     };
 
     const handleSubmit = async () => {
+        if (!articleData.title.trim()) {
+            toast.error(t('create_modal.title_required'));
+            return;
+        }
         setLoading(true);
         try {
             const fd = new FormData();
-            fd.append('title', articleData.title);
+            fd.append('title', articleData.title.trim());
             fd.append('body', articleData.body);
             if (articleData.image) fd.append('image', articleData.image);
 
@@ -100,7 +137,7 @@ export default function CreateArticleModal({ isOpen, onClose, onSuccess, initial
             onClose();
         } catch (err) {
             console.error(err);
-            toast.error(t('create_modal.error'));
+            toast.error(formatArticleApiError(err, t));
         } finally {
             setLoading(false);
         }
