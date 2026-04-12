@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import LanguageSwitcher from '@/components/advanced/LanguageSwitcher';
-import styles from './auth.module.scss';
+import styles from './style.module.scss';
 
 export default function AuthLayout({ children }) {
     return (

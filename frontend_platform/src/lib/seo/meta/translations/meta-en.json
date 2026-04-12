@@ -1,0 +1,71 @@
+{
+  "siteName": "Expert Visits",
+  "ogImageDefault": "/logo.png",
+  "pages": {
+    "home": {
+      "title": "Expert Visits | Professional network, jobs, and experts",
+      "description": "Build your professional profile on Expert Visits, discover companies and experts, browse job listings, and publish articles. A secure platform for Azerbaijan and beyond.",
+      "keywords": ["expert visits", "jobs", "experts", "companies", "career", "professional network"],
+      "ogLocale": "en_US"
+    },
+    "experts": {
+      "title": "Experts | Expert Visits — Find professionals",
+      "description": "Discover experts and professionals by field. Use profiles and filters to find the right people and collaboration opportunities.",
+      "keywords": ["experts", "professionals", "talent", "network", "expert visits"],
+      "ogLocale": "en_US"
+    },
+    "vacancies": {
+      "title": "Vacancies | Expert Visits — Job listings and careers",
+      "description": "Browse the latest job listings and vacancies from companies. Apply in one place and track career opportunities.",
+      "keywords": ["jobs", "vacancies", "career", "hiring", "expert visits"],
+      "ogLocale": "en_US"
+    },
+    "companies": {
+      "title": "Companies | Expert Visits — Partner companies",
+      "description": "Explore companies on the platform: vacancies, services, and updates. Transparent profiles for business and hiring.",
+      "keywords": ["companies", "business", "jobs", "partners", "expert visits"],
+      "ogLocale": "en_US"
+    }
+  },
+  "noindex": {
+    "profile": {
+      "title": "Profile | Expert Visits",
+      "description": "Private profile dashboard: details, services, and settings. This page is not indexed in search."
+    },
+    "chat": {
+      "title": "Messages | Expert Visits",
+      "description": "Private messaging. Conversations are not indexed."
+    },
+    "notifications": {
+      "title": "Notifications | Expert Visits",
+      "description": "Account notifications. Not indexed for search."
+    },
+    "websiteTemplate": {
+      "title": "Website template | Expert Visits",
+      "description": "Portfolio and website settings. Not indexed."
+    },
+    "login": {
+      "title": "Log in | Expert Visits",
+      "description": "Sign in to your Expert Visits account. Not indexed."
+    },
+    "register": {
+      "title": "Sign up | Expert Visits",
+      "description": "Create a new account. Registration page is not indexed."
+    },
+    "userPublic": {
+      "titleSuffix": "| Expert Visits",
+      "description": "User profile — professional information and contact. Public profile pages are not indexed; share via direct link only."
+    }
+  },
+  "article": {
+    "titleSuffix": "| Expert Visits",
+    "twitterSite": "@expertvisits"
+  },
+  "vacancy": {
+    "titleSuffix": "— Expert Visits"
+  },
+  "companyDetail": {
+    "titleSuffix": "| Company — Expert Visits",
+    "description": "{{name}} company profile, vacancies, and updates — Expert Visits."
+  }
+}

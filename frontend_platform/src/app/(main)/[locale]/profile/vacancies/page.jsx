@@ -8,7 +8,7 @@ import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import { Plus } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import { useProfile } from '../context';
 
 export default function VacanciesPage() {

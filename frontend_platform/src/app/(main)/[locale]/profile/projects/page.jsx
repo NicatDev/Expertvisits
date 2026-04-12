@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/i18n/client';
 import { useProfile } from '../context';
 import { profiles } from '@/lib/api';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';

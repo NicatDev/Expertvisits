@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, Briefcase, DollarSign, CheckCircle } from 'lucide-react';
-import styles from './VacancyCard.module.scss';
+import styles from './style.module.scss';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';

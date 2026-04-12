@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { User } from 'lucide-react';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import { services, profiles } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { useProfile } from '../context';

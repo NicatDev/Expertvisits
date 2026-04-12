@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 
 export default function SearchableSelect({ options, value, onChange, placeholder = "Select...", labelKey = "name", professionKey = "profession", valueKey = "id", groupBy = null }) {
     const [isOpen, setIsOpen] = useState(false);

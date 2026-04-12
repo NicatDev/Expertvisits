@@ -4,7 +4,7 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
-import styles from './AddVacancyModal.module.scss';
+import styles from './style.module.scss';
 import LocationSelect from '@/components/ui/LocationSelect';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';

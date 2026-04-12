@@ -7,8 +7,8 @@ function getApiBase() {
 
 /**
  * Server Components üçün məqalə yükləmə (axios client ilə eyni baza URL).
- * Keş: eyni sorğuda generateMetadata + page təkrarlanmır.
- * Mövcud deyilsə: null (caller notFound() — HTTP 404, Google üçün düzgün).
+ * Keş: eyni sorğuda təkrar fetch olunmur.
+ * Mövcud deyilsə: null (caller notFound() — HTTP 404).
  */
 export const getArticleBySlug = cache(async (slug, locale = 'az') => {
   if (!slug || typeof slug !== 'string') return null;

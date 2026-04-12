@@ -5,7 +5,7 @@ import { useTranslation } from '@/i18n/client';
 import { profiles } from '@/lib/api';
 import Modal from '@/components/ui/Modal';
 import NoContent from '@/components/ui/NoContent';
-import styles from '../about.module.scss'; // Reuse styles
+import styles from '../UserAboutPageClient/style.module.scss';
 
 export default function UserServicesPage() {
     const { profile, loading } = usePublicProfile();

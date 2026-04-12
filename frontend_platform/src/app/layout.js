@@ -8,34 +8,15 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { LanguageProvider } from "@/lib/contexts/LanguageProvider";
 import { getRequestLocaleState } from "@/lib/i18n/requestLocale";
 import { SITE_ORIGIN } from "@/lib/seo/siteOrigin";
-import { buildMarketingMetadata } from "@/lib/seo/marketingMetadata";
-import az from '@/locales/az.json';
-import en from '@/locales/en.json';
-import ru from '@/locales/ru.json';
 
 const inter = Inter({ subsets: ["latin"] });
 
-const siteByLocale = { az: az.site_meta, en: en.site_meta, ru: ru.site_meta };
-
-export async function generateMetadata() {
-  const { effectiveLng, pathname } = await getRequestLocaleState();
-  const t = siteByLocale[effectiveLng] || siteByLocale.az;
-  const meta = buildMarketingMetadata(SITE_ORIGIN, pathname, t, {
-    ogImages: [
-      {
-        url: "/logo.png",
-        width: 800,
-        height: 600,
-        alt: "Expert Visits Logo",
-      },
-    ],
-  });
-
+export function generateMetadata() {
   return {
     metadataBase: new URL(SITE_ORIGIN),
-    ...meta,
     icons: {
       icon: '/logo.png',
+      apple: '/logo.png',
     },
   };
 }

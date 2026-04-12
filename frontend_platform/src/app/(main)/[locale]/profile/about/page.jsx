@@ -5,7 +5,7 @@ import { useProfile } from '../context';
 import { profiles } from '@/lib/api';
 import api from '@/lib/api/client';
 import Section from '../components/Section';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import { Check, X, Edit2 } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import LocationSelect from '@/components/ui/LocationSelect';

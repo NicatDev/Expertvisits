@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import clsx from 'clsx';
 import { useTranslation } from '@/i18n/client';
 

@@ -6,7 +6,7 @@ import { business } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import { Search, MapPin, Building, Globe, Plus, Users } from 'lucide-react';
-import styles from './Companies.module.scss';
+import styles from './style.module.scss';
 import Link from 'next/link';
 import { debounce } from 'lodash';
 import { useTranslation } from '@/i18n/client';

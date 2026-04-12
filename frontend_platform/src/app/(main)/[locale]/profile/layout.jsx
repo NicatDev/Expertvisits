@@ -1,18 +1,17 @@
 import ProfileLayoutClient from './ProfileLayoutClient';
+import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
+import { buildNoIndexMetadata } from '@/lib/seo/meta/buildMetadata';
 
-export const metadata = {
-  title: 'Mənim Profilim | Expert Visits',
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-    },
-  },
-};
+export async function generateMetadata({ params }) {
+  const { locale } = await params;
+  const loc = locale || 'az';
+  return buildNoIndexMetadata({
+    siteOrigin: SITE_ORIGIN,
+    pathname: `/${loc}/profile`,
+    locale: loc,
+    noindexKey: 'profile',
+  });
+}
 
 export default function ProfileSegmentLayout({ children }) {
   return <ProfileLayoutClient>{children}</ProfileLayoutClient>;

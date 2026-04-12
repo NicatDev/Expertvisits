@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { X, Upload, AlertCircle, CheckCircle } from 'lucide-react';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import { business, content } from '@/lib/api';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';

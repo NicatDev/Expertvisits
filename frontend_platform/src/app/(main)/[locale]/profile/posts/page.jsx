@@ -8,7 +8,7 @@ import CreateArticleModal from '@/components/advanced/CreateArticleModal';
 import CreateQuizModal from '@/components/advanced/CreateQuizModal';
 import CreatePollModal from '@/components/advanced/CreatePollModal';
 import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import api from '@/lib/api/client';
 import { toast } from 'react-toastify';
 import { useProfile } from '../context';

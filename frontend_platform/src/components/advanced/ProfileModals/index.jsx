@@ -42,7 +42,12 @@ export const ExperienceModal = ({ isOpen, onClose, initialData, onSave }) => {
     useEffect(() => {
         if (initialData) {
             const { responsibilities, ...rest } = initialData;
-            setFormData(rest);
+            setFormData({
+                position: rest.position ?? '',
+                company_name: rest.company_name ?? '',
+                start_date: rest.start_date ?? '',
+                end_date: rest.end_date ?? '',
+            });
             setLines(responsibilitiesToFormLines(responsibilities));
         } else {
             setFormData({ position: '', company_name: '', start_date: '', end_date: '' });
@@ -155,8 +160,23 @@ export const EducationModal = ({ isOpen, onClose, initialData, onSave }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (initialData) setFormData(initialData);
-        else setFormData({ degree_type: 'bachelor', institution: '', field_of_study: '', start_date: '', end_date: '' });
+        if (initialData) {
+            setFormData({
+                degree_type: initialData.degree_type ?? 'bachelor',
+                institution: initialData.institution ?? '',
+                field_of_study: initialData.field_of_study ?? '',
+                start_date: initialData.start_date ?? '',
+                end_date: initialData.end_date ?? '',
+            });
+        } else {
+            setFormData({
+                degree_type: 'bachelor',
+                institution: '',
+                field_of_study: '',
+                start_date: '',
+                end_date: '',
+            });
+        }
     }, [initialData, isOpen]);
 
     const handleSubmit = async (e) => {
@@ -257,8 +277,15 @@ export const LanguageModal = ({ isOpen, onClose, initialData, onSave }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (initialData) setFormData(initialData);
-        else setFormData({ name: '', level: 'a1' });
+        if (initialData) {
+            setFormData({
+                name: initialData.name ?? '',
+                level: initialData.level ?? 'a1',
+                id: initialData.id,
+            });
+        } else {
+            setFormData({ name: '', level: 'a1' });
+        }
     }, [initialData, isOpen]);
 
     const handleSubmit = async (e) => {
@@ -294,8 +321,16 @@ export const CertificateModal = ({ isOpen, onClose, initialData, onSave }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (initialData) setFormData(initialData);
-        else setFormData({ name: '', issuing_organization: '', issue_date: '' });
+        if (initialData) {
+            setFormData({
+                name: initialData.name ?? '',
+                issuing_organization: initialData.issuing_organization ?? '',
+                issue_date: initialData.issue_date ?? '',
+                id: initialData.id,
+            });
+        } else {
+            setFormData({ name: '', issuing_organization: '', issue_date: '' });
+        }
     }, [initialData, isOpen]);
 
     const handleSubmit = async (e) => {

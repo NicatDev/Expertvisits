@@ -4,7 +4,7 @@ import { usePublicProfile } from '../context';
 import { useTranslation } from '@/i18n/client';
 import { profiles } from '@/lib/api';
 import Modal from '@/components/ui/Modal';
-import styles from '../about.module.scss'; // Reuse container styles
+import styles from '../UserAboutPageClient/style.module.scss';
 
 export default function UserProjectsPage() {
     const { profile, loading } = usePublicProfile();

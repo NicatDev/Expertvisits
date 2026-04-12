@@ -13,7 +13,7 @@ import { connectionsApi } from '@/lib/api/connections';
 import { chatApi } from '@/lib/api/chat';
 import Avatar from '@/components/ui/Avatar';
 import { toast } from 'react-toastify';
-import styles from './page.module.scss';
+import styles from './style.module.scss';
 
 const PAGE_LIMIT = 30;
 

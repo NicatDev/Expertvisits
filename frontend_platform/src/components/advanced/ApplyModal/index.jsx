@@ -3,7 +3,7 @@ import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
-import styles from './ApplyModal.module.scss'; // Reuse or create new styles
+import styles from './style.module.scss';
 
 const ApplyModal = ({ isOpen, onClose, vacancyId, vacancyTitle, onSuccess }) => {
     const [motivation, setMotivation] = useState('');

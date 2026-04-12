@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { User, Check, X, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import styles from './ApplicantsModal.module.scss';
+import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

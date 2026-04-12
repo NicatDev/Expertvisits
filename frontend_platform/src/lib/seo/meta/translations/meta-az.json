@@ -1,0 +1,71 @@
+{
+  "siteName": "Expert Visits",
+  "ogImageDefault": "/logo.png",
+  "pages": {
+    "home": {
+      "title": "Expert Visits | Peşəkar şəbəkə, vakansiyalar və ekspertlər",
+      "description": "Expert Visits ilə peşəkar profilinizi qurun, ekspertləri və şirkətləri kəşf edin, vakansiyaları izləyin və məqalələr paylaşın. Azərbaycan və beynəlxalq üçün təhlükəsiz platforma.",
+      "keywords": ["expert visits", "vakansiya", "ekspert", "şirkət", "karyera", "peşəkar şəbəkə"],
+      "ogLocale": "az_AZ"
+    },
+    "experts": {
+      "title": "Ekspertlər | Expert Visits — Mütəxəssis və peşəkarları kəşf edin",
+      "description": "Sahə üzrə ekspertlər, mütəxəssislər və peşəkarları tapın. Filtrlər və profillərlə uyğun kadrları və əməkdaşlıq imkanlarını araşdırın.",
+      "keywords": ["ekspertlər", "mütəxəssis", "peşəkar platforma", "kadrlar", "expert visits"],
+      "ogLocale": "az_AZ"
+    },
+    "vacancies": {
+      "title": "Vakansiyalar | Expert Visits — İş elanları və karyera",
+      "description": "Ən son iş elanları, vakansiyalar və karyera imkanları. Şirkətlərin elanlarını bir yerdə izləyin və bir kliklə müraciət edin.",
+      "keywords": ["vakansiya", "iş elanı", "karyera", "iş axtarışı", "expert visits"],
+      "ogLocale": "az_AZ"
+    },
+    "companies": {
+      "title": "Şirkətlər | Expert Visits — Tərəfdaş şirkətlər və profillər",
+      "description": "Platformada olan şirkətləri kəşf edin: vakansiyalar, xidmətlər və yeniliklər. Biznes və əməkdaşlıq üçün şəffaf profillər.",
+      "keywords": ["şirkətlər", "biznes", "vakansiya", "tərəfdaş", "expert visits"],
+      "ogLocale": "az_AZ"
+    }
+  },
+  "noindex": {
+    "profile": {
+      "title": "Profil | Expert Visits",
+      "description": "Şəxsi profil paneli: məlumatlar, xidmətlər və parametrlər. Bu səhifə axtarış indeksində çıxarılmır."
+    },
+    "chat": {
+      "title": "Mesajlar | Expert Visits",
+      "description": "Şəxsi mesajlaşma. Söhbətlər yalnız hesabınıza bağlıdır; bu səhifə indekslənmir."
+    },
+    "notifications": {
+      "title": "Bildirişlər | Expert Visits",
+      "description": "Hesab bildirişləri. Səhifə axtarış üçün indekslənmir."
+    },
+    "websiteTemplate": {
+      "title": "Vebsayt şablonu | Expert Visits",
+      "description": "Şəxsi portfel və vebsayt parametrləri. İndekslənmir."
+    },
+    "login": {
+      "title": "Daxil ol | Expert Visits",
+      "description": "Expert Visits hesabına giriş. Səhifə indekslənmir."
+    },
+    "register": {
+      "title": "Qeydiyyat | Expert Visits",
+      "description": "Yeni hesab yaradın. Qeydiyyat səhifəsi indekslənmir."
+    },
+    "userPublic": {
+      "titleSuffix": "| Expert Visits",
+      "description": "İstifadəçi profili — peşəkar məlumat və əlaqə. İctimai profil səhifəsi indekslənmir; yalnız birbaşa linklə paylaşıla bilər."
+    }
+  },
+  "article": {
+    "titleSuffix": "| Expert Visits",
+    "twitterSite": "@expertvisits"
+  },
+  "vacancy": {
+    "titleSuffix": "— Expert Visits"
+  },
+  "companyDetail": {
+    "titleSuffix": "| Şirkət — Expert Visits",
+    "description": "{{name}} şirkətinin profili, vakansiyalar və xəbərlər — Expert Visits."
+  }
+}

@@ -8,8 +8,7 @@ import {
 const base = (baseUrl) => baseUrl.replace(/\/$/, '');
 
 /**
- * Full hreflang cluster for localized marketing URLs only.
- * Returns undefined for routes without a locale prefix (/login, …).
+ * hreflang cluster for locale-prefixed URLs.
  */
 export function hreflangAlternatesForPathname(baseUrl, pathname) {
   const loc = localeFromPathname(pathname || '/');

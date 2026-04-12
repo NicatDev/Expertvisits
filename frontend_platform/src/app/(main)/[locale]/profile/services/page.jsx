@@ -4,7 +4,7 @@ import { useTranslation } from '@/i18n/client';
 import { useProfile } from '../context';
 import { profiles } from '@/lib/api';
 import Section from '../components/Section';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import { ServiceModal } from '@/components/advanced/ProfileModals';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import { toast } from 'react-toastify';

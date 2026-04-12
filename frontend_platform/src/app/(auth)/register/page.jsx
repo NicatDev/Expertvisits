@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import LocationSelect from '@/components/ui/LocationSelect';
 import SearchableSelect from '@/components/ui/SearchableSelect';
-import styles from '../auth.module.scss';
+import styles from '../style.module.scss';
 import { AlertCircle } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import GoogleAuthButton from '@/components/ui/GoogleAuthButton';

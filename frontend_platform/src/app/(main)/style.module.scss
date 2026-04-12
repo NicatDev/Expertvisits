@@ -1,0 +1,36 @@
+/* Chat otağı (/locale/chat/[id]): mobilde nav + footer yox; ümumi /chat siyahısında görünür */
+.chatMobileImmersive {
+    @media (max-width: 768px) {
+        min-height: 100dvh;
+
+        > nav {
+            display: none !important;
+        }
+
+        > footer {
+            display: none !important;
+        }
+
+        .main {
+            max-width: none;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+.main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 0;
+    width: 100%;
+    flex: 1;
+
+    @media (max-width: 768px) {
+        padding: 0;
+    }
+}

@@ -12,7 +12,7 @@ import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 import { chatApi } from '@/lib/api/chat';
 import Avatar from '@/components/ui/Avatar';
 import ChatEmojiPicker from '@/components/inbox/ChatEmojiPicker';
-import styles from './room.module.scss';
+import styles from './style.module.scss';
 
 const PAGE_SIZE = 50;
 

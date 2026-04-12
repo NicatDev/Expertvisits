@@ -7,7 +7,7 @@ import VacancyCard from '@/components/advanced/VacancyCard';
 import AddVacancyModal from '@/components/advanced/AddVacancyModal';
 import Button from '@/components/ui/Button';
 import { Plus } from 'lucide-react';
-import styles from './vacancies.module.scss';
+import styles from './style.module.scss';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Pagination from '@/components/ui/Pagination';
 import { useTranslation } from '@/i18n/client';

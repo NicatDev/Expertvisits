@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { useLocalizedPath } from '@/hooks/useLocalePath';
 import { useAuth } from '@/lib/contexts/AuthContext';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import { User, Menu, X, Bell, MessageCircle } from 'lucide-react';
 import LanguageSwitcher from '../../advanced/LanguageSwitcher';
 import { useTranslation } from '@/i18n/client';

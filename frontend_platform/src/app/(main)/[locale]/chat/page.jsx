@@ -10,7 +10,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { chatApi } from '@/lib/api/chat';
 import Avatar from '@/components/ui/Avatar';
 import NewChatModal from '@/components/inbox/NewChatModal';
-import styles from './chat.module.scss';
+import styles from './style.module.scss';
 
 function mergeMessageIntoRooms(prev, m, userId) {
     const cid = Number(m.chat_id);

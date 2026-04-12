@@ -1,5 +1,5 @@
 "use client";
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Delete", cancelText = "Cancel", isDangerous = true }) => {
     if (!isOpen) return null;

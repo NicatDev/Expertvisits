@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import Button from '../Button';
 
 const Modal = ({

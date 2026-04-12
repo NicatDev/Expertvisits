@@ -52,6 +52,21 @@
     }
 }
 
+/* Vebsayta keçid düyməsi varsa: avatar negativ ofseti düymənin üstünə düşməsin */
+.infoHasWebsite {
+    @media (max-width: 768px) {
+        .visitMobile {
+            margin-bottom: 16px;
+        }
+
+        .avatarContainer {
+            top: 0;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+    }
+}
+
 .avatarContainer {
     width: 91px; /* 85px + 3px border * 2 */
     height: 91px;
@@ -107,6 +122,9 @@
 
     @media (max-width: 768px) {
         display: flex;
+        /* Avatar .avatarContainer has z-index: 3 and negative offset; keep button above for taps */
+        position: relative;
+        z-index: 4;
     }
 
     a {

@@ -106,7 +106,13 @@ const ProfileHeader = () => {
                     ) : null}
                 </div>
 
-                <div className={styles.info}>
+                <div
+                    className={
+                        profile.website_active
+                            ? `${styles.info} ${styles.infoHasWebsite}`
+                            : styles.info
+                    }
+                >
                     {profile.website_active ? (
                         <div className={styles.visitMobile}>
                             <a href={visitWebsiteHref} target="_blank" rel="noopener noreferrer">

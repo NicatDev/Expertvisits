@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Button from '@/components/ui/Button';
 import { X, Upload } from 'lucide-react';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import { business } from '@/lib/api';
 import { useTranslation } from '@/i18n/client';
 

@@ -1,0 +1,283 @@
+@import '../../../../../../styles/variables.scss';
+@import '../../../../../../styles/mixins.scss';
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header {
+    background: #fff;
+    border-radius: $border-radius-base;
+    overflow: hidden;
+    margin-bottom: $spacing-lg;
+    box-shadow: $box-shadow-base;
+}
+
+.cover {
+    height: 200px;
+    background: linear-gradient(135deg, $primary-color, darken($primary-color, 20%));
+}
+
+.info {
+    padding: $spacing-lg;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: $spacing-lg;
+    padding: 10px 24px;
+
+    @include mobile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+// Removed legacy avatar styles to prevent conflict
+
+.names {
+    flex: 1;
+    margin-bottom: $spacing-sm;
+
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+}
+
+.subtitle {
+    color: $text-secondary;
+    font-size: 16px;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-bottom: $spacing-sm;
+}
+
+.content {
+    background: #fff;
+    border-radius: $border-radius-base;
+    padding: $spacing-lg;
+    min-height: 400px;
+}
+
+// New Styles
+// New Styles
+.coverContainer {
+    position: relative;
+    height: 200px;
+    background-color: #f0f2f5;
+    overflow: hidden; // Ensure content doesn't spill
+
+    &:hover .editOverlay {
+        opacity: 1;
+    }
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.defaultCover {
+    width: 100%;
+    height: 100%;
+    /* Default background set in style prop but needing width/height here */
+}
+
+.editOverlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
+    transition: all 0.3s;
+    font-size: 14px;
+    z-index: 10;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.8);
+        opacity: 1;
+    }
+}
+
+// Redesigned Avatar: Small, Left, Circular
+.avatarContainer {
+    position: relative;
+    width: 80px; // "Kicik" (Small)
+    height: 80px;
+    margin-top: -40px; // Overlap cover
+    margin-right: 20px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #fff;
+    cursor: pointer;
+    flex-shrink: 0; // Prevent shrinking in flex container
+    z-index: 5;
+
+    &:hover .avatarOverlay {
+        opacity: 1;
+    }
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.avatarOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0.7; // Always visible edit hint
+    transition: all 0.3s;
+    border-radius: 50%; // Match container
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 1;
+    }
+}
+
+.section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    h3 {
+        margin-bottom: 12px;
+    }
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 12px;
+
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        background: #fafafa;
+    }
+}
+
+.itemContent {
+    h3 {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        margin: 0 0 4px 0;
+    }
+
+    p {
+        color: #666;
+        font-size: 14px;
+        margin: 0 0 4px 0;
+    }
+
+    span {
+        color: #999;
+        font-size: 12px;
+    }
+}
+
+.editableField {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    .label {
+        color: #666;
+        width: 120px;
+        font-weight: 500;
+    }
+
+    .value {
+        flex: 1;
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .editIcon {
+            cursor: pointer;
+            color: $primary-color;
+            opacity: 0.7; // Visible
+            transition: all 0.2s;
+        }
+
+        &:hover .editIcon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+}
+
+.itemActions {
+    display: flex;
+    gap: 8px;
+    opacity: 0.8; // Visible
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.inlineForm {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+}

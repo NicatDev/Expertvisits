@@ -1,18 +1,50 @@
 import { notFound } from 'next/navigation';
 import UserProfileLayoutClient from './UserProfileLayoutClient';
-
-export const metadata = {
-  robots: {
-    index: false,
-    follow: false,
-    googleBot: { index: false, follow: false },
-  },
-};
+import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
+import { buildNoIndexMetadata } from '@/lib/seo/meta/buildMetadata';
+import { getMetaBundle } from '@/lib/seo/meta/loadMeta';
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://api.expertvisits.com/api/').replace(
   /\/?$/,
   '/',
 );
+
+export async function generateMetadata({ params }) {
+  const { username, locale } = await params;
+  const loc = locale || 'az';
+  const pathname = `/${loc}/user/${username}`;
+  let profile = null;
+  try {
+    const res = await fetch(`${API_BASE}accounts/users/${encodeURIComponent(username)}/`, {
+      next: { revalidate: 120 },
+    });
+    if (res.ok) profile = await res.json();
+  } catch {
+    /* fallback meta below */
+  }
+  if (!profile) {
+    return buildNoIndexMetadata({
+      siteOrigin: SITE_ORIGIN,
+      pathname,
+      locale: loc,
+      noindexKey: 'userPublic',
+    });
+  }
+  const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ') || profile.username;
+  const t = getMetaBundle(loc);
+  const title = `${name} ${t.noindex.userPublic.titleSuffix}`.trim();
+  const description = t.noindex.userPublic.description;
+  const ogImage = profile.avatar_compressed || profile.avatar || profile.profile_image;
+  return buildNoIndexMetadata({
+    siteOrigin: SITE_ORIGIN,
+    pathname,
+    locale: loc,
+    noindexKey: 'userPublic',
+    title,
+    description,
+    ogImage,
+  });
+}
 
 async function assertUserProfileExists(username) {
   if (!username || username === 'undefined') {

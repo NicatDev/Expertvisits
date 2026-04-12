@@ -1,30 +1,4 @@
 {
-    "site_meta": {
-        "title": "Expert Visits | Professional Identity & Collaboration Platform",
-        "description": "Digital ecosystem for experts to create professional identities, share posts and articles, and connect with companies and peers.",
-        "keywords": ["expert visits", "professional platform", "experts", "job vacancies", "companies", "articles", "collaboration"],
-        "og_locale": "en_US"
-    },
-    "page_meta": {
-        "experts": {
-            "title": "Experts | Expert Visits - Professional Search",
-            "description": "Discover experts and professionals in their fields. Find skilled personnel for your needs.",
-            "keywords": ["experts", "professionals", "personnel", "search experts", "expert visits"],
-            "og_locale": "en_US"
-        },
-        "vacancies": {
-            "title": "Vacancies | Expert Visits - Job Listings",
-            "description": "Discover the latest job listings, internships, and vacancies to advance your career.",
-            "keywords": ["vacancies", "job listings", "career", "internships", "expert visits"],
-            "og_locale": "en_US"
-        },
-        "companies": {
-            "title": "Companies | Expert Visits - Partner Companies",
-            "description": "Discover the companies partnering with us, explore their vacancies and services.",
-            "keywords": ["companies", "vacancies", "business", "expert visits"],
-            "og_locale": "en_US"
-        }
-    },
     "footer": {
         "description": "Connecting professionals with opportunities worldwide. Share your expertise, take quizzes, and grow.",
         "legal": "Legal",

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/i18n/client';
-import styles from '../profile.module.scss';
+import styles from '../style.module.scss';
 import { business } from '@/lib/api';
 
 export default function ApplicationsPage() {

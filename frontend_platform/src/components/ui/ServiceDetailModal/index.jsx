@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import Button from '@/components/ui/Button';
 
 export default function ServiceDetailModal({ isOpen, onClose, service }) {

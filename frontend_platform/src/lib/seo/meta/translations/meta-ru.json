@@ -1,0 +1,71 @@
+{
+  "siteName": "Expert Visits",
+  "ogImageDefault": "/logo.png",
+  "pages": {
+    "home": {
+      "title": "Expert Visits | Профессиональная сеть, вакансии и эксперты",
+      "description": "Expert Visits — создайте профиль, находите компании и экспертов, смотрите вакансии и публикуйте статьи. Безопасная платформа для Азербайджана и мира.",
+      "keywords": ["expert visits", "вакансии", "эксперты", "компании", "карьера", "профессиональная сеть"],
+      "ogLocale": "ru_RU"
+    },
+    "experts": {
+      "title": "Эксперты | Expert Visits — Поиск специалистов",
+      "description": "Найдите экспертов и профессионалов по направлениям. Фильтры и профили помогут подобрать кадры и партнёров.",
+      "keywords": ["эксперты", "специалисты", "кадры", "платформа", "expert visits"],
+      "ogLocale": "ru_RU"
+    },
+    "vacancies": {
+      "title": "Вакансии | Expert Visits — Работа и карьера",
+      "description": "Актуальные вакансии и предложения работы от компаний. Просматривайте и откликайтесь в одном месте.",
+      "keywords": ["вакансии", "работа", "карьера", "найм", "expert visits"],
+      "ogLocale": "ru_RU"
+    },
+    "companies": {
+      "title": "Компании | Expert Visits — Партнёры и профили",
+      "description": "Ознакомьтесь с компаниями на платформе: вакансии, услуги и новости. Прозрачные профили для бизнеса и найма.",
+      "keywords": ["компании", "бизнес", "вакансии", "партнёры", "expert visits"],
+      "ogLocale": "ru_RU"
+    }
+  },
+  "noindex": {
+    "profile": {
+      "title": "Профиль | Expert Visits",
+      "description": "Личный кабинет: данные, услуги и настройки. Страница не индексируется."
+    },
+    "chat": {
+      "title": "Сообщения | Expert Visits",
+      "description": "Личные сообщения. Не индексируются поиском."
+    },
+    "notifications": {
+      "title": "Уведомления | Expert Visits",
+      "description": "Уведомления аккаунта. Не для индексации."
+    },
+    "websiteTemplate": {
+      "title": "Шаблон сайта | Expert Visits",
+      "description": "Настройки портфеля и сайта. Не индексируется."
+    },
+    "login": {
+      "title": "Вход | Expert Visits",
+      "description": "Вход в аккаунт Expert Visits. Не индексируется."
+    },
+    "register": {
+      "title": "Регистрация | Expert Visits",
+      "description": "Создание аккаунта. Страница не индексируется."
+    },
+    "userPublic": {
+      "titleSuffix": "| Expert Visits",
+      "description": "Профиль пользователя — профессиональная информация и контакты. Публичные профили не индексируются; только прямая ссылка."
+    }
+  },
+  "article": {
+    "titleSuffix": "| Expert Visits",
+    "twitterSite": "@expertvisits"
+  },
+  "vacancy": {
+    "titleSuffix": "— Expert Visits"
+  },
+  "companyDetail": {
+    "titleSuffix": "| Компания — Expert Visits",
+    "description": "Профиль компании {{name}}: вакансии и новости — Expert Visits."
+  }
+}

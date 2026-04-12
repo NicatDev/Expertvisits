@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { X, Upload } from 'lucide-react';
-import styles from './styles.module.scss';
+import styles from './style.module.scss';
 import { business } from '@/lib/api';
 
 export default function EditSectionModal({ isOpen, onClose, sectionType, initialData, companyId, onSuccess }) {

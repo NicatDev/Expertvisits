@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/contexts/AuthContext'; // Import useAuth
 import { auth } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import styles from '../auth.module.scss';
+import styles from '../style.module.scss';
 import { useTranslation } from '@/i18n/client';
 import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
 
