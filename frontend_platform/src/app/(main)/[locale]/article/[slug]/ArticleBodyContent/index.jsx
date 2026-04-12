@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
 import styles from '../style.module.scss';
@@ -9,13 +9,14 @@ const COPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 
 /**
  * Məqalə HTML məzmunu: kod bloklarına kopyala, xarici linklər, şəkillər.
- * Semaantika üçün <section> + mövcud .body tipografiyası.
+ * İç divdə dangerouslySetInnerHTML — effekt ilə DOM əlavələri React-in innerHTML yeniləməsindən ayrıdır.
  */
 export default function ArticleBodyContent({ html, ariaLabel }) {
     const rootRef = useRef(null);
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
 
-    useEffect(() => {
+    // paint-dən əvvəl: kopyala düyməsi birinci frame-də görünsün; `t`-ni deps-ə qoymuruq (hər render yeni referans).
+    useLayoutEffect(() => {
         const root = rootRef.current;
         if (!root || !html) return;
 
@@ -90,14 +91,12 @@ export default function ArticleBodyContent({ html, ariaLabel }) {
             table.parentNode?.insertBefore(wrap, table);
             wrap.appendChild(table);
         });
-    }, [html, t]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- `t` hər renderdə yeni referans ola bilər; html və dil kifayətdir
+    }, [html, i18n.language]);
 
     return (
-        <section
-            ref={rootRef}
-            className={styles.body}
-            aria-label={ariaLabel}
-            dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <section className={styles.bodyOuter} aria-label={ariaLabel}>
+            <div ref={rootRef} className={styles.body} dangerouslySetInnerHTML={{ __html: html }} />
+        </section>
     );
 }

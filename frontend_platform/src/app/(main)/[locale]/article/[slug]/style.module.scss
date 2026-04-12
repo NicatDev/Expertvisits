@@ -148,6 +148,12 @@
     }
 }
 
+/* Wrapper: mətn divində innerHTML; kopyala toolbar DOM əlavələri ilə uyğun */
+.bodyOuter {
+    margin: 0;
+    padding: 0;
+}
+
 .body {
     font-size: 1.125rem;
     line-height: 1.8;
@@ -195,7 +201,7 @@
     }
 
     p {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.7rem;
     }
 
     /* globals.scss ul { list-style: none } və * reset — məqalə məzmununda siyahı işarələrini bərpa */
