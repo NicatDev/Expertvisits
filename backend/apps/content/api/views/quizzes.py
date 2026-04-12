@@ -154,7 +154,8 @@ class QuizParticipantsAPIView(generics.ListAPIView):
 
 class QuizParticipantDetailAPIView(APIView):
     """
-    Get specific participant's latest attempt (Author only). Use participants list for each attempt row.
+    Author-only: participant review for a quiz.
+    Default: user's latest attempt. Optional ?attempt_id= for a specific attempt (matches participants list rows).
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -167,9 +168,16 @@ class QuizParticipantDetailAPIView(APIView):
         if quiz.author != request.user:
             return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
-        attempt = QuizAttempt.objects.filter(quiz=quiz, user_id=user_id).order_by('-created_at').first()
-        if not attempt:
-            return Response({'error': 'Attempt not found'}, status=status.HTTP_404_NOT_FOUND)
+        attempt_qs = QuizAttempt.objects.filter(quiz=quiz, user_id=user_id)
+        attempt_id = request.query_params.get('attempt_id')
+        if attempt_id:
+            attempt = attempt_qs.filter(id=attempt_id).first()
+            if not attempt:
+                return Response({'error': 'Attempt not found'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            attempt = attempt_qs.order_by('-created_at').first()
+            if not attempt:
+                return Response({'error': 'Attempt not found'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = QuizReviewSerializer(quiz, context={'attempt': attempt})
         return Response(serializer.data)

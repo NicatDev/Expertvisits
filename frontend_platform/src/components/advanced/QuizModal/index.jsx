@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../../ui/Button';
 import { X } from 'lucide-react';
@@ -9,9 +9,21 @@ import { useTranslation } from '@/i18n/client';
 
 export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode = false }) {
     const { t } = useTranslation('common');
-    const [answers, setAnswers] = useState(reviewMode ? quiz?.user_attempt?.answers_json || {} : {});
+    const [answers, setAnswers] = useState({});
     const [result, setResult] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // Modal açılanda / rejim və ya nəticə dəstəyi dəyişəndə: köhnə submit nəticəsi qalmasın (ana səhifə retake)
+    useEffect(() => {
+        if (!isOpen || !quiz) return;
+        setResult(null);
+        setSubmitting(false);
+        if (reviewMode) {
+            setAnswers(quiz.user_attempt?.answers_json || {});
+        } else {
+            setAnswers({});
+        }
+    }, [isOpen, reviewMode, quiz?.slug, quiz?.user_attempt?.id]);
 
     // If reviewMode, quiz prop contains user_attempt and is_correct flags on choice
     const attempt = reviewMode ? quiz.user_attempt : null;

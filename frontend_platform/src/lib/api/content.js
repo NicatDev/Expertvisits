@@ -29,7 +29,7 @@ export const content = {
     getQuizResult: (slug, params) => api.get(`content/quizzes/${encodeURIComponent(slug)}/result/`, { params }),
     getQuizMyAttempts: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/my-attempts/`),
     getQuizParticipants: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/`),
-    getQuizParticipantResult: (slug, userId) =>
-        api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/${userId}/`),
+    getQuizParticipantResult: (slug, userId, params = {}) =>
+        api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/${userId}/`, { params }),
 
 };

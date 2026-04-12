@@ -41,7 +41,7 @@ const ParticipantsListModal = ({ isOpen, onClose, quizSlug, onSelectParticipant 
                             <div
                                 key={attempt.id}
                                 className={styles.item}
-                                onClick={() => onSelectParticipant(attempt.user.id)}
+                                onClick={() => onSelectParticipant(attempt.user.id, attempt.id)}
                             >
                                 <div className={styles.userInfo}>
                                     <div className={styles.avatar}>

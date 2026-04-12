@@ -1,36 +1,33 @@
-.wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 16px clamp(12px, 4vw, 24px) 48px;
-}
+/* Məqalə detalı ilə eyni: ağ konteyner + geri düyməsi */
+.pageShell {
+  max-width: 800px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 
-.toolbar {
-  margin-bottom: 16px;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  color: #1890ff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 8px 0;
-
-  &:hover {
-    text-decoration: underline;
+  @media (max-width: 768px) {
+    padding: 24px;
+    margin: 10px auto;
+    border-radius: 0;
   }
 }
 
-.card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  padding: clamp(16px, 4vw, 28px);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  margin-bottom: 32px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+  font-size: 0.95rem;
+
+  &:hover {
+    color: #0f172a;
+  }
 }
 
 .header {

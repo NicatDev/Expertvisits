@@ -434,9 +434,11 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
                     if (data && isQuiz) onFeedItemRefresh?.({ ...data, type: 'quiz' });
                 }}
                 quizSlug={localItem.slug}
-                onSelectParticipant={async (userId) => {
+                onSelectParticipant={async (userId, attemptId) => {
                     try {
-                        const { data } = await content.getQuizParticipantResult(localItem.slug, userId);
+                        const { data } = await content.getQuizParticipantResult(localItem.slug, userId, {
+                            attempt_id: attemptId,
+                        });
                         setReviewData(data);
                         setShowParticipantsModal(false);
                         setShowQuizModal(true);

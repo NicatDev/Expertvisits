@@ -26,7 +26,6 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     const router = useRouter();
     const pathname = usePathname();
     const pathLocale = localeFromPathname(pathname) || defaultLocale;
-    const homeHref = withLocale(pathLocale, '/');
 
     const { user, loading: authLoading } = useAuth();
     const [quiz, setQuiz] = useState(initialQuiz);
@@ -133,15 +132,12 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     const qCount = quiz.questions?.length || 0;
 
     return (
-        <div className={styles.wrap}>
-            <div className={styles.toolbar}>
-                <button type="button" className={styles.back} onClick={() => router.push(homeHref)}>
-                    <ChevronLeft size={22} />
-                    {t('quiz_page.back')}
-                </button>
-            </div>
-
-            <article className={styles.card}>
+        <div style={{ minHeight: '100vh', background: '#f5f5f5', padding: '24px' }}>
+            <article className={styles.pageShell} lang={i18n.language || 'az'}>
+                <div className={styles.backBtn} onClick={() => router.back()}>
+                    <ChevronLeft size={20} />
+                    <span>{t('auth_page.back')}</span>
+                </div>
                 <header className={styles.header}>
                     <div className={styles.authorRow}>
                         {quiz.author ? (
