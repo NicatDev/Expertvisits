@@ -297,6 +297,7 @@
         "template3_name": "Корпоративный",
         "template4_name": "Cyberpunk",
         "template5_name": "Медицинский",
+        "template6_name": "Разработчик / Код",
         "save_template": "Сохранить",
         "saving": "Сохранение...",
         "success_msg": "Шаблон успешно сохранен!",

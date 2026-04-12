@@ -10,6 +10,7 @@ import {
     Briefcase,
     Sidebar,
     Stethoscope,
+    Code,
     ArrowLeft,
     Download,
 } from 'lucide-react';
@@ -511,6 +512,24 @@ export default function WebsiteTemplatePageClient() {
                                         {t('widgets.template5_name')}
                                     </span>
                                     {selected === 5 && (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    )}
+                                </div>
+
+                                <div
+                                    className={`${pageStyles.option} ${selected === 6 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelected(6)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => e.key === 'Enter' && setSelected(6)}
+                                >
+                                    <div className={pageStyles.iconBox}>
+                                        <Code size={24} />
+                                    </div>
+                                    <span className={pageStyles.templateName}>
+                                        {t('widgets.template6_name')}
+                                    </span>
+                                    {selected === 6 && (
                                         <CheckCircle className={pageStyles.checkIcon} size={20} />
                                     )}
                                 </div>

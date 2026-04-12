@@ -9,20 +9,29 @@ function getApiBase() {
  * Server Components üçün məqalə yükləmə (axios client ilə eyni baza URL).
  * Keş: eyni sorğuda təkrar fetch olunmur.
  * Mövcud deyilsə: null (caller notFound() — HTTP 404).
+ *
+ * @param {string} slug
+ * @param {string} [locale]
+ * @param {{ accessToken?: string }} [options] — əlavə olunarsa Authorization göndərilir (is_liked üçün)
  */
-export const getArticleBySlug = cache(async (slug, locale = 'az') => {
+export const getArticleBySlug = cache(async (slug, locale = 'az', options = {}) => {
   if (!slug || typeof slug !== 'string') return null;
 
   const base = getApiBase();
   const url = `${base}/content/articles/${encodeURIComponent(slug)}/`;
 
+  const headers = {
+    Accept: 'application/json',
+    'Accept-Language': locale,
+  };
+  if (options.accessToken) {
+    headers.Authorization = `Bearer ${options.accessToken}`;
+  }
+
   try {
     const res = await fetch(url, {
       cache: 'no-store',
-      headers: {
-        Accept: 'application/json',
-        'Accept-Language': locale,
-      },
+      headers,
     });
 
     if (res.status === 404) return null;

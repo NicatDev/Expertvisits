@@ -300,6 +300,8 @@
         "template2_name": "Light Interactive",
         "template3_name": "Corporate",
         "template4_name": "Cyberpunk",
+        "template5_name": "Medical / Doctor",
+        "template6_name": "Developer / Code",
         "save_template": "Save template",
         "saving": "Saving...",
         "success_msg": "Template saved successfully!",

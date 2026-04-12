@@ -20,7 +20,7 @@ export default function ClientPage({ slug: slugProp, initialArticle = null }) {
     const params = useParams();
     const slug = slugProp ?? params?.slug;
     const router = useRouter();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [article, setArticle] = useState(initialArticle);
     const [loading, setLoading] = useState(!initialArticle);
     const [fetchError, setFetchError] = useState(false);
@@ -38,6 +38,34 @@ export default function ClientPage({ slug: slugProp, initialArticle = null }) {
         }
         fetchArticle();
     }, [slug, initialArticle]);
+
+    // SSR token göndərə bilmir; accessToken varsa axios ilə yenidən sorğu — is_liked düzgün olsun.
+    // Token yoxdursa (çıxış və s.) bəyənmə vəziyyətini anonim cavabla uyğunlaşdırırıq.
+    useEffect(() => {
+        if (!slug || authLoading) return;
+
+        const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+
+        if (token) {
+            // SSR olmadan yüklənəndə fetchArticle() artıq token ilə gedir — təkrar sorğu lazım deyil.
+            if (!initialArticle) return;
+
+            let cancelled = false;
+            (async () => {
+                try {
+                    const { data } = await api.get(`/content/articles/${slug}/`);
+                    if (!cancelled) setArticle(data);
+                } catch (err) {
+                    console.error(err);
+                }
+            })();
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        setArticle((prev) => (prev?.is_liked ? { ...prev, is_liked: false } : prev));
+    }, [slug, authLoading, user?.id, initialArticle]);
 
     const fetchArticle = async () => {
         setFetchError(false);
