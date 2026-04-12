@@ -3,7 +3,7 @@ from apps.content.api.views import (
     ArticleListCreateAPIView, ArticleDetailAPIView,
     QuizListCreateAPIView, QuizDetailAPIView, QuizSubmitAPIView,
     QuizResultAPIView, QuizParticipantsAPIView, QuizParticipantDetailAPIView,
-
+    QuizMyAttemptsAPIView,
     FeedAPIView, UserFeedAPIView, PublicFeedAPIView, ArticleStatsAPIView
 )
 from apps.content.api.views.polls import PollListCreateAPIView, PollVoteAPIView
@@ -13,13 +13,14 @@ urlpatterns = [
     path('articles/', ArticleListCreateAPIView.as_view(), name='article-list'),
     path('articles/<slug:slug>/', ArticleDetailAPIView.as_view(), name='article-detail'),
 
-    # Quizzes
+    # Quizzes (lookup by slug)
     path('quizzes/', QuizListCreateAPIView.as_view(), name='quiz-list'),
-    path('quizzes/<int:pk>/', QuizDetailAPIView.as_view(), name='quiz-detail'),
-    path('quizzes/<int:pk>/submit/', QuizSubmitAPIView.as_view(), name='quiz-submit'),
-    path('quizzes/<int:pk>/result/', QuizResultAPIView.as_view(), name='quiz-result'),
-    path('quizzes/<int:pk>/participants/', QuizParticipantsAPIView.as_view(), name='quiz-participants'),
-    path('quizzes/<int:pk>/participants/<int:user_id>/', QuizParticipantDetailAPIView.as_view(), name='quiz-participant-detail'),
+    path('quizzes/<slug:slug>/', QuizDetailAPIView.as_view(), name='quiz-detail'),
+    path('quizzes/<slug:slug>/submit/', QuizSubmitAPIView.as_view(), name='quiz-submit'),
+    path('quizzes/<slug:slug>/result/', QuizResultAPIView.as_view(), name='quiz-result'),
+    path('quizzes/<slug:slug>/my-attempts/', QuizMyAttemptsAPIView.as_view(), name='quiz-my-attempts'),
+    path('quizzes/<slug:slug>/participants/', QuizParticipantsAPIView.as_view(), name='quiz-participants'),
+    path('quizzes/<slug:slug>/participants/<int:user_id>/', QuizParticipantDetailAPIView.as_view(), name='quiz-participant-detail'),
 
     # Polls
     path('polls/', PollListCreateAPIView.as_view(), name='poll-list'),

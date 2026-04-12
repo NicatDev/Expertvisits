@@ -135,11 +135,27 @@
             "failed_load_result": "Nəticəni yükləmək mümkün olmadı"
         },
         "view_results": "Nəticəyə bax",
-        "view_participants": "İştirakçılara bax"
+        "view_participants": "İştirakçılara bax",
+        "retake_quiz": "Yenidən keç",
+        "my_attempts_short": "cəhd",
+        "all_attempts_detail": "Bütün cəhdlər (detal)"
     },
     "participants_modal": {
         "title": "İştirakçılar",
         "no_participants": "Hələ iştirakçı yoxdur."
+    },
+    "quiz_page": {
+        "back": "Ana səhifə",
+        "stats_title": "Statistika",
+        "stats_avg": "Ortalama nəticə",
+        "stats_participants": "Unikal iştirakçı",
+        "stats_attempts": "Ümumi cəhd",
+        "participants_unique": "unikal iştirakçı",
+        "my_attempts": "Mənim cəhdlərim",
+        "attempt_label": "Cəhd #{{n}}",
+        "start": "Testə başla",
+        "retake": "Yenidən keç",
+        "view_latest_result": "Son nəticəyə bax"
     },
     "auth_page": {
         "welcome_back": "Xoş Gəldiniz",

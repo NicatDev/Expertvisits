@@ -91,7 +91,7 @@ export default function CreateQuizModal({ isOpen, onClose, onSuccess, initialDat
             }
 
             if (initialData) {
-                await content.updateQuiz(initialData.id, quizData);
+                await content.updateQuiz(initialData.slug, quizData);
             } else {
                 await content.createQuiz(quizData);
             }

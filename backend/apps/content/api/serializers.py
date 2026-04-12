@@ -1,6 +1,8 @@
+from django.db.models import Avg, Count
+
 from rest_framework import serializers
 from apps.accounts.api.serializers import SubCategorySerializer
-from apps.content.models import Article, Quiz, Question, Choice
+from apps.content.models import Article, Quiz, Question, Choice, QuizAttempt
 
 # Define Mixin here to minimize dependencies
 class ContentSerializerMixin(serializers.Serializer):
@@ -115,6 +117,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
     author = serializers.StringRelatedField(read_only=True)
+    slug = serializers.SlugField(read_only=True)
     questions = QuestionSerializer(many=True)
     likes_count = serializers.IntegerField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
@@ -122,11 +125,28 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
 
     class Meta:
         model = Quiz
-        fields = ['id', 'title', 'sub_category', 'author', 'author_avatar', 'author_avatar_compressed', 'questions', 'created_at', 'likes_count', 'comments_count', 'is_liked', 'latest_comment', 'participation_count', 'is_participated']
+        fields = [
+            'id',
+            'slug',
+            'title',
+            'sub_category',
+            'author',
+            'author_avatar',
+            'author_avatar_compressed',
+            'questions',
+            'created_at',
+            'likes_count',
+            'comments_count',
+            'is_liked',
+            'latest_comment',
+            'participation_count',
+            'is_participated',
+            'my_attempt_count',
+        ]
 
     participation_count = serializers.SerializerMethodField()
     is_participated = serializers.SerializerMethodField()
-
+    my_attempt_count = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         questions_data = validated_data.pop('questions')
@@ -139,7 +159,7 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
         return quiz
 
     def get_participation_count(self, obj):
-        return obj.quizattempt_set.count()
+        return obj.quizattempt_set.values('user').distinct().count()
 
     def get_is_participated(self, obj):
         user = self.context.get('request').user if 'request' in self.context else None
@@ -147,14 +167,44 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
             return obj.quizattempt_set.filter(user=user).exists()
         return False
 
+    def get_my_attempt_count(self, obj):
+        user = self.context.get('request').user if self.context.get('request') else None
+        if user and user.is_authenticated:
+            return obj.quizattempt_set.filter(user=user).count()
+        return 0
+
 
 class QuizDetailSerializer(QuizSerializer):
-    """Include questions when taking the quiz"""
-    pass
+    """Detail page: stats + current user's attempts list."""
 
+    quiz_stats = serializers.SerializerMethodField()
+    my_attempts = serializers.SerializerMethodField()
 
-# We need to import QuizAttempt inside method or at top if circular import avoided
-from apps.content.models import QuizAttempt
+    class Meta(QuizSerializer.Meta):
+        fields = QuizSerializer.Meta.fields + ['quiz_stats', 'my_attempts']
+
+    def get_quiz_stats(self, obj):
+        n = obj.questions.count()
+        agg = QuizAttempt.objects.filter(quiz=obj).aggregate(
+            avg_score=Avg('score'),
+            total_attempts=Count('id'),
+            unique_participants=Count('user', distinct=True),
+        )
+        avg_pct = 0
+        if n > 0 and agg['avg_score'] is not None:
+            avg_pct = round((agg['avg_score'] / n) * 100)
+        return {
+            'average_percent': avg_pct,
+            'total_attempts': agg['total_attempts'] or 0,
+            'unique_participants': agg['unique_participants'] or 0,
+        }
+
+    def get_my_attempts(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return []
+        attempts = QuizAttempt.objects.filter(quiz=obj, user=request.user).order_by('-created_at')
+        return QuizAttemptSerializer(attempts, many=True).data
 
 class QuizAttemptSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -199,7 +249,7 @@ class QuizReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quiz
-        fields = ['id', 'title', 'questions', 'user_attempt']
+        fields = ['id', 'slug', 'title', 'questions', 'user_attempt']
 
     def get_user_attempt(self, obj):
         # We expect 'attempt' to be passed in context or attached to obj

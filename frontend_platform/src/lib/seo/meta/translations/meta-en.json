@@ -55,6 +55,10 @@
     "userPublic": {
       "titleSuffix": "| Expert Visits",
       "description": "User profile — professional information and contact. Public profile pages are not indexed; share via direct link only."
+    },
+    "quiz_detail": {
+      "titleSuffix": "| Quiz | Expert Visits",
+      "description": "{title} — interactive quiz ({count} questions). This page is not indexed in search."
     }
   },
   "article": {

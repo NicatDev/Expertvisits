@@ -131,11 +131,27 @@
             "failed_load_result": "Не удалось загрузить результат"
         },
         "view_results": "Посмотреть результаты",
-        "view_participants": "Посмотреть участников"
+        "view_participants": "Посмотреть участников",
+        "retake_quiz": "Пройти снова",
+        "my_attempts_short": "попыток",
+        "all_attempts_detail": "Все попытки (страница теста)"
     },
     "participants_modal": {
         "title": "Участники",
         "no_participants": "Пока нет участников."
+    },
+    "quiz_page": {
+        "back": "Главная",
+        "stats_title": "Статистика",
+        "stats_avg": "Средний результат",
+        "stats_participants": "Уникальных участников",
+        "stats_attempts": "Всего попыток",
+        "participants_unique": "уникальных участников",
+        "my_attempts": "Мои попытки",
+        "attempt_label": "Попытка №{{n}}",
+        "start": "Начать тест",
+        "retake": "Пройти снова",
+        "view_latest_result": "Последний результат"
     },
     "auth_page": {
         "welcome_back": "С возвращением",

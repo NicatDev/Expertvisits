@@ -43,8 +43,8 @@ class QuestionInline(admin.TabularInline):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "created_at", "score")
-    search_fields = ("title", "author__username")
+    list_display = ("title", "slug", "author", "created_at", "score")
+    search_fields = ("title", "slug", "author__username")
     autocomplete_fields = ("author", "sub_category")
     inlines = (QuestionInline,)
     date_hierarchy = "created_at"

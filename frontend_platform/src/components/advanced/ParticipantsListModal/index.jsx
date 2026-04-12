@@ -5,21 +5,21 @@ import { User, ChevronRight } from 'lucide-react';
 import styles from './style.module.scss';
 import { useTranslation } from '@/i18n/client';
 
-const ParticipantsListModal = ({ isOpen, onClose, quizId, onSelectParticipant }) => {
+const ParticipantsListModal = ({ isOpen, onClose, quizSlug, onSelectParticipant }) => {
     const { t } = useTranslation('common');
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (isOpen && quizId) {
+        if (isOpen && quizSlug) {
             fetchParticipants();
         }
-    }, [isOpen, quizId]);
+    }, [isOpen, quizSlug]);
 
     const fetchParticipants = async () => {
         setLoading(true);
         try {
-            const { data } = await content.getQuizParticipants(quizId);
+            const { data } = await content.getQuizParticipants(quizSlug);
             setParticipants(data);
         } catch (error) {
             console.error(error);

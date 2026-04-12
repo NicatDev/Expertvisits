@@ -54,10 +54,12 @@ export default function HomePageClient() {
 
     // Fetch Trigger (Reset)
     useEffect(() => {
-        loadFeed(1, true);
+        loadFeed(1, true, {});
     }, [filterType, ordering, scope, debouncedSearch]);
 
-    const loadFeed = async (pageNo = 1, reset = false) => {
+    const loadFeed = async (pageNo = 1, reset = false, opts = {}) => {
+        const typeFilter = opts.type !== undefined ? opts.type : filterType;
+
         if (reset) {
             setLoading(true);
             setArticles([]);
@@ -72,7 +74,7 @@ export default function HomePageClient() {
 
         try {
             const params = {
-                type: filterType,
+                type: typeFilter,
                 ordering: ordering,
                 scope: scope,
                 search: debouncedSearch,
@@ -338,8 +340,8 @@ export default function HomePageClient() {
                 isOpen={showArticleModal}
                 onClose={() => setShowArticleModal(false)}
                 onSuccess={() => {
-                    setFilterType('article'); // Or current tab? Maybe keep as is, user will likely want to see what they created.
-                    loadFeed(1, true);
+                    setFilterType('article');
+                    loadFeed(1, true, { type: 'article' });
                 }}
             />
             <CreatePollModal
@@ -347,7 +349,7 @@ export default function HomePageClient() {
                 onClose={() => setShowPollModal(false)}
                 onSuccess={() => {
                     setFilterType('poll');
-                    loadFeed(1, true);
+                    loadFeed(1, true, { type: 'poll' });
                 }}
             />
             <CreateQuizModal
@@ -355,7 +357,7 @@ export default function HomePageClient() {
                 onClose={() => setShowQuizModal(false)}
                 onSuccess={() => {
                     setFilterType('quiz');
-                    loadFeed(1, true);
+                    loadFeed(1, true, { type: 'quiz' });
                 }}
             />
         </div>

@@ -193,6 +193,48 @@ export function buildVacancyMetadata({ siteOrigin, vacancy, slug, routeLocale })
 }
 
 /**
+ * Quiz (test) detalı — noindex; title/description/OG struktur məqalə/vakansiya ilə uyğun
+ */
+export function buildQuizMetadata({ siteOrigin, quiz, slug, routeLocale }) {
+  const t = getMetaBundle(routeLocale);
+  const nd = t.noindex?.quiz_detail || {};
+  const suffix = nd.titleSuffix || '| Expert Visits';
+  const title = `${quiz?.title || 'Quiz'} ${suffix}`.trim();
+  const n = quiz?.questions?.length ?? 0;
+  const rawDesc = (nd.description || '{title} — Expert Visits.').replace(/\{title\}/g, quiz?.title || '').replace(/\{count\}/g, String(n));
+  const description = truncate(rawDesc, 160);
+  const canonicalPath = `/${routeLocale}/quiz/${slug}`;
+  const canonical = canonicalUrlForPathname(siteOrigin, canonicalPath);
+  const imgPath = t.ogImageDefault.startsWith('/') ? t.ogImageDefault : `/${t.ogImageDefault}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: t.siteName,
+      type: 'website',
+      locale: t.pages?.home?.ogLocale || localeOg[routeLocale] || 'az_AZ',
+      images: [{ url: imgPath, width: 800, height: 600, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imgPath],
+    },
+  };
+}
+
+/**
  * Şirkət detalı — index + hreflang (UI dili)
  */
 export function buildCompanyDetailMetadata({ siteOrigin, company, slug, locale }) {

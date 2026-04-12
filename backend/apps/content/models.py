@@ -70,10 +70,27 @@ class Quiz(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quizzes')
     sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
     likes = GenericRelation(Like)
     comments = GenericRelation(Comment)
     created_at = models.DateTimeField(auto_now_add=True)
     score = models.IntegerField(default=0, db_index=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = custom_slugify(self.title)
+            if len(base_slug) > 50:
+                slug_part = base_slug[:50]
+                if '-' in slug_part:
+                    slug_part = slug_part.rsplit('-', 1)[0]
+                base_slug = slug_part
+            unique_slug = base_slug
+            counter = 1
+            while Quiz.objects.filter(slug=unique_slug).exclude(pk=self.pk).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

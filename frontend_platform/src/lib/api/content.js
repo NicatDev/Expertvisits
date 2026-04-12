@@ -20,13 +20,15 @@ export const content = {
     deleteArticle: (slug) => api.delete(`content/articles/${slug}/`),
 
     getUserQuizzes: (userId) => api.get('content/quizzes/', { params: { author: userId } }),
-    getQuiz: (id) => api.get(`content/quizzes/${id}/`),
+    getQuiz: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/`),
     createQuiz: (data) => api.post('content/quizzes/', data),
-    updateQuiz: (id, data) => api.patch(`content/quizzes/${id}/`, data),
-    deleteQuiz: (id) => api.delete(`content/quizzes/${id}/`),
-    submitQuiz: (id, answers) => api.post(`content/quizzes/${id}/submit/`, { answers }),
-    getQuizResult: (id) => api.get(`content/quizzes/${id}/result/`),
-    getQuizParticipants: (id) => api.get(`content/quizzes/${id}/participants/`),
-    getQuizParticipantResult: (id, userId) => api.get(`content/quizzes/${id}/participants/${userId}/`),
+    updateQuiz: (slug, data) => api.patch(`content/quizzes/${encodeURIComponent(slug)}/`, data),
+    deleteQuiz: (slug) => api.delete(`content/quizzes/${encodeURIComponent(slug)}/`),
+    submitQuiz: (slug, answers) => api.post(`content/quizzes/${encodeURIComponent(slug)}/submit/`, { answers }),
+    getQuizResult: (slug, params) => api.get(`content/quizzes/${encodeURIComponent(slug)}/result/`, { params }),
+    getQuizMyAttempts: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/my-attempts/`),
+    getQuizParticipants: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/`),
+    getQuizParticipantResult: (slug, userId) =>
+        api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/${userId}/`),
 
 };

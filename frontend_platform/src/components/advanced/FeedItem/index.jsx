@@ -8,7 +8,7 @@ import LikesModal from '../LikesModal';
 import CommentsSection from '../CommentsSection';
 import QuizModal from '../QuizModal';
 import api from '@/lib/api/client';
-import { content } from '@/lib/api'; // Ensure content API is imported
+import { content } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss'; // Import SCSS Module
 import EditArticleModal from '../EditArticleModal';
@@ -57,6 +57,10 @@ const FeedItem = ({ item, onDelete }) => {
         isArticle && localItem.slug
             ? withLocale(articleLinkLocale, `/article/${localItem.slug}`)
             : null;
+    const quizDetailHref =
+        isQuiz && localItem.slug
+            ? withLocale(articleLinkLocale, `/quiz/${localItem.slug}`)
+            : null;
 
     const articleFeedPreview = useMemo(
         () => (isArticle && localItem.body ? htmlToFeedPreview(localItem.body, 320) : { text: '', truncated: false }),
@@ -93,9 +97,12 @@ const FeedItem = ({ item, onDelete }) => {
     // Helper to refresh just this item interactively
     const refreshItem = async () => {
         try {
-            const headers = { params: { type: typeStr } };
-            // ArticleViewSet uses lookup_field = 'slug', others use 'id'
-            const identifier = (typeStr === 'article' && localItem.slug) ? localItem.slug : localItem.id;
+            const identifier =
+                typeStr === 'article' && localItem.slug
+                    ? localItem.slug
+                    : isQuiz && localItem.slug
+                      ? localItem.slug
+                      : localItem.id;
             const endpoint = `/content/${typeStr === 'quiz' ? 'quizzes' : 'articles'}/${identifier}/`;
             const { data } = await api.get(endpoint);
 
@@ -108,9 +115,15 @@ const FeedItem = ({ item, onDelete }) => {
     };
 
     const handleShare = () => {
-        const url = isArticle && localItem.slug && articleHref
-            ? `${window.location.origin}${articleHref}`
-            : `${window.location.origin}/post/${typeStr}/${localItem.id}`;
+        let path;
+        if (isArticle && localItem.slug && articleHref) {
+            path = articleHref;
+        } else if (isQuiz && localItem.slug && quizDetailHref) {
+            path = quizDetailHref;
+        } else {
+            path = `/post/${typeStr}/${localItem.id}`;
+        }
+        const url = `${window.location.origin}${path}`;
         navigator.clipboard.writeText(url);
         toast.info(t('feed_item.toast.link_copied'));
     };
@@ -171,11 +184,20 @@ const FeedItem = ({ item, onDelete }) => {
             toast.error(t('feed_item.toast.login_participate'));
             return;
         }
-        if (localItem.is_participated) {
-            toast.info(t('feed_item.toast.already_participated'));
-            return;
-        }
+        setReviewData(null);
         setShowQuizModal(true);
+    };
+
+    const handleViewQuizResults = async () => {
+        if (!user || !localItem.slug) return;
+        try {
+            const { data } = await content.getQuizResult(localItem.slug);
+            setReviewData(data);
+            setShowQuizModal(true);
+        } catch (e) {
+            console.error(e);
+            toast.error(t('feed_item.toast.failed_load_result'));
+        }
     };
 
 
@@ -190,7 +212,13 @@ const FeedItem = ({ item, onDelete }) => {
     const handleDeleteConfirm = async () => {
         try {
             if (isArticle) await content.deleteArticle(localItem.slug);
-            else if (isQuiz) await content.deleteQuiz(localItem.id);
+            else if (isQuiz) {
+                if (!localItem.slug) {
+                    toast.error(t('common.operation_failed', { defaultValue: 'Əməliyyat uğursuz' }));
+                    return;
+                }
+                await content.deleteQuiz(localItem.slug);
+            }
 
             toast.success(t('feed_item.toast.deleted'));
             setShowDeleteModal(false);
@@ -284,41 +312,45 @@ const FeedItem = ({ item, onDelete }) => {
 
                 {isQuiz && (
                     <div className={styles.quizCard}>
-                        <h3>{localItem.title}</h3>
+                        <h3>
+                            {quizDetailHref ? (
+                                <Link href={quizDetailHref} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    {localItem.title}
+                                </Link>
+                            ) : (
+                                localItem.title
+                            )}
+                        </h3>
                         {labelForSubCategory(localItem.sub_category, i18n.language) ? (
                             <div className={styles.quizProfession}>{labelForSubCategory(localItem.sub_category, i18n.language)}</div>
                         ) : null}
                         <p>
-                            {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0} {t('feed_item.participants_count')}
+                            {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0}{' '}
+                            {t('feed_item.participants_count')}
+                            {localItem.my_attempt_count > 1 ? (
+                                <span>
+                                    {' '}
+                                    · {localItem.my_attempt_count} {t('feed_item.my_attempts_short')}
+                                </span>
+                            ) : null}
                         </p>
-                        <div className={styles.quizActions} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                        <div className={styles.quizActions} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+                            <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>
+                                {localItem.is_participated ? t('feed_item.retake_quiz') : t('feed_item.start_quiz')}
+                            </Button>
                             {localItem.is_participated ? (
-                                <>
-                                    <Button
-                                        icon={<CheckCircle size={16} />}
-                                        onClick={async () => {
-                                            try {
-                                                const { data } = await content.getQuizResult(localItem.id);
-                                                setReviewData(data); // New state needed
-                                                setShowQuizModal(true);
-                                            } catch (e) {
-                                                console.error(e);
-                                                toast.error(t('feed_item.toast.failed_load_result'));
-                                            }
-                                        }}
-                                    >
-                                        {t('feed_item.view_results')}
-                                    </Button>
-                                </>
-                            ) : (
-                                <Button type="primary" icon={<PlayCircle size={16} />} onClick={handleStartQuiz}>{t('feed_item.start_quiz')}</Button>
-                            )}
+                                <Button icon={<CheckCircle size={16} />} onClick={handleViewQuizResults}>
+                                    {t('feed_item.view_results')}
+                                </Button>
+                            ) : null}
+                            {quizDetailHref && localItem.my_attempt_count > 1 ? (
+                                <Link href={quizDetailHref} className={styles.quizDetailLink}>
+                                    {t('feed_item.all_attempts_detail')}
+                                </Link>
+                            ) : null}
 
                             {user?.username === localItem.author && (
-                                <Button
-                                    variant="secondary" // Assuming variant exists or use style
-                                    onClick={() => setShowParticipantsModal(true)} // New state needed
-                                >
+                                <Button type="default" onClick={() => setShowParticipantsModal(true)}>
                                     {t('feed_item.view_participants')}
                                 </Button>
                             )}
@@ -391,7 +423,7 @@ const FeedItem = ({ item, onDelete }) => {
                     setShowQuizModal(false);
                     setReviewData(null); // Clear review data on close
                 }}
-                quiz={isQuiz ? (reviewData || item) : null} // Use reviewData if available (contains answers)
+                quiz={isQuiz ? (reviewData || localItem) : null}
                 reviewMode={!!reviewData}
                 onSuccess={() => refreshItem()}
             />
@@ -399,10 +431,10 @@ const FeedItem = ({ item, onDelete }) => {
             <ParticipantsListModal
                 isOpen={showParticipantsModal}
                 onClose={() => setShowParticipantsModal(false)}
-                quizId={localItem.id}
+                quizSlug={localItem.slug}
                 onSelectParticipant={async (userId) => {
                     try {
-                        const { data } = await content.getQuizParticipantResult(localItem.id, userId);
+                        const { data } = await content.getQuizParticipantResult(localItem.slug, userId);
                         setReviewData(data);
                         setShowParticipantsModal(false);
                         setShowQuizModal(true);

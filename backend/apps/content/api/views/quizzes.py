@@ -1,9 +1,16 @@
+from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Count
+
 from apps.content.models import Quiz, QuizAttempt
-from apps.content.api.serializers import QuizSerializer
+from apps.content.api.serializers import (
+    QuizSerializer,
+    QuizDetailSerializer,
+    QuizReviewSerializer,
+    QuizAttemptSerializer,
+)
 
 class QuizListCreateAPIView(generics.ListCreateAPIView):
     queryset = Quiz.objects.select_related('author', 'sub_category').prefetch_related('questions__choices').annotate(
@@ -24,8 +31,14 @@ class QuizDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comments', distinct=True)
     )
-    serializer_class = QuizSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return QuizDetailSerializer
+        return QuizSerializer
 
     def perform_update(self, serializer):
         serializer.save(
@@ -35,27 +48,23 @@ class QuizDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class QuizSubmitAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, pk=None):
-        try:
-            quiz = Quiz.objects.select_related('author').prefetch_related('questions__choices').get(pk=pk)
-        except Quiz.DoesNotExist:
-            return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, slug=None):
+        quiz = get_object_or_404(
+            Quiz.objects.select_related('author').prefetch_related('questions__choices'),
+            slug=slug,
+        )
 
-        answers = request.data.get('answers', {}) # Dict of question_id: choice_id
+        answers = request.data.get('answers', {})
         score = 0
         total = quiz.questions.count()
-        
+
         for q in quiz.questions.all():
             choice_id = answers.get(str(q.id))
             if choice_id:
-                # Optimized check: we could map choices in memory, but exists() is ok if small count. 
-                # Better: get all correct choices ids list for these questions.
-                pass 
-                # Keeping original logic for safety, but using existing queryset
                 correct = q.choices.filter(id=choice_id, is_correct=True).exists()
                 if correct:
                     score += 1
-        
+
         QuizAttempt.objects.create(
             user=request.user,
             quiz=quiz,
@@ -64,81 +73,90 @@ class QuizSubmitAPIView(APIView):
         )
         return Response({'score': score, 'total': total})
 
-from apps.content.api.serializers import QuizReviewSerializer, QuizAttemptSerializer
-
 class QuizResultAPIView(APIView):
     """
-    Get the current user's result for a specific quiz.
-    Returns the full quiz with correct answers + user's attempt data.
+    Current user's review for a quiz. Optional ?attempt_id= for a specific attempt (default: latest).
     """
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, pk=None):
-        try:
-            quiz = Quiz.objects.prefetch_related('questions__choices').get(pk=pk)
-        except Quiz.DoesNotExist:
-            return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, slug=None):
+        quiz = get_object_or_404(
+            Quiz.objects.prefetch_related('questions__choices'),
+            slug=slug,
+        )
 
-        # Check if user has attempted
-        attempt = QuizAttempt.objects.filter(user=request.user, quiz=quiz).last()
+        attempt_qs = QuizAttempt.objects.filter(user=request.user, quiz=quiz)
+        attempt_id = request.query_params.get('attempt_id')
+        if attempt_id:
+            attempt = attempt_qs.filter(id=attempt_id).first()
+        else:
+            attempt = attempt_qs.order_by('-created_at').first()
+
         if not attempt:
-             return Response({'error': 'No attempt found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No attempt found'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = QuizReviewSerializer(quiz, context={'attempt': attempt})
         return Response(serializer.data)
 
 
+class QuizMyAttemptsAPIView(APIView):
+    """List current user's attempts for this quiz (newest first)."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, slug=None):
+        quiz = get_object_or_404(Quiz, slug=slug)
+        attempts = QuizAttempt.objects.filter(quiz=quiz, user=request.user).order_by('-created_at')
+        serializer = QuizAttemptSerializer(attempts, many=True)
+        return Response(serializer.data)
+
+
 class QuizParticipantsAPIView(generics.ListAPIView):
     """
-    Get list of participants for a quiz (Author only).
+    Get list of attempts for a quiz (Author only).
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = QuizAttemptSerializer
 
     def get_queryset(self):
-        quiz_id = self.kwargs.get('pk')
+        slug = self.kwargs.get('slug')
         try:
-            quiz = Quiz.objects.get(id=quiz_id)
+            quiz = Quiz.objects.get(slug=slug)
         except Quiz.DoesNotExist:
             return QuizAttempt.objects.none()
-        
-        # Security check: only author can view participants
+
         if quiz.author != self.request.user:
             return QuizAttempt.objects.none()
 
         return QuizAttempt.objects.filter(quiz=quiz).select_related('user').order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
-        # Override to handle permission error more gracefully if needed, 
-        # or relying on get_queryset returning empty. 
-        # Better: check permission explicitly.
-        quiz_id = self.kwargs.get('pk')
+        slug = self.kwargs.get('slug')
         try:
-            quiz = Quiz.objects.get(id=quiz_id)
+            quiz = Quiz.objects.get(slug=slug)
             if quiz.author != request.user:
-                 return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
         except Quiz.DoesNotExist:
-             return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
-             
+            return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
+
         return super().list(request, *args, **kwargs)
 
 
 class QuizParticipantDetailAPIView(APIView):
     """
-    Get specific participant's result (Author only).
+    Get specific participant's latest attempt (Author only). Use participants list for each attempt row.
     """
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, pk=None, user_id=None):
-        try:
-            quiz = Quiz.objects.prefetch_related('questions__choices').get(pk=pk)
-        except Quiz.DoesNotExist:
-            return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
-            
+    def get(self, request, slug=None, user_id=None):
+        quiz = get_object_or_404(
+            Quiz.objects.prefetch_related('questions__choices'),
+            slug=slug,
+        )
+
         if quiz.author != request.user:
             return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
-        attempt = QuizAttempt.objects.filter(quiz=quiz, user_id=user_id).last()
+        attempt = QuizAttempt.objects.filter(quiz=quiz, user_id=user_id).order_by('-created_at').first()
         if not attempt:
             return Response({'error': 'Attempt not found'}, status=status.HTTP_404_NOT_FOUND)
 

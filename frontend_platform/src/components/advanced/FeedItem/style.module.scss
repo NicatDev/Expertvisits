@@ -154,6 +154,21 @@
         color: #64748b;
         font-size: 0.9rem;
     }
+
+    .quizDetailLink {
+        font-size: 14px;
+        font-weight: 600;
+        color: #4f46e5;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(79, 70, 229, 0.35);
+        align-self: center;
+
+        &:hover {
+            background: #eef2ff;
+        }
+    }
 }
 
 .statsBar {

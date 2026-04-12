@@ -26,7 +26,13 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode
     const handleSubmit = async () => {
         setSubmitting(true);
         try {
-            const { data } = await api.post(`/content/quizzes/${quiz.id}/submit/`, {
+            const slug = quiz.slug;
+            if (!slug) {
+                toast.error(t('quiz_modal.error'));
+                setSubmitting(false);
+                return;
+            }
+            const { data } = await api.post(`/content/quizzes/${encodeURIComponent(slug)}/submit/`, {
                 answers: answers
             });
             setResult(data);

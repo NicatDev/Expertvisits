@@ -55,6 +55,10 @@
     "userPublic": {
       "titleSuffix": "| Expert Visits",
       "description": "İstifadəçi profili — peşəkar məlumat və əlaqə. İctimai profil səhifəsi indekslənmir; yalnız birbaşa linklə paylaşıla bilər."
+    },
+    "quiz_detail": {
+      "titleSuffix": "| Test | Expert Visits",
+      "description": "{title} — interaktiv test ({count} sual). Bu səhifə axtarış indeksində çıxarılmır."
     }
   },
   "article": {

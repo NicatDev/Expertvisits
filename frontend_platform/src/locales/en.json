@@ -135,11 +135,27 @@
             "failed_load_result": "Failed to load result"
         },
         "view_results": "View Results",
-        "view_participants": "View Participants"
+        "view_participants": "View Participants",
+        "retake_quiz": "Retake",
+        "my_attempts_short": "attempts",
+        "all_attempts_detail": "All attempts (detail page)"
     },
     "participants_modal": {
         "title": "Participants",
         "no_participants": "No participants yet."
+    },
+    "quiz_page": {
+        "back": "Home",
+        "stats_title": "Statistics",
+        "stats_avg": "Average score",
+        "stats_participants": "Unique participants",
+        "stats_attempts": "Total attempts",
+        "participants_unique": "unique participants",
+        "my_attempts": "My attempts",
+        "attempt_label": "Attempt #{{n}}",
+        "start": "Start quiz",
+        "retake": "Retake",
+        "view_latest_result": "Latest result"
     },
     "auth_page": {
         "welcome_back": "Welcome Back",
