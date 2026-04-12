@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      /* /sitemap/0.xml → /sitemap/0 (Route Handler) — Next app qovluğu .xml ilə bitmir */
+      { source: '/sitemap/:id.xml', destination: '/sitemap/:id' },
+    ];
+  },
   images: {
     remotePatterns: [
       {
