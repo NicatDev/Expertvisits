@@ -199,11 +199,6 @@ class CollectionItem(models.Model):
     class Meta:
         ordering = ['order', 'id']
         constraints = [
-            models.CheckConstraint(
-                (Q(article__isnull=False) & Q(quiz__isnull=True))
-                | (Q(article__isnull=True) & Q(quiz__isnull=False)),
-                name='content_collection_item_exactly_one_target',
-            ),
             models.UniqueConstraint(
                 fields=['collection', 'article'],
                 condition=Q(article__isnull=False),
