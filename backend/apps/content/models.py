@@ -200,10 +200,8 @@ class CollectionItem(models.Model):
         ordering = ['order', 'id']
         constraints = [
             models.CheckConstraint(
-                check=(
-                    (Q(article__isnull=False) & Q(quiz__isnull=True))
-                    | (Q(article__isnull=True) & Q(quiz__isnull=False))
-                ),
+                (Q(article__isnull=False) & Q(quiz__isnull=True))
+                | (Q(article__isnull=True) & Q(quiz__isnull=False)),
                 name='content_collection_item_exactly_one_target',
             ),
             models.UniqueConstraint(
