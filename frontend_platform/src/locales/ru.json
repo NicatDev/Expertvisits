@@ -1043,6 +1043,10 @@
         "collection_content": "Содержимое коллекции",
         "no_summary": "Нет описания",
         "open_collection": "Открыть коллекцию",
+        "pagination_aria": "Пагинация коллекций",
+        "previous": "Назад",
+        "next": "Далее",
+        "page_indicator": "Страница {{page}} / {{total}}",
         "no_collections_title": "Коллекций пока нет",
         "no_collections_desc": "Создайте первую коллекцию и объедините статьи и тесты."
     },

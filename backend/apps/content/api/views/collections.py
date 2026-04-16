@@ -1,5 +1,5 @@
-from django.db.models import F, Q
-from rest_framework import generics, permissions
+from django.db.models import F, Prefetch, Q
+from rest_framework import generics, permissions, pagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -7,19 +7,27 @@ from apps.content.api.serializers import (
     CollectionCreateUpdateSerializer,
     CollectionSerializer,
 )
-from apps.content.models import Article, Collection, Quiz
+from apps.content.models import Article, Collection, CollectionItem, Quiz
+
+
+class CollectionPagination(pagination.PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 30
 
 
 class CollectionListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = CollectionPagination
 
     def get_queryset(self):
+        valid_items_qs = (
+            CollectionItem.objects.filter(Q(article__isnull=False) | Q(quiz__isnull=False))
+            .select_related('article', 'quiz', 'article__author', 'quiz__author')
+            .order_by('order', 'id')
+        )
         qs = Collection.objects.select_related('author').prefetch_related(
-            'items',
-            'items__article',
-            'items__quiz',
-            'items__article__author',
-            'items__quiz__author',
+            Prefetch('items', queryset=valid_items_qs),
         )
         scope = (self.request.query_params.get('scope') or 'all').lower()
         search = (self.request.query_params.get('search') or '').strip()
@@ -53,12 +61,13 @@ class CollectionDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'slug'
 
     def get_queryset(self):
+        valid_items_qs = (
+            CollectionItem.objects.filter(Q(article__isnull=False) | Q(quiz__isnull=False))
+            .select_related('article', 'quiz', 'article__author', 'quiz__author')
+            .order_by('order', 'id')
+        )
         return Collection.objects.select_related('author').prefetch_related(
-            'items',
-            'items__article',
-            'items__quiz',
-            'items__article__author',
-            'items__quiz__author',
+            Prefetch('items', queryset=valid_items_qs),
         )
 
     def get_serializer_class(self):

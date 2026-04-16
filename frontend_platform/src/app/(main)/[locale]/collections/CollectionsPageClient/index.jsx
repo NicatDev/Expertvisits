@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plus, Edit2, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { content } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -13,6 +13,11 @@ import styles from './style.module.scss';
 
 function normalizeList(data) {
     return Array.isArray(data) ? data : data?.results || [];
+}
+
+function getTotalCount(data) {
+    if (Array.isArray(data)) return data.length;
+    return Number(data?.count || 0);
 }
 
 function CollectionEditorModal({
@@ -35,7 +40,7 @@ function CollectionEditorModal({
         if (!open) return;
         setTitle(initial?.title || '');
         setSummary(initial?.summary || '');
-        setItems(initial?.items || []);
+        setItems((initial?.items || []).filter((x) => x?.content_type && x?.content_id));
         setContentType('article');
         setSelectedId('');
     }, [open, initial]);
@@ -181,6 +186,8 @@ export default function CollectionsPageClient() {
     const [scope, setScope] = useState('all');
     const [loading, setLoading] = useState(true);
     const [collections, setCollections] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
@@ -195,9 +202,10 @@ export default function CollectionsPageClient() {
     const load = async () => {
         setLoading(true);
         try {
-            const params = { scope, ...(debouncedQuery ? { search: debouncedQuery } : {}) };
+            const params = { page: currentPage, scope, ...(debouncedQuery ? { search: debouncedQuery } : {}) };
             const { data } = await content.getCollections(params);
             setCollections(normalizeList(data));
+            setTotalCount(getTotalCount(data));
         } catch (e) {
             console.error(e);
             toast.error(t('common.error_generic'));
@@ -208,6 +216,10 @@ export default function CollectionsPageClient() {
 
     useEffect(() => {
         load();
+    }, [scope, debouncedQuery, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
     }, [scope, debouncedQuery]);
 
     const openCreate = async () => {
@@ -260,6 +272,9 @@ export default function CollectionsPageClient() {
         }
     };
 
+    const pageSize = 10;
+    const totalPages = Math.max(Math.ceil(totalCount / pageSize), 1);
+
     return (
         <div className={styles.page}>
             <h1>{t('collections_page.title_h1')}</h1>
@@ -303,36 +318,64 @@ export default function CollectionsPageClient() {
                     </button>
                 </div>
             ) : (
-                <div className={styles.grid}>
-                    {collections.map((c) => (
-                        <article className={styles.card} key={c.id}>
-                            <div className={styles.cardTopLine} />
-                            <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.cardTitle}>
-                                {c.title}
-                            </Link>
-                            <p className={styles.summary}>{c.summary || t('collections_page.no_summary')}</p>
-                            <div className={styles.meta}>
-                                <span>{t('collections_page.items_count', { count: c.item_count || 0 })}</span>
-                                <span>{t('collections_page.views_count', { count: c.view_count || 0 })}</span>
-                            </div>
-                            <div className={styles.cardFooter}>
-                                <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.openLink}>
-                                    {t('collections_page.open_collection')}
+                <>
+                    <div className={styles.grid}>
+                        {collections.map((c) => (
+                            <article className={styles.card} key={c.id}>
+                                <div className={styles.cardTopLine} />
+                                <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.cardTitle}>
+                                    {c.title}
                                 </Link>
-                            </div>
-                            {user && c.is_owner ? (
-                                <div className={styles.cardActions}>
-                                    <button type="button" onClick={() => openEdit(c)}>
-                                        <Edit2 size={14} /> {t('common.edit')}
-                                    </button>
-                                    <button type="button" onClick={() => removeCollection(c.slug)}>
-                                        <Trash2 size={14} /> {t('common.delete')}
-                                    </button>
+                                <p className={styles.summary}>{c.summary || t('collections_page.no_summary')}</p>
+                                <div className={styles.meta}>
+                                    <span>{t('collections_page.items_count', { count: c.item_count || 0 })}</span>
+                                    <span>{t('collections_page.views_count', { count: c.view_count || 0 })}</span>
                                 </div>
-                            ) : null}
-                        </article>
-                    ))}
-                </div>
+                                <div className={styles.cardFooter}>
+                                    <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.openLink}>
+                                        {t('collections_page.open_collection')}
+                                    </Link>
+                                </div>
+                                {user && c.is_owner ? (
+                                    <div className={styles.cardActions}>
+                                        <button type="button" onClick={() => openEdit(c)}>
+                                            <Edit2 size={14} /> {t('common.edit')}
+                                        </button>
+                                        <button type="button" onClick={() => removeCollection(c.slug)}>
+                                            <Trash2 size={14} /> {t('common.delete')}
+                                        </button>
+                                    </div>
+                                ) : null}
+                            </article>
+                        ))}
+                    </div>
+
+                    {totalPages > 1 ? (
+                        <nav className={styles.pagination} aria-label={t('collections_page.pagination_aria')}>
+                            <button
+                                type="button"
+                                className={styles.pageBtn}
+                                disabled={currentPage === 1}
+                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                            >
+                                <ChevronLeft size={16} />
+                                {t('collections_page.previous')}
+                            </button>
+                            <span className={styles.pageInfo}>
+                                {t('collections_page.page_indicator', { page: currentPage, total: totalPages })}
+                            </span>
+                            <button
+                                type="button"
+                                className={styles.pageBtn}
+                                disabled={currentPage >= totalPages}
+                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                            >
+                                {t('collections_page.next')}
+                                <ChevronRight size={16} />
+                            </button>
+                        </nav>
+                    ) : null}
+                </>
             )}
 
             <CollectionEditorModal

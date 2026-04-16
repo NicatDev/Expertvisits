@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, FileText, ClipboardCheck, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import { content } from '@/lib/api';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
@@ -56,15 +56,25 @@ export default function CollectionDetailClient({ slug }) {
                 <p className={styles.summary}>{collection.summary || t('collections_page.no_summary')}</p>
                 <h2 className={styles.sectionTitle}>{t('collections_page.collection_content')}</h2>
                 <div className={styles.items}>
-                    {(collection.items || []).map((it) => {
+                    {(collection.items || []).filter((it) => it?.slug && it?.content_type).map((it) => {
                         const href =
                             it.content_type === 'article'
                                 ? withLocale(locale, `/article/${it.slug}`)
                                 : withLocale(locale, `/quiz/${it.slug}`);
                         return (
                             <Link href={href} key={it.id} className={styles.item}>
-                                <span className={styles.type}>{it.content_type}</span>
-                                <span className={styles.title}>{it.title}</span>
+                                <span className={styles.iconWrap} aria-hidden>
+                                    {it.content_type === 'article' ? <FileText size={18} /> : <ClipboardCheck size={18} />}
+                                </span>
+                                <div className={styles.itemBody}>
+                                    <span className={styles.type}>
+                                        {it.content_type === 'article' ? t('feed.article') : t('feed.quiz')}
+                                    </span>
+                                    <span className={styles.title}>{it.title}</span>
+                                </div>
+                                <span className={styles.itemArrow} aria-hidden>
+                                    <ArrowUpRight size={16} />
+                                </span>
                             </Link>
                         );
                     })}

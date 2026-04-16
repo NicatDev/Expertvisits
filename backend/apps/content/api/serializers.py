@@ -364,25 +364,35 @@ class CollectionItemSerializer(serializers.ModelSerializer):
         model = CollectionItem
         fields = ['id', 'order', 'content_type', 'content_id', 'title', 'slug', 'author', 'created_at']
 
+    def _target(self, obj):
+        return obj.article or obj.quiz
+
     def get_content_type(self, obj):
-        return 'article' if obj.article_id else 'quiz'
+        if obj.article_id:
+            return 'article'
+        if obj.quiz_id:
+            return 'quiz'
+        return None
 
     def get_content_id(self, obj):
-        return obj.article_id if obj.article_id else obj.quiz_id
+        return obj.article_id or obj.quiz_id
 
     def get_title(self, obj):
-        return obj.article.title if obj.article_id else obj.quiz.title
+        target = self._target(obj)
+        return target.title if target else None
 
     def get_slug(self, obj):
-        return obj.article.slug if obj.article_id else obj.quiz.slug
+        target = self._target(obj)
+        return target.slug if target else None
 
     def get_author(self, obj):
-        u = obj.article.author if obj.article_id else obj.quiz.author
+        target = self._target(obj)
+        u = target.author if target else None
         return str(u) if u else None
 
     def get_created_at(self, obj):
-        d = obj.article.created_at if obj.article_id else obj.quiz.created_at
-        return d
+        target = self._target(obj)
+        return target.created_at if target else None
 
 
 class CollectionSerializer(serializers.ModelSerializer):

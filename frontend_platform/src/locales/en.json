@@ -1086,6 +1086,10 @@
         "collection_content": "Collection content",
         "no_summary": "No summary",
         "open_collection": "Open collection",
+        "pagination_aria": "Collections pagination",
+        "previous": "Previous",
+        "next": "Next",
+        "page_indicator": "Page {{page}} / {{total}}",
         "no_collections_title": "No collections yet",
         "no_collections_desc": "Create your first collection and group your articles and quizzes."
     },

@@ -204,11 +204,13 @@
   width: min(900px, 100%);
   max-height: 90vh;
   overflow: auto;
+  overflow-x: hidden;
   background: #fff;
   border-radius: 14px;
   padding: 16px;
   display: grid;
   gap: 10px;
+  box-sizing: border-box;
 
   h2 {
     margin: 0 0 4px;
@@ -225,6 +227,11 @@
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+}
+
+.selectorRow select {
+  width: 100%;
+  min-width: 0;
 }
 
 .selectorRow button {
@@ -250,6 +257,10 @@
   border-radius: 8px;
   padding: 8px;
   background: #f8fafc;
+
+  > * {
+    min-width: 0;
+  }
 }
 
 .itemType {
@@ -282,6 +293,8 @@
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+  width: 100%;
+  min-width: 0;
 }
 
 .modalActions button {
@@ -290,6 +303,44 @@
   padding: 8px 12px;
   background: #fff;
   min-height: 40px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.pagination {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pageBtn {
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  color: #1e3a8a;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #eff6ff;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.pageInfo {
+  font-size: 13px;
+  color: #475569;
+  text-align: center;
 }
 
 .modalActions button:last-child {
@@ -341,6 +392,7 @@
     border-radius: 14px 14px 0 0;
     padding: 14px;
     gap: 9px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
   }
 
   .selectorRow button {
@@ -365,10 +417,23 @@
     padding-top: 8px;
     border-top: 1px solid #e2e8f0;
     justify-content: stretch;
+    left: 0;
+    right: 0;
   }
 
   .modalActions button {
     flex: 1 1 0;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pageBtn {
+    justify-content: center;
   }
 }
 
@@ -377,6 +442,7 @@
     max-height: 92vh;
     padding: 12px;
     border-radius: 12px 12px 0 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
 
   .selectorRow {

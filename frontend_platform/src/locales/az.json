@@ -1075,6 +1075,10 @@
         "collection_content": "Kolleksiyadakı məzmun",
         "no_summary": "Təsvir yoxdur",
         "open_collection": "Kolleksiyanı aç",
+        "pagination_aria": "Kolleksiyalar üçün səhifələmə",
+        "previous": "Əvvəlki",
+        "next": "Növbəti",
+        "page_indicator": "Səhifə {{page}} / {{total}}",
         "no_collections_title": "Hələ kolleksiya yoxdur",
         "no_collections_desc": "İlk kolleksiyanı yaradıb məqalə və testləri bir araya gətirin."
     },
