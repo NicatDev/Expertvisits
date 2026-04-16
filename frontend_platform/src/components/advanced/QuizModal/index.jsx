@@ -12,12 +12,14 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode
     const [answers, setAnswers] = useState({});
     const [result, setResult] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
     // Modal açılanda / rejim və ya nəticə dəstəyi dəyişəndə: köhnə submit nəticəsi qalmasın (ana səhifə retake)
     useEffect(() => {
         if (!isOpen || !quiz) return;
         setResult(null);
         setSubmitting(false);
+        setSubmitError('');
         if (reviewMode) {
             setAnswers(quiz.user_attempt?.answers_json || {});
         } else {
@@ -32,11 +34,21 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode
 
     const handleSelect = (qId, cId) => {
         if (reviewMode) return;
+        if (submitError) setSubmitError('');
         setAnswers(prev => ({ ...prev, [qId]: cId }));
     };
 
     const handleSubmit = async () => {
+        const unansweredCount = Math.max((quiz?.questions?.length || 0) - Object.keys(answers).length, 0);
+        if (unansweredCount > 0) {
+            const message = t('quiz_modal.unanswered_error', { count: unansweredCount });
+            setSubmitError(message);
+            toast.info(message);
+            return;
+        }
+
         setSubmitting(true);
+        setSubmitError('');
         try {
             const slug = quiz.slug;
             if (!slug) {
@@ -127,7 +139,8 @@ export default function QuizModal({ isOpen, onClose, quiz, onSuccess, reviewMode
 
                         {!reviewMode && (
                             <div className={styles.footer}>
-                                <Button onClick={handleSubmit} disabled={submitting || Object.keys(answers).length < quiz.questions.length}>
+                                {submitError ? <p className={styles.submitError}>{submitError}</p> : null}
+                                <Button onClick={handleSubmit} disabled={submitting}>
                                     {submitting ? t('quiz_modal.submitting') : t('quiz_modal.submit')}
                                 </Button>
                             </div>

@@ -267,7 +267,8 @@
         "submitting": "Отправка...",
         "submit": "Отправить",
         "success": "Опрос завершен!",
-        "error": "Ошибка отправки"
+        "error": "Ошибка отправки",
+        "unanswered_error": "Ответьте на все вопросы. Без ответа: {{count}}."
     },
     "likes_modal": {
         "title": "Понравилось",
@@ -1041,6 +1042,7 @@
         "views_count": "{{count}} просмотров",
         "collection_content": "Содержимое коллекции",
         "no_summary": "Нет описания",
+        "open_collection": "Открыть коллекцию",
         "no_collections_title": "Коллекций пока нет",
         "no_collections_desc": "Создайте первую коллекцию и объедините статьи и тесты."
     },

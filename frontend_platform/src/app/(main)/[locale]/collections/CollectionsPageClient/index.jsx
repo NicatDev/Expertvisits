@@ -182,14 +182,20 @@ export default function CollectionsPageClient() {
     const [loading, setLoading] = useState(true);
     const [collections, setCollections] = useState([]);
     const [query, setQuery] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [options, setOptions] = useState({ articles: [], quizzes: [] });
 
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedQuery(query.trim()), 500);
+        return () => clearTimeout(timer);
+    }, [query]);
+
     const load = async () => {
         setLoading(true);
         try {
-            const params = { scope, ...(query ? { search: query } : {}) };
+            const params = { scope, ...(debouncedQuery ? { search: debouncedQuery } : {}) };
             const { data } = await content.getCollections(params);
             setCollections(normalizeList(data));
         } catch (e) {
@@ -202,7 +208,7 @@ export default function CollectionsPageClient() {
 
     useEffect(() => {
         load();
-    }, [scope]);
+    }, [scope, debouncedQuery]);
 
     const openCreate = async () => {
         if (!user) {
@@ -300,6 +306,7 @@ export default function CollectionsPageClient() {
                 <div className={styles.grid}>
                     {collections.map((c) => (
                         <article className={styles.card} key={c.id}>
+                            <div className={styles.cardTopLine} />
                             <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.cardTitle}>
                                 {c.title}
                             </Link>
@@ -307,6 +314,11 @@ export default function CollectionsPageClient() {
                             <div className={styles.meta}>
                                 <span>{t('collections_page.items_count', { count: c.item_count || 0 })}</span>
                                 <span>{t('collections_page.views_count', { count: c.view_count || 0 })}</span>
+                            </div>
+                            <div className={styles.cardFooter}>
+                                <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.openLink}>
+                                    {t('collections_page.open_collection')}
+                                </Link>
                             </div>
                             {user && c.is_owner ? (
                                 <div className={styles.cardActions}>

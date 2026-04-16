@@ -78,6 +78,7 @@
 }
 
 .card {
+  position: relative;
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
@@ -92,6 +93,16 @@
   }
 }
 
+.cardTopLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(90deg, #2563eb 0%, #6366f1 55%, #8b5cf6 100%);
+}
+
 .cardTitle {
   font-weight: 700;
   color: #0f172a;
@@ -104,9 +115,11 @@
 }
 
 .summary {
-  margin: 8px 0;
+  margin: 10px 0 8px;
   color: #475569;
   font-size: 14px;
+  line-height: 1.45;
+  min-height: 42px;
 }
 
 .meta {
@@ -118,10 +131,36 @@
   margin-top: 6px;
 }
 
+.cardFooter {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.openLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 6px 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+
+  &:hover {
+    background: #dbeafe;
+  }
+}
+
 .cardActions {
   display: flex;
   gap: 8px;
   margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
 }
 
 .cardActions button {
@@ -170,6 +209,12 @@
   padding: 16px;
   display: grid;
   gap: 10px;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: clamp(1.02rem, 1.8vw, 1.2rem);
+    color: #0f172a;
+  }
 }
 
 .selectorRow {
@@ -187,7 +232,8 @@
   background: #2563eb;
   color: #fff;
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 10px 12px;
+  min-height: 42px;
 }
 
 .itemsBox {
@@ -213,6 +259,8 @@
 
 .itemTitle {
   font-size: 14px;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .removeItemBtn {
@@ -241,6 +289,7 @@
   border-radius: 8px;
   padding: 8px 12px;
   background: #fff;
+  min-height: 40px;
 }
 
 .modalActions button:last-child {
@@ -279,6 +328,67 @@
   .card {
     border-radius: 14px;
     padding: 12px;
+  }
+
+  .modalOverlay {
+    padding: 8px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: min(88vh, 760px);
+    border-radius: 14px 14px 0 0;
+    padding: 14px;
+    gap: 9px;
+  }
+
+  .selectorRow button {
+    width: 100%;
+  }
+
+  .itemRow {
+    grid-template-columns: 20px 56px 1fr;
+    align-items: start;
+  }
+
+  .removeItemBtn {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .modalActions {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+    justify-content: stretch;
+  }
+
+  .modalActions button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .modal {
+    max-height: 92vh;
+    padding: 12px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .selectorRow {
+    gap: 6px;
+  }
+
+  .itemType {
+    font-size: 11px;
+  }
+
+  .itemTitle {
+    font-size: 13px;
   }
 }
 

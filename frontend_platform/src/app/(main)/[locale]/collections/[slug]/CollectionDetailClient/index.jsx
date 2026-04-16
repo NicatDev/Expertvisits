@@ -46,14 +46,15 @@ export default function CollectionDetailClient({ slug }) {
             </button>
 
             <article className={styles.card}>
-                <h1>{collection.title}</h1>
+                <header className={styles.header}>
+                    <h1>{collection.title}</h1>
+                    <div className={styles.meta}>
+                        <span>{t('collections_page.items_count', { count: collection.item_count || 0 })}</span>
+                        <span>{t('collections_page.views_count', { count: collection.view_count || 0 })}</span>
+                    </div>
+                </header>
                 <p className={styles.summary}>{collection.summary || t('collections_page.no_summary')}</p>
-                <div className={styles.meta}>
-                    <span>{t('collections_page.items_count', { count: collection.item_count || 0 })}</span>
-                    <span>{t('collections_page.views_count', { count: collection.view_count || 0 })}</span>
-                </div>
-
-                <h2>{t('collections_page.collection_content')}</h2>
+                <h2 className={styles.sectionTitle}>{t('collections_page.collection_content')}</h2>
                 <div className={styles.items}>
                     {(collection.items || []).map((it) => {
                         const href =

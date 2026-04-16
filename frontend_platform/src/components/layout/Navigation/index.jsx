@@ -82,9 +82,6 @@ const Navigation = () => {
                     <Link href={expertsHref} className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
                     <Link href={vacanciesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                     <Link href={companiesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
-                    <Link href={collectionsHref} className={styles.navLink} suppressHydrationWarning>{t('nav.collections')}</Link>
-                    
-                  
                 </div>
 
                 {/* Right: Actions */}

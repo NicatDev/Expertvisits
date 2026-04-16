@@ -271,7 +271,8 @@
         "submitting": "Göndərilir...",
         "submit": "Təsdiqlə",
         "success": "Test tamamlandı!",
-        "error": "Göndərilmə uğursuz oldu"
+        "error": "Göndərilmə uğursuz oldu",
+        "unanswered_error": "Bütün sualları cavablayın. {{count}} sual cavabsızdır."
     },
     "likes_modal": {
         "title": "Bəyənmələr",
@@ -1073,6 +1074,7 @@
         "views_count": "{{count}} baxış",
         "collection_content": "Kolleksiyadakı məzmun",
         "no_summary": "Təsvir yoxdur",
+        "open_collection": "Kolleksiyanı aç",
         "no_collections_title": "Hələ kolleksiya yoxdur",
         "no_collections_desc": "İlk kolleksiyanı yaradıb məqalə və testləri bir araya gətirin."
     },

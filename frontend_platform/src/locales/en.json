@@ -271,7 +271,8 @@
         "submitting": "Submitting...",
         "submit": "Submit Quiz",
         "success": "Quiz completed!",
-        "error": "Failed to submit quiz"
+        "error": "Failed to submit quiz",
+        "unanswered_error": "Please answer all questions. {{count}} question(s) are unanswered."
     },
     "likes_modal": {
         "title": "Likes",
@@ -1084,6 +1085,7 @@
         "views_count": "{{count}} views",
         "collection_content": "Collection content",
         "no_summary": "No summary",
+        "open_collection": "Open collection",
         "no_collections_title": "No collections yet",
         "no_collections_desc": "Create your first collection and group your articles and quizzes."
     },
