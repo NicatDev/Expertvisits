@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, filters, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count
+from django.db import transaction
 from apps.accounts.models import User, RegistrationSession
 from apps.accounts.api.serializers import UserSerializer
 from apps.connections.models import ConnectionRequest
@@ -197,7 +198,18 @@ class FollowAPIView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        cr = ConnectionRequest.objects.create(from_user=request.user, to_user=target_user)
+        with transaction.atomic():
+            existing = (
+                ConnectionRequest.objects.select_for_update()
+                .filter(
+                    from_user=request.user,
+                    to_user=target_user,
+                    status=ConnectionRequest.Status.PENDING,
+                )
+                .order_by("-id")
+                .first()
+            )
+            cr = existing or ConnectionRequest.objects.create(from_user=request.user, to_user=target_user)
         notify_connection_requested(cr)
         return Response({"status": "pending", "request_id": cr.id})
 

@@ -6,3 +6,8 @@ from .quizzes import (
 )
 from .feed import FeedAPIView, UserFeedAPIView, PublicFeedAPIView
 from .stats import ArticleStatsAPIView
+from .collections import (
+    CollectionListCreateAPIView,
+    CollectionDetailAPIView,
+    CollectionContentOptionsAPIView,
+)

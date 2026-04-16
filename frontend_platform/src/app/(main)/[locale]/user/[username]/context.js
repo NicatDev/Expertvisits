@@ -65,12 +65,21 @@ export const PublicProfileProvider = ({ children }) => {
         if (!profile || !currentUser) return;
         try {
             if (isFollowing) {
+                const yes = typeof window === 'undefined'
+                    ? true
+                    : window.confirm(t('inbox.confirm_disconnect'));
+                if (!yes) return;
                 await interactions.unfollowUser(profile.username);
                 await loadProfile(profile.username);
                 return;
             }
             if (profile.connection_pending_out && profile.outgoing_connection_request_id) {
+                const yes = typeof window === 'undefined'
+                    ? true
+                    : window.confirm(t('inbox.confirm_cancel_request'));
+                if (!yes) return;
                 await connectionsApi.cancel(profile.outgoing_connection_request_id);
+                await refreshSummary();
                 await loadProfile(profile.username);
                 return;
             }

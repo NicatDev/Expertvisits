@@ -49,19 +49,29 @@ def notify_connection_requested(req: ConnectionRequest) -> InboxNotification:
     target = req.to_user
     actor = req.from_user
     send_connection_request_email(req)
-    n = InboxNotification.objects.create(
+    existing = InboxNotification.objects.filter(
         recipient=target,
         actor=actor,
         kind=InboxNotification.Kind.CONNECTION_REQUEST,
-        title="",
-        body="",
-        data={
-            "from_user_id": actor.id,
-            "username": actor.username,
-        },
-        sort_weight=100,
         connection_request=req,
-    )
+        read_at__isnull=True,
+    ).first()
+    if existing:
+        n = existing
+    else:
+        n = InboxNotification.objects.create(
+            recipient=target,
+            actor=actor,
+            kind=InboxNotification.Kind.CONNECTION_REQUEST,
+            title="",
+            body="",
+            data={
+                "from_user_id": actor.id,
+                "username": actor.username,
+            },
+            sort_weight=100,
+            connection_request=req,
+        )
     push_payload(target.id, {"type": "inbox_notification", "notification": inbox_to_dict(n)})
     push_payload(target.id, {"type": "badge_refresh"})
     return n

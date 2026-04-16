@@ -260,7 +260,7 @@ class QuizReviewSerializer(serializers.ModelSerializer):
 
 
 
-from apps.content.models import Poll, PollVote, PollOption
+from apps.content.models import Poll, PollVote, PollOption, Collection, CollectionItem
 
 class PollOptionSerializer(serializers.ModelSerializer):
     percentage = serializers.SerializerMethodField()
@@ -344,3 +344,135 @@ class PollVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = PollVote
         fields = ['id', 'option']
+
+
+class CollectionItemWriteSerializer(serializers.Serializer):
+    content_type = serializers.ChoiceField(choices=['article', 'quiz'])
+    content_id = serializers.IntegerField(min_value=1)
+    order = serializers.IntegerField(min_value=0, required=False)
+
+
+class CollectionItemSerializer(serializers.ModelSerializer):
+    content_type = serializers.SerializerMethodField()
+    content_id = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    slug = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CollectionItem
+        fields = ['id', 'order', 'content_type', 'content_id', 'title', 'slug', 'author', 'created_at']
+
+    def get_content_type(self, obj):
+        return 'article' if obj.article_id else 'quiz'
+
+    def get_content_id(self, obj):
+        return obj.article_id if obj.article_id else obj.quiz_id
+
+    def get_title(self, obj):
+        return obj.article.title if obj.article_id else obj.quiz.title
+
+    def get_slug(self, obj):
+        return obj.article.slug if obj.article_id else obj.quiz.slug
+
+    def get_author(self, obj):
+        u = obj.article.author if obj.article_id else obj.quiz.author
+        return str(u) if u else None
+
+    def get_created_at(self, obj):
+        d = obj.article.created_at if obj.article_id else obj.quiz.created_at
+        return d
+
+
+class CollectionSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(read_only=True)
+    is_owner = serializers.SerializerMethodField()
+    items = CollectionItemSerializer(many=True, read_only=True)
+    item_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Collection
+        fields = [
+            'id',
+            'slug',
+            'title',
+            'summary',
+            'author',
+            'view_count',
+            'item_count',
+            'is_owner',
+            'created_at',
+            'updated_at',
+            'items',
+        ]
+
+    def get_is_owner(self, obj):
+        request = self.context.get('request')
+        return bool(request and request.user.is_authenticated and obj.author_id == request.user.id)
+
+    def get_item_count(self, obj):
+        prefetched = getattr(obj, 'items', None)
+        if prefetched is not None and hasattr(prefetched, 'all'):
+            return prefetched.all().count()
+        return obj.items.count()
+
+
+class CollectionCreateUpdateSerializer(serializers.ModelSerializer):
+    items = CollectionItemWriteSerializer(many=True, required=False)
+
+    class Meta:
+        model = Collection
+        fields = ['title', 'summary', 'items']
+
+    def validate_items(self, items):
+        seen = set()
+        for idx, item in enumerate(items):
+            key = (item['content_type'], item['content_id'])
+            if key in seen:
+                raise serializers.ValidationError(f'Duplicate item at position {idx + 1}.')
+            seen.add(key)
+        return items
+
+    def _resolve_item(self, payload):
+        ctype = payload['content_type']
+        cid = payload['content_id']
+        if ctype == 'article':
+            article = Article.objects.filter(id=cid).first()
+            if not article:
+                raise serializers.ValidationError({'items': [f'Article #{cid} not found.']})
+            return {'article': article, 'quiz': None}
+        quiz = Quiz.objects.filter(id=cid).first()
+        if not quiz:
+            raise serializers.ValidationError({'items': [f'Quiz #{cid} not found.']})
+        return {'article': None, 'quiz': quiz}
+
+    def _save_items(self, collection, items):
+        CollectionItem.objects.filter(collection=collection).delete()
+        for idx, payload in enumerate(items):
+            target = self._resolve_item(payload)
+            CollectionItem.objects.create(
+                collection=collection,
+                article=target['article'],
+                quiz=target['quiz'],
+                order=payload.get('order', idx),
+            )
+
+    def create(self, validated_data):
+        items = validated_data.pop('items', [])
+        collection = Collection.objects.create(**validated_data)
+        self._save_items(collection, items)
+        return collection
+
+    def update(self, instance, validated_data):
+        items = validated_data.pop('items', None)
+        new_title = validated_data.get('title', instance.title)
+        title_changed = new_title != instance.title
+        instance.title = new_title
+        instance.summary = validated_data.get('summary', instance.summary)
+        if title_changed:
+            instance.slug = ''
+        instance.save()
+        if items is not None:
+            self._save_items(instance, items)
+        return instance

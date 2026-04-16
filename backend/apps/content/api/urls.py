@@ -4,7 +4,8 @@ from apps.content.api.views import (
     QuizListCreateAPIView, QuizDetailAPIView, QuizSubmitAPIView,
     QuizResultAPIView, QuizParticipantsAPIView, QuizParticipantDetailAPIView,
     QuizMyAttemptsAPIView,
-    FeedAPIView, UserFeedAPIView, PublicFeedAPIView, ArticleStatsAPIView
+    FeedAPIView, UserFeedAPIView, PublicFeedAPIView, ArticleStatsAPIView,
+    CollectionListCreateAPIView, CollectionDetailAPIView, CollectionContentOptionsAPIView,
 )
 from apps.content.api.views.polls import PollListCreateAPIView, PollRetrieveAPIView, PollVoteAPIView
 
@@ -26,6 +27,11 @@ urlpatterns = [
     path('polls/', PollListCreateAPIView.as_view(), name='poll-list'),
     path('polls/<int:pk>/vote/', PollVoteAPIView.as_view(), name='poll-vote'),
     path('polls/<int:pk>/', PollRetrieveAPIView.as_view(), name='poll-detail'),
+
+    # Collections
+    path('collections/', CollectionListCreateAPIView.as_view(), name='collection-list'),
+    path('collections/content-options/', CollectionContentOptionsAPIView.as_view(), name='collection-content-options'),
+    path('collections/<slug:slug>/', CollectionDetailAPIView.as_view(), name='collection-detail'),
 
 
 

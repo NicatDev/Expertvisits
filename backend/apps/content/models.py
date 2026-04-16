@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from apps.accounts.models import User, SubCategory
 from core.utils import custom_slugify
 from core.utils.images import compress_image
@@ -154,3 +155,70 @@ class PollVote(models.Model):
 
     def __str__(self):
         return f"{self.user.username} voted on {self.poll.id}"
+
+
+class Collection(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collections')
+    title = models.CharField(max_length=255, db_index=True)
+    summary = models.TextField(blank=True, default='')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
+    view_count = models.PositiveIntegerField(default=0, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = custom_slugify(self.title)
+            if len(base_slug) > 70:
+                slug_part = base_slug[:70]
+                if '-' in slug_part:
+                    slug_part = slug_part.rsplit('-', 1)[0]
+                base_slug = slug_part
+            unique_slug = base_slug
+            counter = 1
+            while Collection.objects.filter(slug=unique_slug).exclude(pk=self.pk).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+class CollectionItem(models.Model):
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='items')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True, related_name='collection_items')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True, related_name='collection_items')
+    order = models.PositiveIntegerField(default=0, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    (Q(article__isnull=False) & Q(quiz__isnull=True))
+                    | (Q(article__isnull=True) & Q(quiz__isnull=False))
+                ),
+                name='content_collection_item_exactly_one_target',
+            ),
+            models.UniqueConstraint(
+                fields=['collection', 'article'],
+                condition=Q(article__isnull=False),
+                name='content_collection_item_unique_article',
+            ),
+            models.UniqueConstraint(
+                fields=['collection', 'quiz'],
+                condition=Q(quiz__isnull=False),
+                name='content_collection_item_unique_quiz',
+            ),
+        ]
+
+    def __str__(self):
+        if self.article_id:
+            return f"{self.collection_id}:article:{self.article_id}"
+        return f"{self.collection_id}:quiz:{self.quiz_id}"

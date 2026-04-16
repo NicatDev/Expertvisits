@@ -2,6 +2,7 @@ import { buildUrlsetXml, getChunkEntries } from '@/lib/seo/sitemapRuntime';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const runtime = 'nodejs';
 
 export async function GET(_request, context) {
     const params = await context.params;
@@ -14,7 +15,9 @@ export async function GET(_request, context) {
     return new Response(xml, {
         headers: {
             'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+            'Cache-Control': 'no-store, max-age=0, must-revalidate',
+            Vary: 'Accept-Encoding',
+            'X-Robots-Tag': 'noarchive',
         },
     });
 }

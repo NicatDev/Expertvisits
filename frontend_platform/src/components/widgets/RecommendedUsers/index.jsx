@@ -38,7 +38,7 @@ const RecommendedUsers = () => {
                 },
             });
             const list = data.results || data;
-            setUsers(list.filter((u) => u.username).slice(0, 5));
+            setUsers(list.filter((u) => u.username).slice(0, 3));
         } catch (error) {
             console.error('Failed to load users', error);
         } finally {

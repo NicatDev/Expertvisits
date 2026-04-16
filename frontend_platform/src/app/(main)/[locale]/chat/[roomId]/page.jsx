@@ -38,6 +38,8 @@ export default function ChatRoomPage() {
     const [peer, setPeer] = useState(null);
     const [nextBeforeId, setNextBeforeId] = useState(null);
     const [loadingOlder, setLoadingOlder] = useState(false);
+    const [viewportHeight, setViewportHeight] = useState(null);
+    const [keyboardOpen, setKeyboardOpen] = useState(false);
 
     const threadRef = useRef(null);
     const inputRef = useRef(null);
@@ -189,6 +191,32 @@ export default function ChatRoomPage() {
         return () => io.disconnect();
     }, [nextBeforeId, fetchOlder, messages.length]);
 
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const updateViewport = () => {
+            const vv = window.visualViewport;
+            const nextHeight = Math.round(vv?.height || window.innerHeight || 0);
+            setViewportHeight(nextHeight > 0 ? nextHeight : null);
+
+            const baseline = window.innerHeight || nextHeight;
+            const diff = baseline - nextHeight;
+            // Mobil klaviatura açıq olarkən adətən 120px+ fərq yaranır.
+            setKeyboardOpen(diff > 120);
+        };
+
+        updateViewport();
+        const vv = window.visualViewport;
+        window.addEventListener('resize', updateViewport);
+        vv?.addEventListener('resize', updateViewport);
+        vv?.addEventListener('scroll', updateViewport);
+        return () => {
+            window.removeEventListener('resize', updateViewport);
+            vv?.removeEventListener('resize', updateViewport);
+            vv?.removeEventListener('scroll', updateViewport);
+        };
+    }, []);
+
     const send = () => {
         const v = text.trim();
         if (!v || !roomId) return;
@@ -221,10 +249,17 @@ export default function ChatRoomPage() {
     const displayName =
         (peer && `${peer.name || ''} ${peer.surname || ''}`.trim()) || peer?.username || '';
 
+    const shellStyle = viewportHeight
+        ? { '--ev-chat-vh': `${viewportHeight}px` }
+        : undefined;
+
     if (!user && !authLoading) return null;
 
     return (
-        <div className={styles.shell}>
+        <div
+            className={`${styles.shell} ${keyboardOpen ? styles.keyboardOpen : ''}`}
+            style={shellStyle}
+        >
             <div className={styles.card}>
                 <div className={styles.topBar}>
                     <Link

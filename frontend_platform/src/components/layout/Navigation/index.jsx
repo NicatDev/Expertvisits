@@ -23,6 +23,7 @@ const Navigation = () => {
     const expertsHref = withLocale(locale, '/experts');
     const vacanciesHref = withLocale(locale, '/vacancies');
     const companiesHref = withLocale(locale, '/companies');
+    const collectionsHref = withLocale(locale, '/collections');
     const websiteTemplateHref = withLocale(locale, '/website-template');
     const profileHref = useLocalizedPath('/profile');
     const notificationsHref = useLocalizedPath('/notifications');
@@ -81,6 +82,7 @@ const Navigation = () => {
                     <Link href={expertsHref} className={styles.navLink} suppressHydrationWarning>{t('nav.experts')}</Link>
                     <Link href={vacanciesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                     <Link href={companiesHref} className={styles.navLink} suppressHydrationWarning>{t('nav.companies')}</Link>
+                    <Link href={collectionsHref} className={styles.navLink} suppressHydrationWarning>{t('nav.collections')}</Link>
                     
                   
                 </div>
@@ -195,6 +197,7 @@ const Navigation = () => {
                         <Link href={expertsHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.experts')}</Link>
                         <Link href={vacanciesHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.vacancies')}</Link>
                         <Link href={companiesHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.companies')}</Link>
+                        <Link href={collectionsHref} onClick={() => setIsMenuOpen(false)} suppressHydrationWarning>{t('nav.collections')}</Link>
                         {user ? (
                             <>
                                 <Link

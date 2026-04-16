@@ -69,10 +69,7 @@ class CancelOutgoingConnectionView(APIView):
         )
         req.status = ConnectionRequest.Status.DECLINED
         req.save(update_fields=["status"])
-        now = timezone.now()
-        InboxNotification.objects.filter(
-            connection_request=req, recipient=req.to_user, read_at__isnull=True
-        ).update(read_at=now)
+        InboxNotification.objects.filter(connection_request=req, recipient=req.to_user).delete()
         push_payload(req.to_user_id, {"type": "badge_refresh"})
         push_payload(request.user.id, {"type": "badge_refresh"})
         return Response({"status": "cancelled"})

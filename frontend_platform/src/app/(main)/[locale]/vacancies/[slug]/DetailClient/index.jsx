@@ -44,20 +44,24 @@ export default function DetailClient({ vacancy }) {
     const userPublicHref = (username) =>
         username ? withLocale(uiLocale, `/user/${encodeURIComponent(username)}`) : '#';
     const { user, login } = useAuth();
+    const [vacancyData, setVacancyData] = useState(vacancy);
     const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
     const [showApplyModal, setShowApplyModal] = useState(false);
 
     useEffect(() => {
-        if (user && vacancy.slug) {
-            business.getVacancy(vacancy.slug)
-                .then(res => {
-                    if (res.data.is_applied !== undefined) setIsApplied(res.data.is_applied);
-                })
-                .catch(err => console.error("Failed to refresh vacancy status", err));
-        } else if (vacancy.is_applied !== undefined) {
-            setIsApplied(vacancy.is_applied);
-        }
-    }, [user, vacancy.slug, vacancy.is_applied]);
+        setVacancyData(vacancy);
+        if (vacancy.is_applied !== undefined) setIsApplied(vacancy.is_applied);
+    }, [vacancy]);
+
+    useEffect(() => {
+        if (!user || !vacancy.slug) return;
+        business.getVacancy(vacancy.slug)
+            .then(res => {
+                setVacancyData(res.data);
+                if (res.data.is_applied !== undefined) setIsApplied(res.data.is_applied);
+            })
+            .catch(err => console.error("Failed to refresh vacancy status", err));
+    }, [user, vacancy.slug]);
 
     const handleApplyClick = () => {
         if (!user) {
@@ -87,10 +91,10 @@ export default function DetailClient({ vacancy }) {
 
     if (!vacancy) return null;
 
-    const publisher = buildPublisher(vacancy);
+    const publisher = buildPublisher(vacancyData);
     const companyPageHref = publisher?.slug ? withLocale(uiLocale, `/companies/${publisher.slug}`) : null;
-    const displayName = publisher.name || vacancy.company_name || '';
-    const isOwner = Boolean(vacancy.is_owner);
+    const displayName = publisher.name || vacancyData.company_name || '';
+    const isOwner = Boolean(vacancyData.is_owner);
 
     return (
         <div className={styles.container}>
@@ -106,7 +110,7 @@ export default function DetailClient({ vacancy }) {
                             </div>
                         )}
                         <div className={styles.titleBlock}>
-                            <h1 className={styles.title}>{vacancy.title}</h1>
+                            <h1 className={styles.title}>{vacancyData.title}</h1>
                             <div className={styles.employerRow}>
                                 {publisher.type === 'company' && publisher.slug && companyPageHref ? (
                                     <a href={companyPageHref} className={styles.companyName}>
@@ -155,22 +159,22 @@ export default function DetailClient({ vacancy }) {
                         <div className={styles.datesRow}>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>{t('vacancy_detail.posted_date')}:</span>
-                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancy.posted_at)}</span>
+                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancyData.posted_at)}</span>
                             </div>
                             <div className={styles.dateItem}>
                                 <span className={styles.dateLabel}>{t('vacancy_detail.deadline')}:</span>
-                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancy.expires_at)}</span>
+                                <span className={styles.dateValue} suppressHydrationWarning>{formatDate(vacancyData.expires_at)}</span>
                             </div>
                         </div>
 
                         <div
                             className={styles.descriptionBlock}
-                            lang={vacancy.language || undefined}
+                            lang={vacancyData.language || undefined}
                         >
                             <h3>{t('vacancy_detail.description')}</h3>
                             <div className={styles.richText}>
-                                {vacancy.description ? (
-                                    <p>{vacancy.description}</p>
+                                {vacancyData.description ? (
+                                    <p>{vacancyData.description}</p>
                                 ) : (
                                     <p>{t('vacancy_detail.no_description')}</p>
                                 )}
@@ -181,7 +185,7 @@ export default function DetailClient({ vacancy }) {
                     {/* Additional sections can go here */}
 
                     {/* Applicants Section (Visible only to owner) */}
-                    {isOwner && <ApplicantsList vacancyId={vacancy.id} />}
+                    {isOwner && <ApplicantsList vacancyId={vacancyData.id} userPublicHref={userPublicHref} />}
                 </div>
 
                 {/* Sidebar: Job Overview / Details */}
@@ -193,28 +197,28 @@ export default function DetailClient({ vacancy }) {
                                 <MapPin size={20} className={styles.icon} />
                                 <div>
                                     <span className={styles.label}>{t('vacancy_detail.location')}</span>
-                                    <span className={styles.value}>{vacancy.location}</span>
+                                    <span className={styles.value}>{vacancyData.location}</span>
                                 </div>
                             </li>
                             <li>
                                 <DollarSign size={20} className={styles.icon} />
                                 <div>
                                     <span className={styles.label}>{t('vacancy_detail.salary')}</span>
-                                    <span className={styles.value}>{vacancy.salary_range || 'Competitive'}</span>
+                                    <span className={styles.value}>{vacancyData.salary_range || 'Competitive'}</span>
                                 </div>
                             </li>
                             <li>
                                 <Briefcase size={20} className={styles.icon} />
                                 <div>
                                     <span className={styles.label}>{t('vacancy_detail.job_type')}</span>
-                                    <span className={styles.value}>{translateEnum('vacancies', vacancy.job_type)}</span>
+                                    <span className={styles.value}>{translateEnum('vacancies', vacancyData.job_type)}</span>
                                 </div>
                             </li>
                             <li>
                                 <Clock size={20} className={styles.icon} />
                                 <div>
                                     <span className={styles.label}>{t('vacancy_detail.work_mode')}</span>
-                                    <span className={styles.value}>{translateEnum('vacancies', vacancy.work_mode)}</span>
+                                    <span className={styles.value}>{translateEnum('vacancies', vacancyData.work_mode)}</span>
                                 </div>
                             </li>
                           
@@ -263,7 +267,7 @@ export default function DetailClient({ vacancy }) {
             <ApplyModal
                 isOpen={showApplyModal}
                 onClose={() => setShowApplyModal(false)}
-                vacancyId={vacancy.id}
+                vacancyId={vacancyData.id}
                 onSuccess={() => {
                     setIsApplied(true);
                 }}
@@ -273,7 +277,7 @@ export default function DetailClient({ vacancy }) {
     );
 }
 
-function ApplicantsList({ vacancyId }) {
+function ApplicantsList({ vacancyId, userPublicHref }) {
     const { t, i18n } = useTranslation('common');
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);

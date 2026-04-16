@@ -6,6 +6,7 @@ import {
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const runtime = 'nodejs';
 
 export async function GET() {
     let n = 1;
@@ -22,7 +23,9 @@ export async function GET() {
     return new Response(xml, {
         headers: {
             'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+            'Cache-Control': 'no-store, max-age=0, must-revalidate',
+            Vary: 'Accept-Encoding',
+            'X-Robots-Tag': 'noarchive',
         },
     });
 }

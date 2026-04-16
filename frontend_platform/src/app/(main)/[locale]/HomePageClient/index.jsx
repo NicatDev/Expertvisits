@@ -16,10 +16,16 @@ import RecommendedUsers from '@/components/widgets/RecommendedUsers';
 import PromoBanner from '@/components/widgets/PromoBanner';
 import NoContent from '@/components/ui/NoContent';
 import { useTranslation } from '@/i18n/client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 export default function HomePageClient() {
     const { t } = useTranslation('common');
     const { user } = useAuth();
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const collectionsHref = withLocale(pathLocale, '/collections');
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -159,6 +165,9 @@ export default function HomePageClient() {
             <aside className={styles.leftSidebar}>
                
                 <RecommendedUsers />
+                <Link href={collectionsHref} className={styles.collectionsCta}>
+                    {t('collections_page.explore_collections')}
+                </Link>
                  <PromoBanner />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}

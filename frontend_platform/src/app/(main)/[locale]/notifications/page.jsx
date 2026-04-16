@@ -60,8 +60,8 @@ export default function NotificationsPage() {
     const [items, setItems] = useState([]);
     const [nextBefore, setNextBefore] = useState(null);
     const [loading, setLoading] = useState(true);
-    /** @type {Record<number, 'accepted' | 'declined'>} notification id -> outcome */
-    const [connectionOutcomeByNotifId, setConnectionOutcomeByNotifId] = useState({});
+    /** @type {Record<number, 'accepted' | 'declined'>} connection_request_id -> outcome */
+    const [connectionOutcomeByRequestId, setConnectionOutcomeByRequestId] = useState({});
     /** ids currently being deleted (disable button, avoid double submit) */
     const [deletingIds, setDeletingIds] = useState(() => new Set());
 
@@ -122,7 +122,7 @@ export default function NotificationsPage() {
             await connectionsApi.accept(id);
             toast.success(t('application_status.accepted'));
             await refreshSummary();
-            setConnectionOutcomeByNotifId((prev) => ({ ...prev, [n.id]: 'accepted' }));
+            setConnectionOutcomeByRequestId((prev) => ({ ...prev, [id]: 'accepted' }));
         } catch {
             toast.error(t('common.error_generic'));
         }
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
         try {
             await connectionsApi.decline(id);
             await refreshSummary();
-            setConnectionOutcomeByNotifId((prev) => ({ ...prev, [n.id]: 'declined' }));
+            setConnectionOutcomeByRequestId((prev) => ({ ...prev, [id]: 'declined' }));
         } catch {
             toast.error(t('common.error_generic'));
         }
@@ -151,14 +151,21 @@ export default function NotificationsPage() {
         try {
             await notificationsApi.deleteInbox(n.id);
             setItems((prev) => prev.filter((x) => x.id !== n.id));
-            setConnectionOutcomeByNotifId((prev) => {
-                const next = { ...prev };
-                delete next[n.id];
-                return next;
-            });
+            if (n.connection_request_id) {
+                setConnectionOutcomeByRequestId((prev) => {
+                    const next = { ...prev };
+                    delete next[n.connection_request_id];
+                    return next;
+                });
+            }
             await refreshSummary();
-        } catch {
-            toast.error(t('common.error_generic'));
+        } catch (e) {
+            if (e?.response?.status === 404) {
+                // Artıq serverdə silinibsə UI-dan da çıxar.
+                setItems((prev) => prev.filter((x) => x.id !== n.id));
+            } else {
+                toast.error(t('common.error_generic'));
+            }
         } finally {
             setDeletingIds((prev) => {
                 const next = new Set(prev);
@@ -205,7 +212,8 @@ export default function NotificationsPage() {
             ) : (
                 <ul className={styles.list}>
                     {items.map((n) => {
-                        const connOutcome = connectionOutcomeByNotifId[n.id];
+                        const connOutcome =
+                            n.connection_request_id ? connectionOutcomeByRequestId[n.connection_request_id] : undefined;
                         const isDeleting = deletingIds.has(n.id);
                         return (
                         <li key={n.id} className={styles.card}>

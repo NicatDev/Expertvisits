@@ -31,5 +31,11 @@ export const content = {
     getQuizParticipants: (slug) => api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/`),
     getQuizParticipantResult: (slug, userId, params = {}) =>
         api.get(`content/quizzes/${encodeURIComponent(slug)}/participants/${userId}/`, { params }),
+    getCollections: (params) => api.get('content/collections/', { params }),
+    getCollection: (slug) => api.get(`content/collections/${encodeURIComponent(slug)}/`),
+    createCollection: (data) => api.post('content/collections/', data),
+    updateCollection: (slug, data) => api.patch(`content/collections/${encodeURIComponent(slug)}/`, data),
+    deleteCollection: (slug) => api.delete(`content/collections/${encodeURIComponent(slug)}/`),
+    getCollectionContentOptions: () => api.get('content/collections/content-options/'),
 
 };

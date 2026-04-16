@@ -132,17 +132,17 @@ export function expandSitemapEntries(sitemapData, seen) {
 }
 
 export async function fetchSitemapMeta() {
-    const res = await fetch(apiUrl('seo/sitemap/meta/'), { next: { revalidate: 60 } });
+    const res = await fetch(apiUrl('seo/sitemap/meta/'), { cache: 'no-store' });
     if (!res.ok) return { chunk_count: 1, chunk_limit: 45000 };
     return res.json();
 }
 
 export async function fetchSitemapChunk(chunk, limit) {
     const q = new URLSearchParams({ chunk: String(chunk), limit: String(limit) });
-    const res = await fetch(`${apiUrl('seo/sitemap/')}?${q}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${apiUrl('seo/sitemap/')}?${q}`, { cache: 'no-store' });
     if (res.ok) return res.json();
     if (chunk === 0) {
-        const legacy = await fetch(apiUrl('seo/sitemap/'), { next: { revalidate: 60 } });
+        const legacy = await fetch(apiUrl('seo/sitemap/'), { cache: 'no-store' });
         if (legacy.ok) return legacy.json();
     }
     return { static_urls: [], dynamic_urls: [] };
