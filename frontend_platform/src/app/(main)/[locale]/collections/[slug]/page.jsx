@@ -23,7 +23,8 @@ export async function generateMetadata({ params }) {
     };
 }
 
-export default function CollectionDetailPage({ params }) {
-    return <CollectionDetailClient slug={params.slug} />;
+export default async function CollectionDetailPage({ params }) {
+    const { slug } = await params;
+    return <CollectionDetailClient slug={slug} />;
 }
 

@@ -155,7 +155,7 @@ function CollectionEditorModal({
                             <span className={styles.drag}><GripVertical size={16} /></span>
                             <span className={styles.itemType}>{it.content_type}</span>
                             <span className={styles.itemTitle}>{it.title}</span>
-                            <button type="button" onClick={() => removeItem(it.id)}>
+                            <button type="button" className={styles.removeItemBtn} onClick={() => removeItem(it.id)}>
                                 {t('common.delete')}
                             </button>
                         </div>
@@ -288,6 +288,14 @@ export default function CollectionsPageClient() {
             <h2 className={styles.listHeading}>{t('collections_page.collections')}</h2>
             {loading ? (
                 <p>{t('common.loading')}</p>
+            ) : collections.length === 0 ? (
+                <div className={styles.emptyCollections}>
+                    <h3>{t('collections_page.no_collections_title')}</h3>
+                    <p>{t('collections_page.no_collections_desc')}</p>
+                    <button className={styles.createBtn} onClick={openCreate}>
+                        <Plus size={16} /> {t('collections_page.create_collection')}
+                    </button>
+                </div>
             ) : (
                 <div className={styles.grid}>
                     {collections.map((c) => (
@@ -300,7 +308,7 @@ export default function CollectionsPageClient() {
                                 <span>{t('collections_page.items_count', { count: c.item_count || 0 })}</span>
                                 <span>{t('collections_page.views_count', { count: c.view_count || 0 })}</span>
                             </div>
-                            {c.is_owner ? (
+                            {user && c.is_owner ? (
                                 <div className={styles.cardActions}>
                                     <button type="button" onClick={() => openEdit(c)}>
                                         <Edit2 size={14} /> {t('common.edit')}

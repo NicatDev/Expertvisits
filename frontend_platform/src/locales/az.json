@@ -1054,7 +1054,7 @@
     },
     "collections_page": {
         "title_h1": "Kolleksiyalar",
-        "subtitle": "Mövzular üzrə məqalə və testləri bir yerdə saxlayın.",
+        "subtitle": "Mövzu kolleksiyalarını kəşf edin və faydalı məzmunlara keçid edin.",
         "explore_collections": "Kolleksiyalara bax",
         "collections": "Kolleksiyalar",
         "all_collections": "Bütün",
@@ -1072,7 +1072,9 @@
         "items_count": "{{count}} element",
         "views_count": "{{count}} baxış",
         "collection_content": "Kolleksiyadakı məzmun",
-        "no_summary": "Təsvir yoxdur"
+        "no_summary": "Təsvir yoxdur",
+        "no_collections_title": "Hələ kolleksiya yoxdur",
+        "no_collections_desc": "İlk kolleksiyanı yaradıb məqalə və testləri bir araya gətirin."
     },
     "seo": {
         "home_h1": "Expert Visits - Peşəkar Mütəxəssislər, Şirkətlər və İş Elanları Platforması",

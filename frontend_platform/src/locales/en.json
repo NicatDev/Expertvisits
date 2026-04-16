@@ -1065,7 +1065,7 @@
     },
     "collections_page": {
         "title_h1": "Collections",
-        "subtitle": "Group articles and quizzes by topic.",
+        "subtitle": "Discover curated topic collections and jump into useful content.",
         "explore_collections": "Browse collections",
         "collections": "Collections",
         "all_collections": "All",
@@ -1083,7 +1083,9 @@
         "items_count": "{{count}} items",
         "views_count": "{{count}} views",
         "collection_content": "Collection content",
-        "no_summary": "No summary"
+        "no_summary": "No summary",
+        "no_collections_title": "No collections yet",
+        "no_collections_desc": "Create your first collection and group your articles and quizzes."
     },
     "seo": {
         "home_h1": "Expert Visits - Professional Experts, Companies and Job Vacancies Platform",
