@@ -49,11 +49,13 @@
         "values": "Our values"
     },
     "services": {
-        "title": "Services"
+        "title": "Services",
+        "openDetail": "View details"
     },
     "projects": {
         "title": "Projects",
-        "visit": "Visit"
+        "visit": "Visit",
+        "openDetail": "View details"
     },
     "partners": {
         "title": "Partners"
@@ -62,11 +64,18 @@
         "title": "Vacancies",
         "location": "Location",
         "applyOnPlatform": "Sign in on the platform to apply",
-        "empty": "No open vacancies."
+        "empty": "No open vacancies.",
+        "typeJob": "Job",
+        "typeInternship": "Internship",
+        "expires": "Apply by"
     },
     "contact": {
+        "pageTitle": "Contact",
+        "sideTitle": "Contact details",
         "title": "Contact us",
-        "subtitle": "Your message is sent to the company registration email.",
+        "subtitle": "Your message is delivered to the company inbox; you will also receive a confirmation email.",
+        "whatsapp": "WhatsApp",
+        "call": "Call",
         "name": "Full name",
         "email": "Your email",
         "subject": "Subject",

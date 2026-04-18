@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from apps.profiles.models import Project
 from apps.profiles.api.serializers import ProjectSerializer
 
@@ -7,6 +8,7 @@ from apps.profiles.api.serializers import ProjectSerializer
 class ProjectListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):
         user_id = self.request.query_params.get('user_id')
@@ -28,6 +30,7 @@ class ProjectDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.select_related('user', 'company')
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def _ensure_can_mutate(self, project):
         user = self.request.user

@@ -14,7 +14,7 @@ export default function TemplateLayout({ children, company, companySlug, hasVaca
                 visibility={visibility}
             />
             <div style={{ flex: 1 }}>{children}</div>
-            <Footer company={company} companySlug={companySlug} />
+            <Footer company={company} companySlug={companySlug} visibility={visibility} />
         </div>
     );
 }

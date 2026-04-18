@@ -72,3 +72,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         if value.owner_id != request.user.id:
             raise serializers.ValidationError('You can only link projects to companies you own.')
         return value
+
+    def update(self, instance, validated_data):
+        """
+        Multipart PATCH: avoid wiping `image` when the client sends no new file.
+        Only clear the image when the form explicitly includes an empty `image` field (see EntityProjectsTab).
+        """
+        request = self.context.get('request')
+        if request and 'image' in validated_data:
+            if 'image' not in getattr(request, 'FILES', {}):
+                raw = request.data.get('image')
+                if raw == '':
+                    validated_data['image'] = None
+                else:
+                    validated_data.pop('image', None)
+        return super().update(instance, validated_data)

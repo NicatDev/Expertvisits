@@ -22,7 +22,7 @@ export const business = {
     /** Step 2: JSON { code } */
     completeCompanyRegistration: (payload) =>
         client.post('/business/companies/complete-registration/', payload),
-    getCompany: (slug) => client.get(`/business/companies/${slug}/`),
+    getCompany: (slug, config = {}) => client.get(`/business/companies/${slug}/`, config),
     updateCompany: (slug, data) => client.patch(`/business/companies/${slug}/`, data),
 
     /** Owner-only: company microsite settings (public URL /c/{slug}/). */

@@ -40,13 +40,14 @@ export default function Navbar({ company, companySlug, hasVacancies, visibility 
             label: t('nav.vacancies'),
             show: Boolean(v.vacancies_page) && hasVacancies,
         },
-        { href: `/${companySlug}#contact`, label: t('nav.contact'), show: true },
+        {
+            href: `/${companySlug}/contact`,
+            label: t('nav.contact'),
+            show: Boolean(v.contact_page),
+        },
     ].filter((x) => x.show);
 
-    const pathActive = (href) => {
-        if (href.endsWith('#contact')) return false;
-        return pathname === href;
-    };
+    const pathActive = (href) => pathname === href;
 
     const switchLang = (lng) => {
         i18n.changeLanguage(lng);

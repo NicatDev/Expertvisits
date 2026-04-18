@@ -1,6 +1,9 @@
 import hmac
+import logging
 import random
 from datetime import timedelta
+
+logger = logging.getLogger(__name__)
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.files import File
@@ -24,7 +27,11 @@ from apps.business.company_website_visibility import (
 )
 from apps.business.models import Company, CompanyRegistrationPending, CompanyWebsite
 from apps.content.models import Article
-from core.utils.email import send_company_registration_code_email, send_company_site_contact_email
+from core.utils.email import (
+    send_company_registration_code_email,
+    send_company_site_contact_email,
+    send_company_site_contact_confirmation_email,
+)
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -329,9 +336,13 @@ class CompanySiteContactAPIView(APIView):
                 subject,
                 message,
             )
-            return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)
         except Exception:
             return Response(
                 {"detail": "Failed to send email. Please try again later."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+        try:
+            send_company_site_contact_confirmation_email(email, company.name, subject)
+        except Exception:
+            logger.exception("Company contact confirmation email failed for %s", email)
+        return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)

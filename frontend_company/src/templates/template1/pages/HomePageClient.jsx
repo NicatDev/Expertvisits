@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useTranslation } from '@/i18n/client';
 import { mediaUrl } from '@/lib/mediaUrl';
 import { vacancyDetailUrl } from '@/lib/platformUrls';
-import ContactForm from '../components/ContactForm';
 import styles from '../styles/home.module.scss';
 
 function formatDate(iso, locale) {
@@ -53,14 +52,26 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                             <div className={styles.statLabel}>{t('home.teamSize')}</div>
                             <div className={styles.statValue}>{company?.company_size || '—'}</div>
                         </div>
-                        <div className={styles.stat}>
-                            <div className={styles.statLabel}>{t('home.email')}</div>
-                            <div className={styles.statValue} style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{company?.email || '—'}</div>
-                        </div>
-                        <div className={styles.stat}>
-                            <div className={styles.statLabel}>{t('home.phone')}</div>
-                            <div className={styles.statValue} style={{ fontSize: '0.85rem' }}>{company?.phone || '—'}</div>
-                        </div>
+                        {v.show_email_on_site ? (
+                            <div className={styles.stat}>
+                                <div className={styles.statLabel}>{t('home.email')}</div>
+                                <div className={styles.statValue} style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>
+                                    {company?.email ? (
+                                        <a href={`mailto:${company.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                            {company.email}
+                                        </a>
+                                    ) : (
+                                        '—'
+                                    )}
+                                </div>
+                            </div>
+                        ) : null}
+                        {v.show_phone_on_site ? (
+                            <div className={styles.stat}>
+                                <div className={styles.statLabel}>{t('home.phone')}</div>
+                                <div className={styles.statValue} style={{ fontSize: '0.85rem' }}>{company?.phone || '—'}</div>
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             </section>
@@ -152,8 +163,6 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                     </div>
                 </section>
             ) : null}
-
-            <ContactForm companySlug={companySlug} />
         </>
     );
 }

@@ -50,7 +50,6 @@ export default function CompanyWebsitePageClient({ params }) {
     const [isFetching, setIsFetching] = useState(true);
     const [forbidden, setForbidden] = useState(false);
     const [isActive, setIsActive] = useState(false);
-    const [templateLabel, setTemplateLabel] = useState('');
     const [publicUrl, setPublicUrl] = useState('');
     const [sectionVisibility, setSectionVisibility] = useState(() =>
         mergeCompanyWebsiteVisibility({}),
@@ -220,7 +219,6 @@ export default function CompanyWebsitePageClient({ params }) {
         try {
             await business.updateCompanyWebsite(slug, {
                 template_id: COMPANY_TEMPLATE_ID,
-                template_label: templateLabel.trim(),
                 section_visibility: sectionVisibility,
             });
             toast.success(t('company_website.save_success'));
@@ -419,26 +417,6 @@ export default function CompanyWebsitePageClient({ params }) {
                             </div>
                         )}
 
-                        <label className={pageStyles.label} htmlFor="company-template-label">
-                            {t('company_website.template_label')}
-                        </label>
-                        <input
-                            id="company-template-label"
-                            type="text"
-                            value={templateLabel}
-                            onChange={(e) => setTemplateLabel(e.target.value)}
-                            placeholder={t('company_website.template_label_placeholder')}
-                            maxLength={120}
-                            style={{
-                                width: '100%',
-                                padding: '12px 14px',
-                                borderRadius: '10px',
-                                border: '1px solid #e2e8f0',
-                                marginBottom: '20px',
-                                fontSize: '0.95rem',
-                            }}
-                        />
-
                         <p className={pageStyles.label}>{t('widgets.select_template')}</p>
 
                         {isFetching ? (
@@ -469,10 +447,6 @@ export default function CompanyWebsitePageClient({ params }) {
                             </div>
                         )}
 
-                        <div className={pageStyles.disclaimer} style={{ marginBottom: '24px' }}>
-                            {t('company_website.template_note')}
-                        </div>
-
                         <div className={pageStyles.sectionToggles}>
                             <p className={pageStyles.sectionTogglesTitle}>
                                 {t('company_website.sections_title')}
@@ -487,6 +461,34 @@ export default function CompanyWebsitePageClient({ params }) {
                                             disabled={isSectionToggleDisabled(key, checked)}
                                             onChange={(e) =>
                                                 handleSectionToggle(key, e.target.checked)
+                                            }
+                                        />
+                                        <span>{t(labelKey)}</span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+
+                        <div className={pageStyles.sectionToggles} style={{ marginTop: '1.25rem' }}>
+                            <p className={pageStyles.sectionTogglesTitle}>
+                                {t('company_website.contact_display_title')}
+                            </p>
+                            {[
+                                ['contact_page', 'company_website.sec_contact_page'],
+                                ['show_phone_on_site', 'company_website.sec_show_phone'],
+                                ['show_email_on_site', 'company_website.sec_show_email'],
+                            ].map(([key, labelKey]) => {
+                                const checked = Boolean(sectionVisibility[key]);
+                                return (
+                                    <label key={key} className={pageStyles.toggleRow}>
+                                        <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={(e) =>
+                                                setSectionVisibility((prev) => ({
+                                                    ...prev,
+                                                    [key]: e.target.checked,
+                                                }))
                                             }
                                         />
                                         <span>{t(labelKey)}</span>

@@ -29,9 +29,10 @@ function SiInstagram({ size = 18 }) {
     );
 }
 
-export default function Footer({ company, companySlug }) {
+export default function Footer({ company, companySlug, visibility }) {
     const { t } = useTranslation();
     const year = new Date().getFullYear();
+    const v = visibility || {};
 
     const li = (company?.linkedin_url || '').trim();
     const ig = (company?.instagram_url || '').trim();
@@ -71,12 +72,12 @@ export default function Footer({ company, companySlug }) {
                 </div>
                 <div>
                     <div className={styles.title}>{t('nav.contact')}</div>
-                    {company?.email ? (
+                    {v.show_email_on_site && company?.email ? (
                         <p className={styles.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <Mail size={16} /> <a href={`mailto:${company.email}`} style={{ color: '#93c5fd' }}>{company.email}</a>
                         </p>
                     ) : null}
-                    {company?.phone ? (
+                    {v.show_phone_on_site && company?.phone ? (
                         <p className={styles.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <Phone size={16} /> {company.phone}
                         </p>
@@ -86,11 +87,13 @@ export default function Footer({ company, companySlug }) {
                             <MapPin size={16} style={{ flexShrink: 0, marginTop: 2 }} /> {company.address}
                         </p>
                     ) : null}
-                    <p className={styles.text} style={{ marginTop: 12 }}>
-                        <Link href={`/${companySlug}#contact`} style={{ color: '#93c5fd', fontWeight: 600 }}>
-                            {t('contact.title')} →
-                        </Link>
-                    </p>
+                    {v.contact_page ? (
+                        <p className={styles.text} style={{ marginTop: 12 }}>
+                            <Link href={`/${companySlug}/contact`} style={{ color: '#93c5fd', fontWeight: 600 }}>
+                                {t('contact.title')} →
+                            </Link>
+                        </p>
+                    ) : null}
                 </div>
             </div>
             <div className={styles.bottom}>

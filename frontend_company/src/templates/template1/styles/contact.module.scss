@@ -4,6 +4,16 @@
   padding: 3rem 1.25rem;
 }
 
+.embedWrap {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.embedBox {
+  box-shadow: 0 4px 24px -12px rgba(15, 23, 42, 0.12);
+}
+
 .box {
   background: #fff;
   border: 1px solid #e2e8f0;

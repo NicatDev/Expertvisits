@@ -105,7 +105,9 @@ export default function CompanyDetailClient({ params }) {
 
     const loadCompany = async () => {
         try {
-            const res = await business.getCompany(slug);
+            const res = await business.getCompany(slug, {
+                params: { _: Date.now() },
+            });
             setCompany(res.data);
             loadVacancies(res.data.id);
         } catch (err) {

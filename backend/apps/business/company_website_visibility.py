@@ -23,6 +23,9 @@ DEFAULT_COMPANY_WEBSITE_VISIBILITY: Dict[str, bool] = {
     "partners_page": False,
     "vacancies_on_home": False,
     "vacancies_page": False,
+    "contact_page": True,
+    "show_phone_on_site": True,
+    "show_email_on_site": True,
 }
 
 

@@ -5,7 +5,7 @@ import { useTranslation } from '@/i18n/client';
 import { submitCompanyContact } from '@/lib/api/company';
 import styles from '../styles/contact.module.scss';
 
-export default function ContactForm({ companySlug }) {
+export default function ContactForm({ companySlug, embed = false }) {
     const { t } = useTranslation();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -36,8 +36,8 @@ export default function ContactForm({ companySlug }) {
     };
 
     return (
-        <div className={styles.wrap} id="contact">
-            <div className={styles.box}>
+        <div className={embed ? `${styles.wrap} ${styles.embedWrap}` : styles.wrap} id={embed ? undefined : 'contact'}>
+            <div className={embed ? `${styles.box} ${styles.embedBox}` : styles.box}>
                 <h2 className={styles.title}>{t('contact.title')}</h2>
                 <p className={styles.sub}>{t('contact.subtitle')}</p>
                 <form className={styles.form} onSubmit={onSubmit}>

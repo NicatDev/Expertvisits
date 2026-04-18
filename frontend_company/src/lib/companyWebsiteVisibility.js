@@ -10,6 +10,9 @@ export const DEFAULT_COMPANY_WEBSITE_VISIBILITY = {
     partners_page: false,
     vacancies_on_home: false,
     vacancies_page: false,
+    contact_page: true,
+    show_phone_on_site: true,
+    show_email_on_site: true,
 };
 
 export function mergeCompanyWebsiteVisibility(raw) {

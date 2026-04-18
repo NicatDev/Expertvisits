@@ -227,6 +227,28 @@ def send_company_site_contact_email(company_email, sender_name, sender_email, su
     )
 
 
+def send_company_site_contact_confirmation_email(sender_email, company_name, subject_line):
+    """Notify the visitor that their message was delivered to the company inbox."""
+    safe_subj = _sanitize_subject_fragment(subject_line)
+    safe_company = _sanitize_subject_fragment(company_name or "Company", max_length=120)
+    subject = f"{_BRAND} — we sent your message to {safe_company}"
+    message = (
+        f"Hello,\n\n"
+        f"We have forwarded your message (subject: {safe_subj}) to {safe_company}.\n"
+        f"They may reply to you directly at the email address you provided.\n\n"
+        f"If you did not use the contact form on {_SITE}, you can ignore this email.\n\n"
+        f"— {_BRAND}\n"
+        f"{_SITE}\n"
+    )
+    return send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [sender_email],
+        fail_silently=False,
+    )
+
+
 def send_portfolio_contact_email(owner_email, sender_name, sender_email, subject_line, body_text):
     """
     Contact form submission from a user's public portfolio site → owner's inbox.

@@ -49,11 +49,13 @@
         "values": "Dəyərlərimiz"
     },
     "services": {
-        "title": "Xidmətlər"
+        "title": "Xidmətlər",
+        "openDetail": "Ətraflı bax"
     },
     "projects": {
         "title": "Layihələr",
-        "visit": "Keçid"
+        "visit": "Keçid",
+        "openDetail": "Ətraflı bax"
     },
     "partners": {
         "title": "Partnyorlar"
@@ -62,11 +64,18 @@
         "title": "Vakansiyalar",
         "location": "Lokasiya",
         "applyOnPlatform": "Müraciət üçün platformaya daxil olun",
-        "empty": "Açıq vakansiya yoxdur."
+        "empty": "Açıq vakansiya yoxdur.",
+        "typeJob": "İş",
+        "typeInternship": "Təcrübə",
+        "expires": "Son tarix"
     },
     "contact": {
+        "pageTitle": "Əlaqə",
+        "sideTitle": "Əlaqə məlumatları",
         "title": "Bizimlə əlaqə",
-        "subtitle": "Mesajınız şirkətin qeydiyyat e-poçtuna göndərilir.",
+        "subtitle": "Mesaj şirkətin e-poçtuna göndərilir; sizə də təsdiq məktubu gələcək.",
+        "whatsapp": "WhatsApp",
+        "call": "Zəng et",
         "name": "Ad, soyad",
         "email": "E-poçtunuz",
         "subject": "Mövzu",
