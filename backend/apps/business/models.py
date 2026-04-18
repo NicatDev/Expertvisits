@@ -246,10 +246,9 @@ class CompanyService(models.Model):
 
 
 class CompanyPartnerCard(models.Model):
-    """Logo + title row on company profile: collaborators (əməkdaşlar) or partners."""
+    """Logo + title row on company profile (partners only)."""
 
     class Kind(models.TextChoices):
-        COLLABORATOR = "collaborator", "Collaborator"
         PARTNER = "partner", "Partner"
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="partner_cards")

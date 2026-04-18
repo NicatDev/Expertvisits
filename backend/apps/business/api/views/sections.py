@@ -68,16 +68,29 @@ class CompanyPartnerCardListCreateAPIView(BaseSectionListCreateAPIView):
 
     def get_queryset(self):
         company_id = self.request.query_params.get('company')
-        kind = self.request.query_params.get('kind')
         qs = CompanyPartnerCard.objects.select_related('company')
         if not company_id:
             return qs.none()
-        qs = qs.filter(company_id=company_id)
-        if kind in ('collaborator', 'partner'):
-            qs = qs.filter(kind=kind)
-        return qs.order_by('sort_order', 'id')
+        return qs.filter(
+            company_id=company_id,
+            kind=CompanyPartnerCard.Kind.PARTNER,
+        ).order_by('sort_order', 'id')
+
+    def perform_create(self, serializer):
+        company = serializer.validated_data['company']
+        if company.owner != self.request.user:
+            raise serializers.ValidationError('Permission denied.')
+        serializer.save(kind=CompanyPartnerCard.Kind.PARTNER)
 
 
 class CompanyPartnerCardDetailAPIView(BaseSectionDetailAPIView):
-    queryset = CompanyPartnerCard.objects.select_related('company')
+    queryset = CompanyPartnerCard.objects.select_related('company').filter(
+        kind=CompanyPartnerCard.Kind.PARTNER
+    )
     serializer_class = CompanyPartnerCardSerializer
+
+    def perform_update(self, serializer):
+        obj = self.get_object()
+        if obj.company.owner != self.request.user:
+            raise serializers.ValidationError('Permission denied.')
+        serializer.save(kind=CompanyPartnerCard.Kind.PARTNER)

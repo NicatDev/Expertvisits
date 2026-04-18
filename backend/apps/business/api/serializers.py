@@ -169,7 +169,6 @@ class CompanySerializer(serializers.ModelSerializer):
     our_values = OurValuesSerializer(read_only=True)
     services = serializers.SerializerMethodField()
     company_projects = serializers.SerializerMethodField()
-    collaborators = serializers.SerializerMethodField()
     partners = serializers.SerializerMethodField()
     delete_logo = serializers.BooleanField(write_only=True, required=False)
     delete_cover_image = serializers.BooleanField(write_only=True, required=False)
@@ -185,12 +184,6 @@ class CompanySerializer(serializers.ModelSerializer):
     def get_company_projects(self, obj):
         qs = obj.company_projects.all().order_by('-date')
         return ProjectSerializer(qs, many=True, context=self.context).data
-
-    def get_collaborators(self, obj):
-        qs = business_models.CompanyPartnerCard.objects.filter(
-            company=obj, kind=business_models.CompanyPartnerCard.Kind.COLLABORATOR
-        )
-        return CompanyPartnerCardSerializer(qs, many=True, context=self.context).data
 
     def get_partners(self, obj):
         qs = business_models.CompanyPartnerCard.objects.filter(

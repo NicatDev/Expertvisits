@@ -12,15 +12,14 @@ import { toast } from 'react-toastify';
 import styles from './style.module.scss';
 
 /**
- * @param {'collaborator'|'partner'} kind
+ * Company partner logos + titles (single tab on company detail).
  * @param {boolean} isOwner
  * @param {number} companyId
- * @param {Array} items — company.collaborators | company.partners
+ * @param {Array} items — company.partners
  * @param {() => Promise<void>} onRefresh — e.g. loadCompany
  * @param {string} sectionClassName
  */
 export default function EntityCompanyPartnerCardsTab({
-    kind,
     isOwner,
     companyId,
     items: itemsProp,
@@ -81,7 +80,7 @@ export default function EntityCompanyPartnerCardsTab({
             const fd = new FormData();
             fd.append('title', trimmed);
             fd.append('company', String(companyId));
-            fd.append('kind', kind);
+            fd.append('kind', 'partner');
             if (logoFile) {
                 fd.append('logo', logoFile);
             } else if (editing && !logoPreview) {
@@ -115,15 +114,10 @@ export default function EntityCompanyPartnerCardsTab({
         setConfirm({ open: false, id: null });
     };
 
-    const sectionTitle =
-        kind === 'collaborator'
-            ? t('company_detail.tabs.collaborators')
-            : t('company_detail.tabs.partners');
-
     return (
         <div className={sectionClassName.trim()}>
             <div className={styles.sectionHeader}>
-                <h2>{sectionTitle}</h2>
+                <h2>{t('company_detail.tabs.partners')}</h2>
             </div>
 
             <div className={styles.grid}>
@@ -132,14 +126,17 @@ export default function EntityCompanyPartnerCardsTab({
                 )}
 
                 {items.map((row) => (
-                    <div key={row.id} className={styles.card}>
+                    <div key={row.id} className={styles.card} tabIndex={0}>
                         {isOwner && (
                             <div className={styles.cardActions}>
                                 <button
                                     type="button"
                                     className={styles.iconBtn}
                                     title={t('company_detail.partner_cards.edit')}
-                                    onClick={() => openEdit(row)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openEdit(row);
+                                    }}
                                 >
                                     <Pencil size={14} />
                                 </button>
@@ -147,22 +144,27 @@ export default function EntityCompanyPartnerCardsTab({
                                     type="button"
                                     className={`${styles.iconBtn} ${styles.deleteBtn}`}
                                     title={t('company_detail.partner_cards.delete')}
-                                    onClick={() => setConfirm({ open: true, id: row.id })}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setConfirm({ open: true, id: row.id });
+                                    }}
                                 >
                                     <Trash2 size={14} />
                                 </button>
                             </div>
                         )}
-                        <div className={styles.logoWrap}>
-                            {row.logo ? (
-                                <img src={row.logo} alt="" className={styles.logo} />
-                            ) : (
-                                <span className={styles.logoPlaceholder}>
-                                    {t('company_detail.partner_cards.no_logo')}
-                                </span>
-                            )}
+                        <div className={styles.cardInner}>
+                            <div className={styles.logoWrap}>
+                                {row.logo ? (
+                                    <img src={row.logo} alt="" className={styles.logo} />
+                                ) : (
+                                    <span className={styles.logoPlaceholder}>
+                                        {t('company_detail.partner_cards.no_logo')}
+                                    </span>
+                                )}
+                            </div>
+                            <p className={styles.title}>{row.title}</p>
                         </div>
-                        <p className={styles.title}>{row.title}</p>
                     </div>
                 ))}
 

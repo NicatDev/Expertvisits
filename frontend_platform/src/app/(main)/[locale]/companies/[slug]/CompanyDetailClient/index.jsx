@@ -310,7 +310,6 @@ export default function CompanyDetailClient({ params }) {
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('company_detail.tabs.about')}</button>
                 <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>{t('company_detail.tabs.services')}</button>
                 <button className={activeTab === 'projects' ? styles.activeTab : ''} onClick={() => setActiveTab('projects')}>{t('company_detail.tabs.projects')}</button>
-                <button className={activeTab === 'collaborators' ? styles.activeTab : ''} onClick={() => setActiveTab('collaborators')}>{t('company_detail.tabs.collaborators')}</button>
                 <button className={activeTab === 'partners' ? styles.activeTab : ''} onClick={() => setActiveTab('partners')}>{t('company_detail.tabs.partners')}</button>
                 <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
             </div>
@@ -464,19 +463,8 @@ export default function CompanyDetailClient({ params }) {
                     sectionClassName={styles.section}
                 />
             )}
-            {activeTab === 'collaborators' && (
-                <EntityCompanyPartnerCardsTab
-                    kind="collaborator"
-                    isOwner={isOwner}
-                    companyId={company.id}
-                    items={company.collaborators}
-                    onRefresh={loadCompany}
-                    sectionClassName={styles.section}
-                />
-            )}
             {activeTab === 'partners' && (
                 <EntityCompanyPartnerCardsTab
-                    kind="partner"
                     isOwner={isOwner}
                     companyId={company.id}
                     items={company.partners}
