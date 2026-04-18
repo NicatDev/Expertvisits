@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 
 from apps.accounts.models import User
-from apps.business.models import Company, CompanyWebsite, Vacancy
+from apps.business.models import CompanyWebsite, Vacancy
 from apps.business.company_website_visibility import public_company_site_url
 from apps.content.models import Article
 
@@ -63,14 +63,6 @@ def _iter_dynamic_url_dicts():
             'priority': 0.8
         }
 
-    for c in Company.objects.all().iterator():
-        yield {
-            'url': f'/companies/{c.slug}',
-            'lastmod': _dt_iso(getattr(c, 'updated_at', None)),
-            'changefreq': 'daily',
-            'priority': 0.7
-        }
-
     for item in _company_microsite_url_dicts():
         yield item
 
@@ -117,7 +109,6 @@ def _dynamic_total_count():
     users = _public_profile_users_qs().count()
     return (
         Vacancy.objects.count()
-        + Company.objects.count()
         + _company_microsite_url_count()
         + Article.objects.count()
         + 2 * users

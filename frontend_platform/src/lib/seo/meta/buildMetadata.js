@@ -235,7 +235,7 @@ export function buildQuizMetadata({ siteOrigin, quiz, slug, routeLocale }) {
 }
 
 /**
- * Şirkət detalı — index + hreflang (UI dili)
+ * Şirkət detalı (platform /[locale]/companies/[slug]) — noindex; açıq ünvan mikrosaytdır (/c/…).
  */
 export function buildCompanyDetailMetadata({ siteOrigin, company, slug, locale }) {
   const t = getMetaBundle(locale);
@@ -258,7 +258,11 @@ export function buildCompanyDetailMetadata({ siteOrigin, company, slug, locale }
       canonical,
       ...(languages ? { languages } : {}),
     },
-    robots: { index: true, follow: true },
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
     openGraph: {
       title,
       description,
