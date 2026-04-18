@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useTranslation } from '@/i18n/client';
 import styles from './style.module.scss';
 import UsersList from './components/UsersList';
-import api from '@/lib/api/client';
+import { accounts } from '@/lib/api/accounts';
 import axios from 'axios';
 import Pagination from '@/components/ui/Pagination';
 
@@ -51,7 +51,7 @@ function ExpertsPageContent() {
             if (!params.profession_sub_category_id) delete params.profession_sub_category_id;
             if (!params.degree) delete params.degree;
             if (!params.search) delete params.search;
-            const res = await api.get('accounts/users/', { params, signal });
+            const res = await accounts.getExpertsDirectory(params, { signal });
             if (signal?.aborted) return;
             setUsers(res.data.results || res.data);
             setTotalCount(res.data.count || (res.data.results || res.data).length);

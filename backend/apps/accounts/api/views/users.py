@@ -1,17 +1,109 @@
 from rest_framework import generics, permissions, filters, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Count
+from django.db.models import Count, Prefetch, Q
 from django.db import transaction
 from apps.accounts.models import User, RegistrationSession
-from apps.accounts.api.serializers import UserSerializer
+from apps.accounts.api.serializers import (
+    UserSerializer,
+    RecommendedUserSerializer,
+    ExpertListUserSerializer,
+)
 from apps.connections.models import ConnectionRequest
 from apps.connections.services import disconnect_users, is_mutual_connection
 from apps.connections.utils import with_connection_annotations
 from apps.notifications.services import notify_connection_requested
 from apps.business.api.views.companies import StandardResultsSetPagination
+from apps.profiles.models import Education
 import random
 from core.utils.email import send_verification_email
+
+
+def apply_expert_directory_filters(queryset, params):
+    """Shared filters for user directory / experts search (query_params)."""
+    hard_skills = params.getlist('hard_skills') or params.getlist('hard_skills[]')
+    if hard_skills:
+        for skill in hard_skills:
+            queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='hard')
+
+    soft_skills = params.getlist('soft_skills') or params.getlist('soft_skills[]')
+    if soft_skills:
+        for skill in soft_skills:
+            queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='soft')
+
+    locations = params.getlist('locations') or params.getlist('locations[]')
+    if locations:
+        location_q = Q()
+        for loc in locations:
+            if loc and str(loc).strip():
+                location_q |= Q(city__icontains=str(loc).strip())
+        queryset = queryset.filter(location_q)
+
+    degree = params.get('degree')
+    if degree:
+        queryset = queryset.filter(educations__degree_type=degree)
+
+    profession_sub_category_id = params.get('profession_sub_category_id')
+    if profession_sub_category_id:
+        queryset = queryset.filter(profession_sub_category_id=profession_sub_category_id)
+
+    return queryset
+
+
+class RecommendedUsersPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = 'page_size'
+    max_page_size = 12
+
+
+class UserRecommendedListAPIView(generics.ListAPIView):
+    """Homepage recommended users: minimal fields, no following_count, connection state when authed."""
+
+    serializer_class = RecommendedUserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = RecommendedUsersPagination
+
+    def get_queryset(self):
+        qs = (
+            User.objects.filter(is_searchable=True)
+            .select_related('profession_sub_category')
+            .annotate(followers_count=Count('followers', distinct=True))
+            .order_by('-followers_count', '-date_joined')
+        )
+        user = self.request.user
+        if user.is_authenticated:
+            qs = qs.exclude(id=user.id)
+            qs = with_connection_annotations(qs, user)
+        return qs.distinct()
+
+
+class UserExpertListAPIView(generics.ListAPIView):
+    """Experts directory: card fields only, searchable users, filters + search; no connection annotations."""
+
+    serializer_class = ExpertListUserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['username', 'first_name', 'last_name']
+    ordering_fields = ['followers_count', 'date_joined']
+    ordering = ['-date_joined']
+
+    def get_queryset(self):
+        qs = (
+            User.objects.filter(is_searchable=True)
+            .select_related('profession_sub_category', 'website')
+            .prefetch_related(
+                Prefetch('educations', queryset=Education.objects.order_by('-start_date', '-id'))
+            )
+            .annotate(followers_count=Count('followers', distinct=True))
+        )
+        user = self.request.user
+        if user.is_authenticated:
+            qs = qs.exclude(id=user.id)
+        qs = apply_expert_directory_filters(qs, self.request.query_params)
+        return qs.distinct()
+
 
 class UserListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
@@ -31,47 +123,12 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
             followers_count=Count('followers', distinct=True),
             following_count=Count('following', distinct=True)
         ).order_by('-date_joined')
-        
-        # Standard search handling via filter_backends
-
 
         if self.request.user.is_authenticated:
             queryset = queryset.exclude(id=self.request.user.id)
             queryset = with_connection_annotations(queryset, self.request.user)
 
-        # Custom Filters
-        from django.db.models import Q
-        params = self.request.query_params
-
-        # Skills (Strict AND logic - user must have ALL selected skills)
-        # Support both 'key' and 'key[]' formats
-        hard_skills = params.getlist('hard_skills') or params.getlist('hard_skills[]')
-        if hard_skills:
-            for skill in hard_skills:
-                queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='hard')
-
-        soft_skills = params.getlist('soft_skills') or params.getlist('soft_skills[]')
-        if soft_skills:
-            for skill in soft_skills:
-                queryset = queryset.filter(skills__name__icontains=skill, skills__skill_type='soft')
-
-        # Locations (OR logic - user can be in any of the selected cities)
-        locations = params.getlist('locations') or params.getlist('locations[]')
-        if locations:
-            location_q = Q()
-            for loc in locations:
-                location_q |= Q(city__icontains=loc)
-            queryset = queryset.filter(location_q)
-
-        # Degree (Simple filter)
-        degree = params.get('degree')
-        if degree:
-            queryset = queryset.filter(educations__degree_type=degree).distinct()
-
-        profession_sub_category_id = params.get('profession_sub_category_id')
-        if profession_sub_category_id:
-            queryset = queryset.filter(profession_sub_category_id=profession_sub_category_id)
-
+        queryset = apply_expert_directory_filters(queryset, self.request.query_params)
         return queryset.distinct()
 
     def create(self, request, *args, **kwargs):

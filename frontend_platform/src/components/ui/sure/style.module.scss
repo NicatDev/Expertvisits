@@ -1,0 +1,53 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.dialog {
+  width: min(400px, 100%);
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #000000d9;
+  line-height: 1.35;
+}
+
+.message {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #000000a6;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.confirmDanger {
+  background-color: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+  color: #fff !important;
+  text-shadow: none !important;
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: #ff7875 !important;
+    border-color: #ff7875 !important;
+  }
+}

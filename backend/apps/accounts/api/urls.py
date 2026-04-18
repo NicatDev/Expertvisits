@@ -1,7 +1,14 @@
 from django.urls import path
 from .views.users import (
-    UserListCreateAPIView, UserDetailAPIView, UserMeAPIView, 
-    FollowAPIView, UnfollowAPIView, UserFollowersAPIView, UserFollowingAPIView
+    UserListCreateAPIView,
+    UserRecommendedListAPIView,
+    UserExpertListAPIView,
+    UserDetailAPIView,
+    UserMeAPIView,
+    FollowAPIView,
+    UnfollowAPIView,
+    UserFollowersAPIView,
+    UserFollowingAPIView,
 )
 from .views.categories import CategoryListAPIView, CategoryDetailAPIView
 from .views.auth import VerifyEmailAPIView, CheckAvailabilityAPIView, ResendCodeAPIView, SetPasswordAPIView
@@ -19,6 +26,8 @@ urlpatterns = [
     path('users/resend_code/', ResendCodeAPIView.as_view(), name='resend-code'),
     
     # User List and Detail
+    path('users/recommended/', UserRecommendedListAPIView.as_view(), name='user-recommended-list'),
+    path('users/experts/', UserExpertListAPIView.as_view(), name='user-experts-list'),
     path('users/', UserListCreateAPIView.as_view(), name='user-list'),
     path('users/<str:username>/', UserDetailAPIView.as_view(), name='user-detail'),
     

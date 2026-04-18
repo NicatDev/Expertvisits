@@ -10,7 +10,7 @@ import ContentSelectionModal from '@/components/advanced/ContentSelectionModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss';
 import { toast } from 'react-toastify';
-import { Search, SlidersHorizontal, Check, ChevronDown, PenSquare } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, ChevronDown, PenSquare, Library, ChevronRight } from 'lucide-react';
 import PopularArticles from '@/components/widgets/PopularArticles';
 import RecommendedUsers from '@/components/widgets/RecommendedUsers';
 import PromoBanner from '@/components/widgets/PromoBanner';
@@ -165,9 +165,6 @@ export default function HomePageClient() {
             <aside className={styles.leftSidebar}>
                
                 <RecommendedUsers />
-                <Link href={collectionsHref} className={styles.collectionsCta}>
-                    {t('collections_page.explore_collections')}
-                </Link>
                  <PromoBanner />
 
                 {/* 2. User Stats / Welcome (Optional, keeping original if desired or user can ask to remove) */}
@@ -355,6 +352,13 @@ export default function HomePageClient() {
             {/* Right Sidebar: Popular Articles */}
             <aside className={styles.rightSidebar}>
                 <PopularArticles />
+                <Link href={collectionsHref} className={styles.collectionsCta}>
+                    <span className={styles.collectionsCtaIcon} aria-hidden>
+                        <Library size={18} strokeWidth={2} />
+                    </span>
+                    <span className={styles.collectionsCtaLabel}>{t('collections_page.explore_collections')}</span>
+                    <ChevronRight size={18} className={styles.collectionsCtaChevron} aria-hidden />
+                </Link>
 
                 {/* Keeping Trending if user wants, or remove? User: "Sag sidebarda en popular 3 meqale olsun". 
                     I'll keep Trending below it or replace it? User said "kicik ve lazimli melumatlar". 

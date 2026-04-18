@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api/client';
+import { accounts } from '@/lib/api/accounts';
 import styles from './style.module.scss';
 import Avatar from '@/components/ui/Avatar';
+import Sure from '@/components/ui/sure';
 import { toast } from 'react-toastify';
 import { interactions } from '@/lib/api';
 import { connectionsApi } from '@/lib/api/connections';
@@ -24,6 +26,12 @@ const RecommendedUsers = () => {
     const [loading, setLoading] = useState(true);
 
     const [isMounted, setIsMounted] = useState(false);
+    const [sureOpen, setSureOpen] = useState(false);
+    const [sureDialog, setSureDialog] = useState({
+        message: '',
+        confirmVariant: 'primary',
+        onConfirm: async () => {},
+    });
 
     useEffect(() => {
         setIsMounted(true);
@@ -32,13 +40,9 @@ const RecommendedUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            const { data } = await api.get('/accounts/users/', {
-                params: {
-                    ordering: '-followers_count',
-                },
-            });
+            const { data } = await accounts.getRecommendedUsers({ page_size: 3 });
             const list = data.results || data;
-            setUsers(list.filter((u) => u.username).slice(0, 3));
+            setUsers(list.filter((u) => u.username));
         } catch (error) {
             console.error('Failed to load users', error);
         } finally {
@@ -76,13 +80,41 @@ const RecommendedUsers = () => {
         }
         try {
             if (user.is_following) {
-                await interactions.unfollowUser(user.username);
-                await refreshOne(user);
+                setSureDialog({
+                    message: t('inbox.confirm_disconnect'),
+                    confirmVariant: 'danger',
+                    onConfirm: async () => {
+                        try {
+                            await interactions.unfollowUser(user.username);
+                            await refreshSummary();
+                            await refreshOne(user);
+                        } catch (err) {
+                            console.error(err);
+                            toast.error(t('common.error_generic'));
+                            throw err;
+                        }
+                    },
+                });
+                setSureOpen(true);
                 return;
             }
             if (user.connection_pending_out && user.outgoing_connection_request_id) {
-                await connectionsApi.cancel(user.outgoing_connection_request_id);
-                await refreshOne(user);
+                setSureDialog({
+                    message: t('inbox.confirm_cancel_request'),
+                    confirmVariant: 'primary',
+                    onConfirm: async () => {
+                        try {
+                            await connectionsApi.cancel(user.outgoing_connection_request_id);
+                            await refreshSummary();
+                            await refreshOne(user);
+                        } catch (err) {
+                            console.error(err);
+                            toast.error(t('common.error_generic'));
+                            throw err;
+                        }
+                    },
+                });
+                setSureOpen(true);
                 return;
             }
             if (user.connection_pending_in) {
@@ -132,6 +164,16 @@ const RecommendedUsers = () => {
 
     return (
         <div className={styles.container}>
+            <Sure
+                open={sureOpen}
+                onClose={() => setSureOpen(false)}
+                title={t('common.sure_title')}
+                message={sureDialog.message}
+                confirmText={t('common.confirm')}
+                cancelText={t('common.cancel')}
+                confirmVariant={sureDialog.confirmVariant}
+                onConfirm={sureDialog.onConfirm}
+            />
             <h3 className={styles.title}>{t('widgets.recommended_users')}</h3>
             <div className={styles.list}>
                 {users.map((user) => (

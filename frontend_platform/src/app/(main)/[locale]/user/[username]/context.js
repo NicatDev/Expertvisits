@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
+import Sure from '@/components/ui/sure';
 
 const PublicProfileContext = createContext();
 
@@ -24,6 +25,13 @@ export const PublicProfileProvider = ({ children }) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [followersCount, setFollowersCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
+
+    const [sureOpen, setSureOpen] = useState(false);
+    const [sureDialog, setSureDialog] = useState({
+        message: '',
+        confirmVariant: 'primary',
+        onConfirm: async () => {},
+    });
 
     const loadProfile = useCallback(async (uName) => {
         setLoading(true);
@@ -65,22 +73,40 @@ export const PublicProfileProvider = ({ children }) => {
         if (!profile || !currentUser) return;
         try {
             if (isFollowing) {
-                const yes = typeof window === 'undefined'
-                    ? true
-                    : window.confirm(t('inbox.confirm_disconnect'));
-                if (!yes) return;
-                await interactions.unfollowUser(profile.username);
-                await loadProfile(profile.username);
+                setSureDialog({
+                    message: t('inbox.confirm_disconnect'),
+                    confirmVariant: 'danger',
+                    onConfirm: async () => {
+                        try {
+                            await interactions.unfollowUser(profile.username);
+                            await loadProfile(profile.username);
+                        } catch (err) {
+                            console.error(err);
+                            toast.error(t('common.error_generic'));
+                            throw err;
+                        }
+                    },
+                });
+                setSureOpen(true);
                 return;
             }
             if (profile.connection_pending_out && profile.outgoing_connection_request_id) {
-                const yes = typeof window === 'undefined'
-                    ? true
-                    : window.confirm(t('inbox.confirm_cancel_request'));
-                if (!yes) return;
-                await connectionsApi.cancel(profile.outgoing_connection_request_id);
-                await refreshSummary();
-                await loadProfile(profile.username);
+                setSureDialog({
+                    message: t('inbox.confirm_cancel_request'),
+                    confirmVariant: 'primary',
+                    onConfirm: async () => {
+                        try {
+                            await connectionsApi.cancel(profile.outgoing_connection_request_id);
+                            await refreshSummary();
+                            await loadProfile(profile.username);
+                        } catch (err) {
+                            console.error(err);
+                            toast.error(t('common.error_generic'));
+                            throw err;
+                        }
+                    },
+                });
+                setSureOpen(true);
                 return;
             }
             if (profile.connection_pending_in) {
@@ -129,6 +155,16 @@ export const PublicProfileProvider = ({ children }) => {
             reloadProfile: () => profile && loadProfile(profile.username),
         }}>
             {children}
+            <Sure
+                open={sureOpen}
+                onClose={() => setSureOpen(false)}
+                title={t('common.sure_title')}
+                message={sureDialog.message}
+                confirmText={t('common.confirm')}
+                cancelText={t('common.cancel')}
+                confirmVariant={sureDialog.confirmVariant}
+                onConfirm={sureDialog.onConfirm}
+            />
         </PublicProfileContext.Provider>
     );
 };

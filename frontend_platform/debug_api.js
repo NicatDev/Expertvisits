@@ -5,7 +5,9 @@ async function check() {
     try {
         // 1. Check Users
         console.log("Checking Users...");
-        const usersRes = await axios.get('https://api.expertvisits.com/api/accounts/users/');
+        const usersRes = await axios.get('https://api.expertvisits.com/api/accounts/users/experts/', {
+            params: { page_size: 5 },
+        });
         const users = usersRes.data.results || usersRes.data;
         users.slice(0, 5).forEach(u => {
             console.log(`User: id=${u.id}, username=${u.username} (Type: ${typeof u.username})`);

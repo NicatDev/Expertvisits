@@ -188,3 +188,120 @@ class UserSerializer(serializers.ModelSerializer):
             ret["phone_number"] = resolved
 
         return ret
+
+
+class RecommendedUserSerializer(serializers.ModelSerializer):
+    """Minimal user payload for homepage recommended list + connection actions."""
+
+    profession_sub_category = SubCategorySerializer(read_only=True)
+    followers_count = serializers.IntegerField(read_only=True)
+    is_following = serializers.SerializerMethodField()
+    connection_pending_out = serializers.SerializerMethodField()
+    connection_pending_in = serializers.SerializerMethodField()
+    outgoing_connection_request_id = serializers.SerializerMethodField()
+    incoming_connection_request_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'avatar',
+            'avatar_compressed',
+            'profession_sub_category',
+            'followers_count',
+            'is_following',
+            'connection_pending_out',
+            'connection_pending_in',
+            'outgoing_connection_request_id',
+            'incoming_connection_request_id',
+        ]
+
+    def get_is_following(self, obj):
+        i = getattr(obj, 'conn_i_follow', None)
+        f = getattr(obj, 'conn_follows_me', None)
+        if i is None and f is None:
+            return False
+        return bool(i and f)
+
+    def get_connection_pending_out(self, obj):
+        return bool(getattr(obj, 'conn_pending_out', False))
+
+    def get_connection_pending_in(self, obj):
+        return bool(getattr(obj, 'conn_pending_in', False))
+
+    def get_outgoing_connection_request_id(self, obj):
+        v = getattr(obj, 'conn_pending_out_id', None)
+        return int(v) if v is not None else None
+
+    def get_incoming_connection_request_id(self, obj):
+        v = getattr(obj, 'conn_pending_in_id', None)
+        return int(v) if v is not None else None
+
+
+class ExpertListUserSerializer(serializers.ModelSerializer):
+    """Directory card on /experts — only fields the UI needs."""
+
+    profession_sub_category = SubCategorySerializer(read_only=True)
+    followers_count = serializers.IntegerField(read_only=True)
+    highest_education = serializers.SerializerMethodField()
+    website_active = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'city',
+            'cover_image',
+            'avatar',
+            'avatar_compressed',
+            'profession_sub_category',
+            'followers_count',
+            'highest_education',
+            'website_active',
+        ]
+
+    def get_highest_education(self, obj):
+        educations = obj.educations.all()
+        if not educations:
+            return None
+        ranks = {
+            'doctorate': 6,
+            'master': 5,
+            'bachelor': 4,
+            'full_secondary': 3,
+            'secondary': 2,
+            'vocational': 1,
+            'certification': 0,
+        }
+        highest = None
+        max_rank = -1
+        for edu in educations:
+            rank = ranks.get(edu.degree_type, -1)
+            if rank > max_rank:
+                max_rank = rank
+                highest = edu
+        if highest:
+            return highest.get_degree_type_display()
+        return None
+
+    def get_website_active(self, obj):
+        if not getattr(obj, 'is_active', True):
+            return False
+        try:
+            w = obj.website
+        except Exception:
+            return False
+        if getattr(w, 'is_deleted', False):
+            return False
+        if not w.is_active:
+            return False
+        tid = getattr(w, 'template_id', None)
+        if tid is None or int(tid) <= 0:
+            return False
+        return True

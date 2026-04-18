@@ -24,7 +24,9 @@
         "previous": "Previous",
         "next": "Next",
         "present": "Present",
-        "change": "Change"
+        "change": "Change",
+        "confirm": "Confirm",
+        "sure_title": "Are you sure?"
     },
     "nav": {
         "home": "Home",
