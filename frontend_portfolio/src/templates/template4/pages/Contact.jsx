@@ -41,7 +41,7 @@ export default function Contact({ user }) {
         } catch (error) {
             console.error(error);
             setStatus('error');
-            setErrorMessage(error.response?.data?.detail || 'Failed to send message. Please try again.');
+            setErrorMessage(error.response?.data?.detail || t('portfolio.contactFormError'));
         }
     };
 
@@ -57,7 +57,7 @@ export default function Contact({ user }) {
                 <div className={styles.contactInfo}>
                     <h1 className={styles.pageTitle}>{t('portfolio.letsTalk')} <span>{t('portfolio.together')}</span></h1>
                     <p className={styles.subtitle}>
-                        {t('portfolio.interestedWorking')}
+                        {t('portfolio.contactPageIntro')}
                     </p>
 
                     <div className={styles.infoCards}>
@@ -93,7 +93,7 @@ export default function Contact({ user }) {
 
                 {/* Right Side: Form */}
                 <div className={styles.formContainer}>
-                    <h2 className={styles.formHeader}>{t('portfolio.sendMessage')}</h2>
+                    <h2 className={styles.formHeader}>{t('portfolio.contactFormHeading')}</h2>
                     <form onSubmit={handleSubmit} className={styles.contactForm}>
                         <div className={styles.formGroup}>
                             <label htmlFor="name">{t('portfolio.fullName')}</label>
@@ -104,7 +104,7 @@ export default function Contact({ user }) {
                                 value={formData.name} 
                                 onChange={handleChange} 
                                 required 
-                                placeholder="John Doe"
+                                placeholder={t('portfolio.placeholderFullName')}
                                 disabled={status === 'loading'}
                             />
                         </div>
@@ -118,7 +118,7 @@ export default function Contact({ user }) {
                                 value={formData.email} 
                                 onChange={handleChange} 
                                 required 
-                                placeholder="john@example.com"
+                                placeholder={t('portfolio.placeholderEmail')}
                                 disabled={status === 'loading'}
                             />
                         </div>
@@ -138,7 +138,7 @@ export default function Contact({ user }) {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="message">{t('portfolio.sendMsg')}</label>
+                            <label htmlFor="message">{t('portfolio.message')}</label>
                             <textarea 
                                 id="message" 
                                 name="message" 

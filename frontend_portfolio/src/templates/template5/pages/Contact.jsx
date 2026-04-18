@@ -44,7 +44,7 @@ export default function Contact({ user }) {
         } catch (error) {
             console.error(error);
             setStatus('error');
-            setErrorMessage(error.response?.data?.detail || 'Xəta baş verdi. Yenidən cəhd edin.');
+            setErrorMessage(error.response?.data?.detail || t('portfolio.contactFormError'));
         }
     };
 
@@ -55,7 +55,7 @@ export default function Contact({ user }) {
             <div className={styles.container}>
                 <div className={styles.sectionHeader}>
                     <h1>{t('portfolio.getInTouch')}</h1>
-                    <p>{t('portfolio.getInTouchDesc')}</p>
+                    <p>{t('portfolio.contactPageIntro')}</p>
                 </div>
 
                 <div className={styles.contactGrid}>
@@ -64,7 +64,7 @@ export default function Contact({ user }) {
                             <div className={styles.card}>
                                 <div className={styles.iconWrapper}><Mail size={32} /></div>
                                 <div className={styles.cardBody}>
-                                    <h4>{t('portfolio.emailUs')}</h4>
+                                    <h4>{t('portfolio.email')}</h4>
                                     <p><a href={`mailto:${profile.email}`}>{profile.email}</a></p>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@ export default function Contact({ user }) {
                             <div className={styles.card}>
                                 <div className={styles.iconWrapper}><Phone size={32} /></div>
                                 <div className={styles.cardBody}>
-                                    <h4>{t('portfolio.emergencyHelp')}</h4>
+                                    <h4>{t('portfolio.phone')}</h4>
                                     <p><a href={`tel:${profile.phone_number}`}>{profile.phone_number}</a></p>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@ export default function Contact({ user }) {
                     </div>
 
                     <div className={styles.formBox}>
-                        <h3>{t('portfolio.sendMessage')}</h3>
+                        <h3>{t('portfolio.contactFormHeading')}</h3>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <div className={styles.formGrid}>
                                 <div className={styles.formGroup}>
@@ -102,7 +102,7 @@ export default function Contact({ user }) {
                                         value={formData.name}
                                         onChange={handleChange}
                                         required
-                                        placeholder={t('portfolio.fullName')} 
+                                        placeholder={t('portfolio.placeholderFullName')} 
                                         disabled={status === 'loading'}
                                     />
                                 </div>
@@ -115,7 +115,7 @@ export default function Contact({ user }) {
                                         value={formData.email}
                                         onChange={handleChange}
                                         required
-                                        placeholder={t('portfolio.emailAddress')} 
+                                        placeholder={t('portfolio.placeholderEmail')} 
                                         disabled={status === 'loading'}
                                     />
                                 </div>
@@ -134,7 +134,7 @@ export default function Contact({ user }) {
                                 />
                             </div>
                             <div className={styles.formGroup} style={{ marginTop: '24px' }}>
-                                <label htmlFor="message">{t('portfolio.messagePlaceholder')}</label>
+                                <label htmlFor="message">{t('portfolio.message')}</label>
                                 <textarea 
                                     id="message"
                                     name="message"

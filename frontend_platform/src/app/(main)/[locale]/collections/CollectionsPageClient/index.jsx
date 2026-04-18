@@ -3,12 +3,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plus, Edit2, Trash2, GripVertical, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, ChevronRight } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { content } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
+import Pagination from '@/components/ui/Pagination';
 import styles from './style.module.scss';
 
 function normalizeList(data) {
@@ -178,6 +179,34 @@ function CollectionEditorModal({
     );
 }
 
+function DeleteCollectionModal({ open, onClose, onConfirm, t, deleting }) {
+    if (!open) return null;
+    return (
+        <div className={styles.confirmOverlay} onClick={onClose} role="presentation">
+            <div
+                className={styles.confirmDialog}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="collections-delete-dialog-title"
+            >
+                <h3 id="collections-delete-dialog-title" className={styles.confirmTitle}>
+                    {t('collections_page.delete_confirm_heading')}
+                </h3>
+                <p className={styles.confirmText}>{t('collections_page.confirm_delete')}</p>
+                <div className={styles.confirmDialogActions}>
+                    <button type="button" className={styles.confirmBtnSecondary} onClick={onClose} disabled={deleting}>
+                        {t('common.cancel')}
+                    </button>
+                    <button type="button" className={styles.confirmBtnDanger} onClick={onConfirm} disabled={deleting}>
+                        {deleting ? t('common.loading') : t('common.delete')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function CollectionsPageClient() {
     const { t } = useTranslation('common');
     const { user } = useAuth();
@@ -193,6 +222,8 @@ export default function CollectionsPageClient() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [options, setOptions] = useState({ articles: [], quizzes: [] });
+    const [pendingDeleteSlug, setPendingDeleteSlug] = useState(null);
+    const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedQuery(query.trim()), 500);
@@ -262,18 +293,21 @@ export default function CollectionsPageClient() {
         await load();
     };
 
-    const removeCollection = async (slug) => {
-        if (!window.confirm(t('collections_page.confirm_delete'))) return;
+    const confirmRemoveCollection = async () => {
+        if (!pendingDeleteSlug) return;
+        setDeleteSubmitting(true);
         try {
-            await content.deleteCollection(slug);
+            await content.deleteCollection(pendingDeleteSlug);
+            setPendingDeleteSlug(null);
             await load();
         } catch {
             toast.error(t('common.error_generic'));
+        } finally {
+            setDeleteSubmitting(false);
         }
     };
 
     const pageSize = 10;
-    const totalPages = Math.max(Math.ceil(totalCount / pageSize), 1);
 
     return (
         <div className={styles.page}>
@@ -306,9 +340,8 @@ export default function CollectionsPageClient() {
                 </button>
             </div>
 
-            <h2 className={styles.listHeading}>{t('collections_page.collections')}</h2>
             {loading ? (
-                <p>{t('common.loading')}</p>
+                <p className={styles.listLoading}>{t('common.loading')}</p>
             ) : collections.length === 0 ? (
                 <div className={styles.emptyCollections}>
                     <h3>{t('collections_page.no_collections_title')}</h3>
@@ -319,64 +352,82 @@ export default function CollectionsPageClient() {
                 </div>
             ) : (
                 <>
-                    <div className={styles.grid}>
+                    <ul className={styles.collectionList}>
                         {collections.map((c) => (
-                            <article className={styles.card} key={c.id}>
-                                <div className={styles.cardTopLine} />
-                                <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.cardTitle}>
-                                    {c.title}
-                                </Link>
-                                <p className={styles.summary}>{c.summary || t('collections_page.no_summary')}</p>
-                                <div className={styles.meta}>
-                                    <span>{t('collections_page.items_count', { count: c.item_count || 0 })}</span>
-                                    <span>{t('collections_page.views_count', { count: c.view_count || 0 })}</span>
-                                </div>
-                                <div className={styles.cardFooter}>
-                                    <Link href={withLocale(locale, `/collections/${c.slug}`)} className={styles.openLink}>
-                                        {t('collections_page.open_collection')}
-                                    </Link>
-                                </div>
+                            <li
+                                className={`${styles.listRow} ${user && c.is_owner ? styles.listRowWithRail : ''}`}
+                                key={c.id}
+                            >
                                 {user && c.is_owner ? (
-                                    <div className={styles.cardActions}>
-                                        <button type="button" onClick={() => openEdit(c)}>
-                                            <Edit2 size={14} /> {t('common.edit')}
+                                    <div className={styles.ownerRail}>
+                                        <button
+                                            type="button"
+                                            className={styles.railEdit}
+                                            onClick={() => openEdit(c)}
+                                            aria-label={t('common.edit')}
+                                        >
+                                            <Edit2 size={18} strokeWidth={2} aria-hidden />
                                         </button>
-                                        <button type="button" onClick={() => removeCollection(c.slug)}>
-                                            <Trash2 size={14} /> {t('common.delete')}
+                                        <button
+                                            type="button"
+                                            className={styles.railDelete}
+                                            onClick={() => setPendingDeleteSlug(c.slug)}
+                                            aria-label={t('common.delete')}
+                                        >
+                                            <Trash2 size={18} strokeWidth={2} aria-hidden />
                                         </button>
                                     </div>
                                 ) : null}
-                            </article>
+                                <div className={styles.listRowMain}>
+                                    <div className={styles.listRowBody}>
+                                        <Link
+                                            href={withLocale(locale, `/collections/${c.slug}`)}
+                                            className={styles.listTitle}
+                                        >
+                                            {c.title}
+                                        </Link>
+                                        <p className={styles.listSummary}>
+                                            {c.summary || t('collections_page.no_summary')}
+                                        </p>
+                                        <div className={styles.listMeta}>
+                                            <span className={styles.metaPill}>
+                                                {t('collections_page.items_count', { count: c.item_count || 0 })}
+                                            </span>
+                                            <span className={styles.metaPill}>
+                                                {t('collections_page.views_count', { count: c.view_count || 0 })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <Link
+                                        href={withLocale(locale, `/collections/${c.slug}`)}
+                                        className={styles.listOpenIcon}
+                                        aria-label={t('collections_page.open_collection')}
+                                    >
+                                        <ChevronRight size={24} strokeWidth={2} aria-hidden />
+                                    </Link>
+                                </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
 
-                    {totalPages > 1 ? (
-                        <nav className={styles.pagination} aria-label={t('collections_page.pagination_aria')}>
-                            <button
-                                type="button"
-                                className={styles.pageBtn}
-                                disabled={currentPage === 1}
-                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                            >
-                                <ChevronLeft size={16} />
-                                {t('collections_page.previous')}
-                            </button>
-                            <span className={styles.pageInfo}>
-                                {t('collections_page.page_indicator', { page: currentPage, total: totalPages })}
-                            </span>
-                            <button
-                                type="button"
-                                className={styles.pageBtn}
-                                disabled={currentPage >= totalPages}
-                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                            >
-                                {t('collections_page.next')}
-                                <ChevronRight size={16} />
-                            </button>
-                        </nav>
-                    ) : null}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalCount={totalCount}
+                        pageSize={pageSize}
+                        onPageChange={setCurrentPage}
+                        alwaysShow
+                        className={styles.paginationBar}
+                    />
                 </>
             )}
+
+            <DeleteCollectionModal
+                open={Boolean(pendingDeleteSlug)}
+                onClose={() => !deleteSubmitting && setPendingDeleteSlug(null)}
+                onConfirm={confirmRemoveCollection}
+                t={t}
+                deleting={deleteSubmitting}
+            />
 
             <CollectionEditorModal
                 open={modalOpen}

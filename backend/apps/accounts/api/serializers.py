@@ -37,9 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
     interests = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False, allow_empty=True
     )
-    working_days = serializers.ListField(
-        child=serializers.IntegerField(), required=False, allow_empty=True
-    )
 
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
@@ -58,14 +55,12 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'password', 'first_name', 'last_name', 
             'phone_number', 'birth_day', 'city', 'summary', 'language', 'interests', 'avatar', 'avatar_compressed', 'cover_image',
             'profession_sub_category', 'profession_sub_category_id',
-            'is_service_open', 'work_hours_start', 'work_hours_end', 'working_days',
             'followers_count', 'following_count', 'is_following',
             'connection_pending_out', 'connection_pending_in',
             'outgoing_connection_request_id', 'incoming_connection_request_id', 'company_slug',
             'highest_education',
             'open_to',
             'is_searchable', 'show_phone_number', 'notify_email_general',
-            'notify_meeting_reminder_1h', 'notify_meeting_reminder_15m',
             'notify_new_follower', 'notify_updates',
             'website_active'
         ]

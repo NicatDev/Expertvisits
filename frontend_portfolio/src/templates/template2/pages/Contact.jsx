@@ -40,7 +40,7 @@ export default function Contact({ user }) {
         } catch (error) {
             setStatus({ 
                 type: 'error', 
-                message: error.response?.data?.detail || "Something went wrong. Please try again." 
+                message: error.response?.data?.detail || t('portfolio.contactFormError') 
             });
         } finally {
             setLoading(false);
@@ -53,7 +53,7 @@ export default function Contact({ user }) {
         <div className={styles.contactLayout}>
             <div className={styles.contactInfo}>
                 <h1 className={styles.pageTitle}>{t('portfolio.letsTalk')} <span>{t('portfolio.together')}</span></h1>
-                <p className={styles.subtitle}>{t('portfolio.interestedWorking')}</p>
+                <p className={styles.subtitle}>{t('portfolio.contactPageIntro')}</p>
 
                 <div className={styles.infoCards}>
                     {profile.email && (
@@ -78,21 +78,21 @@ export default function Contact({ user }) {
             </div>
 
             <div className={styles.formContainer}>
-                <h2 className={styles.formHeader}>{t('portfolio.sendMessage')}</h2>
+                <h2 className={styles.formHeader}>{t('portfolio.contactFormHeading')}</h2>
                 <form onSubmit={handleSubmit} className={styles.contactForm}>
                     <div className={styles.formGroup}>
                         <label>{t('portfolio.yourName')}</label>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="John Doe" />
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder={t('portfolio.placeholderFullName')} />
                     </div>
 
                     <div className={styles.formGroup}>
                         <label>{t('portfolio.yourEmail')}</label>
-                        <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="john@example.com" />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder={t('portfolio.placeholderEmail')} />
                     </div>
 
                     <div className={styles.formGroup}>
                         <label>{t('portfolio.subject')}</label>
-                        <input type="text" name="subject" value={formData.subject} onChange={handleChange} required placeholder="Project Inquiry" />
+                        <input type="text" name="subject" value={formData.subject} onChange={handleChange} required placeholder={t('portfolio.placeholderSubject')} />
                     </div>
 
                     <div className={styles.formGroup}>
@@ -101,7 +101,7 @@ export default function Contact({ user }) {
                     </div>
 
                     <button type="submit" className={styles.submitBtn} disabled={loading}>
-                        {loading ? <><Loader2 size={20} className={styles.spinner}/> {t('portfolio.sending')}</> : <><Send size={20} /> {t('portfolio.sendMsg')}</>}
+                        {loading ? <><Loader2 size={20} className={styles.spinner}/> {t('portfolio.sending')}</> : <><Send size={20} /> {t('portfolio.sendMessage')}</>}
                     </button>
 
                     {status.message && (

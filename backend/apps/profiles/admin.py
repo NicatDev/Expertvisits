@@ -47,9 +47,9 @@ class CertificateAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("user", "title")
+    list_display = ("user", "company", "title")
     search_fields = ("user__username", "title", "description")
-    autocomplete_fields = ("user",)
+    autocomplete_fields = ("user", "company")
 
 
 @admin.register(Project)

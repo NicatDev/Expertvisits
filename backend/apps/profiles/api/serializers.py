@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from apps.business.models import Company
 from apps.profiles.models import Experience, Education, Skill, QuickNote, Language, Certificate, Service, Project
 
 class ExperienceSerializer(serializers.ModelSerializer):
@@ -35,9 +36,23 @@ class CertificateSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'issuing_organization', 'issue_date']
 
 class ServiceSerializer(serializers.ModelSerializer):
+    company = serializers.PrimaryKeyRelatedField(
+        queryset=Company.objects.all(), allow_null=True, required=False
+    )
+
     class Meta:
         model = Service
-        fields = ['id', 'title', 'description', 'steps']
+        fields = ['id', 'title', 'description', 'steps', 'company']
+
+    def validate_company(self, value):
+        if value is None:
+            return value
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            raise serializers.ValidationError('Authentication required.')
+        if value.owner_id != request.user.id:
+            raise serializers.ValidationError('You can only link services to companies you own.')
+        return value
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:

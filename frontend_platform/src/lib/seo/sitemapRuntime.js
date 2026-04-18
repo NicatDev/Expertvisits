@@ -69,11 +69,18 @@ export function expandSitemapEntries(sitemapData, seen) {
             continue;
         }
 
-        if (u === '/experts' || u === '/vacancies' || u === '/companies') {
+        if (
+            u === '/experts' ||
+            u === '/vacancies' ||
+            u === '/companies' ||
+            u === '/collections'
+        ) {
             const pri =
                 u === '/vacancies'
                     ? { priority: 0.85, changefreq: 'hourly' }
-                    : { priority: 0.75, changefreq: 'daily' };
+                    : u === '/collections'
+                      ? { priority: 0.75, changefreq: 'weekly' }
+                      : { priority: 0.75, changefreq: 'daily' };
             LOCALES.forEach((lang) => {
                 pushUnique(
                     urls,

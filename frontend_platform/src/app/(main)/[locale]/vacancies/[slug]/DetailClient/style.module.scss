@@ -270,6 +270,15 @@
     border: 1px solid #f0f0f0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
+    h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        color: #1f1f1f;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
     h3 {
         font-size: 18px;
         font-weight: 700;
@@ -341,6 +350,15 @@
     margin-top: 15px;
     padding-top: 30px;
     border-top: 1px solid #eee;
+
+    h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        color: #1f1f1f;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
 
     h3 {
         font-size: 20px;

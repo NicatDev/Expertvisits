@@ -105,7 +105,7 @@ class UserAdmin(BaseUserAdmin):
         "is_staff",
         "is_active",
     )
-    list_filter = BaseUserAdmin.list_filter + ("is_service_open", "is_searchable")
+    list_filter = BaseUserAdmin.list_filter + ("is_searchable",)
     search_fields = ("username", "email", "first_name", "last_name", "phone_number")
     autocomplete_fields = ("profession_sub_category",)
     filter_horizontal = ("interests", "groups", "user_permissions")
@@ -140,13 +140,9 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
         (
-            "Service & availability",
+            "Locale & visibility",
             {
                 "fields": (
-                    "is_service_open",
-                    "work_hours_start",
-                    "work_hours_end",
-                    "working_days",
                     "timezone",
                     "open_to",
                 ),
@@ -159,8 +155,6 @@ class UserAdmin(BaseUserAdmin):
                     "is_searchable",
                     "show_phone_number",
                     "notify_email_general",
-                    "notify_meeting_reminder_1h",
-                    "notify_meeting_reminder_15m",
                     "notify_new_follower",
                     "notify_updates",
                 ),

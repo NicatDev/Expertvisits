@@ -80,6 +80,13 @@ class QuickNote(models.Model):
 
 class Service(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
+    company = models.ForeignKey(
+        'business.Company',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='profile_services',
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
     steps = models.JSONField(default=list, blank=True)

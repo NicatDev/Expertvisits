@@ -8,8 +8,6 @@ import { useTranslation } from '@/i18n/client';
 import styles from './style.module.scss';
 import { usePublicProfile } from '../../context';
 import FollowListModal from '@/components/advanced/FollowListModal';
-import BookingViewWrapper from '../BookingViewWrapper';
-import { services } from '@/lib/api';
 import { chatApi } from '@/lib/api/chat';
 import { toast } from 'react-toastify';
 
@@ -23,37 +21,9 @@ const ProfileHeader = () => {
     const [showFollowModal, setShowFollowModal] = useState(false);
     const [chatOpening, setChatOpening] = useState(false);
     const [followType, setFollowType] = useState('followers');
-    const [isBookingView, setIsBookingView] = useState(false);
-    const [calendarEvents, setCalendarEvents] = useState([]);
     const handleOpenFollow = (type) => {
         setFollowType(type);
         setShowFollowModal(true);
-    };
-
-    const loadEvents = async () => {
-        if (!profile) return;
-        try {
-            // We can optimize this to only load when booking view is opened?
-            // Or load it if needed. For now let's load when opening modal.
-            const eventsRes = await services.getEvents(profile.id);
-            setCalendarEvents(eventsRes.data);
-        } catch (e) {
-            console.error("Failed to load events", e);
-        }
-    };
-
-    const canAcceptBookings =
-        Boolean(profile?.is_service_open) &&
-        Array.isArray(profile?.working_days) &&
-        profile.working_days.length > 0;
-
-    const openBooking = async () => {
-        if (!canAcceptBookings) {
-            toast.info(t('public_profile.booking_unavailable_toast'));
-            return;
-        }
-        setIsBookingView(true);
-        await loadEvents();
     };
 
     const openChatWithUser = async () => {
@@ -180,23 +150,11 @@ const ProfileHeader = () => {
                                 >
                                     {t('inbox.message_user')}
                                 </Button>
-                                <Button type="default" onClick={openBooking}>
-                                    {t('public_profile.book_now')}
-                                </Button>
                             </>
                         )}
                     </div>
                 </div>
             </div>
-
-            {isBookingView && (
-                <BookingViewWrapper
-                    profile={profile}
-                    events={calendarEvents}
-                    onBack={() => setIsBookingView(false)}
-                    onBookingSuccess={() => loadEvents()} // Reload events
-                />
-            )}
 
             <FollowListModal
                 isOpen={showFollowModal}

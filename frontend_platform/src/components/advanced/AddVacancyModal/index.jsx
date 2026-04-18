@@ -20,7 +20,7 @@ const emptyEmployer = () => ({
     employer_website: '',
 });
 
-const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
+const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockCompanyId = null }) => {
     const { t } = useTranslation('common');
     const { user } = useAuth();
     const [companies, setCompanies] = useState([]);
@@ -50,9 +50,55 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
         if (isOpen) {
             initForm();
         }
-    }, [isOpen, initialData, user?.id]);
+    }, [isOpen, initialData, user?.id, lockCompanyId]);
 
     const initForm = async () => {
+        if (lockCompanyId) {
+            const idStr = String(lockCompanyId);
+            setCompanies([{ id: Number(lockCompanyId), name: '' }]);
+            setPostedAs('company');
+            if (initialData) {
+                setFormData({
+                    company_id: initialData.company?.id ? String(initialData.company.id) : idStr,
+                    title: initialData.title,
+                    sub_category: initialData.sub_category?.id || '',
+                    listing_type: initialData.listing_type,
+                    job_type: initialData.job_type,
+                    work_mode: initialData.work_mode,
+                    location: coerceLocationToValidDisplayName(initialData.location || '') || '',
+                    salary_range: initialData.salary_range || '',
+                    description: initialData.description || '',
+                    expires_at: initialData.expires_at,
+                });
+                setEmployer({
+                    employer_display_name: initialData.employer_display_name || '',
+                    employer_email: initialData.employer_email || '',
+                    employer_phone: initialData.employer_phone || '',
+                    employer_website: initialData.employer_website || '',
+                });
+                setEmployerLogo(null);
+                const pl = initialData.publisher?.logo || initialData.employer_logo;
+                setEmployerLogoPreview(pl || null);
+            } else {
+                setFormData({
+                    company_id: idStr,
+                    title: '',
+                    sub_category: '',
+                    listing_type: 'job',
+                    job_type: 'full-time',
+                    work_mode: 'office',
+                    location: '',
+                    salary_range: '',
+                    description: '',
+                    expires_at: '',
+                });
+                setEmployer(emptyEmployer());
+                setEmployerLogo(null);
+                setEmployerLogoPreview(null);
+            }
+            return;
+        }
+
         const myCompanies = await fetchCompanies();
 
         if (initialData) {
@@ -262,59 +308,63 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null }) => 
         }
     };
 
-    const noCompanies = companies.length === 0;
+    const noCompanies = lockCompanyId ? false : companies.length === 0;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? t('vacancies.add_modal.title_edit') : t('vacancies.add_modal.title_add')}>
             <div className={styles.container}>
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.posting_as')}</h4>
-                    <div className={styles.postingMode} role="radiogroup" aria-label={t('vacancies.add_modal.posting_as')}>
-                        <label className={`${styles.radioOption} ${postedAs === 'company' ? styles.radioActive : ''}`}>
-                            <input
-                                type="radio"
-                                name="posted_as"
-                                value="company"
-                                checked={postedAs === 'company'}
-                                onChange={() => setPostedAs('company')}
-                                disabled={noCompanies}
-                            />
-                            <span>{t('vacancies.add_modal.as_company')}</span>
-                        </label>
-                        <label className={`${styles.radioOption} ${postedAs === 'individual' ? styles.radioActive : ''}`}>
-                            <input
-                                type="radio"
-                                name="posted_as"
-                                value="individual"
-                                checked={postedAs === 'individual'}
-                                onChange={() => setPostedAs('individual')}
-                            />
-                            <span>{t('vacancies.add_modal.as_individual')}</span>
-                        </label>
-                    </div>
-                    {noCompanies && postedAs === 'company' && (
-                        <p className={styles.hintWarn}>{t('vacancies.add_modal.no_company_pick_individual')}</p>
-                    )}
-                    {postedAs === 'company' && !noCompanies && (
-                        <div className={styles.field}>
-                            <label>{t('vacancies.add_modal.company')} *</label>
-                            <select
-                                value={formData.company_id}
-                                onChange={(e) => handleChange('company_id', e.target.value)}
-                                className={styles.select}
-                                style={{ borderColor: errors.company_id ? 'red' : '#e0e0e0' }}
-                            >
-                                {companies.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.company_id && <span className={styles.fieldError}>{errors.company_id}</span>}
-                        </div>
+                    {!lockCompanyId && (
+                        <>
+                            <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.posting_as')}</h4>
+                            <div className={styles.postingMode} role="radiogroup" aria-label={t('vacancies.add_modal.posting_as')}>
+                                <label className={`${styles.radioOption} ${postedAs === 'company' ? styles.radioActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="posted_as"
+                                        value="company"
+                                        checked={postedAs === 'company'}
+                                        onChange={() => setPostedAs('company')}
+                                        disabled={noCompanies}
+                                    />
+                                    <span>{t('vacancies.add_modal.as_company')}</span>
+                                </label>
+                                <label className={`${styles.radioOption} ${postedAs === 'individual' ? styles.radioActive : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="posted_as"
+                                        value="individual"
+                                        checked={postedAs === 'individual'}
+                                        onChange={() => setPostedAs('individual')}
+                                    />
+                                    <span>{t('vacancies.add_modal.as_individual')}</span>
+                                </label>
+                            </div>
+                            {noCompanies && postedAs === 'company' && (
+                                <p className={styles.hintWarn}>{t('vacancies.add_modal.no_company_pick_individual')}</p>
+                            )}
+                            {postedAs === 'company' && !noCompanies && (
+                                <div className={styles.field}>
+                                    <label>{t('vacancies.add_modal.company')} *</label>
+                                    <select
+                                        value={formData.company_id}
+                                        onChange={(e) => handleChange('company_id', e.target.value)}
+                                        className={styles.select}
+                                        style={{ borderColor: errors.company_id ? 'red' : '#e0e0e0' }}
+                                    >
+                                        {companies.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.company_id && <span className={styles.fieldError}>{errors.company_id}</span>}
+                                </div>
+                            )}
+                        </>
                     )}
 
-                    {postedAs === 'individual' && (
+                    {postedAs === 'individual' && !lockCompanyId && (
                         <div className={styles.individualBlock}>
                             <Input
                                 label={

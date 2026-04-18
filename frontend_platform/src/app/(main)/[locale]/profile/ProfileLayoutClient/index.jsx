@@ -81,7 +81,6 @@ export default function ProfileLayoutClient({ children }) {
             { href: p('/profile/services'), label: t('profile.tabs.services') || 'Services', active: activeTab === 'services' },
             { href: p('/profile/projects'), label: t('profile.tabs.projects', 'Projects'), active: activeTab === 'projects' },
             { href: p('/profile/posts'), label: t('profile.tabs.posts'), active: activeTab === 'posts' },
-            { href: p('/profile/booking'), label: t('profile.tabs.booking'), active: activeTab === 'booking' },
             { href: p('/profile/vacancies'), label: t('profile.tabs.vacancies'), active: activeTab === 'vacancies' },
             { href: p('/profile/applications'), label: t('profile.tabs.applications'), active: activeTab === 'applications' },
         ];

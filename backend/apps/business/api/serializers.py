@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from apps.business import models as business_models
+from apps.profiles.models import Service as ProfileService
+from apps.profiles.api.serializers import ServiceSerializer as ProfileServiceSerializer
 
 
 def _absolute_media_url(request, file_field):
@@ -137,13 +139,17 @@ class CompanySerializer(serializers.ModelSerializer):
     who_we_are = WhoWeAreSerializer(read_only=True)
     what_we_do = WhatWeDoSerializer(read_only=True)
     our_values = OurValuesSerializer(read_only=True)
-    services = CompanyServiceSerializer(many=True, read_only=True)
+    services = serializers.SerializerMethodField()
     delete_logo = serializers.BooleanField(write_only=True, required=False)
     delete_cover_image = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
         model = business_models.Company
         fields = '__all__'
+
+    def get_services(self, obj):
+        qs = ProfileService.objects.filter(company=obj).order_by('-id')
+        return ProfileServiceSerializer(qs, many=True, context=self.context).data
 
     def create(self, validated_data):
         validated_data.pop('delete_logo', None)

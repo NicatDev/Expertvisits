@@ -9,8 +9,8 @@ import styles from './style.module.scss';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import EditSectionModal from '../../components/EditSectionModal';
 import EditCompanyModal from '../../components/EditCompanyModal';
-import ServiceDetailModal from '@/components/ui/ServiceDetailModal';
-import VacancyCard from '@/components/advanced/VacancyCard';
+import EntityServicesTab from '@/components/advanced/EntityServicesTab';
+import EntityVacanciesTab from '@/components/advanced/EntityVacanciesTab';
 import { useTranslation } from '@/i18n/client';
 
 export default function CompanyDetailClient({ params }) {
@@ -24,9 +24,7 @@ export default function CompanyDetailClient({ params }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('about');
-    const [selectedService, setSelectedService] = useState(null);
 
-    // Modal State
     // Modal State
     const [isCompanyModalOpen, setCompanyModalOpen] = useState(false);
     const [isSectionModalOpen, setSectionModalOpen] = useState(false);
@@ -388,53 +386,26 @@ export default function CompanyDetailClient({ params }) {
 
             {activeTab === 'services' && (
                 <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2>{t('company_detail.services.title')}</h2>
-                        {isOwner && (
-                            <Button size="sm" variant="ghost" onClick={() => handleAddSection('services')}>
-                                {t('company_detail.sections.add')}
-                            </Button>
-                        )}
-                    </div>
-                    <div className={styles.servicesGrid}>
-                        {company.services?.map(service => (
-                            <div key={service.id} className={styles.serviceCard} onClick={() => setSelectedService(service)} style={{ cursor: 'pointer' }}>
-                                {isOwner && (
-                                    <div className={styles.serviceEdit} onClick={(e) => e.stopPropagation()}>
-                                        <Button size="sm" variant="ghost" onClick={() => handleEditSection(service, 'services')}><Edit size={14} /></Button>
-                                    </div>
-                                )}
-                                {service.image ? (
-                                    <img src={service.image} alt={service.title} />
-                                ) : (
-                                    <div className={styles.servicePlaceholder}>
-                                        {service.title?.charAt(0)}
-                                    </div>
-                                )}
-                                <h3>{service.title}</h3>
-                                <p>
-                                    {service.description.length > 100
-                                        ? <>{service.description.substring(0, 100)}... <span style={{ color: '#1890ff', fontSize: '13px', fontWeight: '500' }}>{t('company_detail.services.read_more')}</span></>
-                                        : service.description}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                    {company.services?.length === 0 && !isOwner && <p style={{ color: '#999' }}>{t('company_detail.services.no_services')}</p>}
-                    {company.services?.length === 0 && isOwner && <p style={{ color: '#999' }}>{t('company_detail.services.add_hint')}</p>}
+                    <EntityServicesTab
+                        scope="company"
+                        isOwner={isOwner}
+                        companyId={company.id}
+                        services={company.services}
+                        onRefresh={loadCompany}
+                        sectionClassName=""
+                    />
                 </div>
             )}
             {activeTab === 'vacancies' && (
                 <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2>{t('company_detail.vacancies.title')}</h2>
-                    </div>
-                    <div className={styles.vacanciesGrid}>
-                        {vacancies.map(v => (
-                            <VacancyCard key={v.id} vacancy={v} />
-                        ))}
-                        {vacancies.length === 0 && <p style={{ color: '#999' }}>{t('company_detail.vacancies.empty')}</p>}
-                    </div>
+                    <EntityVacanciesTab
+                        scope="company"
+                        isOwner={isOwner}
+                        companyId={company.id}
+                        vacancies={vacancies}
+                        onRefresh={() => loadVacancies(company.id)}
+                        sectionClassName=""
+                    />
                 </div>
             )}
 
@@ -460,12 +431,6 @@ export default function CompanyDetailClient({ params }) {
                 title={confirmationModal.title}
                 message={confirmationModal.message}
                 onConfirm={confirmationModal.onConfirm}
-            />
-
-            <ServiceDetailModal
-                isOpen={!!selectedService}
-                service={selectedService}
-                onClose={() => setSelectedService(null)}
             />
 
             {/* Simple Action Modal for Logo */}

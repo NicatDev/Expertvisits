@@ -29,6 +29,7 @@ def _static_url_dicts():
         {'url': '/vacancies', 'lastmod': None, 'changefreq': 'hourly', 'priority': 0.9},
         {'url': '/companies', 'lastmod': None, 'changefreq': 'daily', 'priority': 0.8},
         {'url': '/experts', 'lastmod': None, 'changefreq': 'daily', 'priority': 0.8},
+        {'url': '/collections', 'lastmod': None, 'changefreq': 'weekly', 'priority': 0.75},
     ]
 
 

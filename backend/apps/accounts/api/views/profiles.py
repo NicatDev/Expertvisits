@@ -50,7 +50,9 @@ class UserProfileDetailsAPIView(APIView):
             'skills': SkillSerializer(Skill.objects.filter(user=user), many=True).data,
             'languages': LanguageSerializer(Language.objects.filter(user=user), many=True).data,
             'certificates': CertificateSerializer(Certificate.objects.filter(user=user), many=True).data,
-            'services': ServiceSerializer(Service.objects.filter(user=user), many=True).data,
+            'services': ServiceSerializer(
+                Service.objects.filter(user=user, company__isnull=True), many=True
+            ).data,
         }
         if phone_out is not None:
             data["phone_number"] = phone_out

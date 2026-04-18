@@ -54,7 +54,7 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
             "company__our_values",
             "sub_category",
             "posted_by",
-        ).prefetch_related('company__services').order_by('-posted_at')
+        ).prefetch_related('company__profile_services').order_by('-posted_at')
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
                 is_applied=Exists(
@@ -96,7 +96,7 @@ class VacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             "company__our_values",
             "sub_category",
             "posted_by",
-        ).prefetch_related('company__services')
+        ).prefetch_related('company__profile_services')
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
                 is_applied=Exists(
@@ -141,7 +141,7 @@ class MyVacanciesAPIView(generics.ListAPIView):
             "company__our_values",
             "sub_category",
             "posted_by",
-        ).prefetch_related('company__services').order_by('-posted_at')
+        ).prefetch_related('company__profile_services').order_by('-posted_at')
 
 class VacancyApplicantsAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

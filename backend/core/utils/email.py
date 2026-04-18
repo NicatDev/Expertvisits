@@ -9,8 +9,6 @@ import re
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.utils import timezone as django_timezone
-
 logger = logging.getLogger(__name__)
 
 _BRAND = "Expert Visits"
@@ -74,54 +72,6 @@ def send_email_change_verification_email(email, code):
         [email],
         fail_silently=False,
     )
-
-
-def send_new_booking_request_notification(booking):
-    """Notify the provider when another user submits a booking request."""
-    provider = booking.provider
-    customer = booking.customer
-    to_email = (getattr(provider, "email", None) or "").strip()
-    if not to_email:
-        return
-
-    dt_local = django_timezone.localtime(booking.requested_datetime)
-    dt_str = dt_local.strftime("%Y-%m-%d %H:%M %Z")
-    cust_name = f"{customer.first_name} {customer.last_name}".strip() or customer.username
-    cust_email = (getattr(customer, "email", None) or "").strip() or "(not provided)"
-    note = (booking.note or "").strip() or "—"
-    meet = (booking.meet_link or "").strip() or "—"
-    loc = (booking.location or "").strip() or "—"
-
-    subject = f"{_BRAND} — meeting request from @{customer.username}"
-    message = (
-        f"Hello {provider.first_name or provider.username},\n\n"
-        f"A member requested a meeting with you through your {_BRAND} profile.\n\n"
-        f"Requested time\n"
-        f"  {dt_str}\n"
-        f"  Duration: {booking.duration_minutes} minutes\n\n"
-        f"Details\n"
-        f"  Note: {note}\n"
-        f"  Meeting link: {meet}\n"
-        f"  Location: {loc}\n\n"
-        f"From\n"
-        f"  Name: {cust_name}\n"
-        f"  Username: @{customer.username}\n"
-        f"  Email: {cust_email}\n\n"
-        f"Sign in to {_BRAND} to accept or decline this request.\n"
-        f"{_SITE}\n\n"
-        f"— {_BRAND}\n"
-    )
-
-    try:
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [to_email],
-            fail_silently=False,
-        )
-    except Exception:
-        logger.exception("Failed to send booking request notification to %s", to_email)
 
 
 def send_company_registration_code_email(to_email: str, code: str, company_name: str) -> None:

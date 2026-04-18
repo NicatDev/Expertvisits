@@ -65,14 +65,10 @@ class User(AbstractUser):
     profession_sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, db_index=True, blank=True)
     interests = models.ManyToManyField(SubCategory, related_name="interested_users", blank=True)
     following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
-    is_service_open = models.BooleanField(default=False, db_index=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     avatar_compressed = models.ImageField(upload_to='avatars_compressed/', null=True, blank=True)
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    work_hours_start = models.TimeField(null=True, blank=True)
-    work_hours_end = models.TimeField(null=True, blank=True)
-    working_days = models.JSONField(default=list) # ["Monday", "Tuesday", etc.]
     birth_day = models.DateField(null=True, blank=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
@@ -87,8 +83,6 @@ class User(AbstractUser):
     is_searchable = models.BooleanField(default=True)
     show_phone_number = models.BooleanField(default=False)
     notify_email_general = models.BooleanField(default=False)
-    notify_meeting_reminder_1h = models.BooleanField(default=False)
-    notify_meeting_reminder_15m = models.BooleanField(default=False)
     notify_new_follower = models.BooleanField(default=False)
     notify_updates = models.BooleanField(default=False)
 
