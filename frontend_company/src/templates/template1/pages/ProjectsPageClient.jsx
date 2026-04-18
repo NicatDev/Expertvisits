@@ -49,9 +49,9 @@ export default function ProjectsPageClient({ company }) {
                         >
                             {p.image ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={mediaUrl(p.image)} alt="" className={styles.cardImg} />
+                                <img src={mediaUrl(p.image)} alt="" className={styles.projectCardImg} />
                             ) : (
-                                <div className={styles.cardImg} style={{ background: 'linear-gradient(135deg,#e2e8f0,#cbd5e1)' }} />
+                                <div className={styles.projectCardImgPlaceholder} aria-hidden />
                             )}
                             <div className={styles.cardBody}>
                                 <h2 className={styles.cardTitle}>{p.title}</h2>

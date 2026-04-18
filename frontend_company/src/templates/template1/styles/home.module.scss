@@ -152,6 +152,15 @@
   }
 }
 
+.cardClickable {
+  cursor: pointer;
+}
+
+.cardClickable:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
 .cardTitle {
   font-weight: 700;
   font-size: 1rem;
@@ -180,25 +189,35 @@
   color: #475569;
 }
 
-.vacCard {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  transition: box-shadow 0.25s, border-color 0.25s;
-
-  &:hover {
-    border-color: #bfdbfe;
-    box-shadow: 0 12px 40px -20px rgba(30, 64, 175, 0.35);
-  }
+.sectionVacancies {
+  padding-bottom: 3.75rem;
+  margin-bottom: 1.25rem;
 }
 
-.vacMeta {
-  font-size: 0.8rem;
-  color: #64748b;
+.projectThumb {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  max-height: 120px;
+  margin: 0 auto 0.75rem;
+  object-fit: contain;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(147, 197, 253, 0.88);
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.projectThumbPlaceholder {
+  width: 100%;
+  max-width: 200px;
+  min-height: 76px;
+  margin: 0 auto 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(147, 197, 253, 0.88);
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  box-sizing: border-box;
 }
 
 .empty {

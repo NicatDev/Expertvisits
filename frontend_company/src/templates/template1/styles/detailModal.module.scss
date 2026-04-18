@@ -66,12 +66,18 @@
 }
 
 .img {
+  display: block;
   width: 100%;
-  max-height: 200px;
-  object-fit: cover;
+  max-width: 260px;
+  max-height: 168px;
+  height: auto;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+  padding: 8px;
   border-radius: 12px;
-  margin-bottom: 1rem;
-  background: #e2e8f0;
+  border: 1px solid rgba(147, 197, 253, 0.9);
+  background: #f8fafc;
+  box-sizing: border-box;
 }
 
 .body {

@@ -64,6 +64,8 @@
         "title": "Vacancies",
         "location": "Location",
         "applyOnPlatform": "Sign in on the platform to apply",
+        "viewDetail": "View details",
+        "salaryNegotiable": "Negotiable",
         "empty": "No open vacancies.",
         "typeJob": "Job",
         "typeInternship": "Internship",

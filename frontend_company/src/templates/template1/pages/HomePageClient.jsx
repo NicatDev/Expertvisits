@@ -1,10 +1,16 @@
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/client';
 import { mediaUrl } from '@/lib/mediaUrl';
 import { vacancyDetailUrl } from '@/lib/platformUrls';
+import { formatVacancyDeadline } from '@/lib/vacancyCardFormat';
+import { parseServiceSteps } from '@/lib/parseServiceSteps';
+import DetailModal from '../components/DetailModal';
 import styles from '../styles/home.module.scss';
+import innerStyles from '../styles/innerPage.module.scss';
+import modalStyles from '../styles/detailModal.module.scss';
 
 function formatDate(iso, locale) {
     if (!iso) return '—';
@@ -19,7 +25,7 @@ function formatDate(iso, locale) {
 export default function HomePageClient({ company, companySlug, previewVacancies = [], visibility = {} }) {
     const { t, i18n } = useTranslation();
     const loc = i18n.language || 'az';
-    const v = visibility;
+    const vis = visibility;
 
     const services = company?.services || [];
     const projects = company?.company_projects || [];
@@ -27,6 +33,19 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
 
     const cover = mediaUrl(company?.cover_image);
     const founded = company?.founded_at ? formatDate(company.founded_at, loc) : '—';
+
+    const [openServiceId, setOpenServiceId] = useState(null);
+    const [openProjectId, setOpenProjectId] = useState(null);
+
+    const selectedService = openServiceId != null ? services.find((s) => s.id === openServiceId) : null;
+    const serviceSteps = selectedService ? parseServiceSteps(selectedService.steps) : [];
+
+    const selectedProject = openProjectId != null ? projects.find((p) => p.id === openProjectId) : null;
+
+    const listingLabel = (lt) => {
+        if (lt === 'internship') return t('vacancies.typeInternship');
+        return t('vacancies.typeJob');
+    };
 
     return (
         <>
@@ -52,7 +71,7 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                             <div className={styles.statLabel}>{t('home.teamSize')}</div>
                             <div className={styles.statValue}>{company?.company_size || '—'}</div>
                         </div>
-                        {v.show_email_on_site ? (
+                        {vis.show_email_on_site ? (
                             <div className={styles.stat}>
                                 <div className={styles.statLabel}>{t('home.email')}</div>
                                 <div className={styles.statValue} style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>
@@ -66,7 +85,7 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                                 </div>
                             </div>
                         ) : null}
-                        {v.show_phone_on_site ? (
+                        {vis.show_phone_on_site ? (
                             <div className={styles.stat}>
                                 <div className={styles.statLabel}>{t('home.phone')}</div>
                                 <div className={styles.statValue} style={{ fontSize: '0.85rem' }}>{company?.phone || '—'}</div>
@@ -76,41 +95,75 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                 </div>
             </section>
 
-            {services.length > 0 && v.services_on_home ? (
+            {services.length > 0 && vis.services_on_home ? (
                 <section className={styles.section}>
                     <div className={styles.sectionHead}>
                         <h2 className={styles.sectionTitle}>{t('home.servicesPreview')}</h2>
-                        {v.services_page ? (
+                        {vis.services_page ? (
                             <Link href={`/${companySlug}/services`} className={styles.link}>{t('home.viewAll')} →</Link>
                         ) : null}
                     </div>
                     <div className={styles.grid3}>
                         {services.slice(0, 3).map((s) => (
-                            <article key={s.id} className={styles.card}>
+                            <article
+                                key={s.id}
+                                className={`${styles.card} ${styles.cardClickable}`}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => setOpenServiceId(s.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        setOpenServiceId(s.id);
+                                    }
+                                }}
+                            >
                                 <h3 className={styles.cardTitle}>{s.title}</h3>
                                 <p className={styles.cardBody}>{(s.description || '').slice(0, 180)}{(s.description || '').length > 180 ? '…' : ''}</p>
+                                <span className={styles.link} style={{ pointerEvents: 'none', fontSize: '0.8rem' }}>
+                                    {t('services.openDetail')} →
+                                </span>
                             </article>
                         ))}
                     </div>
                 </section>
             ) : null}
 
-            {projects.length > 0 && v.projects_on_home ? (
+            {projects.length > 0 && vis.projects_on_home ? (
                 <section className={styles.section} style={{ background: '#eef2f7', margin: 0, maxWidth: 'none', paddingLeft: '1.25rem', paddingRight: '1.25rem' }}>
                     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '3rem 0' }}>
                         <div className={styles.sectionHead}>
                             <h2 className={styles.sectionTitle}>{t('home.projectsPreview')}</h2>
-                            {v.projects_page ? (
+                            {vis.projects_page ? (
                                 <Link href={`/${companySlug}/projects`} className={styles.link}>{t('home.viewAll')} →</Link>
                             ) : null}
                         </div>
                         <div className={styles.grid3}>
                             {projects.slice(0, 3).map((p) => (
-                                <article key={p.id} className={styles.card}>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    {p.image ? <img src={mediaUrl(p.image)} alt="" style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 10, marginBottom: 10 }} /> : null}
+                                <article
+                                    key={p.id}
+                                    className={`${styles.card} ${styles.cardClickable}`}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => setOpenProjectId(p.id)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setOpenProjectId(p.id);
+                                        }
+                                    }}
+                                >
+                                    {p.image ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={mediaUrl(p.image)} alt="" className={styles.projectThumb} />
+                                    ) : (
+                                        <div className={styles.projectThumbPlaceholder} aria-hidden />
+                                    )}
                                     <h3 className={styles.cardTitle}>{p.title}</h3>
                                     <p className={styles.cardBody}>{(p.description || '').slice(0, 120)}{(p.description || '').length > 120 ? '…' : ''}</p>
+                                    <span className={styles.link} style={{ pointerEvents: 'none', fontSize: '0.8rem' }}>
+                                        {t('projects.openDetail')} →
+                                    </span>
                                 </article>
                             ))}
                         </div>
@@ -118,11 +171,11 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                 </section>
             ) : null}
 
-            {partners.length > 0 && v.partners_on_home ? (
+            {partners.length > 0 && vis.partners_on_home ? (
                 <section className={styles.section}>
                     <div className={styles.sectionHead}>
                         <h2 className={styles.sectionTitle}>{t('home.partnersPreview')}</h2>
-                        {v.partners_page ? (
+                        {vis.partners_page ? (
                             <Link href={`/${companySlug}/partners`} className={styles.link}>{t('home.viewAll')} →</Link>
                         ) : null}
                     </div>
@@ -142,27 +195,99 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
                 </section>
             ) : null}
 
-            {previewVacancies.length > 0 && v.vacancies_on_home ? (
-                <section className={styles.section} style={{ background: '#fff' }}>
+            {previewVacancies.length > 0 && vis.vacancies_on_home ? (
+                <section className={`${styles.section} ${styles.sectionVacancies}`} style={{ background: '#fff' }}>
                     <div className={styles.sectionHead}>
                         <h2 className={styles.sectionTitle}>{t('home.vacanciesPreview')}</h2>
-                        {v.vacancies_page ? (
+                        {vis.vacancies_page ? (
                             <Link href={`/${companySlug}/vacancies`} className={styles.link}>{t('home.viewAll')} →</Link>
                         ) : null}
                     </div>
                     <div className={styles.grid3}>
-                        {previewVacancies.slice(0, 3).map((v) => (
-                            <article key={v.id} className={styles.vacCard}>
-                                <h3 className={styles.cardTitle}>{v.title}</h3>
-                                <div className={styles.vacMeta}>{v.location} · {v.job_type}</div>
-                                <a href={vacancyDetailUrl(v.slug, loc)} target="_blank" rel="noopener noreferrer" className={styles.link}>
-                                    {t('vacancies.applyOnPlatform')} →
-                                </a>
+                        {previewVacancies.slice(0, 3).map((vac) => (
+                            <article key={vac.id} className={innerStyles.vacCard}>
+                                <div className={innerStyles.vacCardInner}>
+                                    <div className={innerStyles.vacCardText}>
+                                        <div className={innerStyles.vacTitle}>{vac.title}</div>
+                                        <div className={innerStyles.vacCompactLines}>
+                                            <div>{vac.location || '—'}</div>
+                                            <div>
+                                                {listingLabel(vac.listing_type)}
+                                                {' · '}
+                                                {vac.job_type}
+                                                {' · '}
+                                                {vac.work_mode}
+                                            </div>
+                                            <div>{vac.salary_range?.trim() || t('vacancies.salaryNegotiable')}</div>
+                                            {vac.expires_at ? (
+                                                <div>
+                                                    {t('vacancies.expires')}: {formatVacancyDeadline(vac.expires_at)}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={vacancyDetailUrl(vac.slug, loc)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={innerStyles.vacBtn}
+                                    >
+                                        {t('vacancies.viewDetail')}
+                                    </a>
+                                </div>
                             </article>
                         ))}
                     </div>
                 </section>
             ) : null}
+
+            <DetailModal
+                open={Boolean(selectedService)}
+                onClose={() => setOpenServiceId(null)}
+                title={selectedService?.title}
+            >
+                {selectedService ? (
+                    <>
+                        <div className={modalStyles.body}>{selectedService.description || ''}</div>
+                        {serviceSteps.length > 0 ? (
+                            <ul className={modalStyles.steps}>
+                                {serviceSteps.map((st, i) => (
+                                    <li key={i}>{typeof st === 'string' ? st : st?.text || JSON.stringify(st)}</li>
+                                ))}
+                            </ul>
+                        ) : null}
+                    </>
+                ) : null}
+            </DetailModal>
+
+            <DetailModal
+                open={Boolean(selectedProject)}
+                onClose={() => setOpenProjectId(null)}
+                title={selectedProject?.title}
+            >
+                {selectedProject ? (
+                    <>
+                        {selectedProject.date ? (
+                            <div className={modalStyles.meta}>{formatDate(selectedProject.date, loc)}</div>
+                        ) : null}
+                        {selectedProject.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={mediaUrl(selectedProject.image)} alt="" className={modalStyles.img} />
+                        ) : null}
+                        <div className={modalStyles.body}>{selectedProject.description || ''}</div>
+                        {selectedProject.url ? (
+                            <a
+                                href={selectedProject.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={modalStyles.ext}
+                            >
+                                {t('projects.visit')} →
+                            </a>
+                        ) : null}
+                    </>
+                ) : null}
+            </DetailModal>
         </>
     );
 }
