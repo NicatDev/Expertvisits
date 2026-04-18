@@ -190,8 +190,16 @@
 }
 
 .sectionVacancies {
-  padding-bottom: 3.75rem;
+  background: rgb(238, 242, 247);
+  margin: 0;
+  max-width: none;
+  padding: 3rem 1.25rem 3.75rem;
   margin-bottom: 1.25rem;
+}
+
+.sectionVacanciesInner {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .projectThumb {

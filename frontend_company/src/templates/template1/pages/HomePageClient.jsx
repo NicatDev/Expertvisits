@@ -4,12 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/client';
 import { mediaUrl } from '@/lib/mediaUrl';
-import { vacancyDetailUrl } from '@/lib/platformUrls';
-import { formatVacancyDeadline } from '@/lib/vacancyCardFormat';
 import { parseServiceSteps } from '@/lib/parseServiceSteps';
 import DetailModal from '../components/DetailModal';
+import VacancyCard from '../components/VacancyCard';
 import styles from '../styles/home.module.scss';
-import innerStyles from '../styles/innerPage.module.scss';
 import modalStyles from '../styles/detailModal.module.scss';
 
 function formatDate(iso, locale) {
@@ -41,11 +39,6 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
     const serviceSteps = selectedService ? parseServiceSteps(selectedService.steps) : [];
 
     const selectedProject = openProjectId != null ? projects.find((p) => p.id === openProjectId) : null;
-
-    const listingLabel = (lt) => {
-        if (lt === 'internship') return t('vacancies.typeInternship');
-        return t('vacancies.typeJob');
-    };
 
     return (
         <>
@@ -196,47 +189,19 @@ export default function HomePageClient({ company, companySlug, previewVacancies 
             ) : null}
 
             {previewVacancies.length > 0 && vis.vacancies_on_home ? (
-                <section className={`${styles.section} ${styles.sectionVacancies}`} style={{ background: '#fff' }}>
-                    <div className={styles.sectionHead}>
-                        <h2 className={styles.sectionTitle}>{t('home.vacanciesPreview')}</h2>
-                        {vis.vacancies_page ? (
-                            <Link href={`/${companySlug}/vacancies`} className={styles.link}>{t('home.viewAll')} →</Link>
-                        ) : null}
-                    </div>
-                    <div className={styles.grid3}>
-                        {previewVacancies.slice(0, 3).map((vac) => (
-                            <article key={vac.id} className={innerStyles.vacCard}>
-                                <div className={innerStyles.vacCardInner}>
-                                    <div className={innerStyles.vacCardText}>
-                                        <div className={innerStyles.vacTitle}>{vac.title}</div>
-                                        <div className={innerStyles.vacCompactLines}>
-                                            <div>{vac.location || '—'}</div>
-                                            <div>
-                                                {listingLabel(vac.listing_type)}
-                                                {' · '}
-                                                {vac.job_type}
-                                                {' · '}
-                                                {vac.work_mode}
-                                            </div>
-                                            <div>{vac.salary_range?.trim() || t('vacancies.salaryNegotiable')}</div>
-                                            {vac.expires_at ? (
-                                                <div>
-                                                    {t('vacancies.expires')}: {formatVacancyDeadline(vac.expires_at)}
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    </div>
-                                    <a
-                                        href={vacancyDetailUrl(vac.slug, loc)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={innerStyles.vacBtn}
-                                    >
-                                        {t('vacancies.viewDetail')}
-                                    </a>
-                                </div>
-                            </article>
-                        ))}
+                <section className={styles.sectionVacancies}>
+                    <div className={styles.sectionVacanciesInner}>
+                        <div className={styles.sectionHead}>
+                            <h2 className={styles.sectionTitle}>{t('home.vacanciesPreview')}</h2>
+                            {vis.vacancies_page ? (
+                                <Link href={`/${companySlug}/vacancies`} className={styles.link}>{t('home.viewAll')} →</Link>
+                            ) : null}
+                        </div>
+                        <div className={styles.grid3}>
+                            {previewVacancies.slice(0, 3).map((vac) => (
+                                <VacancyCard key={vac.id} vac={vac} locale={loc} />
+                            ))}
+                        </div>
                     </div>
                 </section>
             ) : null}
