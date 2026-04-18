@@ -87,7 +87,6 @@ export default function CompanyWebsitePageClient({ params }) {
     const loadWebsiteState = useCallback(async () => {
         const { data } = await business.getCompanyWebsite(slug);
         setSectionVisibility(mergeCompanyWebsiteVisibility(data?.section_visibility));
-        setTemplateLabel((data?.template_label || '').trim());
         const active = Boolean(data?.is_active);
         setIsActive(active);
         const pub = (data?.public_url || '').trim();
@@ -344,6 +343,9 @@ export default function CompanyWebsitePageClient({ params }) {
         ['partners_page', 'company_website.sec_partners_page'],
         ['vacancies_on_home', 'company_website.sec_vacancies_home'],
         ['vacancies_page', 'company_website.sec_vacancies_page'],
+        ['contact_page', 'company_website.sec_contact_page'],
+        ['show_phone_on_site', 'company_website.sec_show_phone'],
+        ['show_email_on_site', 'company_website.sec_show_email'],
     ];
 
     return (
@@ -461,34 +463,6 @@ export default function CompanyWebsitePageClient({ params }) {
                                             disabled={isSectionToggleDisabled(key, checked)}
                                             onChange={(e) =>
                                                 handleSectionToggle(key, e.target.checked)
-                                            }
-                                        />
-                                        <span>{t(labelKey)}</span>
-                                    </label>
-                                );
-                            })}
-                        </div>
-
-                        <div className={pageStyles.sectionToggles} style={{ marginTop: '1.25rem' }}>
-                            <p className={pageStyles.sectionTogglesTitle}>
-                                {t('company_website.contact_display_title')}
-                            </p>
-                            {[
-                                ['contact_page', 'company_website.sec_contact_page'],
-                                ['show_phone_on_site', 'company_website.sec_show_phone'],
-                                ['show_email_on_site', 'company_website.sec_show_email'],
-                            ].map(([key, labelKey]) => {
-                                const checked = Boolean(sectionVisibility[key]);
-                                return (
-                                    <label key={key} className={pageStyles.toggleRow}>
-                                        <input
-                                            type="checkbox"
-                                            checked={checked}
-                                            onChange={(e) =>
-                                                setSectionVisibility((prev) => ({
-                                                    ...prev,
-                                                    [key]: e.target.checked,
-                                                }))
                                             }
                                         />
                                         <span>{t(labelKey)}</span>
