@@ -7,7 +7,7 @@ from apps.business.company_website_visibility import (
 from apps.profiles.models import Service as ProfileService
 from apps.profiles.api.serializers import (
     ServiceSerializer as ProfileServiceSerializer,
-    ProjectSerializer,
+    ProjectSerializer as ProfileProjectSerializer,
 )
 
 
@@ -233,7 +233,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
     def get_company_projects(self, obj):
         qs = obj.company_projects.all().order_by('-date')
-        return ProjectSerializer(qs, many=True, context=self.context).data
+        return ProfileProjectSerializer(qs, many=True, context=self.context).data
 
     def get_partners(self, obj):
         qs = business_models.CompanyPartnerCard.objects.filter(
@@ -375,7 +375,7 @@ class VacancySerializer(serializers.ModelSerializer):
         attrs["posted_as"] = posted_as
         return attrs
 
-class ProjectSerializer(serializers.ModelSerializer):
+class OngoingProjectSerializer(serializers.ModelSerializer):
     creator = serializers.StringRelatedField(read_only=True)
 
     class Meta:
