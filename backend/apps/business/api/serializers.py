@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from apps.business import models as business_models
 from apps.profiles.models import Service as ProfileService
-from apps.profiles.api.serializers import ServiceSerializer as ProfileServiceSerializer
+from apps.profiles.api.serializers import (
+    ServiceSerializer as ProfileServiceSerializer,
+    ProjectSerializer,
+)
 
 
 def _absolute_media_url(request, file_field):
@@ -64,55 +67,53 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
         }
 
 class WhoWeAreSerializer(serializers.ModelSerializer):
-    delete_image = serializers.BooleanField(write_only=True, required=False)
+    """`title` kept on model for DB compatibility; API is description-only."""
 
     class Meta:
         model = business_models.WhoWeAre
-        fields = '__all__'
+        fields = ('id', 'company', 'description', 'created_at')
+        read_only_fields = ('created_at',)
 
     def create(self, validated_data):
-        validated_data.pop('delete_image', None)
-        return super().create(validated_data)
+        return business_models.WhoWeAre.objects.create(title='', **validated_data)
 
     def update(self, instance, validated_data):
-        delete_image = validated_data.pop('delete_image', False)
-        if delete_image:
-            instance.image = None
-        return super().update(instance, validated_data)
+        instance = super().update(instance, validated_data)
+        instance.title = ''
+        instance.save(update_fields=['title'])
+        return instance
+
 
 class WhatWeDoSerializer(serializers.ModelSerializer):
-    delete_image = serializers.BooleanField(write_only=True, required=False)
-
     class Meta:
         model = business_models.WhatWeDo
-        fields = '__all__'
+        fields = ('id', 'company', 'description', 'created_at')
+        read_only_fields = ('created_at',)
 
     def create(self, validated_data):
-        validated_data.pop('delete_image', None)
-        return super().create(validated_data)
+        return business_models.WhatWeDo.objects.create(title='', **validated_data)
 
     def update(self, instance, validated_data):
-        delete_image = validated_data.pop('delete_image', False)
-        if delete_image:
-            instance.image = None
-        return super().update(instance, validated_data)
+        instance = super().update(instance, validated_data)
+        instance.title = ''
+        instance.save(update_fields=['title'])
+        return instance
+
 
 class OurValuesSerializer(serializers.ModelSerializer):
-    delete_image = serializers.BooleanField(write_only=True, required=False)
-
     class Meta:
         model = business_models.OurValues
-        fields = '__all__'
+        fields = ('id', 'company', 'description', 'created_at')
+        read_only_fields = ('created_at',)
 
     def create(self, validated_data):
-        validated_data.pop('delete_image', None)
-        return super().create(validated_data)
+        return business_models.OurValues.objects.create(title='', **validated_data)
 
     def update(self, instance, validated_data):
-        delete_image = validated_data.pop('delete_image', False)
-        if delete_image:
-            instance.image = None
-        return super().update(instance, validated_data)
+        instance = super().update(instance, validated_data)
+        instance.title = ''
+        instance.save(update_fields=['title'])
+        return instance
 
 class CompanyServiceSerializer(serializers.ModelSerializer):
     delete_image = serializers.BooleanField(write_only=True, required=False)
@@ -140,6 +141,7 @@ class CompanySerializer(serializers.ModelSerializer):
     what_we_do = WhatWeDoSerializer(read_only=True)
     our_values = OurValuesSerializer(read_only=True)
     services = serializers.SerializerMethodField()
+    company_projects = serializers.SerializerMethodField()
     delete_logo = serializers.BooleanField(write_only=True, required=False)
     delete_cover_image = serializers.BooleanField(write_only=True, required=False)
 
@@ -150,6 +152,10 @@ class CompanySerializer(serializers.ModelSerializer):
     def get_services(self, obj):
         qs = ProfileService.objects.filter(company=obj).order_by('-id')
         return ProfileServiceSerializer(qs, many=True, context=self.context).data
+
+    def get_company_projects(self, obj):
+        qs = obj.company_projects.all().order_by('-date')
+        return ProjectSerializer(qs, many=True, context=self.context).data
 
     def create(self, validated_data):
         validated_data.pop('delete_logo', None)

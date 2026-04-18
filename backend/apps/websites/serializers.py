@@ -73,7 +73,7 @@ class UserWebsiteSerializer(serializers.ModelSerializer):
         return merge_section_visibility(obj.section_visibility or {})
 
     def get_projects(self, obj):
-        qs = obj.user.projects.all().order_by('-date')
+        qs = obj.user.projects.filter(company__isnull=True).order_by('-date')
         return ProjectSerializer(qs, many=True).data
 
     def get_services(self, obj):

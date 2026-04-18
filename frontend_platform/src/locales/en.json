@@ -740,6 +740,7 @@
             "about": "About",
             "services": "Services",
             "vacancies": "Vacancies",
+            "projects": "Projects",
             "posts": "Posts"
         },
         "info": {
@@ -758,6 +759,24 @@
             "our_values": "Our Values",
             "add": "+ Add",
             "add_placeholder": "Add \"{{section}}\" section"
+        },
+        "section_modal": {
+            "text_label": "Text",
+            "save": "Save",
+            "cancel": "Cancel",
+            "delete": "Delete section",
+            "delete_confirm": "Delete this section? This cannot be undone.",
+            "saving": "Saving...",
+            "add": {
+                "who_we_are": "Who we are — add content",
+                "what_we_do": "What we do — add content",
+                "our_values": "Our values — add content"
+            },
+            "edit": {
+                "who_we_are": "Who we are — edit",
+                "what_we_do": "What we do — edit",
+                "our_values": "Our values — edit"
+            }
         },
         "services": {
             "title": "Services",

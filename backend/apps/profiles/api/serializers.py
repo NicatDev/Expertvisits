@@ -55,6 +55,20 @@ class ServiceSerializer(serializers.ModelSerializer):
         return value
 
 class ProjectSerializer(serializers.ModelSerializer):
+    company = serializers.PrimaryKeyRelatedField(
+        queryset=Company.objects.all(), allow_null=True, required=False
+    )
+
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'date', 'image', 'url']
+        fields = ['id', 'title', 'description', 'date', 'image', 'url', 'company']
+
+    def validate_company(self, value):
+        if value is None:
+            return value
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            raise serializers.ValidationError('Authentication required.')
+        if value.owner_id != request.user.id:
+            raise serializers.ValidationError('You can only link projects to companies you own.')
+        return value

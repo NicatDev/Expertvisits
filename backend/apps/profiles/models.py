@@ -96,6 +96,13 @@ class Service(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
+    company = models.ForeignKey(
+        'business.Company',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='company_projects',
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
     date = models.DateField()

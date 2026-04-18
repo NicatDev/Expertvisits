@@ -214,30 +214,18 @@ class WhoWeAre(models.Model):
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='who_we_are')
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            old = WhoWeAre.objects.filter(pk=self.pk).first()
-            if old and old.image != self.image:
-                compress_image(self.image)
-        else:
-            compress_image(self.image)
-        super().save(*args, **kwargs)
 
 class WhatWeDo(models.Model):
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='what_we_do')
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class OurValues(models.Model):
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='our_values')
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='company_sections/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class CompanyService(models.Model):

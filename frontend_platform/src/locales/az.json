@@ -629,6 +629,7 @@
             "about": "Haqqında",
             "services": "Xidmətlər",
             "vacancies": "Vakansiyalar",
+            "projects": "Layihələr",
             "posts": "Paylaşımlar"
         },
         "info": {
@@ -647,6 +648,24 @@
             "our_values": "Dəyərlərimiz",
             "add": "+ Əlavə et",
             "add_placeholder": "\"{{section}}\" bölməsi əlavə et"
+        },
+        "section_modal": {
+            "text_label": "Mətn",
+            "save": "Yadda saxla",
+            "cancel": "Ləğv et",
+            "delete": "Bölməni sil",
+            "delete_confirm": "Bu bölməni silmək istədiyinizə əminsiniz? Geri qaytarıla bilməz.",
+            "saving": "Yadda saxlanılır...",
+            "add": {
+                "who_we_are": "Biz kimik — məzmun əlavə et",
+                "what_we_do": "Nə edirik — məzmun əlavə et",
+                "our_values": "Dəyərlərimiz — məzmun əlavə et"
+            },
+            "edit": {
+                "who_we_are": "Biz kimik — redaktə",
+                "what_we_do": "Nə edirik — redaktə",
+                "our_values": "Dəyərlərimiz — redaktə"
+            }
         },
         "services": {
             "title": "Xidmətlər",

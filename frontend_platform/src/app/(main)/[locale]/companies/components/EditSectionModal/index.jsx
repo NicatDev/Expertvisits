@@ -1,75 +1,50 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import Button from '@/components/ui/Button';
-import { X, Upload } from 'lucide-react';
+import { X } from 'lucide-react';
 import styles from './style.module.scss';
 import { business } from '@/lib/api';
+import { useTranslation } from '@/i18n/client';
+
+const SECTION_I18N_KEY = {
+    'who-we-are': 'who_we_are',
+    'what-we-do': 'what_we_do',
+    'our-values': 'our_values',
+};
 
 export default function EditSectionModal({ isOpen, onClose, sectionType, initialData, companyId, onSuccess }) {
-    const [formData, setFormData] = useState({ title: '', description: '', image: null });
+    const { t } = useTranslation('common');
+    const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
-    const [preview, setPreview] = useState(null);
-    const [isImageDeleted, setIsImageDeleted] = useState(false);
+
+    const sectionKey = SECTION_I18N_KEY[sectionType];
+    const modalTitle = useMemo(() => {
+        if (!sectionKey) return '';
+        const mode = initialData ? 'edit' : 'add';
+        return t(`company_detail.section_modal.${mode}.${sectionKey}`);
+    }, [t, sectionKey, initialData]);
 
     useEffect(() => {
         if (isOpen && initialData) {
-            setFormData({
-                title: initialData.title || '',
-                description: initialData.description || '',
-                image: null
-            });
-            setPreview(initialData.image);
-            setIsImageDeleted(false);
+            setDescription(initialData.description || '');
         } else if (isOpen) {
-            setFormData({ title: '', description: '', image: null });
-            setPreview(null);
-            setIsImageDeleted(false);
+            setDescription('');
         }
     }, [isOpen, initialData]);
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({ ...formData, image: file });
-            setPreview(URL.createObjectURL(file));
-            setIsImageDeleted(false);
-        }
-    };
-
-    const handleDeleteImage = () => {
-        setPreview(null);
-        setFormData({ ...formData, image: null });
-        setIsImageDeleted(true);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        const data = new FormData();
-        data.append('company', companyId);
-        data.append('title', formData.title);
-        data.append('description', formData.description);
-
-        if (formData.image instanceof File) {
-            data.append('image', formData.image);
-        }
-
-        if (isImageDeleted) {
-            // Check how backend handles image deletion for sections.
-            // Usually simpler to just send image='' or specific flag if supported.
-            // Assuming generic 'delete_image' or simliar param isn't standard in sections yet,
-            // but for now let's append a flag and see if backend supports it OR
-            // standard DRF behavior: if image is not required, sending empty value might work, but multipart usually requires file.
-            // Let's assume clear_image param logic or just overwrite.
-            // If the backend doesn't explicitly support 'delete_image', this might fail to clear.
-            // However, typical custom update methods often handle it.
-            // Let's try sending 'image' as empty string if supported by DRF to clear? No, multipart.
-            data.append('delete_image', 'true');
-        }
+        const payload = {
+            company: companyId,
+            description: description.trim(),
+        };
 
         try {
-            let createFunc, updateFunc;
+            let createFunc;
+            let updateFunc;
 
             switch (sectionType) {
                 case 'who-we-are':
@@ -84,104 +59,93 @@ export default function EditSectionModal({ isOpen, onClose, sectionType, initial
                     createFunc = business.createOurValue;
                     updateFunc = business.updateOurValue;
                     break;
-                case 'services':
-                    createFunc = business.createService;
-                    updateFunc = business.updateService;
-                    break;
+                default:
+                    setLoading(false);
+                    return;
             }
 
             if (initialData?.id) {
-                await updateFunc(initialData.id, data);
+                await updateFunc(initialData.id, payload);
             } else {
-                await createFunc(data);
+                await createFunc(payload);
             }
             onSuccess();
             onClose();
         } catch (error) {
-            console.error("Failed to save section", error);
+            console.error('Failed to save section', error);
         } finally {
             setLoading(false);
         }
     };
 
     const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this section?")) return;
+        if (!window.confirm(t('company_detail.section_modal.delete_confirm'))) return;
         setLoading(true);
         try {
             let deleteFunc;
             switch (sectionType) {
-                case 'who-we-are': deleteFunc = business.deleteWhoWeAre; break;
-                case 'what-we-do': deleteFunc = business.deleteWhatWeDo; break;
-                case 'our-values': deleteFunc = business.deleteOurValue; break;
-                case 'services': deleteFunc = business.deleteService; break;
+                case 'who-we-are':
+                    deleteFunc = business.deleteWhoWeAre;
+                    break;
+                case 'what-we-do':
+                    deleteFunc = business.deleteWhatWeDo;
+                    break;
+                case 'our-values':
+                    deleteFunc = business.deleteOurValue;
+                    break;
+                default:
+                    setLoading(false);
+                    return;
             }
             await deleteFunc(initialData.id);
             onSuccess();
             onClose();
         } catch (error) {
-            console.error("Failed to delete", error);
+            console.error('Failed to delete', error);
+        } finally {
             setLoading(false);
         }
     };
 
-    if (!isOpen) return null;
+    if (!isOpen || !sectionKey) return null;
 
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h2>{initialData ? 'Edit Service' : 'Add Service'}</h2>
-                    <button onClick={onClose} className={styles.closeBtn}><X size={24} /></button>
+                    <h2>{modalTitle}</h2>
+                    <button type="button" onClick={onClose} className={styles.closeBtn} aria-label={t('common.cancel')}>
+                        <X size={24} />
+                    </button>
                 </div>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.field}>
-                        <label>Title</label>
-                        <input
-                            type="text"
-                            required
-                            value={formData.title}
-                            onChange={e => setFormData({ ...formData, title: e.target.value })}
-                        />
-                    </div>
-
-                    <div className={styles.field}>
-                        <label>Description</label>
+                        <label htmlFor="section-body">{t('company_detail.section_modal.text_label')}</label>
                         <textarea
+                            id="section-body"
                             required
-                            rows={5}
-                            value={formData.description}
-                            onChange={e => setFormData({ ...formData, description: e.target.value })}
+                            rows={8}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
-                    </div>
-
-                    <div className={styles.field}>
-                        <label>Image</label>
-                        <div className={styles.imageUpload}>
-                            {preview && (
-                                <div className={styles.previewContainer}>
-                                    <img src={preview} alt="Preview" className={styles.preview} />
-                                    <button type="button" onClick={handleDeleteImage} className={styles.deleteFileBtn}>
-                                        <X size={14} />
-                                    </button>
-                                </div>
-                            )}
-                            <label className={styles.uploadBtn}>
-                                <Upload size={18} /> {preview ? 'Change Image' : 'Choose Image'}
-                                <input type="file" onChange={handleImageChange} accept="image/*" hidden />
-                            </label>
-                        </div>
                     </div>
 
                     <div className={styles.actions}>
                         {initialData?.id && (
-                            <Button type="button" variant="outline" className={styles.deleteBtn} onClick={handleDelete} disabled={loading}>Delete</Button>
+                            <Button type="button" variant="outline" className={styles.deleteBtn} onClick={handleDelete} disabled={loading}>
+                                {t('company_detail.section_modal.delete')}
+                            </Button>
                         )}
-                        <div style={{ flex: 1 }}></div>
-                        <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-                        <Button htmlType="submit" type="primary" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
+                        <div style={{ flex: 1 }} />
+                        <Button type="button" variant="ghost" onClick={onClose}>
+                            {t('company_detail.section_modal.cancel')}
+                        </Button>
+                        <Button htmlType="submit" type="primary" disabled={loading}>
+                            {loading ? t('company_detail.section_modal.saving') : t('company_detail.section_modal.save')}
+                        </Button>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }

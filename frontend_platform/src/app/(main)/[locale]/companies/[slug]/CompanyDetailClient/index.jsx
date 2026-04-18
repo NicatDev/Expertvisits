@@ -11,6 +11,7 @@ import EditSectionModal from '../../components/EditSectionModal';
 import EditCompanyModal from '../../components/EditCompanyModal';
 import EntityServicesTab from '@/components/advanced/EntityServicesTab';
 import EntityVacanciesTab from '@/components/advanced/EntityVacanciesTab';
+import EntityProjectsTab from '@/components/advanced/EntityProjectsTab';
 import { useTranslation } from '@/i18n/client';
 
 export default function CompanyDetailClient({ params }) {
@@ -259,6 +260,7 @@ export default function CompanyDetailClient({ params }) {
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('company_detail.tabs.about')}</button>
                 <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>{t('company_detail.tabs.services')}</button>
                 <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
+                <button className={activeTab === 'projects' ? styles.activeTab : ''} onClick={() => setActiveTab('projects')}>{t('company_detail.tabs.projects')}</button>
             </div>
 
             {/* Content */}
@@ -323,9 +325,7 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.who_we_are ? (
                                 <div className={styles.blockContent}>
-                                    {company.who_we_are.image && <img src={company.who_we_are.image} alt={company.who_we_are.title} />}
-                                    <h3>{company.who_we_are.title}</h3>
-                                    <p>{company.who_we_are.description}</p>
+                                    <p className={styles.sectionBody}>{company.who_we_are.description}</p>
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('who-we-are')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.who_we_are') })}</div>
@@ -346,9 +346,7 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.what_we_do ? (
                                 <div className={styles.blockContent}>
-                                    {company.what_we_do.image && <img src={company.what_we_do.image} alt={company.what_we_do.title} />}
-                                    <h3>{company.what_we_do.title}</h3>
-                                    <p>{company.what_we_do.description}</p>
+                                    <p className={styles.sectionBody}>{company.what_we_do.description}</p>
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('what-we-do')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.what_we_do') })}</div>
@@ -369,9 +367,7 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.our_values ? (
                                 <div className={styles.blockContent}>
-                                    {company.our_values.image && <img src={company.our_values.image} alt={company.our_values.title} />}
-                                    <h3>{company.our_values.title}</h3>
-                                    <p>{company.our_values.description}</p>
+                                    <p className={styles.sectionBody}>{company.our_values.description}</p>
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('our-values')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.our_values') })}</div>
@@ -404,6 +400,18 @@ export default function CompanyDetailClient({ params }) {
                         companyId={company.id}
                         vacancies={vacancies}
                         onRefresh={() => loadVacancies(company.id)}
+                        sectionClassName=""
+                    />
+                </div>
+            )}
+            {activeTab === 'projects' && (
+                <div className={styles.section}>
+                    <EntityProjectsTab
+                        scope="company"
+                        isOwner={isOwner}
+                        companyId={company.id}
+                        projects={company.company_projects}
+                        onRefresh={loadCompany}
                         sectionClassName=""
                     />
                 </div>
