@@ -12,7 +12,8 @@ from apps.business.api.views import (
     WhoWeAreListCreateAPIView, WhoWeAreDetailAPIView,
     WhatWeDoListCreateAPIView, WhatWeDoDetailAPIView,
     OurValuesListCreateAPIView, OurValuesDetailAPIView,
-    CompanyServiceListCreateAPIView, CompanyServiceDetailAPIView
+    CompanyServiceListCreateAPIView, CompanyServiceDetailAPIView,
+    CompanyPartnerCardListCreateAPIView, CompanyPartnerCardDetailAPIView,
 )
 
 urlpatterns = [
@@ -58,4 +59,7 @@ urlpatterns = [
 
     path('services/', CompanyServiceListCreateAPIView.as_view(), name='company-services-list'),
     path('services/<int:pk>/', CompanyServiceDetailAPIView.as_view(), name='company-services-detail'),
+
+    path('partner-cards/', CompanyPartnerCardListCreateAPIView.as_view(), name='company-partner-cards-list'),
+    path('partner-cards/<int:pk>/', CompanyPartnerCardDetailAPIView.as_view(), name='company-partner-cards-detail'),
 ]

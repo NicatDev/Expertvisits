@@ -43,6 +43,11 @@ export const business = {
     updateService: (id, data) => client.patch(`/business/services/${id}/`, data),
     deleteService: (id) => client.delete(`/business/services/${id}/`),
 
+    getPartnerCards: (params) => client.get('/business/partner-cards/', { params }),
+    createPartnerCard: (data) => client.post('/business/partner-cards/', data),
+    updatePartnerCard: (id, data) => client.patch(`/business/partner-cards/${id}/`, data),
+    deletePartnerCard: (id) => client.delete(`/business/partner-cards/${id}/`),
+
     getMyCompanies: () => client.get('/business/companies/?my=true'),
 };
 

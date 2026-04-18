@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, use } from 'react';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { business } from '@/lib/api';
 import { MapPin, Globe, Linkedin, Instagram, Facebook, Edit, Phone, Mail, Award, Users, Target, Briefcase, Camera, Trash2, Edit2 } from 'lucide-react';
@@ -11,7 +11,61 @@ import EditCompanyModal from '../../components/EditCompanyModal';
 import EntityServicesTab from '@/components/advanced/EntityServicesTab';
 import EntityVacanciesTab from '@/components/advanced/EntityVacanciesTab';
 import EntityProjectsTab from '@/components/advanced/EntityProjectsTab';
+import EntityCompanyPartnerCardsTab from '@/components/advanced/EntityCompanyPartnerCardsTab';
 import { useTranslation } from '@/i18n/client';
+
+function ExpandableSectionDescription({ text, sectionStyles, translate }) {
+    const [expanded, setExpanded] = useState(false);
+    const [showToggle, setShowToggle] = useState(false);
+    const pRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const el = pRef.current;
+        if (!text?.trim() || !el) {
+            setShowToggle(false);
+            return;
+        }
+        if (expanded) {
+            setShowToggle(true);
+            return;
+        }
+        const measure = () => {
+            setShowToggle(el.scrollHeight > el.clientHeight + 2);
+        };
+        measure();
+        const ro = new ResizeObserver(measure);
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, [text, expanded]);
+
+    if (!text?.trim()) return null;
+
+    return (
+        <>
+            <p
+                ref={pRef}
+                className={
+                    expanded
+                        ? sectionStyles.sectionBody
+                        : `${sectionStyles.sectionBody} ${sectionStyles.sectionBodyClamped}`.trim()
+                }
+            >
+                {text}
+            </p>
+            {showToggle && (
+                <button
+                    type="button"
+                    className={sectionStyles.readMoreToggle}
+                    onClick={() => setExpanded((v) => !v)}
+                >
+                    {expanded
+                        ? translate('company_detail.sections.read_less')
+                        : translate('company_detail.sections.read_more')}
+                </button>
+            )}
+        </>
+    );
+}
 
 export default function CompanyDetailClient({ params }) {
     const { t } = useTranslation('common');
@@ -256,6 +310,8 @@ export default function CompanyDetailClient({ params }) {
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('company_detail.tabs.about')}</button>
                 <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>{t('company_detail.tabs.services')}</button>
                 <button className={activeTab === 'projects' ? styles.activeTab : ''} onClick={() => setActiveTab('projects')}>{t('company_detail.tabs.projects')}</button>
+                <button className={activeTab === 'collaborators' ? styles.activeTab : ''} onClick={() => setActiveTab('collaborators')}>{t('company_detail.tabs.collaborators')}</button>
+                <button className={activeTab === 'partners' ? styles.activeTab : ''} onClick={() => setActiveTab('partners')}>{t('company_detail.tabs.partners')}</button>
                 <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
             </div>
 
@@ -321,7 +377,11 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.who_we_are ? (
                                 <div className={styles.blockContent}>
-                                    <p className={styles.sectionBody}>{company.who_we_are.description}</p>
+                                    <ExpandableSectionDescription
+                                        text={company.who_we_are.description}
+                                        sectionStyles={styles}
+                                        translate={t}
+                                    />
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('who-we-are')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.who_we_are') })}</div>
@@ -342,7 +402,11 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.what_we_do ? (
                                 <div className={styles.blockContent}>
-                                    <p className={styles.sectionBody}>{company.what_we_do.description}</p>
+                                    <ExpandableSectionDescription
+                                        text={company.what_we_do.description}
+                                        sectionStyles={styles}
+                                        translate={t}
+                                    />
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('what-we-do')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.what_we_do') })}</div>
@@ -363,7 +427,11 @@ export default function CompanyDetailClient({ params }) {
                             </div>
                             {company.our_values ? (
                                 <div className={styles.blockContent}>
-                                    <p className={styles.sectionBody}>{company.our_values.description}</p>
+                                    <ExpandableSectionDescription
+                                        text={company.our_values.description}
+                                        sectionStyles={styles}
+                                        translate={t}
+                                    />
                                 </div>
                             ) : (
                                 <div className={styles.addSectionPlaceholder} onClick={() => handleAddSection('our-values')}>{t('company_detail.sections.add_placeholder', { section: t('company_detail.sections.our_values') })}</div>
@@ -392,6 +460,26 @@ export default function CompanyDetailClient({ params }) {
                     isOwner={isOwner}
                     companyId={company.id}
                     projects={company.company_projects}
+                    onRefresh={loadCompany}
+                    sectionClassName={styles.section}
+                />
+            )}
+            {activeTab === 'collaborators' && (
+                <EntityCompanyPartnerCardsTab
+                    kind="collaborator"
+                    isOwner={isOwner}
+                    companyId={company.id}
+                    items={company.collaborators}
+                    onRefresh={loadCompany}
+                    sectionClassName={styles.section}
+                />
+            )}
+            {activeTab === 'partners' && (
+                <EntityCompanyPartnerCardsTab
+                    kind="partner"
+                    isOwner={isOwner}
+                    companyId={company.id}
+                    items={company.partners}
                     onRefresh={loadCompany}
                     sectionClassName={styles.section}
                 />

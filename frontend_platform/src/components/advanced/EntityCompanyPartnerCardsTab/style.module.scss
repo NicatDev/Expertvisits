@@ -1,0 +1,185 @@
+@import '@/styles/variables.scss';
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+    gap: 16px;
+
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+.card {
+    position: relative;
+    min-height: 168px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+
+    &:hover {
+        border-color: #bfdbfe;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+}
+
+.logoWrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logoPlaceholder {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    padding: 4px;
+    line-height: 1.2;
+}
+
+.title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    width: 100%;
+}
+
+.cardActions {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    gap: 4px;
+}
+
+.iconBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+        background: #f8fafc;
+        color: $primary-color;
+    }
+}
+
+.deleteBtn:hover {
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.addCard {
+    min-height: 168px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        color 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        background: #eff6ff;
+        color: $primary-color;
+    }
+
+    span {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+}
+
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 32px 16px;
+    color: #6b7280;
+    font-size: 0.95rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px dashed #e5e7eb;
+}
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0;
+}
+
+.logoPreview {
+    width: 96px;
+    height: 96px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    object-fit: contain;
+    background: #f8fafc;
+    display: block;
+    margin: 0 auto;
+}

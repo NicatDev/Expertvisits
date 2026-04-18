@@ -16,5 +16,6 @@ from .sections import (
     WhoWeAreListCreateAPIView, WhoWeAreDetailAPIView,
     WhatWeDoListCreateAPIView, WhatWeDoDetailAPIView,
     OurValuesListCreateAPIView, OurValuesDetailAPIView,
-    CompanyServiceListCreateAPIView, CompanyServiceDetailAPIView
+    CompanyServiceListCreateAPIView, CompanyServiceDetailAPIView,
+    CompanyPartnerCardListCreateAPIView, CompanyPartnerCardDetailAPIView,
 )

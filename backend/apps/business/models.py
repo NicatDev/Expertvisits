@@ -243,3 +243,30 @@ class CompanyService(models.Model):
         else:
             compress_image(self.image)
         super().save(*args, **kwargs)
+
+
+class CompanyPartnerCard(models.Model):
+    """Logo + title row on company profile: collaborators (əməkdaşlar) or partners."""
+
+    class Kind(models.TextChoices):
+        COLLABORATOR = "collaborator", "Collaborator"
+        PARTNER = "partner", "Partner"
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="partner_cards")
+    kind = models.CharField(max_length=20, choices=Kind.choices, db_index=True)
+    title = models.CharField(max_length=255)
+    logo = models.ImageField(upload_to="company_partner_logos/", null=True, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+
+    def save(self, *args, **kwargs):
+        if self.logo:
+            if self.pk:
+                old = CompanyPartnerCard.objects.filter(pk=self.pk).first()
+                if old and old.logo != self.logo:
+                    compress_image(self.logo)
+            else:
+                compress_image(self.logo)
+        super().save(*args, **kwargs)

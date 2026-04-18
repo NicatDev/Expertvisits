@@ -630,7 +630,29 @@
             "services": "Xidmətlər",
             "vacancies": "Vakansiyalar",
             "projects": "Layihələr",
+            "collaborators": "Əməkdaşlar",
+            "partners": "Partnyorlar",
             "posts": "Paylaşımlar"
+        },
+        "partner_cards": {
+            "empty": "Hələlik məlumat yoxdur.",
+            "add": "Əlavə et",
+            "add_title": "Yeni əlavə et",
+            "edit_title": "Redaktə et",
+            "edit": "Redaktə",
+            "delete": "Sil",
+            "title_label": "Ad / başlıq",
+            "title_required": "Zəhmət olmasa başlıq daxil edin.",
+            "logo_label": "Logo",
+            "logo_hint": "İstəyə bağlıdır. Kvadrat şəkil daha yaxşı görünür.",
+            "upload_logo": "Logo yüklə",
+            "no_logo": "Logo yoxdur",
+            "saved": "Yadda saxlanıldı.",
+            "save_failed": "Yadda saxlamaq alınmadı.",
+            "deleted": "Silindi.",
+            "delete_failed": "Silmək alınmadı.",
+            "delete_title": "Bu qeydi silək?",
+            "delete_message": "Geri qaytarıla bilməz."
         },
         "info": {
             "title": "Şirkət Məlumatı",
@@ -647,7 +669,9 @@
             "what_we_do": "Nə Edirik",
             "our_values": "Dəyərlərimiz",
             "add": "+ Əlavə et",
-            "add_placeholder": "\"{{section}}\" bölməsi əlavə et"
+            "add_placeholder": "\"{{section}}\" bölməsi əlavə et",
+            "read_more": "Daha çox oxu",
+            "read_less": "Az göstər"
         },
         "section_modal": {
             "text_label": "Mətn",

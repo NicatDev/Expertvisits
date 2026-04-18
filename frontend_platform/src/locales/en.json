@@ -741,7 +741,29 @@
             "services": "Services",
             "vacancies": "Vacancies",
             "projects": "Projects",
+            "collaborators": "Team",
+            "partners": "Partners",
             "posts": "Posts"
+        },
+        "partner_cards": {
+            "empty": "No entries yet.",
+            "add": "Add",
+            "add_title": "Add entry",
+            "edit_title": "Edit entry",
+            "edit": "Edit",
+            "delete": "Remove",
+            "title_label": "Title",
+            "title_required": "Please enter a title.",
+            "logo_label": "Logo",
+            "logo_hint": "Optional. Square image works best.",
+            "upload_logo": "Upload logo",
+            "no_logo": "No logo",
+            "saved": "Saved.",
+            "save_failed": "Could not save.",
+            "deleted": "Removed.",
+            "delete_failed": "Could not remove.",
+            "delete_title": "Remove this entry?",
+            "delete_message": "This cannot be undone."
         },
         "info": {
             "title": "Company Info",
@@ -758,7 +780,9 @@
             "what_we_do": "What We Do",
             "our_values": "Our Values",
             "add": "+ Add",
-            "add_placeholder": "Add \"{{section}}\" section"
+            "add_placeholder": "Add \"{{section}}\" section",
+            "read_more": "Read more",
+            "read_less": "Show less"
         },
         "section_modal": {
             "text_label": "Text",

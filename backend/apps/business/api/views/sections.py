@@ -1,7 +1,8 @@
 from rest_framework import generics, permissions, serializers
-from apps.business.models import WhoWeAre, WhatWeDo, OurValues, CompanyService
+from apps.business.models import WhoWeAre, WhatWeDo, OurValues, CompanyService, CompanyPartnerCard
 from apps.business.api.serializers import (
-    WhoWeAreSerializer, WhatWeDoSerializer, OurValuesSerializer, CompanyServiceSerializer
+    WhoWeAreSerializer, WhatWeDoSerializer, OurValuesSerializer, CompanyServiceSerializer,
+    CompanyPartnerCardSerializer,
 )
 
 class BaseSectionListCreateAPIView(generics.ListCreateAPIView):
@@ -59,3 +60,24 @@ class CompanyServiceListCreateAPIView(BaseSectionListCreateAPIView):
 class CompanyServiceDetailAPIView(BaseSectionDetailAPIView):
     queryset = CompanyService.objects.select_related('company')
     serializer_class = CompanyServiceSerializer
+
+
+class CompanyPartnerCardListCreateAPIView(BaseSectionListCreateAPIView):
+    queryset = CompanyPartnerCard.objects.select_related('company')
+    serializer_class = CompanyPartnerCardSerializer
+
+    def get_queryset(self):
+        company_id = self.request.query_params.get('company')
+        kind = self.request.query_params.get('kind')
+        qs = CompanyPartnerCard.objects.select_related('company')
+        if not company_id:
+            return qs.none()
+        qs = qs.filter(company_id=company_id)
+        if kind in ('collaborator', 'partner'):
+            qs = qs.filter(kind=kind)
+        return qs.order_by('sort_order', 'id')
+
+
+class CompanyPartnerCardDetailAPIView(BaseSectionDetailAPIView):
+    queryset = CompanyPartnerCard.objects.select_related('company')
+    serializer_class = CompanyPartnerCardSerializer

@@ -732,7 +732,29 @@
             "services": "Услуги",
             "vacancies": "Вакансии",
             "projects": "Проекты",
+            "collaborators": "Команда",
+            "partners": "Партнёры",
             "posts": "Публикации"
+        },
+        "partner_cards": {
+            "empty": "Пока нет записей.",
+            "add": "Добавить",
+            "add_title": "Добавить запись",
+            "edit_title": "Редактировать",
+            "edit": "Изменить",
+            "delete": "Удалить",
+            "title_label": "Название",
+            "title_required": "Введите название.",
+            "logo_label": "Логотип",
+            "logo_hint": "Необязательно. Лучше квадратное изображение.",
+            "upload_logo": "Загрузить логотип",
+            "no_logo": "Нет логотипа",
+            "saved": "Сохранено.",
+            "save_failed": "Не удалось сохранить.",
+            "deleted": "Удалено.",
+            "delete_failed": "Не удалось удалить.",
+            "delete_title": "Удалить запись?",
+            "delete_message": "Действие нельзя отменить."
         },
         "info": {
             "title": "Информация о компании",
@@ -749,7 +771,9 @@
             "what_we_do": "Что мы делаем",
             "our_values": "Наши ценности",
             "add": "+ Добавить",
-            "add_placeholder": "Добавить раздел \"{{section}}\""
+            "add_placeholder": "Добавить раздел \"{{section}}\"",
+            "read_more": "Читать далее",
+            "read_less": "Свернуть"
         },
         "section_modal": {
             "text_label": "Текст",

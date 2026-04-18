@@ -132,6 +132,33 @@ class CompanyServiceSerializer(serializers.ModelSerializer):
             instance.image = None
         return super().update(instance, validated_data)
 
+
+class CompanyPartnerCardSerializer(serializers.ModelSerializer):
+    delete_logo = serializers.BooleanField(write_only=True, required=False)
+
+    class Meta:
+        model = business_models.CompanyPartnerCard
+        fields = ('id', 'company', 'kind', 'title', 'logo', 'sort_order', 'delete_logo')
+        read_only_fields = ('id',)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.pop('company', None)
+        request = self.context.get('request')
+        data['logo'] = _absolute_media_url(request, instance.logo)
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop('delete_logo', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        delete_logo = validated_data.pop('delete_logo', False)
+        if delete_logo:
+            instance.logo = None
+        return super().update(instance, validated_data)
+
+
 class CompanySerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField(read_only=True)
     owner_id = serializers.PrimaryKeyRelatedField(source='owner', read_only=True)
@@ -142,6 +169,8 @@ class CompanySerializer(serializers.ModelSerializer):
     our_values = OurValuesSerializer(read_only=True)
     services = serializers.SerializerMethodField()
     company_projects = serializers.SerializerMethodField()
+    collaborators = serializers.SerializerMethodField()
+    partners = serializers.SerializerMethodField()
     delete_logo = serializers.BooleanField(write_only=True, required=False)
     delete_cover_image = serializers.BooleanField(write_only=True, required=False)
 
@@ -156,6 +185,18 @@ class CompanySerializer(serializers.ModelSerializer):
     def get_company_projects(self, obj):
         qs = obj.company_projects.all().order_by('-date')
         return ProjectSerializer(qs, many=True, context=self.context).data
+
+    def get_collaborators(self, obj):
+        qs = business_models.CompanyPartnerCard.objects.filter(
+            company=obj, kind=business_models.CompanyPartnerCard.Kind.COLLABORATOR
+        )
+        return CompanyPartnerCardSerializer(qs, many=True, context=self.context).data
+
+    def get_partners(self, obj):
+        qs = business_models.CompanyPartnerCard.objects.filter(
+            company=obj, kind=business_models.CompanyPartnerCard.Kind.PARTNER
+        )
+        return CompanyPartnerCardSerializer(qs, many=True, context=self.context).data
 
     def create(self, validated_data):
         validated_data.pop('delete_logo', None)
