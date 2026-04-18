@@ -18,6 +18,7 @@ import styles from './style.module.scss';
  * @param {Array} items — company.partners
  * @param {() => Promise<void>} onRefresh — e.g. loadCompany
  * @param {string} sectionClassName
+ * @param {'partner'} [kind] — sent to API; defaults to partner (optional for legacy callers)
  */
 export default function EntityCompanyPartnerCardsTab({
     isOwner,
@@ -25,6 +26,7 @@ export default function EntityCompanyPartnerCardsTab({
     items: itemsProp,
     onRefresh,
     sectionClassName = '',
+    kind = 'partner',
 }) {
     const { t } = useTranslation('common');
     const items = Array.isArray(itemsProp) ? itemsProp : [];
@@ -80,7 +82,7 @@ export default function EntityCompanyPartnerCardsTab({
             const fd = new FormData();
             fd.append('title', trimmed);
             fd.append('company', String(companyId));
-            fd.append('kind', 'partner');
+            fd.append('kind', kind);
             if (logoFile) {
                 fd.append('logo', logoFile);
             } else if (editing && !logoPreview) {

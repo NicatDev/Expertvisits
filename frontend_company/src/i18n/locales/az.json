@@ -1,0 +1,86 @@
+{
+    "landing": {
+        "heroTitle": "Şirkətiniz üçün peşəkar vebsayt",
+        "heroSubtitle": "Expert Visits şirkət profilinizi rəqəmsal ünvanda nümayiş etdirin.",
+        "ctaBtn": "Qeydiyyat",
+        "guideTitle": "Üç addım",
+        "step1Title": "Profil",
+        "step1Desc": "Şirkət məlumatlarınızı platformada yaradın.",
+        "step2Title": "Məzmun",
+        "step2Desc": "Xidmət, layihə və vakansiyaları idarə edin.",
+        "step3Title": "Dərc",
+        "step3Desc": "Şablon ilə /c/unvanınız üzrə dərc edin.",
+        "templatesTitle": "Şablonlar",
+        "templatesDesc": "Bu layihədə hazırda Template 1 aktivdir.",
+        "ctaBtnAlt": "Expert Visits"
+    },
+    "nav": {
+        "about": "Haqqımızda",
+        "services": "Xidmətlər",
+        "projects": "Layihələr",
+        "partners": "Partnyorlar",
+        "vacancies": "Vakansiyalar",
+        "contact": "Əlaqə",
+        "openMenu": "Menyu",
+        "langAz": "AZ",
+        "langEn": "EN"
+    },
+    "home": {
+        "heroBadge": "Rəsmi şirkət səhifəsi",
+        "summary": "Xülasə",
+        "founded": "Təsis tarixi",
+        "teamSize": "İşçi sayı",
+        "email": "E-poçt",
+        "phone": "Telefon",
+        "address": "Ünvan",
+        "website": "Vebsayt",
+        "social": "Sosial şəbəkələr",
+        "servicesPreview": "Xidmətlər",
+        "projectsPreview": "Layihələr",
+        "partnersPreview": "Partnyorlar",
+        "vacanciesPreview": "Vakansiyalar",
+        "viewAll": "Hamısına bax",
+        "noneYet": "Hələ məlumat yoxdur."
+    },
+    "about": {
+        "title": "Haqqımızda",
+        "who": "Biz kimik",
+        "what": "Nə edirik",
+        "values": "Dəyərlərimiz"
+    },
+    "services": {
+        "title": "Xidmətlər"
+    },
+    "projects": {
+        "title": "Layihələr",
+        "visit": "Keçid"
+    },
+    "partners": {
+        "title": "Partnyorlar"
+    },
+    "vacancies": {
+        "title": "Vakansiyalar",
+        "location": "Lokasiya",
+        "applyOnPlatform": "Müraciət üçün platformaya daxil olun",
+        "empty": "Açıq vakansiya yoxdur."
+    },
+    "contact": {
+        "title": "Bizimlə əlaqə",
+        "subtitle": "Mesajınız şirkətin qeydiyyat e-poçtuna göndərilir.",
+        "name": "Ad, soyad",
+        "email": "E-poçtunuz",
+        "subject": "Mövzu",
+        "message": "Mesaj",
+        "submit": "Göndər",
+        "sending": "Göndərilir…",
+        "success": "Mesajınız göndərildi.",
+        "error": "Göndərmək alınmadı. Bir az sonra yenə cəhd edin."
+    },
+    "footer": {
+        "rights": "Bütün hüquqlar qorunur.",
+        "powered": "Expert Visits"
+    },
+    "errors": {
+        "notFound": "Şirkət tapılmadı"
+    }
+}

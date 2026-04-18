@@ -1,0 +1,22 @@
+/** Mirrors backend DEFAULT_COMPANY_WEBSITE_VISIBILITY / merge_company_website_visibility. */
+
+export const DEFAULT_COMPANY_WEBSITE_VISIBILITY = {
+    about_page: true,
+    services_on_home: false,
+    services_page: false,
+    projects_on_home: false,
+    projects_page: false,
+    partners_on_home: false,
+    partners_page: false,
+    vacancies_on_home: false,
+    vacancies_page: false,
+};
+
+export function mergeCompanyWebsiteVisibility(raw) {
+    const out = { ...DEFAULT_COMPANY_WEBSITE_VISIBILITY };
+    if (!raw || typeof raw !== 'object') return out;
+    for (const key of Object.keys(DEFAULT_COMPANY_WEBSITE_VISIBILITY)) {
+        if (key in raw) out[key] = Boolean(raw[key]);
+    }
+    return out;
+}

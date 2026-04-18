@@ -1,9 +1,11 @@
 "use client";
 import React, { useState, useEffect, useLayoutEffect, useRef, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { business } from '@/lib/api';
-import { MapPin, Globe, Linkedin, Instagram, Facebook, Edit, Phone, Mail, Award, Users, Target, Briefcase, Camera, Trash2, Edit2 } from 'lucide-react';
+import { MapPin, Globe, Linkedin, Instagram, Facebook, Edit, Phone, Mail, Award, Users, Target, Briefcase, Camera, Trash2, Edit2, LayoutTemplate } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { useLocalizedPath } from '@/hooks/useLocalePath';
 import styles from './style.module.scss';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import EditSectionModal from '../../components/EditSectionModal';
@@ -71,6 +73,8 @@ export default function CompanyDetailClient({ params }) {
     const { t } = useTranslation('common');
     const resolvedParams = use(params);
     const slug = resolvedParams.slug;
+    const router = useRouter();
+    const companyWebsiteHref = useLocalizedPath(`/companies/${slug}/website`);
 
     const { user } = useAuth();
     const [company, setCompany] = useState(null);
@@ -296,7 +300,14 @@ export default function CompanyDetailClient({ params }) {
                     </div>
 
                     {isOwner && (
-                        <div className={styles.actions}>
+                        <div className={styles.actions} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            <Button
+                                variant="outline"
+                                onClick={() => router.push(companyWebsiteHref)}
+                                icon={<LayoutTemplate size={16} />}
+                            >
+                                {t('company_detail.company_website')}
+                            </Button>
                             <Button variant="outline" onClick={handleEditCompany} icon={<Edit size={16} />}>
                                 {t('company_detail.edit_company')}
                             </Button>

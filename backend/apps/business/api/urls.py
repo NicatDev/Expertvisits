@@ -5,6 +5,8 @@ from apps.business.api.views import (
     CompanyDetailAPIView,
     CompanyRegistrationStartView,
     CompanyRegistrationCompleteView,
+    CompanySiteContactAPIView,
+    CompanyWebsiteManageAPIView,
     VacancyListCreateAPIView, VacancyDetailAPIView, 
     MyVacanciesAPIView, VacancyApplicantsAPIView, VacancyCheckAppliedAPIView,
     ApplicationListCreateAPIView, ApplicationDetailAPIView, ApplicationStatusAPIView,
@@ -29,6 +31,16 @@ urlpatterns = [
         name="company-complete-registration",
     ),
     path("companies/", CompanyListAPIView.as_view(), name="company-list"),
+    path(
+        "companies/<slug:slug>/contact/",
+        CompanySiteContactAPIView.as_view(),
+        name="company-site-contact",
+    ),
+    path(
+        "companies/<slug:slug>/website/",
+        CompanyWebsiteManageAPIView.as_view(),
+        name="company-website-manage",
+    ),
     path("companies/<slug:slug>/", CompanyDetailAPIView.as_view(), name="company-detail"),
 
     # Vacancies

@@ -41,16 +41,18 @@ export function middleware(request) {
   // Legacy routes without /{locale} prefix → /az/…
   const firstSeg = pathname.split('/').filter(Boolean)[0];
   const hasLocalePrefix = firstSeg === 'az' || firstSeg === 'en' || firstSeg === 'ru';
-  if (!hasLocalePrefix) {
-    if (
-      pathname === '/profile' ||
-      pathname.startsWith('/profile/') ||
-      pathname === '/chat' ||
-      pathname.startsWith('/chat/') ||
-      pathname === '/notifications' ||
-      pathname.startsWith('/notifications/') ||
-      pathname.startsWith('/user/')
-    ) {
+    if (!hasLocalePrefix) {
+        if (
+            pathname === '/profile' ||
+            pathname.startsWith('/profile/') ||
+            pathname === '/chat' ||
+            pathname.startsWith('/chat/') ||
+            pathname === '/notifications' ||
+            pathname.startsWith('/notifications/') ||
+            pathname.startsWith('/user/') ||
+            pathname === '/companies' ||
+            pathname.startsWith('/companies/')
+        ) {
       const url = request.nextUrl.clone();
       url.pathname = `/az${pathname}`;
       return NextResponse.redirect(url, 308);

@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from apps.business import models as business_models
+from apps.business.company_website_visibility import (
+    merge_company_website_visibility,
+    public_company_site_url,
+)
 from apps.profiles.models import Service as ProfileService
 from apps.profiles.api.serializers import (
     ServiceSerializer as ProfileServiceSerializer,
@@ -163,7 +167,8 @@ class CompanySerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField(read_only=True)
     owner_id = serializers.PrimaryKeyRelatedField(source='owner', read_only=True)
     slug = serializers.SlugField(read_only=True)
-    
+    website = serializers.SerializerMethodField(read_only=True)
+
     who_we_are = WhoWeAreSerializer(read_only=True)
     what_we_do = WhatWeDoSerializer(read_only=True)
     our_values = OurValuesSerializer(read_only=True)
@@ -176,6 +181,51 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = business_models.Company
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        data['logo'] = _absolute_media_url(request, instance.logo)
+        data['cover_image'] = _absolute_media_url(request, instance.cover_image)
+        return data
+
+    def get_website(self, obj):
+        request = self.context.get('request')
+        is_owner = bool(
+            request and request.user.is_authenticated and obj.owner_id == request.user.id
+        )
+        pub = public_company_site_url(obj.slug)
+        merged_empty = merge_company_website_visibility({})
+        try:
+            cw = obj.website
+        except business_models.CompanyWebsite.DoesNotExist:
+            cw = None
+        if not cw:
+            if is_owner:
+                return {
+                    'is_active': False,
+                    'template_id': None,
+                    'template_label': '',
+                    'section_visibility': merged_empty,
+                    'public_url': pub,
+                }
+            return None
+        vis = merge_company_website_visibility(cw.section_visibility)
+        if is_owner:
+            return {
+                'is_active': cw.is_active,
+                'template_id': cw.template_id,
+                'template_label': cw.template_label or '',
+                'section_visibility': vis,
+                'public_url': pub,
+            }
+        if not cw.is_active:
+            return None
+        return {
+            'is_active': True,
+            'template_id': cw.template_id,
+            'section_visibility': vis,
+        }
 
     def get_services(self, obj):
         qs = ProfileService.objects.filter(company=obj).order_by('-id')

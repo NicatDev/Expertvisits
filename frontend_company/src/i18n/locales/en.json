@@ -1,0 +1,86 @@
+{
+    "landing": {
+        "heroTitle": "A professional site for your company",
+        "heroSubtitle": "Present your company profile on Expert Visits.",
+        "ctaBtn": "Register",
+        "guideTitle": "Three steps",
+        "step1Title": "Profile",
+        "step1Desc": "Create your company on the platform.",
+        "step2Title": "Content",
+        "step2Desc": "Manage services, projects, and vacancies.",
+        "step3Title": "Publish",
+        "step3Desc": "Go live with a template at /c/your-slug.",
+        "templatesTitle": "Templates",
+        "templatesDesc": "Template 1 is active in this project.",
+        "ctaBtnAlt": "Expert Visits"
+    },
+    "nav": {
+        "about": "About",
+        "services": "Services",
+        "projects": "Projects",
+        "partners": "Partners",
+        "vacancies": "Vacancies",
+        "contact": "Contact",
+        "openMenu": "Menu",
+        "langAz": "AZ",
+        "langEn": "EN"
+    },
+    "home": {
+        "heroBadge": "Official company page",
+        "summary": "Summary",
+        "founded": "Founded",
+        "teamSize": "Team size",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "website": "Website",
+        "social": "Social",
+        "servicesPreview": "Services",
+        "projectsPreview": "Projects",
+        "partnersPreview": "Partners",
+        "vacanciesPreview": "Vacancies",
+        "viewAll": "View all",
+        "noneYet": "Nothing here yet."
+    },
+    "about": {
+        "title": "About",
+        "who": "Who we are",
+        "what": "What we do",
+        "values": "Our values"
+    },
+    "services": {
+        "title": "Services"
+    },
+    "projects": {
+        "title": "Projects",
+        "visit": "Visit"
+    },
+    "partners": {
+        "title": "Partners"
+    },
+    "vacancies": {
+        "title": "Vacancies",
+        "location": "Location",
+        "applyOnPlatform": "Sign in on the platform to apply",
+        "empty": "No open vacancies."
+    },
+    "contact": {
+        "title": "Contact us",
+        "subtitle": "Your message is sent to the company registration email.",
+        "name": "Full name",
+        "email": "Your email",
+        "subject": "Subject",
+        "message": "Message",
+        "submit": "Send",
+        "sending": "Sending…",
+        "success": "Your message was sent.",
+        "error": "Could not send. Please try again later."
+    },
+    "footer": {
+        "rights": "All rights reserved.",
+        "powered": "Expert Visits"
+    },
+    "errors": {
+        "notFound": "Company not found"
+    }
+}

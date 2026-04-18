@@ -1,0 +1,14 @@
+.shell {
+  --t-bg: #f4f6f9;
+  --t-surface: #ffffff;
+  --t-ink: #0f172a;
+  --t-muted: #64748b;
+  --t-line: #e2e8f0;
+  --t-accent: #1e40af;
+  --t-accent-soft: #dbeafe;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--t-bg);
+  color: var(--t-ink);
+}

@@ -51,6 +51,28 @@ class Company(models.Model):
         return self.name
 
 
+class CompanyWebsite(models.Model):
+    """Published company microsite settings (Expert Visits /c/<company.slug>/)."""
+
+    company = models.OneToOneField(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="website",
+    )
+    template_id = models.IntegerField(default=1)
+    template_label = models.CharField(max_length=120, blank=True)
+    is_active = models.BooleanField(default=False)
+    section_visibility = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+
+    def __str__(self):
+        return f"Website {self.company.slug} (template {self.template_id})"
+
+
 class CompanyRegistrationPending(models.Model):
     """Holds company draft until the company email is verified (6-digit code)."""
 

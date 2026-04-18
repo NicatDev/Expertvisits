@@ -3,6 +3,8 @@ from .companies import (
     CompanyDetailAPIView,
     CompanyRegistrationStartView,
     CompanyRegistrationCompleteView,
+    CompanySiteContactAPIView,
+    CompanyWebsiteManageAPIView,
 )
 from .vacancies import (
     VacancyListCreateAPIView, VacancyDetailAPIView, 

@@ -2,9 +2,11 @@ import hmac
 import random
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.files import File
 from django.db import IntegrityError, transaction
 from django.db.models import Case, IntegerField, Value, When
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
@@ -12,11 +14,17 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from apps.business.api.serializers import CompanySerializer
-from apps.business.models import Company, CompanyRegistrationPending
+from apps.business.company_website_visibility import (
+    merge_company_website_visibility,
+    public_company_site_url,
+    validate_company_website_visibility,
+)
+from apps.business.models import Company, CompanyRegistrationPending, CompanyWebsite
 from apps.content.models import Article
-from core.utils.email import send_company_registration_code_email
+from core.utils.email import send_company_registration_code_email, send_company_site_contact_email
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -189,8 +197,141 @@ class CompanyRegistrationCompleteView(APIView):
 
 class CompanyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Company.objects.select_related(
-        "owner", "who_we_are", "what_we_do", "our_values"
+        "owner", "who_we_are", "what_we_do", "our_values", "website"
     ).prefetch_related("services")
     serializer_class = CompanySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = "slug"
+
+
+class CompanyWebsiteManageAPIView(APIView):
+    """Owner-only: create/update/deactivate company microsite (/c/<slug>/)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, slug):
+        company = get_object_or_404(
+            Company.objects.select_related("website"),
+            slug=slug,
+        )
+        if company.owner_id != request.user.id:
+            return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        pub = public_company_site_url(company.slug)
+        try:
+            cw = company.website
+        except CompanyWebsite.DoesNotExist:
+            return Response(
+                {
+                    "template_id": None,
+                    "template_label": "",
+                    "is_active": False,
+                    "section_visibility": merge_company_website_visibility({}),
+                    "public_url": pub,
+                }
+            )
+        return Response(
+            {
+                "template_id": cw.template_id,
+                "template_label": cw.template_label or "",
+                "is_active": cw.is_active,
+                "section_visibility": merge_company_website_visibility(cw.section_visibility),
+                "public_url": pub,
+            }
+        )
+
+    def post(self, request, slug):
+        company = get_object_or_404(Company, slug=slug)
+        if company.owner_id != request.user.id:
+            return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        template_id = request.data.get("template_id")
+        if template_id is None:
+            return Response({"detail": "template_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            template_id = int(template_id)
+        except (TypeError, ValueError):
+            return Response({"detail": "Invalid template_id."}, status=status.HTTP_400_BAD_REQUEST)
+
+        template_label = (request.data.get("template_label") or "").strip()[:120]
+        raw_vis = request.data.get("section_visibility")
+        vis = merge_company_website_visibility(raw_vis if isinstance(raw_vis, dict) else {})
+        try:
+            validate_company_website_visibility(company, vis)
+        except DjangoValidationError as e:
+            err = e.message_dict if hasattr(e, "message_dict") else {"detail": e.messages}
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+        CompanyWebsite.objects.update_or_create(
+            company=company,
+            defaults={
+                "template_id": template_id,
+                "template_label": template_label,
+                "is_active": True,
+                "section_visibility": vis,
+            },
+        )
+        return Response(
+            {
+                "detail": "Company website saved.",
+                "public_url": public_company_site_url(company.slug),
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def delete(self, request, slug):
+        company = get_object_or_404(Company.objects.select_related("website"), slug=slug)
+        if company.owner_id != request.user.id:
+            return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            cw = company.website
+        except CompanyWebsite.DoesNotExist:
+            return Response({"detail": "No website configured."}, status=status.HTTP_404_NOT_FOUND)
+        cw.is_active = False
+        cw.save(update_fields=["is_active", "updated_at"])
+        return Response({"detail": "Company website deactivated."}, status=status.HTTP_200_OK)
+
+
+class CompanySiteContactAPIView(APIView):
+    """Public contact form for company microsites (/c/<slug>/)."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request, slug):
+        name = (request.data.get("name") or "").strip()
+        email = (request.data.get("email") or "").strip()
+        subject = (request.data.get("subject") or "").strip()
+        message = (request.data.get("message") or "").strip()
+
+        if not all([name, email, subject, message]):
+            return Response(
+                {"detail": "Name, email, subject, and message are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        company = Company.objects.filter(slug=slug).first()
+        if not company:
+            return Response(
+                {"detail": "Company not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        to_email = (company.email or "").strip()
+        if not to_email:
+            return Response(
+                {"detail": "Company has no contact email on file."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            send_company_site_contact_email(
+                to_email,
+                name,
+                email,
+                subject,
+                message,
+            )
+            return Response({"detail": "Message sent successfully."}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                {"detail": "Failed to send email. Please try again later."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

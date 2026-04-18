@@ -25,6 +25,11 @@ export const business = {
     getCompany: (slug) => client.get(`/business/companies/${slug}/`),
     updateCompany: (slug, data) => client.patch(`/business/companies/${slug}/`, data),
 
+    /** Owner-only: company microsite settings (public URL /c/{slug}/). */
+    getCompanyWebsite: (slug) => client.get(`/business/companies/${slug}/website/`),
+    updateCompanyWebsite: (slug, data) => client.post(`/business/companies/${slug}/website/`, data),
+    deleteCompanyWebsite: (slug) => client.delete(`/business/companies/${slug}/website/`),
+
     // Company Sections
     // Company Sections
     createWhoWeAre: (data) => client.post('/business/who-we-are/', data),

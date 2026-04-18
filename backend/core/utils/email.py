@@ -200,6 +200,33 @@ def send_vacancy_application_email(application):
         logger.exception("Failed to send vacancy application email to %s", to_email)
 
 
+def send_company_site_contact_email(company_email, sender_name, sender_email, subject_line, body_text):
+    """
+    Contact form submission from a public company website → company inbox (owner contact email).
+    """
+    safe_subj = _sanitize_subject_fragment(subject_line)
+    subject = f"{_BRAND} company site — {safe_subj}"
+    message = (
+        f"You received a message through your {_BRAND} company website.\n\n"
+        f"From\n"
+        f"  Name: {sender_name}\n"
+        f"  Email: {sender_email}\n\n"
+        f"Subject\n"
+        f"  {safe_subj}\n\n"
+        f"Message\n"
+        f"{body_text.strip()}\n\n"
+        f"— {_BRAND} (automated message)\n"
+        f"{_SITE}\n"
+    )
+    return send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [company_email],
+        fail_silently=False,
+    )
+
+
 def send_portfolio_contact_email(owner_email, sender_name, sender_email, subject_line, body_text):
     """
     Contact form submission from a user's public portfolio site → owner's inbox.
