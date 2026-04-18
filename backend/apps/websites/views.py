@@ -2,7 +2,9 @@ from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
+from django.db.models import Prefetch
+
+from apps.profiles.models import Service as ProfileService
 
 from apps.websites.models import UserWebsite
 from apps.websites.section_visibility import merge_section_visibility
@@ -16,7 +18,11 @@ class UserWebsitePublicDetailView(generics.RetrieveAPIView):
         'user__educations',
         'user__skills',
         'user__languages',
-        'user__certificates'
+        'user__certificates',
+        Prefetch(
+            'user__services',
+            queryset=ProfileService.objects.filter(company__isnull=True).order_by('-id'),
+        ),
     ).filter(is_active=True, is_deleted=False)
     serializer_class = UserWebsiteSerializer
     permission_classes = [AllowAny]

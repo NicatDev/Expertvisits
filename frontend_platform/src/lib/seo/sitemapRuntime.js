@@ -106,6 +106,13 @@ export function expandSitemapEntries(sitemapData, seen) {
 
     for (const item of sitemapData.dynamic_urls || []) {
         const path = item.url || '';
+        if (!path) continue;
+
+        if (/^https?:\/\//i.test(path)) {
+            pushUnique(urls, seenLocal, entryFromItem(path, item));
+            continue;
+        }
+
         if (!path.startsWith('/')) continue;
 
         if (path.startsWith('/article/')) {

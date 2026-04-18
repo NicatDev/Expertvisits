@@ -29,7 +29,10 @@ class ServiceListCreateAPIView(generics.ListCreateAPIView):
                 '-id'
             )
         if self.request.user.is_authenticated:
-            return Service.objects.filter(user=self.request.user).order_by('-id')
+            # Default list = personal portfolio services only (company-linked use ?company_id=).
+            return Service.objects.filter(
+                user=self.request.user, company__isnull=True
+            ).order_by('-id')
         return Service.objects.none()
 
     def perform_create(self, serializer):

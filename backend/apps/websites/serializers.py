@@ -77,7 +77,8 @@ class UserWebsiteSerializer(serializers.ModelSerializer):
         return ProjectSerializer(qs, many=True).data
 
     def get_services(self, obj):
-        qs = obj.user.services.all().order_by('-id')
+        # Personal portfolio only — company microsite services share the same user FK.
+        qs = obj.user.services.filter(company__isnull=True).order_by('-id')
         return ServiceSerializer(qs, many=True).data
 
     def get_experiences(self, obj):

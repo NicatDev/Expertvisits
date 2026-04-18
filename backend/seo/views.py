@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework import permissions
 
 from apps.accounts.models import User
-from apps.business.models import Company, Vacancy
+from apps.business.models import Company, CompanyWebsite, Vacancy
+from apps.business.company_website_visibility import (
+    merge_company_website_visibility,
+    public_company_site_url,
+)
 from apps.content.models import Article
 
 
@@ -33,6 +37,56 @@ def _static_url_dicts():
     ]
 
 
+def _company_microsite_url_dicts():
+    """Published company microsites (frontend_company); full URL from settings."""
+    qs = CompanyWebsite.objects.filter(is_active=True).select_related('company')
+    for cw in qs.iterator():
+        company = cw.company
+        slug = company.slug
+        vis = merge_company_website_visibility(cw.section_visibility or {})
+        root = public_company_site_url(slug).rstrip('/')
+        lm = _dt_iso(getattr(cw, 'updated_at', None) or getattr(company, 'updated_at', None))
+        row = {'lastmod': lm, 'changefreq': 'weekly', 'priority': 0.72}
+        yield {'url': root, **row}
+        if vis.get('about_page'):
+            yield {'url': f'{root}/about', **row}
+        if vis.get('services_page'):
+            yield {'url': f'{root}/services', **row}
+        if vis.get('projects_page'):
+            yield {'url': f'{root}/projects', **row}
+        if vis.get('partners_page'):
+            yield {'url': f'{root}/partners', **row}
+        if vis.get('vacancies_page'):
+            yield {'url': f'{root}/vacancies', **row}
+        if vis.get('contact_page'):
+            yield {'url': f'{root}/contact', **row}
+
+
+def _company_microsite_url_count_one(vis):
+    n = 1  # home always
+    if vis.get('about_page'):
+        n += 1
+    if vis.get('services_page'):
+        n += 1
+    if vis.get('projects_page'):
+        n += 1
+    if vis.get('partners_page'):
+        n += 1
+    if vis.get('vacancies_page'):
+        n += 1
+    if vis.get('contact_page'):
+        n += 1
+    return n
+
+
+def _company_microsite_url_count():
+    total = 0
+    for cw in CompanyWebsite.objects.filter(is_active=True).only('section_visibility'):
+        vis = merge_company_website_visibility(cw.section_visibility or {})
+        total += _company_microsite_url_count_one(vis)
+    return total
+
+
 def _iter_dynamic_url_dicts():
     for v in Vacancy.objects.all().iterator():
         yield {
@@ -49,6 +103,9 @@ def _iter_dynamic_url_dicts():
             'changefreq': 'daily',
             'priority': 0.7
         }
+
+    for item in _company_microsite_url_dicts():
+        yield item
 
     for a in Article.objects.all().iterator():
         yield {
@@ -94,6 +151,7 @@ def _dynamic_total_count():
     return (
         Vacancy.objects.count()
         + Company.objects.count()
+        + _company_microsite_url_count()
         + Article.objects.count()
         + 2 * users
     )

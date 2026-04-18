@@ -13,6 +13,7 @@ def public_company_site_url(slug: str) -> str:
         base = "https://expertvisits.com/c"
     return f"{base.rstrip('/')}/{slug}"
 
+
 DEFAULT_COMPANY_WEBSITE_VISIBILITY: Dict[str, bool] = {
     "about_page": True,
     "services_on_home": False,
