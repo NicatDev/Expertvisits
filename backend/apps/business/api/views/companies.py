@@ -1,6 +1,7 @@
 import hmac
 import logging
 import random
+import re
 from datetime import timedelta
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,18 @@ from apps.business.company_website_visibility import (
 )
 from apps.business.models import Company, CompanyRegistrationPending, CompanyWebsite
 from apps.content.models import Article
+
+_HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
+_THEME_PRIMARY_DEFAULT = "#1e40af"
+_THEME_SECONDARY_DEFAULT = "#6366f1"
+
+
+def _normalize_theme_hex(value, default):
+    if not value or not isinstance(value, str):
+        return default
+    s = value.strip()
+    return s.lower() if _HEX_COLOR.match(s) else default
+
 from core.utils.email import (
     send_company_registration_code_email,
     send_company_site_contact_email,
@@ -234,6 +247,8 @@ class CompanyWebsiteManageAPIView(APIView):
                     "is_active": False,
                     "section_visibility": merge_company_website_visibility({}),
                     "public_url": pub,
+                    "theme_primary": _THEME_PRIMARY_DEFAULT,
+                    "theme_secondary": _THEME_SECONDARY_DEFAULT,
                 }
             )
         return Response(
@@ -243,6 +258,12 @@ class CompanyWebsiteManageAPIView(APIView):
                 "is_active": cw.is_active,
                 "section_visibility": merge_company_website_visibility(cw.section_visibility),
                 "public_url": pub,
+                "theme_primary": _normalize_theme_hex(
+                    cw.theme_primary, _THEME_PRIMARY_DEFAULT
+                ),
+                "theme_secondary": _normalize_theme_hex(
+                    cw.theme_secondary, _THEME_SECONDARY_DEFAULT
+                ),
             }
         )
 
@@ -259,6 +280,19 @@ class CompanyWebsiteManageAPIView(APIView):
         except (TypeError, ValueError):
             return Response({"detail": "Invalid template_id."}, status=status.HTTP_400_BAD_REQUEST)
 
+        if template_id not in (1, 2, 3):
+            return Response(
+                {"detail": "template_id must be 1, 2, or 3."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        theme_primary = _normalize_theme_hex(
+            request.data.get("theme_primary"), _THEME_PRIMARY_DEFAULT
+        )
+        theme_secondary = _normalize_theme_hex(
+            request.data.get("theme_secondary"), _THEME_SECONDARY_DEFAULT
+        )
+
         template_label = (request.data.get("template_label") or "").strip()[:120]
         raw_vis = request.data.get("section_visibility")
         vis = merge_company_website_visibility(raw_vis if isinstance(raw_vis, dict) else {})
@@ -273,6 +307,8 @@ class CompanyWebsiteManageAPIView(APIView):
             defaults={
                 "template_id": template_id,
                 "template_label": template_label,
+                "theme_primary": theme_primary,
+                "theme_secondary": theme_secondary,
                 "is_active": True,
                 "section_visibility": vis,
             },

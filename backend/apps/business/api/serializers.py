@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 from apps.business import models as business_models
 from apps.business.company_website_visibility import (
@@ -21,6 +23,26 @@ def _absolute_media_url(request, file_field):
     if request:
         return request.build_absolute_uri(url)
     return url
+
+
+_THEME_HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
+_THEME_PRIMARY_DEFAULT = "#1e40af"
+_THEME_SECONDARY_DEFAULT = "#6366f1"
+
+
+def _website_theme_payload(cw):
+    if not cw:
+        return {
+            "theme_primary": _THEME_PRIMARY_DEFAULT,
+            "theme_secondary": _THEME_SECONDARY_DEFAULT,
+        }
+    p = (getattr(cw, "theme_primary", None) or _THEME_PRIMARY_DEFAULT).strip()
+    s = (getattr(cw, "theme_secondary", None) or _THEME_SECONDARY_DEFAULT).strip()
+    if not _THEME_HEX.match(p):
+        p = _THEME_PRIMARY_DEFAULT
+    if not _THEME_HEX.match(s):
+        s = _THEME_SECONDARY_DEFAULT
+    return {"theme_primary": p.lower(), "theme_secondary": s.lower()}
 
 
 class VacancyApplicationSerializer(serializers.ModelSerializer):
@@ -208,9 +230,11 @@ class CompanySerializer(serializers.ModelSerializer):
                     'template_label': '',
                     'section_visibility': merged_empty,
                     'public_url': pub,
+                    **_website_theme_payload(None),
                 }
             return None
         vis = merge_company_website_visibility(cw.section_visibility)
+        theme = _website_theme_payload(cw)
         if is_owner:
             return {
                 'is_active': cw.is_active,
@@ -218,6 +242,7 @@ class CompanySerializer(serializers.ModelSerializer):
                 'template_label': cw.template_label or '',
                 'section_visibility': vis,
                 'public_url': pub,
+                **theme,
             }
         if not cw.is_active:
             return None
@@ -225,6 +250,7 @@ class CompanySerializer(serializers.ModelSerializer):
             'is_active': True,
             'template_id': cw.template_id,
             'section_visibility': vis,
+            **theme,
         }
 
     def get_services(self, obj):

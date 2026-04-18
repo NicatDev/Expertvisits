@@ -767,6 +767,7 @@
         },
         "info": {
             "title": "Company Info",
+            "slogan": "Slogan",
             "summary": "Summary",
             "website": "Website",
             "phone": "Phone",
@@ -861,7 +862,15 @@
         "deactivate_success": "Company website deactivated.",
         "qr_title": "QR for company site",
         "qr_hint": "Share this QR — it opens your public company page.",
-        "qr_inactive_hint": "The QR will be available when the site is active."
+        "qr_inactive_hint": "The QR will be available when the site is active.",
+        "select_template": "Choose a template",
+        "template1_name": "Simple modern",
+        "template2_name": "Dark studio",
+        "template3_name": "Formal corporate",
+        "theme_title": "Site colors",
+        "theme_primary": "Primary color",
+        "theme_secondary": "Accent color",
+        "theme_hint": "Changes apply to all templates. Use #RRGGBB (e.g. #1e40af)."
     },
     "companies": {
         "title": "Discover Companies",
@@ -930,6 +939,7 @@
                 "social": "Social"
             },
             "form": {
+                "slogan_placeholder": "Shown on your public company site hero",
                 "summary_placeholder": "Short summary about company...",
                 "phone_hint": "Visible only to you",
                 "change_logo": "Change Logo",

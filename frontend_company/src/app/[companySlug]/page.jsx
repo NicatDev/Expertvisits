@@ -1,7 +1,7 @@
 import { getCompanyCached, getVacancies } from '@/lib/api/company';
+import { importHomePageClient } from '@/lib/micrositeImports';
 import { requireActiveCompanyMicrosite } from '@/lib/requireCompanyMicrosite';
 import { notFound } from 'next/navigation';
-import HomePageClient from '@/templates/template1/pages/HomePageClient';
 
 export const revalidate = 60;
 
@@ -18,6 +18,8 @@ export default async function CompanyHomePage({ params }) {
     } catch {
         previewVacancies = [];
     }
+
+    const HomePageClient = await importHomePageClient(company);
 
     return (
         <HomePageClient

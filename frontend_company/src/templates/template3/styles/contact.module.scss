@@ -1,0 +1,133 @@
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.75rem 1.25rem;
+}
+
+.embedWrap {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.embedBox {
+  box-shadow: 0 4px 24px -16px rgba(28, 25, 23, 0.1);
+}
+
+.box {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 4px;
+  padding: 2rem 1.5rem;
+  border-top: 3px solid var(--t-accent);
+  box-shadow: 0 2px 8px rgba(28, 25, 23, 0.04);
+
+  @media (min-width: 768px) {
+    padding: 2.35rem 2.35rem;
+  }
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.35rem;
+  color: var(--t-ink);
+}
+
+.sub {
+  font-size: 0.88rem;
+  color: var(--t-muted);
+  margin-bottom: 1.35rem;
+  line-height: 1.55;
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.row2 {
+  display: grid;
+  gap: 0.9rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t-muted);
+  margin-bottom: 0.3rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--t-line);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--t-surface);
+  color: var(--t-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--t-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--t-accent) 18%, transparent);
+  }
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.submit {
+  margin-top: 0.45rem;
+  padding: 0.75rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--t-accent) 80%, #000);
+  border-radius: 4px;
+  background: var(--t-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: background 0.2s, filter 0.2s;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--t-accent) 88%, #000);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.99);
+  }
+}
+
+.msgOk {
+  margin-top: 0.65rem;
+  font-size: 0.875rem;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.msgErr {
+  margin-top: 0.65rem;
+  font-size: 0.875rem;
+  color: #b91c1c;
+  font-weight: 600;
+}

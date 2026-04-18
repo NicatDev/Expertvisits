@@ -1,0 +1,117 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.55);
+  cursor: pointer;
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 540px;
+  max-height: min(88vh, 720px);
+  overflow: auto;
+  background: var(--t-surface);
+  border-radius: 4px;
+  border: 1px solid var(--t-line);
+  box-shadow: 0 24px 48px -24px rgba(28, 25, 23, 0.25);
+  padding: 1.35rem 1.35rem 1.45rem;
+}
+
+.close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid var(--t-line);
+  border-radius: 4px;
+  background: var(--t-bg);
+  color: var(--t-ink);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: var(--t-line);
+  }
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--t-ink);
+  margin: 0 2rem 0.65rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--t-line);
+}
+
+.meta {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t-muted);
+  margin-bottom: 0.65rem;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  max-height: 168px;
+  height: auto;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--t-line);
+  background: var(--t-bg);
+  box-sizing: border-box;
+}
+
+.body {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--t-muted);
+  white-space: pre-wrap;
+}
+
+.steps {
+  margin-top: 0.85rem;
+  padding-left: 1.1rem;
+  font-size: 0.875rem;
+  color: var(--t-muted);
+  line-height: 1.55;
+}
+
+.ext {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--t-accent);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--t-accent-2);
+    text-decoration: underline;
+  }
+}

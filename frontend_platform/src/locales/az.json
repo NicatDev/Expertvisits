@@ -656,6 +656,7 @@
         },
         "info": {
             "title": "Şirkət Məlumatı",
+            "slogan": "Slogan",
             "summary": "Xülasə",
             "website": "Vebsayt",
             "phone": "Telefon",
@@ -750,7 +751,15 @@
         "deactivate_success": "Şirkət vebsaytı söndürüldü.",
         "qr_title": "Şirkət vebsaytı üçün QR",
         "qr_hint": "QR kodu paylaşın — birbaşa şirkət səhifənizə aparır.",
-        "qr_inactive_hint": "QR kodu vebsayt aktiv olanda əlçatan olacaq."
+        "qr_inactive_hint": "QR kodu vebsayt aktiv olanda əlçatan olacaq.",
+        "select_template": "Şablon seçin",
+        "template1_name": "Sadə modern",
+        "template2_name": "Tünd studiya",
+        "template3_name": "Ciddi korporativ",
+        "theme_title": "Sayt rəngləri",
+        "theme_primary": "Əsas rəng",
+        "theme_secondary": "İkinci rəng (vurğu)",
+        "theme_hint": "Dəyişikliklər bütün şablonlarda tətbiq olunur (#RRGGBB, məs. #1e40af)."
     },
     "companies": {
         "title": "Şirkətləri Kəşf Et",
@@ -819,6 +828,7 @@
                 "social": "Sosial"
             },
             "form": {
+                "slogan_placeholder": "Şirkət saytında qəhrəman bölməsində göstərilir",
                 "summary_placeholder": "Şirkət haqqında qısa məlumat...",
                 "phone_hint": "Yalnız sizə görünür",
                 "change_logo": "Loqonu dəyiş",

@@ -1,0 +1,26 @@
+/* Template 2 — creative dark “editorial” shell; theme from --ev-primary / --ev-secondary */
+.shell {
+  --ev-primary: #c084fc;
+  --ev-secondary: #fb923c;
+  --t-bg: #0c0a09;
+  --t-surface: rgba(39, 39, 42, 0.78);
+  --t-ink: #fafaf9;
+  --t-muted: #a8a29e;
+  --t-line: rgba(255, 255, 255, 0.11);
+  --t-accent: var(--ev-primary);
+  --t-accent-2: var(--ev-secondary);
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 32%, transparent);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse 130% 90% at 100% -30%, color-mix(in srgb, var(--ev-primary) 26%, transparent), transparent 55%),
+    radial-gradient(ellipse 90% 70% at -15% 110%, color-mix(in srgb, var(--ev-secondary) 22%, transparent), transparent 50%),
+    var(--t-bg);
+  color: var(--t-ink);
+}
+
+.main {
+  flex: 1;
+  position: relative;
+}

@@ -1,7 +1,7 @@
 import { getCompanyCached, getVacancies } from '@/lib/api/company';
+import { importVacanciesPageClient } from '@/lib/micrositeImports';
 import { requireActiveCompanyMicrosite } from '@/lib/requireCompanyMicrosite';
 import { notFound } from 'next/navigation';
-import VacanciesPageClient from '@/templates/template1/pages/VacanciesPageClient';
 
 export const revalidate = 60;
 
@@ -18,6 +18,8 @@ export default async function VacanciesPage({ params }) {
     } catch {
         vacancies = { results: [] };
     }
+
+    const VacanciesPageClient = await importVacanciesPageClient(company);
 
     return <VacanciesPageClient vacancies={vacancies} companySlug={companySlug} />;
 }

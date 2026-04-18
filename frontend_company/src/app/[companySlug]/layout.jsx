@@ -1,6 +1,6 @@
-import TemplateLayout from '@/templates/template1/layout/TemplateLayout';
 import LanguageManager from '@/components/LanguageManager';
 import { getCompanyCached, getVacancies } from '@/lib/api/company';
+import { importTemplateLayout } from '@/lib/micrositeImports';
 import { getRequestLocaleState } from '@/lib/i18n/requestLocale';
 import { requireActiveCompanyMicrosite } from '@/lib/requireCompanyMicrosite';
 import { notFound } from 'next/navigation';
@@ -57,6 +57,8 @@ export default async function CompanySiteLayout({ children, params }) {
     }
 
     const { effectiveLng } = await getRequestLocaleState();
+
+    const TemplateLayout = await importTemplateLayout(company);
 
     return (
         <TemplateLayout

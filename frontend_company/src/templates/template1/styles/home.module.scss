@@ -35,7 +35,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: color-mix(in srgb, var(--t-accent-2) 72%, #fff);
   margin-bottom: 0.75rem;
 }
 
@@ -115,7 +115,7 @@
 .link {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e40af;
+  color: var(--t-accent);
   text-decoration: none;
   white-space: nowrap;
 
@@ -157,7 +157,7 @@
 }
 
 .cardClickable:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--t-accent-2);
   outline-offset: 2px;
 }
 

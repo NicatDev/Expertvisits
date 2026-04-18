@@ -7,6 +7,12 @@ from core.utils.images import compress_image
 class Company(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='company')
     name = models.CharField(max_length=255, db_index=True)
+    slogan = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        help_text='Short tagline shown on the public company microsite hero.',
+    )
     slug = models.SlugField(unique=True, db_index=True)
     logo = models.ImageField(upload_to='company_logos/', null=True, blank=True)
     cover_image = models.ImageField(upload_to='company_covers/', null=True, blank=True)
@@ -61,6 +67,8 @@ class CompanyWebsite(models.Model):
     )
     template_id = models.IntegerField(default=1)
     template_label = models.CharField(max_length=120, blank=True)
+    theme_primary = models.CharField(max_length=7, blank=True, default="#1e40af")
+    theme_secondary = models.CharField(max_length=7, blank=True, default="#6366f1")
     is_active = models.BooleanField(default=False)
     section_visibility = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -337,6 +337,14 @@ export default function CompanyDetailClient({ params }) {
                             <h2>{t('company_detail.info.title')}</h2>
                         </div>
                         <div className={styles.list}>
+                            {(company.slogan?.trim() || isOwner) && (
+                                <div className={styles.editableField}>
+                                    <span className={styles.label}>{t('company_detail.info.slogan')}</span>
+                                    <div className={styles.value}>
+                                        {company.slogan?.trim() || (isOwner ? '—' : '')}
+                                    </div>
+                                </div>
+                            )}
                             {company.summary && (
                                 <div className={styles.editableField}>
                                     <span className={styles.label}>{t('company_detail.info.summary')}</span>

@@ -13,7 +13,8 @@ import { useLocalizedPath } from '@/hooks/useLocalePath';
 import pageStyles from '../../../../website-template/WebsiteTemplatePageClient/style.module.scss';
 
 const MIN_ITEMS = 1;
-const COMPANY_TEMPLATE_ID = 1;
+const DEFAULT_THEME_PRIMARY = '#1e40af';
+const DEFAULT_THEME_SECONDARY = '#6366f1';
 
 function groupFromSectionKey(key) {
     if (key.startsWith('services_')) return 'services';
@@ -60,6 +61,9 @@ export default function CompanyWebsitePageClient({ params }) {
     const [vacanciesCount, setVacanciesCount] = useState(0);
     const [qrDataUrl, setQrDataUrl] = useState('');
     const [qrLoading, setQrLoading] = useState(false);
+    const [selectedTemplateId, setSelectedTemplateId] = useState(1);
+    const [themePrimary, setThemePrimary] = useState(DEFAULT_THEME_PRIMARY);
+    const [themeSecondary, setThemeSecondary] = useState(DEFAULT_THEME_SECONDARY);
 
     const syncQr = useCallback(async (active, url) => {
         if (!active || !url) {
@@ -91,6 +95,10 @@ export default function CompanyWebsitePageClient({ params }) {
         setIsActive(active);
         const pub = (data?.public_url || '').trim();
         setPublicUrl(pub);
+        const tid = Number(data?.template_id);
+        setSelectedTemplateId([1, 2, 3].includes(tid) ? tid : 1);
+        setThemePrimary((data?.theme_primary || DEFAULT_THEME_PRIMARY).toLowerCase());
+        setThemeSecondary((data?.theme_secondary || DEFAULT_THEME_SECONDARY).toLowerCase());
         return { active, pub };
     }, [slug]);
 
@@ -217,8 +225,10 @@ export default function CompanyWebsitePageClient({ params }) {
         setLoading(true);
         try {
             await business.updateCompanyWebsite(slug, {
-                template_id: COMPANY_TEMPLATE_ID,
+                template_id: selectedTemplateId,
                 section_visibility: sectionVisibility,
+                theme_primary: themePrimary,
+                theme_secondary: themeSecondary,
             });
             toast.success(t('company_website.save_success'));
             const { active, pub } = await loadWebsiteState();
@@ -419,7 +429,7 @@ export default function CompanyWebsitePageClient({ params }) {
                             </div>
                         )}
 
-                        <p className={pageStyles.label}>{t('widgets.select_template')}</p>
+                        <p className={pageStyles.label}>{t('company_website.select_template')}</p>
 
                         {isFetching ? (
                             <div
@@ -433,21 +443,137 @@ export default function CompanyWebsitePageClient({ params }) {
                             </div>
                         ) : (
                             <div className={pageStyles.options}>
-                                <div
-                                    className={`${pageStyles.option} ${pageStyles.active}`}
-                                    role="button"
-                                    tabIndex={0}
+                                <button
+                                    type="button"
+                                    className={`${pageStyles.option} ${selectedTemplateId === 1 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelectedTemplateId(1)}
                                 >
                                     <div className={pageStyles.iconBox}>
                                         <LayoutTemplate size={24} />
                                     </div>
                                     <span className={pageStyles.templateName}>
-                                        {t('widgets.template1_name')}
+                                        {t('company_website.template1_name')}
                                     </span>
-                                    <CheckCircle className={pageStyles.checkIcon} size={20} />
-                                </div>
+                                    {selectedTemplateId === 1 ? (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    ) : null}
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${pageStyles.option} ${selectedTemplateId === 2 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelectedTemplateId(2)}
+                                >
+                                    <div className={pageStyles.iconBox}>
+                                        <LayoutTemplate size={24} />
+                                    </div>
+                                    <span className={pageStyles.templateName}>
+                                        {t('company_website.template2_name')}
+                                    </span>
+                                    {selectedTemplateId === 2 ? (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    ) : null}
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${pageStyles.option} ${selectedTemplateId === 3 ? pageStyles.active : ''}`}
+                                    onClick={() => setSelectedTemplateId(3)}
+                                >
+                                    <div className={pageStyles.iconBox}>
+                                        <LayoutTemplate size={24} />
+                                    </div>
+                                    <span className={pageStyles.templateName}>
+                                        {t('company_website.template3_name')}
+                                    </span>
+                                    {selectedTemplateId === 3 ? (
+                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
+                                    ) : null}
+                                </button>
                             </div>
                         )}
+
+                        <div style={{ marginTop: 24, marginBottom: 8 }}>
+                            <p className={pageStyles.label}>{t('company_website.theme_title')}</p>
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                                    gap: 16,
+                                    marginTop: 12,
+                                }}
+                            >
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
+                                        {t('company_website.theme_primary')}
+                                    </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <input
+                                            type="color"
+                                            value={themePrimary}
+                                            onChange={(e) => setThemePrimary(e.target.value.toLowerCase())}
+                                            style={{
+                                                width: 48,
+                                                height: 40,
+                                                padding: 0,
+                                                border: '1px solid #e2e8f0',
+                                                borderRadius: 8,
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                        <input
+                                            type="text"
+                                            value={themePrimary}
+                                            onChange={(e) => setThemePrimary(e.target.value.trim().toLowerCase())}
+                                            maxLength={7}
+                                            style={{
+                                                flex: 1,
+                                                padding: '10px 12px',
+                                                borderRadius: 8,
+                                                border: '1px solid #e2e8f0',
+                                                fontFamily: 'monospace',
+                                                fontSize: 14,
+                                            }}
+                                        />
+                                    </div>
+                                </label>
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
+                                        {t('company_website.theme_secondary')}
+                                    </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <input
+                                            type="color"
+                                            value={themeSecondary}
+                                            onChange={(e) => setThemeSecondary(e.target.value.toLowerCase())}
+                                            style={{
+                                                width: 48,
+                                                height: 40,
+                                                padding: 0,
+                                                border: '1px solid #e2e8f0',
+                                                borderRadius: 8,
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                        <input
+                                            type="text"
+                                            value={themeSecondary}
+                                            onChange={(e) => setThemeSecondary(e.target.value.trim().toLowerCase())}
+                                            maxLength={7}
+                                            style={{
+                                                flex: 1,
+                                                padding: '10px 12px',
+                                                borderRadius: 8,
+                                                border: '1px solid #e2e8f0',
+                                                fontFamily: 'monospace',
+                                                fontSize: 14,
+                                            }}
+                                        />
+                                    </div>
+                                </label>
+                            </div>
+                            <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 10 }}>
+                                {t('company_website.theme_hint')}
+                            </p>
+                        </div>
 
                         <div className={pageStyles.sectionToggles}>
                             <p className={pageStyles.sectionTogglesTitle}>

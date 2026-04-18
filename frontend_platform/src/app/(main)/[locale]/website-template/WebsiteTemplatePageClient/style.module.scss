@@ -289,7 +289,11 @@
     display: flex; align-items: center; gap: 16px; padding: 16px;
     border: 1px solid #e5e7eb; border-radius: 12px; cursor: pointer;
     transition: all 0.2s; position: relative;
-    
+    font: inherit;
+    width: 100%;
+    text-align: left;
+    background: #fff;
+
     &:hover { border-color: #cbd5e1; background: #f8fafc; }
     &.active { border-color: #6366f1; background: #eef2ff; }
 

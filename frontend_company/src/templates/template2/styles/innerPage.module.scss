@@ -1,0 +1,308 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.75rem 1.25rem 3.75rem;
+}
+
+.h1 {
+  font-size: clamp(1.65rem, 3.2vw, 2.15rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  color: var(--t-ink);
+  margin-bottom: 2rem;
+}
+
+.prose {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--t-muted);
+  white-space: pre-wrap;
+}
+
+.grid {
+  display: grid;
+  gap: 1.35rem;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: box-shadow 0.25s, transform 0.2s, border-color 0.2s;
+
+  &:hover {
+    box-shadow: 0 24px 56px -32px color-mix(in srgb, var(--t-accent) 42%, transparent);
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--t-accent) 35%, transparent);
+  }
+}
+
+.cardImg {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: color-mix(in srgb, var(--t-bg) 80%, #444);
+}
+
+.projectCardImg {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  max-height: 120px;
+  margin: 0.85rem auto 0;
+  object-fit: contain;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--t-accent-2) 45%, transparent);
+  background: color-mix(in srgb, var(--t-bg) 75%, transparent);
+  box-sizing: border-box;
+}
+
+.projectCardImgPlaceholder {
+  width: 100%;
+  max-width: 200px;
+  min-height: 76px;
+  margin: 0.85rem auto 0;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in srgb, var(--t-accent) 35%, transparent);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--t-accent) 10%, transparent),
+    color-mix(in srgb, var(--t-accent-2) 10%, transparent)
+  );
+  box-sizing: border-box;
+}
+
+.cardBody {
+  padding: 1.15rem 1.3rem 1.35rem;
+}
+
+.cardTitle {
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+  color: var(--t-ink);
+  letter-spacing: -0.02em;
+}
+
+.cardDate {
+  font-size: 0.75rem;
+  color: var(--t-muted);
+  margin-bottom: 0.5rem;
+}
+
+.cardDesc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--t-muted);
+  margin-bottom: 0.75rem;
+}
+
+.ext {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--t-accent-2);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--t-accent);
+    text-decoration: underline;
+  }
+}
+
+.steps {
+  margin-top: 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--t-muted);
+  line-height: 1.5;
+}
+
+.aboutBlock {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 20px;
+  padding: 1.6rem 1.45rem;
+  margin-bottom: 1.35rem;
+  box-shadow: 0 8px 32px -24px rgba(0, 0, 0, 0.45);
+}
+
+.aboutH {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--t-accent-2);
+  margin-bottom: 0.65rem;
+}
+
+.vacList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.vacCard {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 20px;
+  padding: 1.2rem 1.3rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--t-accent) 40%, transparent);
+    box-shadow: 0 16px 40px -24px color-mix(in srgb, var(--t-accent) 38%, transparent);
+    transform: translateY(-2px);
+  }
+}
+
+.vacCardInner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+}
+
+.vacCardText {
+  min-width: 0;
+  flex: 1;
+}
+
+.vacMetaList {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.vacMetaLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  line-height: 1.45;
+}
+
+.vacMetaIcon {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--t-accent) 18%, transparent);
+  color: var(--t-accent-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.vacMetaText {
+  font-size: 0.8125rem;
+  color: var(--t-muted);
+  padding-top: 2px;
+}
+
+.vacRow {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 18px;
+  padding: 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.vacTitle {
+  font-weight: 800;
+  font-size: 1.02rem;
+  letter-spacing: -0.02em;
+  color: var(--t-ink);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.vacBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.35rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--t-accent), var(--t-accent-2));
+  color: #0c0a09;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+  box-shadow: 0 8px 28px -10px color-mix(in srgb, var(--t-accent) 50%, transparent);
+
+  @media (max-width: 639px) {
+    width: 100%;
+  }
+
+  &:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 12px 36px -12px color-mix(in srgb, var(--t-accent-2) 45%, transparent);
+  }
+}
+
+.partnerGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.partnerCard {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 18px;
+  padding: 1rem;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--t-accent-2) 40%, transparent);
+    box-shadow: 0 12px 32px -20px color-mix(in srgb, var(--t-accent) 35%, transparent);
+  }
+}
+
+.partnerImg {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 88px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}

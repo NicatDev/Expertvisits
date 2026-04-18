@@ -1,0 +1,129 @@
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem;
+}
+
+.embedWrap {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.embedBox {
+  box-shadow: 0 8px 40px -20px color-mix(in srgb, var(--t-accent) 35%, transparent);
+}
+
+.box {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 22px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 12px 40px -24px rgba(0, 0, 0, 0.5);
+
+  @media (min-width: 768px) {
+    padding: 2.5rem 2.5rem;
+  }
+}
+
+.title {
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+  color: var(--t-ink);
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: var(--t-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.55;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.row2 {
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--t-muted);
+  margin-bottom: 0.35rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--t-line);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: color-mix(in srgb, var(--t-bg) 55%, transparent);
+  color: var(--t-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--t-accent-2) 55%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--t-accent) 22%, transparent);
+  }
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.submit {
+  margin-top: 0.5rem;
+  padding: 0.9rem 1.6rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--t-accent), var(--t-accent-2));
+  color: #0c0a09;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.15s;
+  box-shadow: 0 10px 32px -14px color-mix(in srgb, var(--t-accent) 50%, transparent);
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.07);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.msgOk {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.msgErr {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #f87171;
+  font-weight: 600;
+}

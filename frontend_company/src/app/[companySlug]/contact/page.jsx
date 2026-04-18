@@ -1,7 +1,7 @@
 import { getCompanyCached } from '@/lib/api/company';
+import { importContactPageClient } from '@/lib/micrositeImports';
 import { requireActiveCompanyMicrosite } from '@/lib/requireCompanyMicrosite';
 import { notFound } from 'next/navigation';
-import ContactPageClient from '@/templates/template1/pages/ContactPageClient';
 
 export const revalidate = 60;
 
@@ -11,6 +11,8 @@ export default async function ContactPage({ params }) {
     if (!company) notFound();
     const visibility = requireActiveCompanyMicrosite(company);
     if (!visibility.contact_page) notFound();
+
+    const ContactPageClient = await importContactPageClient(company);
 
     return (
         <ContactPageClient company={company} companySlug={companySlug} visibility={visibility} />

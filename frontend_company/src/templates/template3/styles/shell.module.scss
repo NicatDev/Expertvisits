@@ -1,0 +1,21 @@
+/* Template 3 — ciddi, minimal korporativ; rənglər API-dən (--ev-*) */
+.shell {
+  --ev-primary: #1e3a5f;
+  --ev-secondary: #0f766e;
+  --t-bg: #f5f4f0;
+  --t-surface: #ffffff;
+  --t-ink: #1c1917;
+  --t-muted: #57534e;
+  --t-line: #d6d3d1;
+  --t-accent: var(--ev-primary);
+  --t-accent-2: var(--ev-secondary);
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 14%, white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--t-bg);
+  color: var(--t-ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'kern' 1;
+  letter-spacing: -0.011em;
+}

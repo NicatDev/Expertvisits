@@ -35,7 +35,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #1e40af;
+  color: var(--t-accent);
   margin: 0 0 1rem;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .emailLink {
-  color: #1e40af;
+  color: var(--t-accent);
   font-weight: 600;
   text-decoration: none;
   word-break: break-all;
@@ -143,7 +143,7 @@
 
   &:hover {
     background: #e2e8f0;
-    color: #1e40af;
+    color: var(--t-accent);
   }
 }
 

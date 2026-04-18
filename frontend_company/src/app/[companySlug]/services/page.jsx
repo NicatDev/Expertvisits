@@ -1,7 +1,7 @@
 import { getCompanyCached } from '@/lib/api/company';
+import { importServicesPageClient } from '@/lib/micrositeImports';
 import { requireActiveCompanyMicrosite } from '@/lib/requireCompanyMicrosite';
 import { notFound } from 'next/navigation';
-import ServicesPageClient from '@/templates/template1/pages/ServicesPageClient';
 
 export const revalidate = 60;
 
@@ -11,5 +11,6 @@ export default async function ServicesPage({ params }) {
     if (!company) notFound();
     const visibility = requireActiveCompanyMicrosite(company);
     if (!visibility.services_page) notFound();
+    const ServicesPageClient = await importServicesPageClient(company);
     return <ServicesPageClient company={company} />;
 }

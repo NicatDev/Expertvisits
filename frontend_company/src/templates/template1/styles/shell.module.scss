@@ -1,11 +1,14 @@
 .shell {
+  --ev-primary: #1e40af;
+  --ev-secondary: #6366f1;
   --t-bg: #f4f6f9;
   --t-surface: #ffffff;
   --t-ink: #0f172a;
   --t-muted: #64748b;
   --t-line: #e2e8f0;
-  --t-accent: #1e40af;
-  --t-accent-soft: #dbeafe;
+  --t-accent: var(--ev-primary);
+  --t-accent-2: var(--ev-secondary);
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 22%, white);
   min-height: 100vh;
   display: flex;
   flex-direction: column;

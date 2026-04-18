@@ -23,6 +23,7 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
         if (isOpen && company) {
             setFormData({
                 name: company.name,
+                slogan: company.slogan || '',
                 summary: company.summary,
                 phone: company.phone || '',
                 email: company.email || '',
@@ -148,6 +149,17 @@ export default function EditCompanyModal({ isOpen, onClose, company, onSuccess }
                             <div className={styles.field}>
                                 <label>{t('companies.modal.form.name')}</label>
                                 <input name="name" value={formData.name || ''} onChange={handleChange} required />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label>{t('company_detail.info.slogan')}</label>
+                                <input
+                                    name="slogan"
+                                    value={formData.slogan || ''}
+                                    onChange={handleChange}
+                                    maxLength={255}
+                                    placeholder={t('companies.edit_modal.form.slogan_placeholder')}
+                                />
                             </div>
 
                             <div className={styles.field}>
