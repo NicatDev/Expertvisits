@@ -13,10 +13,10 @@ export default function UserProfileLayoutClient({ children }) {
 
     return (
         <PublicProfileProvider>
-            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            <div className={styles.shell}>
                 <ProfileHeader />
                 <ProfileTabs username={username} />
-                <div style={{ borderRadius: '8px', minHeight: '400px' }}>
+                <div className={styles.tabContentOut}>
                     {children}
                 </div>
             </div>

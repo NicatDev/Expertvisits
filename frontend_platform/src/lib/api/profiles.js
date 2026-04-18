@@ -40,7 +40,7 @@ export const profiles = {
     // Projects
     getProjects: (params) => api.get('profiles/projects/', { params }),
     addProject: (data) => api.post('profiles/projects/', data),
-    updateProject: (id, data) => api.put(`profiles/projects/${id}/`, data),
+    updateProject: (id, data) => api.patch(`profiles/projects/${id}/`, data),
     deleteProject: (id) => api.delete(`profiles/projects/${id}/`),
 
     // Profile Updates (Cover, etc.) - Actually this uses UserViewSet usually?

@@ -20,6 +20,8 @@ import styles from './style.module.scss';
  * @param {Array} [vacancies] — scope company: list from parent
  * @param {() => Promise<void>} [onRefresh] — reload list (company: loadVacancies; profile: internal)
  * @param {() => void} [onProfileExtrasRefresh] — profile: e.g. refreshProfile from context
+ * @param {number} [profileUserId] — scope profile: if set, load this user's vacancies (e.g. /user/:username); if omitted, /profile uses getMyVacancies()
+ * @param {string} [sectionTitle] — optional heading override
  */
 export default function EntityVacanciesTab({
     scope,
@@ -29,6 +31,8 @@ export default function EntityVacanciesTab({
     onRefresh,
     onProfileExtrasRefresh,
     sectionClassName = '',
+    profileUserId = null,
+    sectionTitle,
 }) {
     const { t } = useTranslation('common');
     const [vacancies, setVacancies] = useState([]);
@@ -44,14 +48,19 @@ export default function EntityVacanciesTab({
     const loadProfileVacancies = useCallback(async () => {
         setLoading(true);
         try {
-            const vacs = await business.getMyVacancies();
-            setVacancies(vacs.data.results || vacs.data || []);
+            if (profileUserId != null) {
+                const vacRes = await business.getVacancies({ posted_by: profileUserId });
+                setVacancies(vacRes.data.results || vacRes.data || []);
+            } else {
+                const vacs = await business.getMyVacancies();
+                setVacancies(vacs.data.results || vacs.data || []);
+            }
         } catch (err) {
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [profileUserId]);
 
     useEffect(() => {
         if (scope === 'profile') {
@@ -78,7 +87,7 @@ export default function EntityVacanciesTab({
     return (
         <div className={sectionClassName}>
             <div className={styles.sectionHeader}>
-                <h2>{t('profile.vacancies.title')}</h2>
+                <h2>{sectionTitle ?? t('profile.vacancies.title')}</h2>
                 {isOwner && (
                     <Button size="small" onClick={() => setModalState({ isOpen: true, data: null })}>
                         <Plus size={16} /> {t('profile.vacancies.post_new')}

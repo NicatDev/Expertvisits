@@ -7,6 +7,18 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+// Tab pages (services, projects, vacancies, …): gutter so content is not flush to the viewport on mobile.
+.tabContentOut {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .skillsGrid {
@@ -44,6 +56,27 @@
     padding: 24px;
     margin-bottom: 24px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+// Paylaşımlar tab — same white panel as .section / vacancies.
+.tabContent {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
 }
 
 .sectionHeader {

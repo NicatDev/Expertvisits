@@ -12,6 +12,20 @@ import { toast } from 'react-toastify';
 import { ExternalLink } from 'lucide-react';
 import styles from './style.module.scss';
 
+/** API may return YYYY-MM-DD or ISO datetime; <input type="date"> only accepts YYYY-MM-DD */
+function formatProjectDateForInput(value) {
+    if (value == null || value === '') return '';
+    const s = String(value).trim();
+    const m = s.match(/^(\d{4}-\d{2}-\d{2})/);
+    return m ? m[1] : '';
+}
+
+function formatProjectDateForDisplay(value) {
+    const normalized = formatProjectDateForInput(value);
+    if (normalized) return normalized;
+    return value != null && value !== '' ? String(value) : '';
+}
+
 const FormModal = ({ isOpen, onClose, title, onSubmit, loading, children, bodyStyle }) => {
     const { t } = useTranslation('common');
     const formId = 'modal-form-' + Math.random().toString(36).substr(2, 9);
@@ -54,7 +68,7 @@ function ProjectModal({ isOpen, onClose, initialData, onSave }) {
             setFormData({
                 title: initialData.title,
                 description: initialData.description,
-                date: initialData.date,
+                date: formatProjectDateForInput(initialData.date),
                 url: initialData.url || '',
             });
             setImagePreview(initialData.image || null);
@@ -353,7 +367,7 @@ export default function EntityProjectsTab({
     }
 
     return (
-        <div className={`${styles.section} ${sectionClassName}`.trim()}>
+        <div className={sectionClassName.trim()}>
             <div className={styles.sectionHeader}>
                 <h2>{t('profile.tabs.projects')}</h2>
                 {isOwner && (
@@ -374,39 +388,68 @@ export default function EntityProjectsTab({
                             onClick={() => setViewModalProject(item)}
                             role="presentation"
                         >
-                            <div className={styles.thumbWrap}>
-                                {item.image ? (
+                            {item.image ? (
+                                <div className={styles.media}>
+                                    {isOwner && (
+                                        <div className={styles.cardActions}>
+                                            <button
+                                                type="button"
+                                                title={t('profile_modals.project.edit') || 'Edit'}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openModal('project', item);
+                                                }}
+                                            >
+                                                ✎
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={styles.deleteBtn}
+                                                title={t('profile.modals.delete_title') || 'Delete'}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(item.id);
+                                                }}
+                                            >
+                                                ✖
+                                            </button>
+                                        </div>
+                                    )}
                                     <img src={item.image} alt="" className={styles.thumb} />
-                                ) : (
-                                    <div className={styles.thumbPlaceholder}>{t('profile_modals.project.no_image')}</div>
-                                )}
-                            </div>
+                                </div>
+                            ) : null}
                             <div className={styles.cardBody}>
-                                {isOwner && (
-                                    <div className={styles.cardActions}>
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openModal('project', item);
-                                            }}
-                                        >
-                                            ✎
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={styles.deleteBtn}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDelete(item.id);
-                                            }}
-                                        >
-                                            ✖
-                                        </button>
+                                {isOwner && !item.image ? (
+                                    <div className={styles.titleRow}>
+                                        <h3 className={styles.cardTitle}>{item.title}</h3>
+                                        <div className={styles.cardActionsBar}>
+                                            <button
+                                                type="button"
+                                                title={t('profile_modals.project.edit') || 'Edit'}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openModal('project', item);
+                                                }}
+                                            >
+                                                ✎
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={styles.deleteBtn}
+                                                title={t('profile.modals.delete_title') || 'Delete'}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(item.id);
+                                                }}
+                                            >
+                                                ✖
+                                            </button>
+                                        </div>
                                     </div>
+                                ) : (
+                                    <h3>{item.title}</h3>
                                 )}
-                                <h3>{item.title}</h3>
-                                <div className={styles.date}>{item.date}</div>
+                                <div className={styles.date}>{formatProjectDateForDisplay(item.date)}</div>
                                 <p>{item.description}</p>
                                 <div className={styles.readMore}>
                                     {t('profile_modals.project.read_more')} →
@@ -441,7 +484,8 @@ export default function EntityProjectsTab({
                 >
                     <div style={{ padding: '0 4px' }}>
                         <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '16px' }}>
-                            {t('profile_modals.project.date_label')}: {viewModalProject.date}
+                            {t('profile_modals.project.date_label')}:{' '}
+                            {formatProjectDateForDisplay(viewModalProject.date)}
                         </div>
                         <p style={{ color: '#374151', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>
                             {viewModalProject.description}

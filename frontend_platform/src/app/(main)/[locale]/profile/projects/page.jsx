@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from '@/i18n/client';
 import { useProfile } from '../context';
 import EntityProjectsTab from '@/components/advanced/EntityProjectsTab';
+import styles from '../style.module.scss';
 
 export default function ProjectsPage() {
     const { t } = useTranslation('common');
@@ -18,7 +19,7 @@ export default function ProjectsPage() {
             scope="profile"
             isOwner={isOwner}
             profileUserId={profile.id}
-            sectionClassName=""
+            sectionClassName={styles.section}
         />
     );
 }

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { business } from '@/lib/api';
 import { MapPin, Globe, Linkedin, Instagram, Facebook, Edit, Phone, Mail, Award, Users, Target, Briefcase, Camera, Trash2, Edit2 } from 'lucide-react';
@@ -19,7 +18,6 @@ export default function CompanyDetailClient({ params }) {
     const resolvedParams = use(params);
     const slug = resolvedParams.slug;
 
-    const router = useRouter();
     const { user } = useAuth();
     const [company, setCompany] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -243,15 +241,13 @@ export default function CompanyDetailClient({ params }) {
                         </div>
                     </div>
 
-                    <div className={styles.actions}>
-                        {isOwner ? (
+                    {isOwner && (
+                        <div className={styles.actions}>
                             <Button variant="outline" onClick={handleEditCompany} icon={<Edit size={16} />}>
                                 {t('company_detail.edit_company')}
                             </Button>
-                        ) : (
-                            <Button variant="primary">{t('company_detail.follow')}</Button>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -259,8 +255,8 @@ export default function CompanyDetailClient({ params }) {
             <div className={styles.tabs}>
                 <button className={activeTab === 'about' ? styles.activeTab : ''} onClick={() => setActiveTab('about')}>{t('company_detail.tabs.about')}</button>
                 <button className={activeTab === 'services' ? styles.activeTab : ''} onClick={() => setActiveTab('services')}>{t('company_detail.tabs.services')}</button>
-                <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
                 <button className={activeTab === 'projects' ? styles.activeTab : ''} onClick={() => setActiveTab('projects')}>{t('company_detail.tabs.projects')}</button>
+                <button className={activeTab === 'vacancies' ? styles.activeTab : ''} onClick={() => setActiveTab('vacancies')}>{t('company_detail.tabs.vacancies')}</button>
             </div>
 
             {/* Content */}
@@ -381,40 +377,34 @@ export default function CompanyDetailClient({ params }) {
             )}
 
             {activeTab === 'services' && (
-                <div className={styles.section}>
-                    <EntityServicesTab
-                        scope="company"
-                        isOwner={isOwner}
-                        companyId={company.id}
-                        services={company.services}
-                        onRefresh={loadCompany}
-                        sectionClassName=""
-                    />
-                </div>
-            )}
-            {activeTab === 'vacancies' && (
-                <div className={styles.section}>
-                    <EntityVacanciesTab
-                        scope="company"
-                        isOwner={isOwner}
-                        companyId={company.id}
-                        vacancies={vacancies}
-                        onRefresh={() => loadVacancies(company.id)}
-                        sectionClassName=""
-                    />
-                </div>
+                <EntityServicesTab
+                    scope="company"
+                    isOwner={isOwner}
+                    companyId={company.id}
+                    services={company.services}
+                    onRefresh={loadCompany}
+                    sectionClassName={styles.section}
+                />
             )}
             {activeTab === 'projects' && (
-                <div className={styles.section}>
-                    <EntityProjectsTab
-                        scope="company"
-                        isOwner={isOwner}
-                        companyId={company.id}
-                        projects={company.company_projects}
-                        onRefresh={loadCompany}
-                        sectionClassName=""
-                    />
-                </div>
+                <EntityProjectsTab
+                    scope="company"
+                    isOwner={isOwner}
+                    companyId={company.id}
+                    projects={company.company_projects}
+                    onRefresh={loadCompany}
+                    sectionClassName={styles.section}
+                />
+            )}
+            {activeTab === 'vacancies' && (
+                <EntityVacanciesTab
+                    scope="company"
+                    isOwner={isOwner}
+                    companyId={company.id}
+                    vacancies={vacancies}
+                    onRefresh={() => loadVacancies(company.id)}
+                    sectionClassName={styles.section}
+                />
             )}
 
             <EditCompanyModal

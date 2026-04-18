@@ -1,22 +1,18 @@
-.section {
-    padding: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
+// Match EntityServicesTab header rhythm so profile vs company feel the same.
 .sectionHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 10px;
 
     h2 {
         font-size: 1.5rem;
         font-weight: 600;
         color: #111827;
         margin: 0;
+        line-height: 1.25;
     }
 }
 
@@ -31,7 +27,9 @@
     border: none;
     cursor: pointer;
     font-weight: 500;
+    font-size: 0.9375rem;
     transition: background 0.2s;
+    flex-shrink: 0;
 
     &:hover {
         background: #1d4ed8;
@@ -40,99 +38,201 @@
 
 .empty {
     text-align: center;
-    padding: 40px;
-    background: white;
+    padding: 48px 24px;
+    background: #f9fafb;
     border-radius: 12px;
     color: #6b7280;
+    font-size: 0.95rem;
+    border: 1px dashed #e5e7eb;
 }
 
 .projectsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
 
     @media (max-width: 640px) {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 }
 
 .projectCard {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     border: 1px solid #e5e7eb;
     overflow: hidden;
     cursor: pointer;
-    transition: box-shadow 0.2s;
     display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    min-height: 120px;
+    flex-direction: column;
+    transition:
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
     &:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        border-color: #bfdbfe;
     }
 }
 
-.thumbWrap {
-    flex: 0 0 100px;
-    width: 100px;
-    align-self: stretch;
+.media {
+    position: relative;
+    flex-shrink: 0;
+    min-height: 140px;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f3f4f6;
-    padding: 8px;
+    padding: 20px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.cardActions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+
+    button {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        line-height: 1;
+        font-size: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition:
+            background 0.15s,
+            border-color 0.15s;
+
+        &:hover {
+            background: #fff;
+            border-color: #cbd5e1;
+        }
+    }
+
+    .deleteBtn {
+        background: #fff;
+        color: #dc2626;
+        border-color: #fecaca;
+
+        &:hover {
+            background: #fef2f2;
+            border-color: #f87171;
+        }
+    }
 }
 
 .thumb {
-    width: 100%;
-    max-width: 84px;
-    height: 84px;
+    width: 112px;
+    height: 112px;
     object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid #2563eb;
+    border-radius: 12px;
+    border: 1px solid #bfdbfe;
     display: block;
+    box-shadow: 0 1px 6px rgba(59, 130, 246, 0.07);
 }
 
-.thumbPlaceholder {
-    width: 84px;
-    height: 84px;
-    border-radius: 10px;
-    border: 2px solid #2563eb;
+.titleRow {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9ca3af;
-    font-size: 0.75rem;
-    text-align: center;
-    padding: 4px;
-    background: #fff;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+}
+
+.cardActionsBar {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+
+    button {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        line-height: 1;
+        font-size: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition:
+            background 0.15s,
+            border-color 0.15s;
+
+        &:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+    }
+
+    .deleteBtn {
+        color: #dc2626;
+        border-color: #fecaca;
+
+        &:hover {
+            background: #fef2f2;
+            border-color: #f87171;
+        }
+    }
 }
 
 .cardBody {
-    flex: 1;
-    padding: 14px 16px;
+    padding: 18px 18px 16px;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    gap: 0;
     min-width: 0;
-    position: relative;
 
     h3 {
-        margin: 0 0 6px 0;
-        font-size: 1.05rem;
-        color: #111827;
-        line-height: 1.3;
+        margin: 0 0 8px 0;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        color: #0f172a;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .date {
-        font-size: 0.85rem;
-        color: #6b7280;
-        margin-bottom: 8px;
+        font-size: 0.8125rem;
+        color: #64748b;
+        margin-bottom: 12px;
+        font-weight: 500;
     }
 
     p {
-        color: #4b5563;
-        font-size: 0.9rem;
+        color: #475569;
+        font-size: 0.9375rem;
+        line-height: 1.55;
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -142,32 +242,12 @@
     }
 
     .readMore {
-        margin-top: 10px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid #f1f5f9;
         color: #2563eb;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-}
-
-.cardActions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 8px;
-
-    button {
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
-        padding: 6px;
-        cursor: pointer;
-        line-height: 1;
-    }
-
-    .deleteBtn {
-        background: rgba(255, 0, 0, 0.85);
-        color: white;
-        border-color: transparent;
+        font-weight: 600;
+        font-size: 0.875rem;
+        letter-spacing: 0.01em;
     }
 }

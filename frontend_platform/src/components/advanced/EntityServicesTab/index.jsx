@@ -123,7 +123,7 @@ export default function EntityServicesTab({
     }
 
     return (
-        <div className={`${styles.section} ${sectionClassName}`.trim()}>
+        <div className={sectionClassName.trim()}>
             <div className={styles.sectionHeader}>
                 <h2>{t('profile.tabs.services') || 'Services'}</h2>
                 {isOwner && (
