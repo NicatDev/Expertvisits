@@ -26,6 +26,9 @@ const ProfileHeader = ({
         const file = e.target.files[0];
         if (!file) return;
 
+        setActionModal({ isOpen: false, type: null });
+        setConfirmationModal((prev) => ({ ...prev, isOpen: false }));
+
         const reader = new FileReader();
         reader.onload = () => {
             cropTypeRef.current = type;
@@ -69,6 +72,19 @@ const ProfileHeader = ({
         }
     }, [onUpdateProfile]);
 
+    /** Əsas avatar faylı varsa “şəkil var” — sıxılmış törəmədir; yoxdursa birbaşa yükləmə */
+    const hasAvatarPhoto = Boolean(profile?.avatar);
+
+    const openAvatarPickerOrMenu = (e) => {
+        if (e?.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        if (e?.type === 'keydown' && (e.key === 'Enter' || e.key === ' ')) e.preventDefault();
+        if (hasAvatarPhoto) {
+            setActionModal({ isOpen: true, type: 'avatar' });
+        } else {
+            fileInputRef.current?.click();
+        }
+    };
+
     return (
         <>
         <div className={styles.header}>
@@ -109,7 +125,7 @@ const ProfileHeader = ({
                             <Edit2 size={20} />
                             <span>{t('profile.avatar_modal.change')}</span>
                         </div>
-                        {(profile.avatar || profile.avatar_compressed) && (
+                        {hasAvatarPhoto && (
                             <div
                                 style={{ padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: 'red' }}
                                 onClick={() => {
@@ -174,16 +190,11 @@ const ProfileHeader = ({
             <div className={styles.info}>
                 <div
                     className={styles.avatarContainer}
-                    onClick={() => setActionModal({ isOpen: true, type: 'avatar' })}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setActionModal({ isOpen: true, type: 'avatar' });
-                        }
-                    }}
+                    onClick={openAvatarPickerOrMenu}
+                    onKeyDown={openAvatarPickerOrMenu}
                     role="button"
                     tabIndex={0}
-                    title={t('profile.edit_avatar')}
+                    title={hasAvatarPhoto ? t('profile.edit_avatar') : t('profile.add_avatar')}
                 >
                     <Avatar user={profile} size={120} className={styles.avatar} />
                     <span className={styles.avatarEditBadge} aria-hidden="true">

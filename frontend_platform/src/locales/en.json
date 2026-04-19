@@ -379,6 +379,7 @@
         "delete_cover": "Delete Cover",
         "avatar": "Avatar",
         "edit_avatar": "Edit Avatar",
+        "add_avatar": "Add profile photo",
         "avatar_modal": {
             "title": "Update Profile Picture",
             "change": "Change Photo",

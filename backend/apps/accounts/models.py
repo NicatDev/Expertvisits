@@ -102,6 +102,9 @@ class User(AbstractUser):
         if self.pk:
             old = User.objects.filter(pk=self.pk).first()
             if old:
+                # Yetim thumbnail: əsas avatar yoxdursa sıxılmış da təmizlənsin
+                if not self.avatar and self.avatar_compressed:
+                    self.avatar_compressed = None
                 if old.avatar != self.avatar:
                     if self.avatar:
                         compress_image(self.avatar, format='PNG')
