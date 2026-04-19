@@ -55,7 +55,8 @@ const Avatar = ({ user, size = 48, className = '' }) => {
                 width: size, 
                 height: size, 
                 backgroundColor: getBgColor(),
-                fontSize: `${size * 0.4}px`
+                fontSize: `${size * 0.4}px`,
+                display: 'flex',
             }}
         >
             {getInitial()}
