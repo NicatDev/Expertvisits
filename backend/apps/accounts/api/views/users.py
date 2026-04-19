@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count, Prefetch, Q
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from apps.accounts.models import User, RegistrationSession
 from apps.accounts.api.serializers import (
     UserSerializer,
@@ -181,6 +182,17 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user.is_authenticated:
             queryset = with_connection_annotations(queryset, self.request.user)
         return queryset
+
+    def get_object(self):
+        """
+        Unicode username-lərdə URL encode/decode və böyük-kiçik hərf fərqlərindən
+        yaranan 404-ləri azaltmaq üçün case-insensitive lookup.
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        username = self.kwargs.get(self.lookup_field)
+        obj = get_object_or_404(queryset, username__iexact=username)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
