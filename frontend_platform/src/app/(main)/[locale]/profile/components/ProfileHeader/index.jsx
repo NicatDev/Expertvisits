@@ -109,7 +109,7 @@ const ProfileHeader = ({
                             <Edit2 size={20} />
                             <span>{t('profile.avatar_modal.change')}</span>
                         </div>
-                        {profile.avatar && (
+                        {(profile.avatar || profile.avatar_compressed) && (
                             <div
                                 style={{ padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: 'red' }}
                                 onClick={() => {
@@ -172,14 +172,23 @@ const ProfileHeader = ({
             </div>
 
             <div className={styles.info}>
-                <div className={styles.avatarContainer}>
+                <div
+                    className={styles.avatarContainer}
+                    onClick={() => setActionModal({ isOpen: true, type: 'avatar' })}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setActionModal({ isOpen: true, type: 'avatar' });
+                        }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    title={t('profile.edit_avatar')}
+                >
                     <Avatar user={profile} size={120} className={styles.avatar} />
-                    <div
-                        className={styles.avatarOverlay}
-                        onClick={() => setActionModal({ isOpen: true, type: 'avatar' })}
-                    >
-                        <Edit2 size={24} />
-                    </div>
+                    <span className={styles.avatarEditBadge} aria-hidden="true">
+                        <Edit2 size={16} strokeWidth={2.25} />
+                    </span>
                     <input type="file" accept="image/*" hidden ref={fileInputRef} onChange={(e) => handleFileSelect(e, 'avatar')} />
                 </div>
 

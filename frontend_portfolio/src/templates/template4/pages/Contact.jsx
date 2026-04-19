@@ -22,17 +22,25 @@ export default function Contact({ user }) {
         setIsMounted(true);
     }, []);
 
+    const profile = user?.user || {};
+    const ownerUsername = profile.username || user?.username;
+
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!ownerUsername) {
+            setStatus('error');
+            setErrorMessage(t('portfolio.contactFormError'));
+            return;
+        }
         setStatus('loading');
         setErrorMessage('');
 
         try {
-            await api.post(`/websites/${user.username}/contact/`, formData);
+            await api.post(`/websites/${ownerUsername}/contact/`, formData);
             setStatus('success');
             setFormData({ name: '', email: '', subject: '', message: '' });
             
@@ -45,7 +53,6 @@ export default function Contact({ user }) {
         }
     };
 
-    const profile = user.user || {};
     const phone_number = profile.phone_number || null;
 
     if (!isMounted) return null;
