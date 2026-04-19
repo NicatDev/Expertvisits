@@ -8,10 +8,13 @@ import OpenToWork from '../../../profile/components/OpenToWork';
 import ProfileSummary from '../../../profile/components/ProfileSummary';
 import styles from './style.module.scss';
 import ExperienceDisplay from '@/components/profile/ExperienceDisplay';
+import { labelForSubCategory } from '@/lib/utils/subcategory';
 
 export default function UserAboutPage() {
     const { profile, loading: profileLoading, isMe } = usePublicProfile();
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+
+    const professionLabel = labelForSubCategory(profile?.profession_sub_category, i18n.language);
 
     const [experiences, setExperiences] = useState([]);
     const [educations, setEducations] = useState([]);
@@ -72,23 +75,17 @@ export default function UserAboutPage() {
                                 <div key={field} className={styles.editableField}>
                                     <span className={styles.label}>{t(`profile.${field}`) || field.replace('_', ' ')}</span>
                                     <div className={styles.value}>
-                                        {field === 'profession' ? (
-                                            <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
-                                                {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || t('profile.not_set')}
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: profile[field] ? '#333' : '#999' }}>
-                                                {profile[field] || t('profile.not_set')}
-                                            </span>
-                                        )}
+                                        <span style={{ color: profile[field] ? '#333' : '#999' }}>
+                                            {profile[field] || t('profile.not_set')}
+                                        </span>
                                     </div>
                                 </div>
                             ))}
                         <div className={styles.editableField}>
                             <span className={styles.label}>{t('profile.profession')}</span>
                             <div className={styles.value}>
-                                <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
-                                    {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || t('profile.not_set')}
+                                <span style={{ color: professionLabel ? '#333' : '#999' }}>
+                                    {professionLabel || t('profile.not_set')}
                                 </span>
                             </div>
                         </div>
