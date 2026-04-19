@@ -8,6 +8,7 @@ import { useInboxSocket } from '@/lib/contexts/InboxSocketContext';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
 import Sure from '@/components/ui/sure';
+import { userProfileUsernameCandidates } from '@/lib/userProfileUsernameCandidates';
 
 const PublicProfileContext = createContext();
 
@@ -35,27 +36,38 @@ export const PublicProfileProvider = ({ children }) => {
 
     const loadProfile = useCallback(async (uName) => {
         setLoading(true);
+        let lastErr = null;
         try {
-            const res = await accounts.getUser(uName);
-            const targetUser = res.data;
+            const candidates = userProfileUsernameCandidates(uName);
+            for (const u of candidates) {
+                try {
+                    const res = await accounts.getUser(u);
+                    const targetUser = res.data;
 
-            if (!targetUser) {
-                setProfile(null);
-                setLoading(false);
-                return;
+                    if (!targetUser) {
+                        continue;
+                    }
+
+                    setProfile(targetUser);
+                    setIsFollowing(targetUser.is_following || false);
+                    setFollowersCount(targetUser.followers_count || 0);
+                    setFollowingCount(targetUser.following_count || 0);
+                    setError(null);
+                    return;
+                } catch (err) {
+                    lastErr = err;
+                    if (err.response?.status !== 404) {
+                        console.error('Load profile failed', err);
+                        setError(err);
+                        return;
+                    }
+                }
             }
-
-            setProfile(targetUser);
-            setIsFollowing(targetUser.is_following || false);
-            setFollowersCount(targetUser.followers_count || 0);
-            setFollowingCount(targetUser.following_count || 0);
-        } catch (err) {
-            if (err.response?.status === 404) {
+            if (lastErr?.response?.status === 404) {
                 notFound();
                 return;
             }
-            console.error("Load profile failed", err);
-            setError(err);
+            setProfile(null);
         } finally {
             setLoading(false);
         }

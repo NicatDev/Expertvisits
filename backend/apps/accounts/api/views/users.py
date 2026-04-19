@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count, Prefetch, Q
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 from apps.accounts.models import User, RegistrationSession
 from apps.accounts.api.serializers import (
     UserSerializer,
@@ -185,12 +185,24 @@ class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         """
-        Unicode username-lərdə URL encode/decode və böyük-kiçik hərf fərqlərindən
-        yaranan 404-ləri azaltmaq üçün case-insensitive lookup.
+        Case-insensitive + URL decode + NFC + camelCase→underscore variant (məs. DərgahAbdullayev / Dərgah_Abdullayev).
         """
+        import unicodedata
+        from urllib.parse import unquote
+
         queryset = self.filter_queryset(self.get_queryset())
-        username = self.kwargs.get(self.lookup_field)
-        obj = get_object_or_404(queryset, username__iexact=username)
+        raw = self.kwargs.get(self.lookup_field) or ""
+        s = unicodedata.normalize("NFC", unquote(str(raw)).strip())
+        q = Q(username__iexact=s)
+        if "_" not in s:
+            for i in range(1, len(s)):
+                ch = s[i]
+                if "A" <= ch <= "Z":
+                    q |= Q(username__iexact=s[:i] + "_" + s[i:])
+                    break
+        obj = queryset.filter(q).first()
+        if obj is None:
+            raise Http404()
         self.check_object_permissions(self.request, obj)
         return obj
 

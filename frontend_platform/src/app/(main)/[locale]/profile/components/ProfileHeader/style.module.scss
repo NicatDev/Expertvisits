@@ -102,14 +102,12 @@
     }
 }
 
-/* Placeholder üçün flex mərkəzləşmə saxlanılmalıdır — display:block hərfi yuxarı itələyir */
+/* Avatar + placeholder: flex mərkəzləşmə; dairəvi kəsmə şəkil üçün */
 .avatar {
-    border-radius: 50%;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
+    border-radius: 50%;
     overflow: hidden;
 
     :global(img) {

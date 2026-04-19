@@ -3,6 +3,7 @@ import UserProfileLayoutClient from './UserProfileLayoutClient';
 import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
 import { buildNoIndexMetadata } from '@/lib/seo/meta/buildMetadata';
 import { getMetaBundle } from '@/lib/seo/meta/loadMeta';
+import { userProfileUsernameCandidates } from '@/lib/userProfileUsernameCandidates';
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://api.expertvisits.com/api/').replace(
   /\/?$/,
@@ -15,10 +16,15 @@ export async function generateMetadata({ params }) {
   const pathname = `/${loc}/user/${username}`;
   let profile = null;
   try {
-    const res = await fetch(`${API_BASE}accounts/users/${encodeURIComponent(username)}/`, {
-      next: { revalidate: 120 },
-    });
-    if (res.ok) profile = await res.json();
+    for (const u of userProfileUsernameCandidates(username)) {
+      const res = await fetch(`${API_BASE}accounts/users/${encodeURIComponent(u)}/`, {
+        next: { revalidate: 120 },
+      });
+      if (res.ok) {
+        profile = await res.json();
+        break;
+      }
+    }
   } catch {
     /* fallback meta below */
   }
@@ -50,12 +56,15 @@ async function assertUserProfileExists(username) {
   if (!username || username === 'undefined') {
     notFound();
   }
-  const res = await fetch(`${API_BASE}accounts/users/${encodeURIComponent(username)}/`, {
-    cache: 'no-store',
-  });
-  if (res.status === 404) {
-    notFound();
+  for (const u of userProfileUsernameCandidates(username)) {
+    const res = await fetch(`${API_BASE}accounts/users/${encodeURIComponent(u)}/`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      return;
+    }
   }
+  notFound();
 }
 
 export default async function UserProfileLayout({ children, params }) {
