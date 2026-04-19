@@ -4,22 +4,26 @@ import { usePathname, useParams } from 'next/navigation';
 import { useTranslation } from '@/i18n/client';
 import { withLocale } from '@/lib/i18n/routing';
 import ScrollableProfileTabs from '@/components/ui/ScrollableProfileTabs';
+import { usePublicProfile } from '../../context';
 
 const ProfileTabs = ({ username }) => {
     const pathname = usePathname();
     const params = useParams();
     const locale = params?.locale || 'az';
     const { t } = useTranslation('common');
+    const { profile } = usePublicProfile();
+    const tabUsername = profile?.username || username;
 
-    const isPosts = pathname.endsWith('/posts');
-    const isVacancies = pathname.endsWith('/vacancies');
-    const isServices = pathname.endsWith('/services');
-    const isProjects = pathname.endsWith('/projects');
+    const pathNorm = (pathname || '/').replace(/\/+$/, '') || '/';
+    const isPosts = pathNorm.endsWith('/posts');
+    const isVacancies = pathNorm.endsWith('/vacancies');
+    const isServices = pathNorm.endsWith('/services');
+    const isProjects = pathNorm.endsWith('/projects');
     const isAbout = !isPosts && !isVacancies && !isServices && !isProjects;
 
     const tabs = useMemo(
         () => {
-            const u = encodeURIComponent(username);
+            const u = encodeURIComponent(tabUsername);
             const p = (suffix) => withLocale(locale, `/user/${u}${suffix}`);
             return [
                 {
@@ -49,7 +53,7 @@ const ProfileTabs = ({ username }) => {
                 },
             ];
         },
-        [username, locale, t, isAbout, isServices, isProjects, isPosts, isVacancies]
+        [tabUsername, locale, t, isAbout, isServices, isProjects, isPosts, isVacancies]
     );
 
     return <ScrollableProfileTabs tabs={tabs} />;
