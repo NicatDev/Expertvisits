@@ -14,6 +14,13 @@ User = get_user_model()
 
 def inbox_to_dict(n: InboxNotification, request=None) -> dict[str, Any]:
     actor = n.actor
+    cr_status = None
+    if n.connection_request_id:
+        try:
+            cr = n.connection_request
+            cr_status = cr.status if cr is not None else None
+        except Exception:
+            cr_status = None
     out = {
         "id": n.id,
         "kind": n.kind,
@@ -25,6 +32,7 @@ def inbox_to_dict(n: InboxNotification, request=None) -> dict[str, Any]:
         "sort_weight": n.sort_weight,
         "actor_id": n.actor_id,
         "connection_request_id": n.connection_request_id,
+        "connection_request_status": cr_status,
         "chat_message_id": n.chat_message_id,
         "chat_id": n.data.get("chat_id"),
     }

@@ -39,7 +39,7 @@ class InboxListView(APIView):
         before_id = request.query_params.get("before_id")
         qs = (
             InboxNotification.objects.filter(recipient=user)
-            .select_related("actor")
+            .select_related("actor", "connection_request")
             .order_by("-sort_weight", "-id")
         )
         if before_id:

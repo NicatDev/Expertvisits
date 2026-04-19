@@ -9,6 +9,8 @@ class InboxNotificationSerializer(serializers.ModelSerializer):
     actor_last_name = serializers.SerializerMethodField()
     actor_avatar = serializers.SerializerMethodField()
     actor_avatar_compressed = serializers.SerializerMethodField()
+    # connection_request üçün: pending | accepted | declined (DB-də ConnectionRequest.status)
+    connection_request_status = serializers.SerializerMethodField()
 
     class Meta:
         model = InboxNotification
@@ -23,6 +25,7 @@ class InboxNotificationSerializer(serializers.ModelSerializer):
             "sort_weight",
             "actor_id",
             "connection_request_id",
+            "connection_request_status",
             "chat_message_id",
             "actor_username",
             "actor_first_name",
@@ -58,6 +61,14 @@ class InboxNotificationSerializer(serializers.ModelSerializer):
 
     def get_actor_avatar_compressed(self, obj):
         return self._abs(obj.actor.avatar_compressed) if obj.actor else None
+
+    def get_connection_request_status(self, obj):
+        if obj.kind != InboxNotification.Kind.CONNECTION_REQUEST or not obj.connection_request_id:
+            return None
+        cr = obj.connection_request
+        if cr is None:
+            return None
+        return cr.status
 
 
 class MarkInboxReadSerializer(serializers.Serializer):

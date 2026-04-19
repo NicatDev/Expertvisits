@@ -212,8 +212,17 @@ export default function NotificationsPage() {
             ) : (
                 <ul className={styles.list}>
                     {items.map((n) => {
+                        const apiStatus = n.connection_request_status;
+                        const resolvedFromApi =
+                            apiStatus === 'accepted'
+                                ? 'accepted'
+                                : apiStatus === 'declined'
+                                  ? 'declined'
+                                  : undefined;
                         const connOutcome =
-                            n.connection_request_id ? connectionOutcomeByRequestId[n.connection_request_id] : undefined;
+                            n.connection_request_id
+                                ? connectionOutcomeByRequestId[n.connection_request_id] ?? resolvedFromApi
+                                : undefined;
                         const isDeleting = deletingIds.has(n.id);
                         return (
                         <li key={n.id} className={styles.card}>
