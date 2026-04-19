@@ -103,11 +103,14 @@ class User(AbstractUser):
             old = User.objects.filter(pk=self.pk).first()
             if old:
                 if old.avatar != self.avatar:
-                    compress_image(self.avatar, format='PNG')
-                    # Create compressed version (300x300)
-                    compressed = create_compressed_avatar(self.avatar)
-                    if compressed:
-                        self.avatar_compressed.save(compressed.name, compressed, save=False)
+                    if self.avatar:
+                        compress_image(self.avatar, format='PNG')
+                        compressed = create_compressed_avatar(self.avatar)
+                        if compressed:
+                            self.avatar_compressed.save(compressed.name, compressed, save=False)
+                    else:
+                        # Main avatar silinəndə thumbnail də təmizlənməlidir (UI avatar_compressed-ə üstünlük verir)
+                        self.avatar_compressed = None
                 elif self.avatar and not self.avatar_compressed:
                     # Case: Avatar exists but compressed doesn't (backfill)
                     compressed = create_compressed_avatar(self.avatar)

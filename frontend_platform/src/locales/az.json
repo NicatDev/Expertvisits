@@ -464,6 +464,11 @@
         },
         "not_set": "Təyin edilməyib",
         "professional": "Peşəkar",
+        "summary": "Xülasə",
+        "summary_placeholder": "Özünüz haqqında qısa məlumat yazın...",
+        "no_summary": "Hələ xülasə əlavə edilməyib.",
+        "read_more": "Daha çox oxu",
+        "read_less": "Az göstər",
         "vacancies": {
             "title": "Vakansiyalarım",
             "post_new": "Yeni Vakansiya",

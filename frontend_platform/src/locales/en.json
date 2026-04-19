@@ -462,6 +462,11 @@
         },
         "not_set": "Not set",
         "professional": "Professional",
+        "summary": "Summary",
+        "summary_placeholder": "Write a brief summary about yourself...",
+        "no_summary": "No summary provided yet.",
+        "read_more": "Read more",
+        "read_less": "Read less",
         "vacancies": {
             "title": "My Vacancies",
             "post_new": "Post New",

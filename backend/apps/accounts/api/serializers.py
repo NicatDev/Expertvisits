@@ -66,7 +66,12 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         # read_only_fields = ['username', 'email'] # Username/Email handled by default logic? 
         # Wait, RegisterSerializer usually handles creation, so fields should be writable.
-        extra_kwargs = {'password': {'write_only': True}}
+        read_only_fields = ['avatar_compressed']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'avatar': {'allow_null': True},
+            'cover_image': {'allow_null': True},
+        }
     
     def create(self, validated_data):
         interests_ids = validated_data.pop('interests', [])
