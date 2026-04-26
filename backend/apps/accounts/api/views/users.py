@@ -2,10 +2,12 @@ from rest_framework import generics, permissions, filters, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Count, Prefetch, Q, OuterRef, Subquery, IntegerField, F
+from django.db.models.functions import Coalesce
 from django.db import transaction
 from django.http import Http404
 from apps.accounts.models import User, RegistrationSession
+from apps.content.models import Article, Quiz
 from apps.accounts.api.serializers import (
     UserSerializer,
     RecommendedUserSerializer,
@@ -87,17 +89,27 @@ class UserExpertListAPIView(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['username', 'first_name', 'last_name']
-    ordering_fields = ['followers_count', 'date_joined']
-    ordering = ['-date_joined']
+    ordering_fields = ['followers_count', 'date_joined', 'content_score']
+    ordering = ['-content_score', '-followers_count']
 
     def get_queryset(self):
+        articles_sq = Article.objects.filter(author=OuterRef('pk')).values('author').annotate(c=Count('id')).values('c')
+        quizzes_sq = Quiz.objects.filter(author=OuterRef('pk')).values('author').annotate(c=Count('id')).values('c')
+
         qs = (
             User.objects.filter(is_searchable=True)
             .select_related('profession_sub_category', 'website')
             .prefetch_related(
                 Prefetch('educations', queryset=Education.objects.order_by('-start_date', '-id'))
             )
-            .annotate(followers_count=Count('followers', distinct=True))
+            .annotate(
+                followers_count=Count('followers', distinct=True),
+                article_count=Coalesce(Subquery(articles_sq, output_field=IntegerField()), 0),
+                quiz_count=Coalesce(Subquery(quizzes_sq, output_field=IntegerField()), 0)
+            )
+            .annotate(
+                content_score=F('article_count') + F('quiz_count')
+            )
         )
         user = self.request.user
         if user.is_authenticated:
