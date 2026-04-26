@@ -136,6 +136,14 @@ export function expandSitemapEntries(sitemapData, seen) {
             continue;
         }
 
+        if (path.startsWith('/quiz/')) {
+            const slug = path.slice('/quiz/'.length).replace(/\/$/, '');
+            if (!slug) continue;
+            const lang = itemLang || 'az';
+            pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${lang}/quiz/${slug}`, item));
+            continue;
+        }
+
         const vacancyDetail = path.match(/^\/vacancies\/([^/]+)$/);
         if (vacancyDetail) {
             const seg = vacancyDetail[1];

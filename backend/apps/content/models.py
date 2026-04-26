@@ -68,16 +68,25 @@ class Article(models.Model):
         return self.title
 
 class Quiz(models.Model):
+    LANGUAGE_CHOICES = [
+        ('az', 'Azerbaijani'),
+        ('en', 'English'),
+        ('ru', 'Russian'),
+    ]
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quizzes')
     sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, default='az', db_index=True)
     likes = GenericRelation(Like)
     comments = GenericRelation(Comment)
     created_at = models.DateTimeField(auto_now_add=True)
     score = models.IntegerField(default=0, db_index=True)
 
     def save(self, *args, **kwargs):
+        if not self.language or self.language == 'az':
+            self.language = detect_language(self.title)
+
         if not self.slug:
             base_slug = custom_slugify(self.title)
             if len(base_slug) > 50:
