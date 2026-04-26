@@ -167,10 +167,16 @@ class PollVote(models.Model):
 
 
 class Collection(models.Model):
+    LANGUAGE_CHOICES = [
+        ('az', 'Azerbaijani'),
+        ('en', 'English'),
+        ('ru', 'Russian'),
+    ]
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collections')
     title = models.CharField(max_length=255, db_index=True)
     summary = models.TextField(blank=True, default='')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, default='az', db_index=True)
     view_count = models.PositiveIntegerField(default=0, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -179,6 +185,9 @@ class Collection(models.Model):
         ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
+        if not getattr(self, 'language', None) or self.language == 'az':
+            self.language = detect_language(f"{self.title} {self.summary}")
+
         if not self.slug:
             base_slug = custom_slugify(self.title)
             if len(base_slug) > 70:

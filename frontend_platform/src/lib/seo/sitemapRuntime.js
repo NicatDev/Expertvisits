@@ -144,6 +144,14 @@ export function expandSitemapEntries(sitemapData, seen) {
             continue;
         }
 
+        if (path.startsWith('/collections/')) {
+            const slug = path.slice('/collections/'.length).replace(/\/$/, '');
+            if (!slug) continue;
+            const lang = itemLang || 'az';
+            pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${lang}/collections/${slug}`, item));
+            continue;
+        }
+
         const vacancyDetail = path.match(/^\/vacancies\/([^/]+)$/);
         if (vacancyDetail) {
             const seg = vacancyDetail[1];

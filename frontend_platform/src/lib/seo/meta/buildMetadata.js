@@ -241,6 +241,51 @@ export function buildQuizMetadata({ siteOrigin, quiz, slug, routeLocale }) {
 }
 
 /**
+ * Kolleksiya detalı — məqalə/vakansiya məntiqi ilə eyni
+ */
+export function buildCollectionMetadata({ siteOrigin, collection, slug, routeLocale }) {
+  const contentLng = collection.language || 'az';
+  const t = getMetaBundle(contentLng);
+  const suffix = '| Expert Visits';
+  const title = `${collection?.title || 'Collection'} ${suffix}`.trim();
+  const description = truncate(collection?.summary || collection?.title || 'Collection', 160);
+  
+  const canonicalPath = `/${contentLng}/collections/${slug}`;
+  const canonical = canonicalUrlForPathname(siteOrigin, canonicalPath);
+  const isIndexed = routeLocale === contentLng;
+  const imgPath = t.ogImageDefault.startsWith('/') ? t.ogImageDefault : `/${t.ogImageDefault}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    robots: isIndexed
+      ? {
+          index: true,
+          follow: true,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        }
+      : { index: false, follow: true },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: t.siteName,
+      type: 'website',
+      locale: localeOg[contentLng] || 'az_AZ',
+      images: [{ url: imgPath, width: 800, height: 600, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imgPath],
+    },
+  };
+}
+
+/**
  * Şirkət detalı (platform /[locale]/companies/[slug]) — noindex; açıq ünvan mikrosaytdır (/c/…).
  */
 export function buildCompanyDetailMetadata({ siteOrigin, company, slug, locale }) {

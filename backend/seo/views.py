@@ -5,7 +5,7 @@ from rest_framework import permissions
 from apps.accounts.models import User
 from apps.business.models import CompanyWebsite, Vacancy
 from apps.business.company_website_visibility import public_company_site_url
-from apps.content.models import Article, Quiz
+from apps.content.models import Article, Quiz, Collection
 
 
 CHUNK_LIMIT_DEFAULT = 45000
@@ -85,6 +85,15 @@ def _iter_dynamic_url_dicts():
             'language': getattr(q, 'language', 'az'),
         }
 
+    for c in Collection.objects.all().iterator():
+        yield {
+            'url': f'/collections/{c.slug}',
+            'lastmod': _dt_iso(getattr(c, 'updated_at', None)),
+            'changefreq': 'weekly',
+            'priority': 0.75,
+            'language': getattr(c, 'language', 'az'),
+        }
+
     for u in _public_profile_users_qs().iterator():
         lm = _dt_iso(getattr(u, 'updated_at', None))
         yield {
@@ -123,6 +132,7 @@ def _dynamic_total_count():
         + _company_microsite_url_count()
         + Article.objects.count()
         + Quiz.objects.count()
+        + Collection.objects.count()
         + 2 * users
     )
 

@@ -1,26 +1,23 @@
 import CollectionDetailClient from './CollectionDetailClient';
 import { SITE_ORIGIN } from '@/lib/seo/siteOrigin';
+import { getCollectionBySlug } from '@/lib/api/getCollectionBySlug';
+import { buildCollectionMetadata } from '@/lib/seo/meta/buildMetadata';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
     const { locale, slug } = await params;
     const loc = locale || 'az';
-    const base = SITE_ORIGIN.replace(/\/$/, '');
-    const canonical = `${base}/${loc}/collections/${slug}`;
-    return {
-        title:
-            loc === 'ru'
-                ? 'Детали коллекции | Expert Visits'
-                : loc === 'en'
-                  ? 'Collection detail | Expert Visits'
-                  : 'Kolleksiya detalı | Expert Visits',
-        description:
-            loc === 'ru'
-                ? 'Статьи и тесты в этой коллекции.'
-                : loc === 'en'
-                  ? 'Articles and quizzes in this collection.'
-                  : 'Bu kolleksiyadakı məqalə və testlər.',
-        alternates: { canonical },
-    };
+    const collection = await getCollectionBySlug(slug, loc);
+    if (!collection) {
+        return { title: 'Expert Visits', robots: { index: false, follow: false } };
+    }
+    
+    return buildCollectionMetadata({
+        siteOrigin: SITE_ORIGIN,
+        collection,
+        slug,
+        routeLocale: loc,
+    });
 }
 
 export default async function CollectionDetailPage({ params }) {
