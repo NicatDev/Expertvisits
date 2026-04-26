@@ -105,7 +105,7 @@ export function expandSitemapEntries(sitemapData, seen) {
     }
 
     for (const item of sitemapData.dynamic_urls || []) {
-        const path = item.url || '';
+        let path = item.url || '';
         if (!path) continue;
 
         if (/^https?:\/\//i.test(path)) {
@@ -113,12 +113,25 @@ export function expandSitemapEntries(sitemapData, seen) {
             continue;
         }
 
-        if (!path.startsWith('/')) continue;
+        if (!path.startsWith('/')) {
+            path = '/' + path;
+        }
+
+        // Dil (locale) təyini üçün ehtimal olunan field-ləri yoxlayırıq
+        const itemLang = item.language || item.lang || item.locale;
+
+        // Əgər path /az/, /en/, /ru/ ilə başlayırsa, onu extract edək
+        const localeMatch = path.match(/^\/(az|en|ru)(\/.*)?$/);
+        if (localeMatch) {
+            // Əgər URL-in özündə dil varsa, heç nəyi dəyişmirik, elə birbaşa əlavə edirik
+            pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${path}`, item));
+            continue;
+        }
 
         if (path.startsWith('/article/')) {
             const slug = path.slice('/article/'.length).replace(/\/$/, '');
             if (!slug) continue;
-            const lang = item.language || 'az';
+            const lang = itemLang || 'az';
             pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${lang}/article/${slug}`, item));
             continue;
         }
@@ -127,7 +140,7 @@ export function expandSitemapEntries(sitemapData, seen) {
         if (vacancyDetail) {
             const seg = vacancyDetail[1];
             if (seg === 'en' || seg === 'ru' || seg === 'az') continue;
-            const lang = item.language || 'az';
+            const lang = itemLang || 'az';
             pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${lang}/vacancies/${seg}`, item));
             continue;
         }
@@ -137,9 +150,9 @@ export function expandSitemapEntries(sitemapData, seen) {
             continue;
         }
 
-        const hasLocalePrefix = /^\/(az|en|ru)\//.test(path);
-        const fullPath = hasLocalePrefix ? path : `/az${path}`;
-        pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}${fullPath}`, item));
+        // Qalan hər şey üçün əgər itemLang varsa onu istifadə edirik, yoxdursa /az/
+        const langToUse = itemLang || 'az';
+        pushUnique(urls, seenLocal, entryFromItem(`${BASE_URL}/${langToUse}${path}`, item));
     }
 
     return urls;

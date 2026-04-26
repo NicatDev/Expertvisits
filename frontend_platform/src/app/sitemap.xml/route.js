@@ -2,6 +2,8 @@ import {
     BASE_URL,
     buildSitemapIndexXml,
     fetchSitemapMeta,
+    buildUrlsetXml,
+    getChunkEntries,
 } from '@/lib/seo/sitemapRuntime';
 
 export const dynamic = 'force-dynamic';
@@ -9,16 +11,23 @@ export const revalidate = 0;
 export const runtime = 'nodejs';
 
 export async function GET() {
-    let n = 1;
-    try {
-        const meta = await fetchSitemapMeta();
-        n = Math.max(1, Number(meta.chunk_count) || 1);
-    } catch {
-        n = 1;
-    }
+    // --- PAGINATION KODU (Müvəqqəti yığışdırılıb) ---
+    // let n = 1;
+    // try {
+    //     const meta = await fetchSitemapMeta();
+    //     n = Math.max(1, Number(meta.chunk_count) || 1);
+    // } catch {
+    //     n = 1;
+    // }
+    //
+    // const locs = Array.from({ length: n }, (_, i) => `${BASE_URL}/sitemap/${i}.xml`);
+    // const xml = buildSitemapIndexXml(locs);
+    // ------------------------------------------------
 
-    const locs = Array.from({ length: n }, (_, i) => `${BASE_URL}/sitemap/${i}.xml`);
-    const xml = buildSitemapIndexXml(locs);
+    // --- MÜVƏQQƏTİ: sitemap.xml birbaşa 0-cı hissəni qaytarır ---
+    const entries = await getChunkEntries(0);
+    const xml = buildUrlsetXml(entries);
+    // -----------------------------------------------------------
 
     return new Response(xml, {
         headers: {
