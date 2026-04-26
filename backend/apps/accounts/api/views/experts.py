@@ -1,8 +1,10 @@
 from rest_framework import generics, permissions, filters, pagination
 
 from rest_framework.response import Response
-from django.db.models import Count, Q
+from django.db.models import Count, Q, OuterRef, Subquery, IntegerField, F
+from django.db.models.functions import Coalesce
 from apps.accounts.models import User
+from apps.content.models import Article, Quiz
 from apps.accounts.api.serializers import UserSerializer
 from apps.connections.utils import with_connection_annotations
 
@@ -16,9 +18,16 @@ class ExpertListAPIView(generics.ListAPIView):
 
 
     def get_queryset(self):
+        articles_sq = Article.objects.filter(author=OuterRef('pk')).values('author').annotate(c=Count('id')).values('c')
+        quizzes_sq = Quiz.objects.filter(author=OuterRef('pk')).values('author').annotate(c=Count('id')).values('c')
+
         queryset = User.objects.select_related('profession_sub_category', 'website').prefetch_related('company', 'educations', 'skills').annotate(
             followers_count=Count('followers', distinct=True),
-            following_count=Count('following', distinct=True)
+            following_count=Count('following', distinct=True),
+            article_count=Coalesce(Subquery(articles_sq, output_field=IntegerField()), 0),
+            quiz_count=Coalesce(Subquery(quizzes_sq, output_field=IntegerField()), 0)
+        ).annotate(
+            content_score=F('article_count') + F('quiz_count')
         ).filter(is_searchable=True)
 
         # Exclude self
@@ -64,5 +73,4 @@ class ExpertListAPIView(generics.ListAPIView):
 
         queryset = with_connection_annotations(queryset, self.request.user)
 
-        return queryset.order_by('-followers_count') # Default order by popularity? Or random? 
-        # User didn't specify, but popularity is good for experts.
+        return queryset.order_by('-content_score', '-followers_count')
