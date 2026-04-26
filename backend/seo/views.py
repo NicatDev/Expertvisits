@@ -60,7 +60,8 @@ def _iter_dynamic_url_dicts():
             'url': f'/vacancies/{v.slug}',
             'lastmod': _dt_iso(getattr(v, 'updated_at', None) or getattr(v, 'posted_at', None)),
             'changefreq': 'daily',
-            'priority': 0.8
+            'priority': 0.8,
+            'language': getattr(v, 'language', 'az'),
         }
 
     for item in _company_microsite_url_dicts():
@@ -71,7 +72,8 @@ def _iter_dynamic_url_dicts():
             'url': f'/article/{a.slug}',
             'lastmod': _dt_iso(getattr(a, 'updated_at', None)),
             'changefreq': 'weekly',
-            'priority': 0.7
+            'priority': 0.7,
+            'language': getattr(a, 'language', 'az'),
         }
 
     for u in _public_profile_users_qs().iterator():
