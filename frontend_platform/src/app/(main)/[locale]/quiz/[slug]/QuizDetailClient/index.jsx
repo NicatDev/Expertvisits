@@ -12,6 +12,7 @@ import CommentsSection from '@/components/advanced/CommentsSection';
 import LikesModal from '@/components/advanced/LikesModal';
 import QuizModal from '@/components/advanced/QuizModal';
 import ParticipantsListModal from '@/components/advanced/ParticipantsListModal';
+import ContentOwnerMenu from '@/components/advanced/ContentOwnerMenu';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
@@ -141,6 +142,7 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                     <span>{t('quiz_page.back')}</span>
                 </Link>
                 <header className={styles.header}>
+                    <div className={styles.headerTop}>
                     <div className={styles.authorRow}>
                         {quiz.author ? (
                             <Link href={userPublicHref(quiz.author)} className={styles.avatar}>
@@ -171,6 +173,13 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                                 <div className={styles.pro}>{labelForSubCategory(quiz.sub_category, i18n.language)}</div>
                             ) : null}
                         </div>
+                    </div>
+                    <ContentOwnerMenu
+                        authorUsername={quiz.author}
+                        contentType="quiz"
+                        quiz={quiz}
+                        redirectTo={homeHref}
+                    />
                     </div>
                     <h1 className={styles.title}>{quiz.title}</h1>
                     <p className={styles.metaLine}>

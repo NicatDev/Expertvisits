@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import Button from '../../ui/Button';
-import { Heart, MessageCircle, Share2, MoreHorizontal, PlayCircle, Send, CheckCircle, Edit2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, PlayCircle, Send, CheckCircle } from 'lucide-react';
 import Avatar from '../../ui/Avatar';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
@@ -11,9 +11,8 @@ import api from '@/lib/api/client';
 import { content } from '@/lib/api';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import styles from './style.module.scss'; // Import SCSS Module
-import EditArticleModal from '../EditArticleModal';
+import ContentOwnerMenu from '../ContentOwnerMenu';
 import ParticipantsListModal from '../ParticipantsListModal';
-import Modal from '../../ui/Modal';
 import { useTranslation } from '@/i18n/client';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
@@ -70,9 +69,6 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
     const [showLikesModal, setShowLikesModal] = useState(false);
     const [showComments, setShowComments] = useState(true);
     const [showQuizModal, setShowQuizModal] = useState(false);
-
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showMenu, setShowMenu] = useState(false);
 
     const [commentText, setCommentText] = useState('');
     const [isLiked, setIsLiked] = useState(item.is_liked || false);
@@ -203,34 +199,6 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
 
 
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    // ...
-
-    const handleDeleteClick = () => {
-        setShowDeleteModal(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        try {
-            if (isArticle) await content.deleteArticle(localItem.slug);
-            else if (isQuiz) {
-                if (!localItem.slug) {
-                    toast.error(t('common.operation_failed', { defaultValue: 'Əməliyyat uğursuz' }));
-                    return;
-                }
-                await content.deleteQuiz(localItem.slug);
-            }
-
-            toast.success(t('feed_item.toast.deleted'));
-            setShowDeleteModal(false);
-            if (onDelete) onDelete(localItem.id);
-        } catch (err) {
-            console.error(err);
-            toast.error(t('feed_item.toast.failed_delete'));
-        }
-    };
-
-
     return (
         <div className={styles.feedItem}>
             {/* Header */}
@@ -259,30 +227,19 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
                         ) : null}
                     </div>
                 </div>
-                {user?.username === localItem.author && (
-                    <div style={{ position: 'relative' }}>
-                        <button className={styles.moreBtn} onClick={() => setShowMenu(!showMenu)}>
-                            <MoreHorizontal size={20} color="#999" />
-                        </button>
-                        {showMenu && (
-                            <div className={styles.dropdownMenu} style={{ position: 'absolute', right: 0, top: '100%', background: '#fff', border: '1px solid #eee', borderRadius: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', zIndex: 10, minWidth: '120px' }}>
-                                {isArticle && (
-                                    <button
-                                        onClick={() => { setShowMenu(false); setShowEditModal(true); }}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: '#333' }}
-                                    >
-                                        <Edit2 size={16} /> {t('common.edit')}
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => { setShowMenu(false); handleDeleteClick(); }}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: 'red' }}
-                                >
-                                    <Trash2 size={16} /> {t('common.delete')}
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                {(isArticle || isQuiz) && (
+                    <ContentOwnerMenu
+                        authorUsername={localItem.author}
+                        contentType={isArticle ? 'article' : 'quiz'}
+                        article={isArticle ? localItem : null}
+                        quiz={isQuiz ? localItem : null}
+                        onArticleUpdated={(updatedData) => {
+                            const next = { ...localItem, ...updatedData };
+                            setLocalItem(next);
+                            onFeedItemRefresh?.({ ...next, type: typeStr });
+                        }}
+                        onDeleted={() => onDelete?.(localItem.id)}
+                    />
                 )}
 
             </div>
@@ -449,15 +406,6 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
                 }}
             />
 
-            <EditArticleModal
-                isOpen={showEditModal}
-                onClose={() => setShowEditModal(false)}
-                article={isArticle ? localItem : null}
-                onSuccess={(updatedData) => {
-                    setLocalItem(prev => ({ ...prev, ...updatedData }));
-                }}
-            />
-
             {/* Interactions */}
             {showComments && (
                 <CommentsSection
@@ -469,23 +417,6 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
 
 
 
-            <Modal
-                isOpen={showDeleteModal}
-                onClose={() => setShowDeleteModal(false)}
-                title={t('profile.modals.delete_title')}
-                footer={
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                        <Button type="default" onClick={() => setShowDeleteModal(false)}>
-                            {t('common.cancel')}
-                        </Button>
-                        <Button type="primary" danger onClick={handleDeleteConfirm}>
-                            {t('common.delete')}
-                        </Button>
-                    </div>
-                }
-            >
-                <p>{t('feed_item.toast.delete_confirm')}</p>
-            </Modal>
 
         </div >
     );

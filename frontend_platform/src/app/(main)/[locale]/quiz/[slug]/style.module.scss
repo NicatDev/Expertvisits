@@ -34,10 +34,20 @@
   margin-bottom: 20px;
 }
 
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .authorRow {
   display: flex;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .avatar {

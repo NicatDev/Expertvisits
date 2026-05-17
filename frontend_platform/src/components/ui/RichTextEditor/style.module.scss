@@ -189,6 +189,90 @@
             border-top: 1px solid #e2e8f0;
             margin: 1.25rem 0;
         }
+
+        a {
+            color: #2563eb;
+            text-decoration: underline;
+            cursor: pointer;
+
+            &:hover {
+                color: #1d4ed8;
+            }
+        }
+    }
+}
+
+.linkWrap {
+    position: relative;
+}
+
+.linkPopover {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 280px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.linkInput {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+
+    &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+}
+
+.linkActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.linkApply {
+    flex: 1;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+        background: #1d4ed8;
+    }
+}
+
+.linkRemove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    color: #64748b;
+    cursor: pointer;
+
+    &:hover {
+        background: #f8fafc;
+        color: #dc2626;
     }
 }
 

@@ -3,6 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Heading from '@tiptap/extension-heading';
 import Placeholder from '@tiptap/extension-placeholder';
+import Link from '@tiptap/extension-link';
 import {
     Bold,
     Italic,
@@ -17,9 +18,107 @@ import {
     Code,
     SquareCode,
     Minus,
+    Link2,
+    Unlink,
 } from 'lucide-react';
 import styles from './style.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from '@/i18n/client';
+
+function normalizeEditorLinkUrl(raw) {
+    const u = (raw || '').trim();
+    if (!u) return '';
+    if (/^(https?:\/\/|mailto:)/i.test(u)) return u;
+    if (u.startsWith('/')) return u;
+    return `https://${u}`;
+}
+
+const LinkControl = ({ editor }) => {
+    const { t } = useTranslation('common');
+    const [open, setOpen] = useState(false);
+    const [url, setUrl] = useState('');
+    const wrapRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return;
+        const onDoc = (e) => {
+            if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', onDoc);
+        return () => document.removeEventListener('mousedown', onDoc);
+    }, [open]);
+
+    const openEditor = () => {
+        const prev = editor.getAttributes('link').href || '';
+        setUrl(prev);
+        setOpen(true);
+    };
+
+    const applyLink = () => {
+        const href = normalizeEditorLinkUrl(url);
+        if (!href) {
+            editor.chain().focus().extendMarkRange('link').unsetLink().run();
+        } else {
+            editor.chain().focus().extendMarkRange('link').setLink({ href }).run();
+        }
+        setOpen(false);
+    };
+
+    const removeLink = () => {
+        editor.chain().focus().extendMarkRange('link').unsetLink().run();
+        setUrl('');
+        setOpen(false);
+    };
+
+    const onKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            applyLink();
+        }
+        if (e.key === 'Escape') {
+            setOpen(false);
+        }
+    };
+
+    return (
+        <div ref={wrapRef} className={styles.linkWrap}>
+            <button
+                type="button"
+                onClick={openEditor}
+                className={editor.isActive('link') ? styles.active : ''}
+                title={t('create_modal.editor_link')}
+                aria-expanded={open}
+            >
+                <Link2 size={18} />
+            </button>
+            {open ? (
+                <div className={styles.linkPopover} role="dialog" aria-label={t('create_modal.editor_link')}>
+                    <input
+                        type="url"
+                        className={styles.linkInput}
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        onKeyDown={onKeyDown}
+                        placeholder={t('create_modal.editor_link_placeholder')}
+                        autoFocus
+                    />
+                    <div className={styles.linkActions}>
+                        <button type="button" className={styles.linkApply} onClick={applyLink}>
+                            {t('create_modal.editor_link_apply')}
+                        </button>
+                        {editor.isActive('link') ? (
+                            <button type="button" className={styles.linkRemove} onClick={removeLink} title={t('create_modal.editor_link_remove')}>
+                                <Unlink size={16} />
+                            </button>
+                        ) : null}
+                    </div>
+                </div>
+            ) : null}
+        </div>
+    );
+};
 
 const MenuBar = ({ editor }) => {
     if (!editor) {
@@ -63,6 +162,8 @@ const MenuBar = ({ editor }) => {
             >
                 <Strikethrough size={18} />
             </button>
+            <div className={styles.divider} />
+            <LinkControl editor={editor} />
             <div className={styles.divider} />
             <button
                 type="button"
@@ -153,6 +254,11 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
                 levels: [2, 3, 4],
             }),
             Underline,
+            Link.configure({
+                openOnClick: false,
+                autolink: true,
+                defaultProtocol: 'https',
+            }),
             Placeholder.configure({
                 placeholder: placeholder || '',
             }),

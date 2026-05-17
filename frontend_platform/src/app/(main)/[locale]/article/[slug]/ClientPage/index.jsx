@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useRouter, useParams, notFound } from 'next/navigation';
+import { useRouter, useParams, usePathname, notFound } from 'next/navigation';
 import api from '@/lib/api/client';
 import { ChevronLeft, Send, Heart, MessageCircle } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -14,12 +14,17 @@ import { useTranslation } from '@/i18n/client';
 import { formatDate } from '@/lib/utils/date';
 import { labelForSubCategory } from '@/lib/utils/subcategory';
 import ArticleBodyContent from '../ArticleBodyContent';
+import ContentOwnerMenu from '@/components/advanced/ContentOwnerMenu';
+import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 
 export default function ClientPage({ slug: slugProp, initialArticle = null }) {
     const { t, i18n } = useTranslation('common');
     const params = useParams();
     const slug = slugProp ?? params?.slug;
     const router = useRouter();
+    const pathname = usePathname();
+    const pathLocale = localeFromPathname(pathname) || defaultLocale;
+    const homeHref = withLocale(pathLocale, '/');
     const { user, loading: authLoading } = useAuth();
     const [article, setArticle] = useState(initialArticle);
     const [loading, setLoading] = useState(!initialArticle);
@@ -181,6 +186,15 @@ export default function ClientPage({ slug: slugProp, initialArticle = null }) {
                                 ) : null}
                             </div>
                         </div>
+                        <ContentOwnerMenu
+                            authorUsername={article.author}
+                            contentType="article"
+                            article={article}
+                            onArticleUpdated={(updatedData) => {
+                                setArticle((prev) => ({ ...prev, ...updatedData }));
+                            }}
+                            redirectTo={homeHref}
+                        />
                     </div>
 
                     <h1 className={styles.title}>{article.title}</h1>
