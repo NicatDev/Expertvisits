@@ -1,18 +1,35 @@
 @use './fluentTokens' as fluent;
 
+/* Hero: wider than .section (1200px); side gaps on mobile/tablet */
 .hero {
+  --hero-side-gap: 0.625rem;
+  --hero-max: 1360px;
+
   position: relative;
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--hero-side-gap));
+  max-width: var(--hero-max);
   min-height: min(52vh, 480px);
   display: flex;
   align-items: flex-end;
   padding: 2.5rem 1.25rem 2.25rem;
   overflow: hidden;
-  margin: 1rem 1.25rem 0;
-  max-width: calc(1200px + 2.5rem);
-  margin-left: auto;
-  margin-right: auto;
+  margin: 1rem auto 0;
   border-radius: var(--fluent-radius-xl, 20px);
   box-shadow: var(--fluent-shadow-8, 0 6.4px 14.4px rgba(0, 0, 0, 0.11));
+
+  @media (min-width: 640px) {
+    --hero-side-gap: 0.875rem;
+  }
+
+  @media (min-width: 900px) {
+    --hero-side-gap: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    --hero-side-gap: 1.25rem;
+    --hero-max: 1360px;
+  }
 }
 
 .heroBg {
