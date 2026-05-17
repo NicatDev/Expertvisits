@@ -11,6 +11,7 @@ import Button from '@/components/ui/Button';
 import CommentsSection from '@/components/advanced/CommentsSection';
 import LikesModal from '@/components/advanced/LikesModal';
 import QuizModal from '@/components/advanced/QuizModal';
+import ParticipantsListModal from '@/components/advanced/ParticipantsListModal';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useTranslation } from '@/i18n/client';
 import { toast } from 'react-toastify';
@@ -32,6 +33,7 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
     const [showQuizModal, setShowQuizModal] = useState(false);
     const [reviewData, setReviewData] = useState(null);
     const [showLikesModal, setShowLikesModal] = useState(false);
+    const [showParticipantsModal, setShowParticipantsModal] = useState(false);
     const [commentsTrigger, setCommentsTrigger] = useState(0);
     const [commentText, setCommentText] = useState('');
 
@@ -190,6 +192,11 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                             {t('quiz_page.view_latest_result')}
                         </Button>
                     ) : null}
+                    {user?.username === quiz.author ? (
+                        <Button type="default" onClick={() => setShowParticipantsModal(true)}>
+                            {t('feed_item.view_participants')}
+                        </Button>
+                    ) : null}
                 </div>
 
                 {stats ? (
@@ -305,6 +312,25 @@ export default function QuizDetailClient({ slug: slugProp, initialQuiz }) {
                         setCommentsTrigger((c) => c + 1);
                     } catch (e) {
                         console.error(e);
+                    }
+                }}
+            />
+
+            <ParticipantsListModal
+                isOpen={showParticipantsModal}
+                onClose={() => setShowParticipantsModal(false)}
+                quizSlug={slug}
+                onSelectParticipant={async (userId, attemptId) => {
+                    try {
+                        const { data } = await content.getQuizParticipantResult(slug, userId, {
+                            attempt_id: attemptId,
+                        });
+                        setReviewData(data);
+                        setShowParticipantsModal(false);
+                        setShowQuizModal(true);
+                    } catch (e) {
+                        console.error(e);
+                        toast.error(t('feed_item.toast.failed_load_result'));
                     }
                 }}
             />

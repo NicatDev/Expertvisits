@@ -1,10 +1,11 @@
-from django.db.models import Count
+from django.db.models import Count, IntegerField, OuterRef, Subquery, Value
+from django.db.models.functions import Coalesce
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.content.api.serializers import ArticleSerializer, PollSerializer, QuizSerializer
-from apps.content.models import Article, Poll, Quiz
+from apps.content.models import Article, Poll, Quiz, QuizAttempt
 from core.feed_scoring import (
     annotate_engagement_counts,
     annotate_feed_rank,
@@ -51,11 +52,29 @@ def _article_base():
     return Article.objects.select_related("author", "sub_category")
 
 
+def _quiz_attempt_count_subquery():
+    """Feed-də likes/comments ilə birlikdə Count('quizattempt') JOIN səbəbindən şişməsin."""
+    return (
+        QuizAttempt.objects.filter(quiz_id=OuterRef("pk"))
+        .values("quiz_id")
+        .annotate(c=Count("id"))
+        .values("c")[:1]
+    )
+
+
 def _quiz_base():
     return (
         Quiz.objects.select_related("author", "sub_category")
         .prefetch_related("questions__choices")
-        .annotate(total_attempt_count_annotated=Count("quizattempt"))
+        .annotate(
+            total_attempt_count_annotated=Coalesce(
+                Subquery(
+                    _quiz_attempt_count_subquery(),
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            )
+        )
     )
 
 
