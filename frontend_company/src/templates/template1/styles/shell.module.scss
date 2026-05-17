@@ -1,5 +1,3 @@
-@use '../../../styles/micrositeThemeTokens' as theme;
-
 .shell {
   --ev-primary: #1e40af;
   --ev-secondary: #6366f1;
@@ -8,15 +6,12 @@
   --t-ink: #0f172a;
   --t-muted: #64748b;
   --t-line: #e2e8f0;
-  @include theme.micrositeThemeTokens;
-
+  --t-accent: var(--ev-primary);
+  --t-accent-2: var(--ev-secondary);
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 22%, white);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--t-bg);
   color: var(--t-ink);
-}
-
-.main {
-  flex: 1;
 }

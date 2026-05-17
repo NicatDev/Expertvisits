@@ -4,8 +4,7 @@
   z-index: 50;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--t-line);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ev-primary) 12%, transparent);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .inner {
@@ -75,13 +74,13 @@
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--t-muted);
+  color: #475569;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
 
   &:hover {
-    background: var(--t-accent-soft);
-    color: var(--t-ink);
+    background: #f1f5f9;
+    color: #0f172a;
   }
 }
 
@@ -96,7 +95,7 @@
   gap: 0.25rem;
   margin-left: 0.5rem;
   padding-left: 0.75rem;
-  border-left: 1px solid var(--t-line);
+  border-left: 1px solid #e2e8f0;
 }
 
 .langBtn {
@@ -105,20 +104,20 @@
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--t-muted);
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.35rem 0.5rem;
   border-radius: 6px;
   transition: background 0.2s, color 0.2s;
 
   &:hover {
-    background: var(--t-accent-soft);
-    color: var(--t-ink);
+    background: #f1f5f9;
+    color: #0f172a;
   }
 }
 
 .langBtnOn {
-  background: var(--ev-secondary);
+  background: var(--t-accent);
   color: #fff;
 
   &:hover {
@@ -133,10 +132,10 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  border: 1px solid var(--t-border-accent);
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
-  background: var(--t-surface);
-  color: var(--t-ink);
+  background: #fff;
+  color: #0f172a;
   cursor: pointer;
 
   @media (min-width: 900px) {
@@ -149,8 +148,8 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0 1.25rem 1rem;
-  border-bottom: 1px solid var(--t-line);
-  background: var(--t-surface);
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
 
   &.drawerOpen {
     display: flex;
@@ -166,11 +165,10 @@
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--t-muted);
+  color: #334155;
   text-decoration: none;
 
   &:hover {
-    background: var(--t-accent-soft);
-    color: var(--t-accent);
+    background: #f8fafc;
   }
 }

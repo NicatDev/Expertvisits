@@ -18,11 +18,7 @@
 .heroGrad {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--ev-primary) 45%, transparent) 0%,
-    color-mix(in srgb, var(--ev-primary) 88%, #0f172a) 100%
-  );
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.92) 100%);
 }
 
 .heroInner {
@@ -72,8 +68,8 @@
 }
 
 .stat {
-  background: color-mix(in srgb, var(--ev-secondary) 12%, rgba(255, 255, 255, 0.06));
-  border: 1px solid color-mix(in srgb, var(--ev-secondary) 28%, rgba(255, 255, 255, 0.12));
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 0.85rem 1rem;
   backdrop-filter: blur(8px);
@@ -113,7 +109,7 @@
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--ev-primary);
+  color: #0f172a;
 }
 
 .link {
@@ -143,15 +139,15 @@
 }
 
 .card {
-  background: var(--t-surface);
-  border: 1px solid var(--t-line);
+  background: #fff;
+  border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 1.25rem;
   transition: box-shadow 0.25s, border-color 0.25s, transform 0.2s;
 
   &:hover {
-    border-color: var(--t-border-accent);
-    box-shadow: var(--t-shadow-accent);
+    border-color: #bfdbfe;
+    box-shadow: 0 12px 40px -20px rgba(30, 64, 175, 0.35);
     transform: translateY(-2px);
   }
 }
@@ -169,13 +165,13 @@
   font-weight: 700;
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: var(--t-ink);
+  color: #0f172a;
 }
 
 .cardBody {
   font-size: 0.875rem;
   line-height: 1.55;
-  color: var(--t-muted);
+  color: #64748b;
 }
 
 .partnerLogo {
@@ -194,12 +190,11 @@
 }
 
 .sectionVacancies {
-  background: var(--t-accent-soft);
+  background: rgb(238, 242, 247);
   margin: 0;
   max-width: none;
   padding: 3rem 1.25rem 3.75rem;
   margin-bottom: 1.25rem;
-  border-block: 1px solid var(--t-border-accent);
 }
 
 .sectionVacanciesInner {
@@ -217,8 +212,8 @@
   object-fit: contain;
   padding: 8px;
   border-radius: 10px;
-  border: 1px solid var(--t-border-accent);
-  background: var(--t-accent-soft);
+  border: 1px solid rgba(147, 197, 253, 0.88);
+  background: #f8fafc;
   box-sizing: border-box;
 }
 
@@ -229,7 +224,7 @@
   margin: 0 auto 0.75rem;
   border-radius: 10px;
   border: 1px solid rgba(147, 197, 253, 0.88);
-  background: var(--t-gradient-brand-soft);
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
   box-sizing: border-box;
 }
 
