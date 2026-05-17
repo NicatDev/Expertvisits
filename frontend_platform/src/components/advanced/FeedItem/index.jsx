@@ -328,10 +328,10 @@ const FeedItem = ({ item, onDelete, onFeedRefresh, onFeedItemRefresh }) => {
                         <p>
                             {localItem.questions.length} {t('feed_item.questions_count')} • {localItem.participation_count || 0}{' '}
                             {t('feed_item.participants_count')}
-                            {localItem.my_attempt_count > 1 ? (
+                            {(localItem.total_attempt_count ?? 0) > 0 ? (
                                 <span>
                                     {' '}
-                                    · {localItem.my_attempt_count} {t('feed_item.my_attempts_short')}
+                                    · {localItem.total_attempt_count} {t('feed_item.attempts_short')}
                                 </span>
                             ) : null}
                         </p>

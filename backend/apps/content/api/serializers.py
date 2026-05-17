@@ -2,6 +2,7 @@ from django.db.models import Avg, Count
 
 from rest_framework import serializers
 from apps.accounts.api.serializers import SubCategorySerializer
+from apps.content.article_link_policy import apply_article_link_policy
 from apps.content.models import Article, Quiz, Question, Choice, QuizAttempt
 
 # Define Mixin here to minimize dependencies
@@ -101,7 +102,13 @@ class ArticleSerializer(serializers.ModelSerializer, ContentSerializerMixin):
             strip=True,
             protocols=['http', 'https', 'mailto'],
         )
-        return cleaned_body
+        return apply_article_link_policy(cleaned_body)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data.get('body'):
+            data['body'] = apply_article_link_policy(data['body'])
+        return data
 
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -142,11 +149,13 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
             'participation_count',
             'is_participated',
             'my_attempt_count',
+            'total_attempt_count',
         ]
 
     participation_count = serializers.SerializerMethodField()
     is_participated = serializers.SerializerMethodField()
     my_attempt_count = serializers.SerializerMethodField()
+    total_attempt_count = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         questions_data = validated_data.pop('questions')
@@ -172,6 +181,12 @@ class QuizSerializer(serializers.ModelSerializer, ContentSerializerMixin):
         if user and user.is_authenticated:
             return obj.quizattempt_set.filter(user=user).count()
         return 0
+
+    def get_total_attempt_count(self, obj):
+        annotated = getattr(obj, 'total_attempt_count_annotated', None)
+        if annotated is not None:
+            return annotated
+        return obj.quizattempt_set.count()
 
 
 class QuizDetailSerializer(QuizSerializer):

@@ -137,6 +137,7 @@
         "view_participants": "İştirakçılara bax",
         "retake_quiz": "Yenidən keç",
         "my_attempts_short": "cəhd",
+        "attempts_short": "cəhd",
         "all_attempts_detail": "Bütün cəhdlər (detal)"
     },
     "participants_modal": {

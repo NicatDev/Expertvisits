@@ -137,6 +137,7 @@
         "view_participants": "View Participants",
         "retake_quiz": "Retake",
         "my_attempts_short": "attempts",
+        "attempts_short": "attempts",
         "all_attempts_detail": "All attempts (detail page)"
     },
     "participants_modal": {

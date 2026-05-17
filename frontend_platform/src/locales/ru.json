@@ -133,6 +133,7 @@
         "view_participants": "Посмотреть участников",
         "retake_quiz": "Пройти снова",
         "my_attempts_short": "попыток",
+        "attempts_short": "попыток",
         "all_attempts_detail": "Все попытки (страница теста)"
     },
     "participants_modal": {
