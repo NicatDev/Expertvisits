@@ -1,6 +1,5 @@
 const HEX = /^#[0-9A-Fa-f]{6}$/;
 
-export const THEME_DEFAULT_FONT = '#0f172a';
 export const THEME_DEFAULT_BTN_PRIMARY_BG = '#1e40af';
 export const THEME_DEFAULT_BTN_SECONDARY_FG = '#6366f1';
 
@@ -18,17 +17,15 @@ export function normalizeThemeHex(input, fallback) {
 export function parseCompanyWebsiteTheme(company) {
     const w = company?.website;
     return {
-        fontColor: normalizeThemeHex(w?.theme_font_color, THEME_DEFAULT_FONT),
         btnPrimaryBg: normalizeThemeHex(w?.theme_primary, THEME_DEFAULT_BTN_PRIMARY_BG),
         btnSecondaryFg: normalizeThemeHex(w?.theme_secondary, THEME_DEFAULT_BTN_SECONDARY_FG),
     };
 }
 
-/** User-tunable colors only — layout accents stay fixed per template SCSS. */
+/** User-tunable button colors — body text is fixed black in template SCSS. */
 export function buildMicrositeThemeStyle(company) {
-    const { fontColor, btnPrimaryBg, btnSecondaryFg } = parseCompanyWebsiteTheme(company);
+    const { btnPrimaryBg, btnSecondaryFg } = parseCompanyWebsiteTheme(company);
     return {
-        '--ev-font-color': fontColor,
         '--ev-btn-primary-bg': btnPrimaryBg,
         '--ev-btn-secondary-fg': btnSecondaryFg,
     };

@@ -2,15 +2,17 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--t-surface);
-  border-bottom: 2px solid color-mix(in srgb, var(--t-accent) 22%, var(--t-line));
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--t-surface) 88%, transparent);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  box-shadow: 0 0.6px 1.8px rgba(0, 0, 0, 0.05);
 }
 
 .inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.7rem 1.25rem;
+  padding: 0.65rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,9 +27,17 @@
   text-decoration: none;
   color: inherit;
   flex-shrink: 0;
+  border-radius: var(--fluent-radius-sm, 8px);
+  padding: 0.25rem 0.35rem 0.25rem 0.25rem;
+  margin-left: -0.25rem;
+  transition: background var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
-  &:hover .brandName {
-    color: var(--t-accent);
+  &:hover {
+    background: color-mix(in srgb, var(--t-accent) 6%, transparent);
+
+    .brandName {
+      color: var(--t-accent);
+    }
   }
 }
 
@@ -39,20 +49,20 @@
   max-height: 32px;
   object-fit: contain;
   object-position: center;
-  border-radius: 4px;
-  border: 1px solid var(--t-line);
-  background: var(--t-bg);
+  border-radius: var(--fluent-radius-sm, 8px);
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  background: var(--t-surface);
 }
 
 .brandName {
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
-  transition: color 0.2s;
+  transition: color var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 }
 
 @media (min-width: 640px) {
@@ -65,6 +75,10 @@
   display: none;
   align-items: center;
   gap: 0.15rem;
+  padding: 0.2rem;
+  border-radius: var(--fluent-radius-md, 12px);
+  background: color-mix(in srgb, var(--t-bg) 65%, transparent);
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
 }
 
 @media (min-width: 900px) {
@@ -74,64 +88,66 @@
 }
 
 .navLink {
-  padding: 0.45rem 0.7rem;
-  border-radius: 2px;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--fluent-radius-sm, 8px);
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--t-muted);
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    color var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
   &:hover {
-    background: var(--t-bg);
+    background: color-mix(in srgb, var(--t-accent) 8%, transparent);
     color: var(--t-ink);
   }
 }
 
 .navLinkActive {
+  background: var(--t-surface);
   color: var(--t-accent);
-  background: transparent;
-  box-shadow: inset 0 -2px 0 0 var(--t-accent);
-  border-radius: 0;
+  font-weight: 600;
+  box-shadow: var(--fluent-shadow-2, 0 0.3px 0.9px rgba(0, 0, 0, 0.08));
 }
 
 .lang {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-  margin-left: 0.5rem;
-  padding-left: 0.75rem;
-  border-left: 1px solid var(--t-line);
+  gap: 0.15rem;
+  margin-left: 0.35rem;
+  padding: 0.2rem;
+  border-radius: var(--fluent-radius-sm, 8px);
+  background: color-mix(in srgb, var(--t-bg) 80%, transparent);
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
 }
 
 .langBtn {
-  border: 1px solid transparent;
+  border: none;
   background: transparent;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--t-muted);
   cursor: pointer;
-  padding: 0.3rem 0.45rem;
-  border-radius: 2px;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    color var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
   &:hover {
-    background: var(--t-bg);
+    background: color-mix(in srgb, var(--t-accent) 10%, transparent);
     color: var(--t-ink);
   }
 }
 
 .langBtnOn {
-  background: var(--t-surface);
-  color: var(--t-accent);
-  border-color: var(--t-accent);
+  background: var(--ev-btn-primary-bg);
+  color: #fff;
 
   &:hover {
-    background: var(--t-bg);
-    color: var(--t-accent);
+    background: color-mix(in srgb, var(--ev-btn-primary-bg) 88%, #000);
+    color: #fff;
   }
 }
 
@@ -139,13 +155,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--t-line);
-  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  border-radius: var(--fluent-radius-sm, 8px);
   background: var(--t-surface);
   color: var(--t-ink);
   cursor: pointer;
+  box-shadow: var(--fluent-shadow-2, 0 0.3px 0.9px rgba(0, 0, 0, 0.08));
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    box-shadow var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
+
+  &:hover {
+    background: var(--t-bg-subtle, #faf9f8);
+    box-shadow: var(--fluent-shadow-4, 0 0.6px 1.8px rgba(0, 0, 0, 0.07));
+  }
 
   @media (min-width: 900px) {
     display: none;
@@ -155,10 +180,11 @@
 .drawer {
   display: none;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0 1.25rem 1rem;
-  border-bottom: 1px solid var(--t-line);
-  background: var(--t-surface);
+  gap: 0.2rem;
+  padding: 0.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  background: color-mix(in srgb, var(--t-surface) 95%, transparent);
+  backdrop-filter: blur(16px);
 
   &.drawerOpen {
     display: flex;
@@ -170,17 +196,18 @@
 }
 
 .drawerLink {
-  padding: 0.6rem 0.75rem;
-  border-radius: 2px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--fluent-radius-sm, 8px);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--t-muted);
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    color var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
   &:hover {
-    background: var(--t-bg);
+    background: color-mix(in srgb, var(--t-accent) 8%, transparent);
     color: var(--t-ink);
   }
 }

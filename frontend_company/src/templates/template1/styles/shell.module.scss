@@ -1,11 +1,10 @@
-/* Sadə modern — dizayn rəngləri sabit; API: mətn, primary btn bg, secondary btn mətn */
+/* Sadə modern — mətn qara; API: primary btn bg, secondary btn mətn */
 .shell {
-  --ev-font-color: #0f172a;
   --ev-btn-primary-bg: #1e40af;
   --ev-btn-secondary-fg: #6366f1;
   --t-bg: #f4f6f9;
   --t-surface: #ffffff;
-  --t-ink: var(--ev-font-color);
+  --t-ink: #0f172a;
   --t-muted: #64748b;
   --t-line: #e2e8f0;
   --t-accent: #1e40af;

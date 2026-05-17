@@ -1,24 +1,26 @@
-/* Ciddi korporativ — dizayn rəngləri sabit; API: mətn, primary btn bg, secondary btn mətn */
+@use './fluentTokens' as fluent;
+
+/* Fluent Design — enterprise microsite shell */
 .shell {
-  --ev-font-color: #1c1917;
-  --ev-btn-primary-bg: #1e3a5f;
-  --ev-btn-secondary-fg: #0f766e;
-  --t-bg: #f5f4f0;
-  --t-surface: #ffffff;
-  --t-ink: var(--ev-font-color);
-  --t-muted: #57534e;
-  --t-line: #d6d3d1;
-  --t-accent: #1e3a5f;
-  --t-accent-2: #0f766e;
-  --t-accent-soft: color-mix(in srgb, var(--t-accent) 14%, white);
+  @include fluent.fluentShellTokens;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--t-bg);
   color: var(--t-ink);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-feature-settings: 'kern' 1;
-  letter-spacing: -0.011em;
+  font-family:
+    'Segoe UI Variable',
+    'Segoe UI',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Roboto',
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 .main {

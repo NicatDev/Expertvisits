@@ -1,3 +1,5 @@
+@use './fluentTokens' as fluent;
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -11,8 +13,10 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(28, 25, 23, 0.55);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
   cursor: pointer;
+  transition: opacity var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 }
 
 .panel {
@@ -22,22 +26,24 @@
   max-width: 540px;
   max-height: min(88vh, 720px);
   overflow: auto;
-  background: var(--t-surface);
-  border-radius: 4px;
-  border: 1px solid var(--t-line);
-  box-shadow: 0 24px 48px -24px rgba(28, 25, 23, 0.25);
-  padding: 1.35rem 1.35rem 1.45rem;
+  background: color-mix(in srgb, var(--t-surface) 92%, transparent);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border-radius: var(--fluent-radius-lg, 16px);
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  box-shadow: var(--fluent-shadow-16, 0 12.8px 28.8px rgba(0, 0, 0, 0.12));
+  padding: 1.5rem 1.35rem 1.5rem;
 }
 
 .close {
   position: absolute;
-  top: 0.55rem;
-  right: 0.55rem;
-  width: 2.1rem;
-  height: 2.1rem;
-  border: 1px solid var(--t-line);
-  border-radius: 4px;
-  background: var(--t-bg);
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  border-radius: var(--fluent-radius-sm, 8px);
+  background: var(--t-bg-subtle, #faf9f8);
   color: var(--t-ink);
   font-size: 1.25rem;
   line-height: 1;
@@ -45,27 +51,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    box-shadow var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
   &:hover {
-    background: var(--t-line);
+    background: var(--t-surface);
+    box-shadow: var(--fluent-shadow-2, 0 0.3px 0.9px rgba(0, 0, 0, 0.08));
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--fluent-focus-ring, 0 0 0 2px #fff, 0 0 0 4px #0078d4);
   }
 }
 
 .title {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.125rem;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--t-ink);
-  margin: 0 2rem 0.65rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--t-line);
+  margin: 0 2.5rem 0.75rem 0;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
 }
 
 .meta {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--t-muted);
   margin-bottom: 0.65rem;
 }
@@ -78,15 +91,15 @@
   height: auto;
   margin: 0 auto 1rem;
   object-fit: contain;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--t-line);
-  background: var(--t-bg);
+  padding: 10px;
+  border-radius: var(--fluent-radius-sm, 8px);
+  border: 1px solid var(--fluent-border, rgba(0, 0, 0, 0.0578));
+  background: var(--t-bg-subtle, #faf9f8);
   box-sizing: border-box;
 }
 
 .body {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.65;
   color: var(--t-muted);
   white-space: pre-wrap;
@@ -101,17 +114,22 @@
 }
 
 .ext {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 0.85rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--t-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ev-btn-secondary-fg);
   text-decoration: none;
+  padding: 0.35rem 0.65rem;
+  margin-left: -0.65rem;
+  border-radius: var(--fluent-radius-sm, 8px);
+  transition:
+    background var(--fluent-duration, 0.2s) var(--fluent-ease, ease),
+    color var(--fluent-duration, 0.2s) var(--fluent-ease, ease);
 
   &:hover {
-    color: var(--t-accent-2);
-    text-decoration: underline;
+    background: color-mix(in srgb, var(--ev-btn-secondary-fg) 10%, transparent);
+    text-decoration: none;
   }
 }

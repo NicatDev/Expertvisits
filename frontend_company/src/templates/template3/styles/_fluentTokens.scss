@@ -1,0 +1,104 @@
+/* Microsoft Fluent-inspired design tokens (template 3) */
+@mixin fluentShellTokens {
+  --fluent-bg: #f3f2f1;
+  --fluent-bg-subtle: #faf9f8;
+  --fluent-card: #ffffff;
+  --fluent-border: rgba(0, 0, 0, 0.0578);
+  --fluent-border-strong: rgba(0, 0, 0, 0.0898);
+  --fluent-shadow-2: 0 0.3px 0.9px rgba(0, 0, 0, 0.08), 0 1.6px 3.6px rgba(0, 0, 0, 0.06);
+  --fluent-shadow-4: 0 0.6px 1.8px rgba(0, 0, 0, 0.07), 0 3.2px 7.2px rgba(0, 0, 0, 0.09);
+  --fluent-shadow-8: 0 1.2px 3.6px rgba(0, 0, 0, 0.08), 0 6.4px 14.4px rgba(0, 0, 0, 0.11);
+  --fluent-shadow-16: 0 2.4px 7.4px rgba(0, 0, 0, 0.09), 0 12.8px 28.8px rgba(0, 0, 0, 0.12);
+  --fluent-radius-sm: 8px;
+  --fluent-radius-md: 12px;
+  --fluent-radius-lg: 16px;
+  --fluent-radius-xl: 20px;
+  --fluent-ease: cubic-bezier(0.33, 0, 0.67, 1);
+  --fluent-duration: 0.2s;
+  --fluent-accent: var(--ev-btn-primary-bg, #0078d4);
+  --fluent-accent-hover: color-mix(in srgb, var(--fluent-accent) 90%, #000);
+  --fluent-focus-ring: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, var(--fluent-accent) 55%, transparent);
+
+  --t-bg: var(--fluent-bg);
+  --t-bg-subtle: var(--fluent-bg-subtle);
+  --t-surface: var(--fluent-card);
+  --t-ink: #242424;
+  --t-muted: #605e5c;
+  --t-line: var(--fluent-border);
+  --t-accent: var(--fluent-accent);
+  --t-accent-2: var(--ev-btn-secondary-fg, #106ebe);
+  --t-accent-soft: color-mix(in srgb, var(--fluent-accent) 8%, #fff);
+}
+
+@mixin fluentCardSurface {
+  background: var(--t-surface);
+  border: 1px solid var(--fluent-border);
+  border-radius: var(--fluent-radius-md);
+  box-shadow: var(--fluent-shadow-2);
+  transition:
+    box-shadow var(--fluent-duration) var(--fluent-ease),
+    border-color var(--fluent-duration) var(--fluent-ease),
+    transform var(--fluent-duration) var(--fluent-ease);
+
+  &:hover {
+    border-color: var(--fluent-border-strong);
+    box-shadow: var(--fluent-shadow-8);
+  }
+}
+
+@mixin fluentPrimaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--fluent-radius-sm);
+  border: 1px solid transparent;
+  background: var(--ev-btn-primary-bg);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--fluent-duration) var(--fluent-ease),
+    box-shadow var(--fluent-duration) var(--fluent-ease),
+    transform var(--fluent-duration) var(--fluent-ease);
+
+  &:hover {
+    background: var(--fluent-accent-hover);
+    box-shadow: var(--fluent-shadow-4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--fluent-focus-ring);
+  }
+}
+
+@mixin fluentInput {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--fluent-border-strong);
+  border-radius: var(--fluent-radius-sm);
+  font-size: 0.875rem;
+  font-family: inherit;
+  background: var(--t-surface);
+  color: var(--t-ink);
+  transition:
+    border-color var(--fluent-duration) var(--fluent-ease),
+    box-shadow var(--fluent-duration) var(--fluent-ease);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--fluent-accent) 35%, var(--fluent-border-strong));
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--fluent-accent);
+    box-shadow: var(--fluent-focus-ring);
+  }
+}

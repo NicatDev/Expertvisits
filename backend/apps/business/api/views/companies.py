@@ -292,9 +292,6 @@ class CompanyWebsiteManageAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        theme_font_color = _normalize_theme_hex(
-            request.data.get("theme_font_color"), _THEME_FONT_DEFAULT
-        )
         theme_primary = _normalize_theme_hex(
             request.data.get("theme_primary"), _THEME_PRIMARY_DEFAULT
         )
@@ -316,7 +313,7 @@ class CompanyWebsiteManageAPIView(APIView):
             defaults={
                 "template_id": template_id,
                 "template_label": template_label,
-                "theme_font_color": theme_font_color,
+                "theme_font_color": _THEME_FONT_DEFAULT,
                 "theme_primary": theme_primary,
                 "theme_secondary": theme_secondary,
                 "is_active": True,

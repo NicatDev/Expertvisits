@@ -121,11 +121,11 @@
 }
 
 .langBtnOn {
-  background: var(--t-accent);
+  background: var(--ev-btn-primary-bg);
   color: #fff;
 
   &:hover {
-    background: color-mix(in srgb, var(--t-accent) 88%, #000);
+    background: color-mix(in srgb, var(--ev-btn-primary-bg) 88%, #000);
     color: #fff;
   }
 }

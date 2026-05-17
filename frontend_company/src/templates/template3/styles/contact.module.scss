@@ -1,7 +1,9 @@
+@use './fluentTokens' as fluent;
+
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.75rem 1.25rem;
+  padding: 2.5rem 1.25rem;
 }
 
 .embedWrap {
@@ -11,32 +13,29 @@
 }
 
 .embedBox {
-  box-shadow: 0 4px 24px -16px rgba(28, 25, 23, 0.1);
+  box-shadow: var(--fluent-shadow-8, 0 6.4px 14.4px rgba(0, 0, 0, 0.11));
+  border-radius: var(--fluent-radius-md, 12px);
 }
 
 .box {
-  background: var(--t-surface);
-  border: 1px solid var(--t-line);
-  border-radius: 4px;
-  padding: 2rem 1.5rem;
-  border-top: 3px solid var(--t-accent);
-  box-shadow: 0 2px 8px rgba(28, 25, 23, 0.04);
+  @include fluent.fluentCardSurface;
+  padding: 1.75rem 1.35rem;
 
   @media (min-width: 768px) {
-    padding: 2.35rem 2.35rem;
+    padding: 2rem 2rem;
   }
 }
 
 .title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin-bottom: 0.35rem;
   color: var(--t-ink);
 }
 
 .sub {
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   color: var(--t-muted);
   margin-bottom: 1.35rem;
   line-height: 1.55;
@@ -58,31 +57,15 @@
 
 .label {
   display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--t-muted);
-  margin-bottom: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--t-ink);
+  margin-bottom: 0.35rem;
 }
 
 .input,
 .textarea {
-  width: 100%;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid var(--t-line);
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  background: var(--t-surface);
-  color: var(--t-ink);
-  transition: border-color 0.2s, box-shadow 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: var(--t-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--t-accent) 18%, transparent);
-  }
+  @include fluent.fluentInput;
 }
 
 .textarea {
@@ -91,43 +74,36 @@
 }
 
 .submit {
+  @include fluent.fluentPrimaryButton;
   margin-top: 0.45rem;
-  padding: 0.75rem 1.35rem;
-  border: 1px solid color-mix(in srgb, var(--t-accent) 80%, #000);
-  border-radius: 4px;
-  background: var(--ev-btn-primary-bg);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  cursor: pointer;
-  transition: background 0.2s, filter 0.2s;
-
-  &:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--ev-btn-primary-bg) 88%, #000);
-  }
+  padding: 0.65rem 1.35rem;
 
   &:disabled {
     opacity: 0.55;
     cursor: not-allowed;
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.99);
+    transform: none;
+    box-shadow: none;
   }
 }
 
 .msgOk {
   margin-top: 0.65rem;
   font-size: 0.875rem;
-  color: #15803d;
+  color: #0e700e;
   font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--fluent-radius-sm, 8px);
+  background: color-mix(in srgb, #0e700e 8%, #fff);
+  border: 1px solid color-mix(in srgb, #0e700e 20%, transparent);
 }
 
 .msgErr {
   margin-top: 0.65rem;
   font-size: 0.875rem;
-  color: #b91c1c;
+  color: #c50f1f;
   font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--fluent-radius-sm, 8px);
+  background: color-mix(in srgb, #c50f1f 6%, #fff);
+  border: 1px solid color-mix(in srgb, #c50f1f 18%, transparent);
 }
