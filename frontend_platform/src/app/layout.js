@@ -15,8 +15,8 @@ export function generateMetadata() {
   return {
     metadataBase: new URL(SITE_ORIGIN),
     icons: {
-      icon: '/logo.png',
-      apple: '/logo.png',
+      icon: '/icon.png',
+      apple: '/icon.png',
     },
   };
 }

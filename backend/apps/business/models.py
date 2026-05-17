@@ -67,8 +67,19 @@ class CompanyWebsite(models.Model):
     )
     template_id = models.IntegerField(default=1)
     template_label = models.CharField(max_length=120, blank=True)
-    theme_primary = models.CharField(max_length=7, blank=True, default="#1e40af")
-    theme_secondary = models.CharField(max_length=7, blank=True, default="#6366f1")
+    theme_font_color = models.CharField(max_length=7, blank=True, default="#0f172a")
+    theme_primary = models.CharField(
+        max_length=7,
+        blank=True,
+        default="#1e40af",
+        help_text="Primary button background (#RRGGBB).",
+    )
+    theme_secondary = models.CharField(
+        max_length=7,
+        blank=True,
+        default="#6366f1",
+        help_text="Secondary button text color (#RRGGBB).",
+    )
     is_active = models.BooleanField(default=False)
     section_visibility = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import BrandLogo from '@/components/ui/BrandLogo';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
 import { useLocalizedPath } from '@/hooks/useLocalePath';
@@ -72,7 +73,7 @@ const Navigation = () => {
             <div className={styles.container}>
                 {/* Left: Logo */}
                 <Link href={homeHref} className={styles.logo}>
-                    <Image src="/logo.png" alt="Expert Visits" width={40} height={40} priority unoptimized />
+                    <BrandLogo priority />
                     <span className={styles.brandName}>Expert Visits</span>
                 </Link>
 

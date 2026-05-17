@@ -1,15 +1,16 @@
-/* Template 3 — ciddi, minimal korporativ; rənglər API-dən (--ev-*) */
+/* Ciddi korporativ — dizayn rəngləri sabit; API: mətn, primary btn bg, secondary btn mətn */
 .shell {
-  --ev-primary: #1e3a5f;
-  --ev-secondary: #0f766e;
+  --ev-font-color: #1c1917;
+  --ev-btn-primary-bg: #1e3a5f;
+  --ev-btn-secondary-fg: #0f766e;
   --t-bg: #f5f4f0;
   --t-surface: #ffffff;
-  --t-ink: #1c1917;
+  --t-ink: var(--ev-font-color);
   --t-muted: #57534e;
   --t-line: #d6d3d1;
-  --t-accent: var(--ev-primary);
-  --t-accent-2: var(--ev-secondary);
-  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 14%, white);
+  --t-accent: #1e3a5f;
+  --t-accent-2: #0f766e;
+  --t-accent-soft: color-mix(in srgb, var(--t-accent) 14%, white);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,4 +19,8 @@
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-feature-settings: 'kern' 1;
   letter-spacing: -0.011em;
+}
+
+.main {
+  flex: 1;
 }

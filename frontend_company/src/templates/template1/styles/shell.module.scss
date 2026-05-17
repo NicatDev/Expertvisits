@@ -1,17 +1,23 @@
+/* Sadə modern — dizayn rəngləri sabit; API: mətn, primary btn bg, secondary btn mətn */
 .shell {
-  --ev-primary: #1e40af;
-  --ev-secondary: #6366f1;
+  --ev-font-color: #0f172a;
+  --ev-btn-primary-bg: #1e40af;
+  --ev-btn-secondary-fg: #6366f1;
   --t-bg: #f4f6f9;
   --t-surface: #ffffff;
-  --t-ink: #0f172a;
+  --t-ink: var(--ev-font-color);
   --t-muted: #64748b;
   --t-line: #e2e8f0;
-  --t-accent: var(--ev-primary);
-  --t-accent-2: var(--ev-secondary);
-  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 22%, white);
+  --t-accent: #1e40af;
+  --t-accent-2: #6366f1;
+  --t-accent-soft: color-mix(in srgb, var(--t-accent) 22%, white);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--t-bg);
   color: var(--t-ink);
+}
+
+.main {
+  flex: 1;
 }

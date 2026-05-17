@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import BrandLogo from '@/components/ui/BrandLogo';
 import LanguageSwitcher from '@/components/advanced/LanguageSwitcher';
 import styles from './style.module.scss';
 
@@ -11,7 +11,7 @@ export default function AuthLayout({ children }) {
             <header className={styles.authHeader}>
                 <div className={styles.container}>
                     <Link href="/" className={styles.logo}>
-                        <Image src="/logo.png" alt="Expert Visits" width={40} height={40} priority unoptimized />
+                        <BrandLogo priority />
                         <span className={styles.brandName}>Expert Visits</span>
                     </Link>
                     <LanguageSwitcher />

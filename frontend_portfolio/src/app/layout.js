@@ -10,10 +10,10 @@ export const metadata = {
     icons: {
         icon: [
             { url: '/favicon.ico' },
-            { url: '/logo.png', type: 'image/png' },
+            { url: '/icon.png', type: 'image/png' },
         ],
         shortcut: '/favicon.ico',
-        apple: '/logo.png',
+        apple: '/icon.png',
     }
 };
 
@@ -23,7 +23,7 @@ export default async function RootLayout({ children }) {
     return (
         <html lang={effectiveLng} suppressHydrationWarning>
             <head>
-                <link rel="icon" href="/logo.png" sizes="any" />
+                <link rel="icon" href="/icon.png" sizes="any" />
             </head>
             <body className={inter.className} suppressHydrationWarning={true}>
                 {children}

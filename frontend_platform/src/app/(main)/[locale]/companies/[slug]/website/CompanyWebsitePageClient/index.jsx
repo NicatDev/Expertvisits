@@ -13,8 +13,9 @@ import { useLocalizedPath } from '@/hooks/useLocalePath';
 import pageStyles from '../../../../website-template/WebsiteTemplatePageClient/style.module.scss';
 
 const MIN_ITEMS = 1;
-const DEFAULT_THEME_PRIMARY = '#1e40af';
-const DEFAULT_THEME_SECONDARY = '#6366f1';
+const DEFAULT_THEME_FONT = '#0f172a';
+const DEFAULT_THEME_BTN_PRIMARY = '#1e40af';
+const DEFAULT_THEME_BTN_SECONDARY = '#6366f1';
 
 function groupFromSectionKey(key) {
     if (key.startsWith('services_')) return 'services';
@@ -62,8 +63,9 @@ export default function CompanyWebsitePageClient({ params }) {
     const [qrDataUrl, setQrDataUrl] = useState('');
     const [qrLoading, setQrLoading] = useState(false);
     const [selectedTemplateId, setSelectedTemplateId] = useState(1);
-    const [themePrimary, setThemePrimary] = useState(DEFAULT_THEME_PRIMARY);
-    const [themeSecondary, setThemeSecondary] = useState(DEFAULT_THEME_SECONDARY);
+    const [themeFontColor, setThemeFontColor] = useState(DEFAULT_THEME_FONT);
+    const [themeBtnPrimary, setThemeBtnPrimary] = useState(DEFAULT_THEME_BTN_PRIMARY);
+    const [themeBtnSecondary, setThemeBtnSecondary] = useState(DEFAULT_THEME_BTN_SECONDARY);
 
     const syncQr = useCallback(async (active, url) => {
         if (!active || !url) {
@@ -96,9 +98,10 @@ export default function CompanyWebsitePageClient({ params }) {
         const pub = (data?.public_url || '').trim();
         setPublicUrl(pub);
         const tid = Number(data?.template_id);
-        setSelectedTemplateId([1, 2, 3].includes(tid) ? tid : 1);
-        setThemePrimary((data?.theme_primary || DEFAULT_THEME_PRIMARY).toLowerCase());
-        setThemeSecondary((data?.theme_secondary || DEFAULT_THEME_SECONDARY).toLowerCase());
+        setSelectedTemplateId(tid === 3 ? 3 : 1);
+        setThemeFontColor((data?.theme_font_color || DEFAULT_THEME_FONT).toLowerCase());
+        setThemeBtnPrimary((data?.theme_primary || DEFAULT_THEME_BTN_PRIMARY).toLowerCase());
+        setThemeBtnSecondary((data?.theme_secondary || DEFAULT_THEME_BTN_SECONDARY).toLowerCase());
         return { active, pub };
     }, [slug]);
 
@@ -227,8 +230,9 @@ export default function CompanyWebsitePageClient({ params }) {
             await business.updateCompanyWebsite(slug, {
                 template_id: selectedTemplateId,
                 section_visibility: sectionVisibility,
-                theme_primary: themePrimary,
-                theme_secondary: themeSecondary,
+                theme_font_color: themeFontColor,
+                theme_primary: themeBtnPrimary,
+                theme_secondary: themeBtnSecondary,
             });
             toast.success(t('company_website.save_success'));
             const { active, pub } = await loadWebsiteState();
@@ -460,21 +464,6 @@ export default function CompanyWebsitePageClient({ params }) {
                                 </button>
                                 <button
                                     type="button"
-                                    className={`${pageStyles.option} ${selectedTemplateId === 2 ? pageStyles.active : ''}`}
-                                    onClick={() => setSelectedTemplateId(2)}
-                                >
-                                    <div className={pageStyles.iconBox}>
-                                        <LayoutTemplate size={24} />
-                                    </div>
-                                    <span className={pageStyles.templateName}>
-                                        {t('company_website.template2_name')}
-                                    </span>
-                                    {selectedTemplateId === 2 ? (
-                                        <CheckCircle className={pageStyles.checkIcon} size={20} />
-                                    ) : null}
-                                </button>
-                                <button
-                                    type="button"
                                     className={`${pageStyles.option} ${selectedTemplateId === 3 ? pageStyles.active : ''}`}
                                     onClick={() => setSelectedTemplateId(3)}
                                 >
@@ -503,13 +492,13 @@ export default function CompanyWebsitePageClient({ params }) {
                             >
                                 <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
-                                        {t('company_website.theme_primary')}
+                                        {t('company_website.theme_font_color')}
                                     </span>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                         <input
                                             type="color"
-                                            value={themePrimary}
-                                            onChange={(e) => setThemePrimary(e.target.value.toLowerCase())}
+                                            value={themeFontColor}
+                                            onChange={(e) => setThemeFontColor(e.target.value.toLowerCase())}
                                             style={{
                                                 width: 48,
                                                 height: 40,
@@ -521,8 +510,45 @@ export default function CompanyWebsitePageClient({ params }) {
                                         />
                                         <input
                                             type="text"
-                                            value={themePrimary}
-                                            onChange={(e) => setThemePrimary(e.target.value.trim().toLowerCase())}
+                                            value={themeFontColor}
+                                            onChange={(e) => setThemeFontColor(e.target.value.trim().toLowerCase())}
+                                            maxLength={7}
+                                            style={{
+                                                flex: 1,
+                                                padding: '10px 12px',
+                                                borderRadius: 8,
+                                                border: '1px solid #e2e8f0',
+                                                fontFamily: 'monospace',
+                                                fontSize: 14,
+                                            }}
+                                        />
+                                    </div>
+                                    <p style={{ fontSize: 12, color: '#64748b', margin: 0, lineHeight: 1.45 }}>
+                                        {t('company_website.theme_font_color_help')}
+                                    </p>
+                                </label>
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
+                                        {t('company_website.theme_btn_primary_bg')}
+                                    </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <input
+                                            type="color"
+                                            value={themeBtnPrimary}
+                                            onChange={(e) => setThemeBtnPrimary(e.target.value.toLowerCase())}
+                                            style={{
+                                                width: 48,
+                                                height: 40,
+                                                padding: 0,
+                                                border: '1px solid #e2e8f0',
+                                                borderRadius: 8,
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                        <input
+                                            type="text"
+                                            value={themeBtnPrimary}
+                                            onChange={(e) => setThemeBtnPrimary(e.target.value.trim().toLowerCase())}
                                             maxLength={7}
                                             style={{
                                                 flex: 1,
@@ -537,13 +563,13 @@ export default function CompanyWebsitePageClient({ params }) {
                                 </label>
                                 <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
-                                        {t('company_website.theme_secondary')}
+                                        {t('company_website.theme_btn_secondary_fg')}
                                     </span>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                         <input
                                             type="color"
-                                            value={themeSecondary}
-                                            onChange={(e) => setThemeSecondary(e.target.value.toLowerCase())}
+                                            value={themeBtnSecondary}
+                                            onChange={(e) => setThemeBtnSecondary(e.target.value.toLowerCase())}
                                             style={{
                                                 width: 48,
                                                 height: 40,
@@ -555,8 +581,8 @@ export default function CompanyWebsitePageClient({ params }) {
                                         />
                                         <input
                                             type="text"
-                                            value={themeSecondary}
-                                            onChange={(e) => setThemeSecondary(e.target.value.trim().toLowerCase())}
+                                            value={themeBtnSecondary}
+                                            onChange={(e) => setThemeBtnSecondary(e.target.value.trim().toLowerCase())}
                                             maxLength={7}
                                             style={{
                                                 flex: 1,

@@ -30,10 +30,10 @@ export async function generateMetadata({ params }) {
             icons: {
                 icon: [
                     { url: '/favicon.ico' },
-                    { url: '/logo.png', type: 'image/png' },
+                    { url: '/icon.png', type: 'image/png' },
                 ],
                 shortcut: '/favicon.ico',
-                apple: '/logo.png',
+                apple: '/icon.png',
             },
             openGraph: {
                 title: `${fullName} | ${suffix}`,
@@ -52,9 +52,9 @@ export async function generateMetadata({ params }) {
         return { 
             title: `${username} | Expert Visits`,
             icons: {
-                icon: '/logo.png',
-                shortcut: '/logo.png',
-                apple: '/logo.png',
+                icon: '/icon.png',
+                shortcut: '/icon.png',
+                apple: '/icon.png',
             }
         };
     }

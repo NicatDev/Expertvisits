@@ -106,7 +106,7 @@
 .ext {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--t-accent);
+  color: var(--ev-btn-secondary-fg);
   text-decoration: none;
 
   &:hover {
@@ -244,11 +244,7 @@
   justify-content: center;
   padding: 0.6rem 1.2rem;
   border-radius: 11px;
-  background: linear-gradient(
-    180deg,
-    var(--t-accent) 0%,
-    color-mix(in srgb, var(--t-accent) 72%, #000) 100%
-  );
+  background: var(--ev-btn-primary-bg);
   color: #fff;
   font-size: 0.85rem;
   font-weight: 600;
@@ -256,7 +252,7 @@
   white-space: nowrap;
   transition: filter 0.2s, box-shadow 0.2s;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--t-accent) 40%, transparent);
+  box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--ev-btn-primary-bg) 40%, transparent);
 
   @media (max-width: 639px) {
     width: 100%;
@@ -264,7 +260,7 @@
 
   &:hover {
     filter: brightness(1.06);
-    box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--t-accent) 48%, transparent);
+    box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--ev-btn-primary-bg) 48%, transparent);
   }
 }
 

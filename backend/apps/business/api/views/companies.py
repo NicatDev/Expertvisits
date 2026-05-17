@@ -30,6 +30,7 @@ from apps.business.models import Company, CompanyRegistrationPending, CompanyWeb
 from apps.content.models import Article
 
 _HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
+_THEME_FONT_DEFAULT = "#0f172a"
 _THEME_PRIMARY_DEFAULT = "#1e40af"
 _THEME_SECONDARY_DEFAULT = "#6366f1"
 
@@ -247,17 +248,22 @@ class CompanyWebsiteManageAPIView(APIView):
                     "is_active": False,
                     "section_visibility": merge_company_website_visibility({}),
                     "public_url": pub,
+                    "theme_font_color": _THEME_FONT_DEFAULT,
                     "theme_primary": _THEME_PRIMARY_DEFAULT,
                     "theme_secondary": _THEME_SECONDARY_DEFAULT,
                 }
             )
+        tid = cw.template_id if cw.template_id in (1, 3) else 1
         return Response(
             {
-                "template_id": cw.template_id,
+                "template_id": tid,
                 "template_label": cw.template_label or "",
                 "is_active": cw.is_active,
                 "section_visibility": merge_company_website_visibility(cw.section_visibility),
                 "public_url": pub,
+                "theme_font_color": _normalize_theme_hex(
+                    getattr(cw, "theme_font_color", None), _THEME_FONT_DEFAULT
+                ),
                 "theme_primary": _normalize_theme_hex(
                     cw.theme_primary, _THEME_PRIMARY_DEFAULT
                 ),
@@ -280,12 +286,15 @@ class CompanyWebsiteManageAPIView(APIView):
         except (TypeError, ValueError):
             return Response({"detail": "Invalid template_id."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if template_id not in (1, 2, 3):
+        if template_id not in (1, 3):
             return Response(
-                {"detail": "template_id must be 1, 2, or 3."},
+                {"detail": "template_id must be 1 or 3."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        theme_font_color = _normalize_theme_hex(
+            request.data.get("theme_font_color"), _THEME_FONT_DEFAULT
+        )
         theme_primary = _normalize_theme_hex(
             request.data.get("theme_primary"), _THEME_PRIMARY_DEFAULT
         )
@@ -307,6 +316,7 @@ class CompanyWebsiteManageAPIView(APIView):
             defaults={
                 "template_id": template_id,
                 "template_label": template_label,
+                "theme_font_color": theme_font_color,
                 "theme_primary": theme_primary,
                 "theme_secondary": theme_secondary,
                 "is_active": True,

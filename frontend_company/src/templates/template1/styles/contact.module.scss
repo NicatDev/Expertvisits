@@ -90,7 +90,7 @@
   padding: 0.85rem 1.5rem;
   border: none;
   border-radius: 10px;
-  background: var(--t-accent);
+  background: var(--ev-btn-primary-bg);
   color: #fff;
   font-weight: 600;
   font-size: 0.9rem;
@@ -98,7 +98,7 @@
   transition: background 0.2s, transform 0.15s;
 
   &:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--t-accent) 88%, #000);
+    background: color-mix(in srgb, var(--ev-btn-primary-bg) 88%, #000);
   }
 
   &:disabled {

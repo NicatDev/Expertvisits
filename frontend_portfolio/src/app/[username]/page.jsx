@@ -53,8 +53,8 @@ export async function generateMetadata({ params }) {
                 type: 'website',
             },
             icons: {
-                icon: '/logo.png',
-                apple: '/logo.png',
+                icon: '/icon.png',
+                apple: '/icon.png',
             },
             twitter: {
                 card: 'summary_large_image',

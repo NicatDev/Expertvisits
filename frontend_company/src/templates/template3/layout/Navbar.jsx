@@ -66,7 +66,7 @@ export default function Navbar({ company, companySlug, hasVacancies, visibility 
                 <Link href={`/${companySlug}`} className={styles.brand} aria-label={company?.name}>
                     {logoSrc ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={logoSrc} alt="" className={styles.logoImg} width={40} height={40} />
+                        <img src={logoSrc} alt="" className={styles.logoImg} width={48} height={32} />
                     ) : (
                         <div className={styles.logoImg} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, color: 'var(--t-accent)' }}>
                             {company?.name?.slice(0, 2)?.toUpperCase() || 'Co'}

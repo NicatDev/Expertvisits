@@ -876,12 +876,15 @@
         "qr_inactive_hint": "The QR will be available when the site is active.",
         "select_template": "Choose a template",
         "template1_name": "Simple modern",
-        "template2_name": "Dark studio",
         "template3_name": "Formal corporate",
         "theme_title": "Site colors",
-        "theme_primary": "Primary color",
-        "theme_secondary": "Accent color",
-        "theme_hint": "Changes apply to all templates. Use #RRGGBB (e.g. #1e40af)."
+        "theme_font_color": "Text color",
+        "theme_font_color_help": "Headings, paragraphs, and body text.",
+        "theme_btn_primary_bg": "Primary button background",
+        "theme_btn_primary_help": "Background for Send, Apply, and other primary buttons.",
+        "theme_btn_secondary_fg": "Secondary button text",
+        "theme_btn_secondary_help": "Text color for “View all” and secondary links/buttons.",
+        "theme_hint": "Format: #RRGGBB (e.g. #1e40af). Nav and card styling stay fixed per template."
     },
     "companies": {
         "title": "Discover Companies",
