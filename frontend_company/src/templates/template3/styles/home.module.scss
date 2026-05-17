@@ -1,9 +1,9 @@
 @use './fluentTokens' as fluent;
 
-/* Hero: wider than .section (1200px); side gaps on mobile/tablet */
+/* Hero: same max-width as .section on desktop; small side gaps on mobile/tablet */
 .hero {
   --hero-side-gap: 0.625rem;
-  --hero-max: 1360px;
+  --hero-max: 1200px;
 
   position: relative;
   box-sizing: border-box;
@@ -27,8 +27,11 @@
   }
 
   @media (min-width: 1024px) {
-    --hero-side-gap: 1.25rem;
-    --hero-max: 1360px;
+    --hero-side-gap: 0;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
