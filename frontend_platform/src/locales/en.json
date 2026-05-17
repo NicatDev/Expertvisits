@@ -880,8 +880,10 @@
         "template3_name": "Formal corporate",
         "theme_title": "Site colors",
         "theme_primary": "Primary color",
+        "theme_primary_help": "Nav bar and top stripe (corporate template), buttons and CTAs, section headings, main links, card hover borders and shadows, hero gradients, vacancies band, footer accent line, form focus rings.",
         "theme_secondary": "Accent color",
-        "theme_hint": "Changes apply to all templates. Use #RRGGBB (e.g. #1e40af)."
+        "theme_secondary_help": "Active nav and language switcher, badges and secondary accents, link hover, the second stop in gradients, stat icons, neon glow and pill nav in the dark template.",
+        "theme_hint": "Colors apply to every template. Format: #RRGGBB (e.g. #1e40af)."
     },
     "companies": {
         "title": "Discover Companies",

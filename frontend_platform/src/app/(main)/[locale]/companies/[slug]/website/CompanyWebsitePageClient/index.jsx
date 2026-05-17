@@ -534,6 +534,9 @@ export default function CompanyWebsitePageClient({ params }) {
                                             }}
                                         />
                                     </div>
+                                    <p style={{ fontSize: 12, color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                                        {t('company_website.theme_primary_help')}
+                                    </p>
                                 </label>
                                 <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
@@ -568,6 +571,9 @@ export default function CompanyWebsitePageClient({ params }) {
                                             }}
                                         />
                                     </div>
+                                    <p style={{ fontSize: 12, color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                                        {t('company_website.theme_secondary_help')}
+                                    </p>
                                 </label>
                             </div>
                             <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 10 }}>

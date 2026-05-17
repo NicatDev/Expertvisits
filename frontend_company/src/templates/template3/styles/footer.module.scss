@@ -1,16 +1,16 @@
 .footer {
   margin-top: auto;
-  background: #292524;
-  color: #e7e5e4;
-  padding: 2.25rem 1.25rem 1.75rem;
-  border-top: 3px solid var(--t-accent);
+  background: color-mix(in srgb, var(--ev-primary) 88%, #0c0a09);
+  color: rgba(255, 255, 255, 0.88);
+  padding: 2.5rem 1.25rem 1.85rem;
+  border-top: 4px solid var(--ev-secondary);
 }
 
 .inner {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  gap: 1.75rem;
+  gap: 1.85rem;
   grid-template-columns: 1fr;
 
   @media (min-width: 768px) {
@@ -19,18 +19,18 @@
 }
 
 .title {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #fafaf9;
-  margin-bottom: 0.65rem;
+  color: #fff;
+  margin-bottom: 0.7rem;
 }
 
 .text {
   font-size: 0.875rem;
   line-height: 1.65;
-  color: #a8a29e;
+  color: color-mix(in srgb, #fff 72%, transparent);
   margin-bottom: 0.35rem;
 }
 
@@ -38,7 +38,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 0.85rem;
+  margin-top: 0.9rem;
 }
 
 .social {
@@ -47,25 +47,26 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e7e5e4;
-  transition: background 0.2s, border-color 0.2s;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: color-mix(in srgb, var(--t-accent) 50%, transparent);
+    background: var(--ev-secondary);
+    border-color: color-mix(in srgb, var(--ev-secondary) 80%, #000);
+    transform: translateY(-2px);
   }
 }
 
 .bottom {
   max-width: 1200px;
-  margin: 1.75rem auto 0;
+  margin: 1.85rem auto 0;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
   font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  color: #78716c;
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, #fff 55%, transparent);
   text-align: center;
 }

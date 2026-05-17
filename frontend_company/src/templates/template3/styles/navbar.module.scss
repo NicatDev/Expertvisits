@@ -1,16 +1,16 @@
 .header {
   position: sticky;
-  top: 0;
+  top: 4px;
   z-index: 50;
-  background: var(--t-surface);
-  border-bottom: 2px solid color-mix(in srgb, var(--t-accent) 22%, var(--t-line));
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: var(--ev-primary);
+  border-bottom: none;
+  box-shadow: 0 4px 20px -8px color-mix(in srgb, var(--ev-primary) 50%, transparent);
 }
 
 .inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.7rem 1.25rem;
+  padding: 0.85rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,11 +23,11 @@
   gap: 0.75rem;
   min-width: 0;
   text-decoration: none;
-  color: inherit;
+  color: #fff;
   flex-shrink: 0;
 
   &:hover .brandName {
-    color: var(--t-accent);
+    color: color-mix(in srgb, var(--ev-secondary) 75%, #fff);
   }
 }
 
@@ -35,15 +35,16 @@
   width: 40px;
   height: 40px;
   object-fit: contain;
-  border-radius: 4px;
-  border: 1px solid var(--t-line);
-  background: var(--t-bg);
+  border-radius: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: #fff;
 }
 
 .brandName {
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: -0.02em;
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -60,7 +61,7 @@
 .nav {
   display: none;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.1rem;
 }
 
 @media (min-width: 900px) {
@@ -70,27 +71,26 @@
 }
 
 .navLink {
-  padding: 0.45rem 0.7rem;
-  border-radius: 2px;
-  font-size: 0.8125rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--t-muted);
+  color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   transition: color 0.2s, background 0.2s;
 
   &:hover {
-    background: var(--t-bg);
-    color: var(--t-ink);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
   }
 }
 
 .navLinkActive {
-  color: var(--t-accent);
-  background: transparent;
-  box-shadow: inset 0 -2px 0 0 var(--t-accent);
-  border-radius: 0;
+  color: #fff;
+  background: color-mix(in srgb, var(--ev-secondary) 35%, transparent);
+  box-shadow: inset 0 -3px 0 var(--ev-secondary);
 }
 
 .lang {
@@ -99,35 +99,35 @@
   gap: 0.2rem;
   margin-left: 0.5rem;
   padding-left: 0.75rem;
-  border-left: 1px solid var(--t-line);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .langBtn {
   border: 1px solid transparent;
   background: transparent;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--t-muted);
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
-  padding: 0.3rem 0.45rem;
+  padding: 0.32rem 0.45rem;
   border-radius: 2px;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 
   &:hover {
-    background: var(--t-bg);
-    color: var(--t-ink);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
 .langBtnOn {
-  background: var(--t-surface);
-  color: var(--t-accent);
-  border-color: var(--t-accent);
+  background: var(--ev-secondary);
+  color: #fff;
+  border-color: color-mix(in srgb, var(--ev-secondary) 80%, #000);
 
   &:hover {
-    background: var(--t-bg);
-    color: var(--t-accent);
+    background: color-mix(in srgb, var(--ev-secondary) 88%, #000);
+    color: #fff;
   }
 }
 
@@ -137,10 +137,10 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  border: 1px solid var(--t-line);
-  border-radius: 4px;
-  background: var(--t-surface);
-  color: var(--t-ink);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
   cursor: pointer;
 
   @media (min-width: 900px) {
@@ -153,8 +153,8 @@
   flex-direction: column;
   gap: 0.15rem;
   padding: 0 1.25rem 1rem;
-  border-bottom: 1px solid var(--t-line);
-  background: var(--t-surface);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--ev-primary) 92%, #000);
 
   &.drawerOpen {
     display: flex;
@@ -166,17 +166,17 @@
 }
 
 .drawerLink {
-  padding: 0.6rem 0.75rem;
-  border-radius: 2px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--t-muted);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
   &:hover {
-    background: var(--t-bg);
-    color: var(--t-ink);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
   }
 }

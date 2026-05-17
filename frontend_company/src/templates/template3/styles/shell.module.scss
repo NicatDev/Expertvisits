@@ -1,21 +1,40 @@
-/* Template 3 — ciddi, minimal korporativ; rənglər API-dən (--ev-*) */
+@use '../../../styles/micrositeThemeTokens' as theme;
+
+/* Template 3 — Ciddi korporativ: strukturlu, zolaqlı, serif başlıqlar */
 .shell {
   --ev-primary: #1e3a5f;
   --ev-secondary: #0f766e;
-  --t-bg: #f5f4f0;
+  --t-bg: #f8f7f4;
   --t-surface: #ffffff;
   --t-ink: #1c1917;
   --t-muted: #57534e;
   --t-line: #d6d3d1;
-  --t-accent: var(--ev-primary);
-  --t-accent-2: var(--ev-secondary);
-  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 14%, white);
+  @include theme.micrositeThemeTokens;
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 12%, white);
+  --t-accent-soft-2: color-mix(in srgb, var(--ev-secondary) 10%, white);
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--t-bg);
   color: var(--t-ink);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-feature-settings: 'kern' 1;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.01em;
+
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--t-gradient-brand);
+    z-index: 60;
+    pointer-events: none;
+  }
+}
+
+.main {
+  flex: 1;
 }

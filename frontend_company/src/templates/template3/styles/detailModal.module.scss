@@ -25,7 +25,8 @@
   background: var(--t-surface);
   border-radius: 4px;
   border: 1px solid var(--t-line);
-  box-shadow: 0 24px 48px -24px rgba(28, 25, 23, 0.25);
+  border-top: 4px solid var(--ev-primary);
+  box-shadow: 0 24px 48px -24px color-mix(in srgb, var(--ev-primary) 28%, transparent);
   padding: 1.35rem 1.35rem 1.45rem;
 }
 

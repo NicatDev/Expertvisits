@@ -1,6 +1,7 @@
 .footer {
   margin-top: auto;
-  background: #0f172a;
+  background: color-mix(in srgb, var(--ev-primary) 82%, #0f172a);
+  border-top: 3px solid var(--ev-secondary);
   color: #e2e8f0;
   padding: 2.5rem 1.25rem 2rem;
 }
@@ -50,7 +51,7 @@
   transition: background 0.2s, transform 0.2s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--ev-secondary) 55%, transparent);
     transform: translateY(-2px);
   }
 }

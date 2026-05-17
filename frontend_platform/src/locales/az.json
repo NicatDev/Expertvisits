@@ -769,8 +769,10 @@
         "template3_name": "Ciddi korporativ",
         "theme_title": "Sayt rəngləri",
         "theme_primary": "Əsas rəng",
+        "theme_primary_help": "Menyu və üst zolaq (korporativ şablonda), düymələr və CTA-lar, bölmə başlıqları, əsas linklər, kart hover və kölgələri, hero gradienti, vakansiya zolağı, footer xətti, forma fokusu.",
         "theme_secondary": "İkinci rəng (vurğu)",
-        "theme_hint": "Dəyişikliklər bütün şablonlarda tətbiq olunur (#RRGGBB, məs. #1e40af)."
+        "theme_secondary_help": "Aktiv menyu və dil seçimi, badge və ikinci aksentlər, link hover, gradientin ikinci rəngi, statistik ikonlar, tünd şablonda neon işıqlar və pill nav.",
+        "theme_hint": "Rənglər bütün şablonlarda tətbiq olunur. Format: #RRGGBB (məs. #1e40af)."
     },
     "companies": {
         "title": "Şirkətləri Kəşf Et",

@@ -1,0 +1,21 @@
+/* Shared theme tokens — import in each template shell.module.scss */
+@mixin micrositeThemeTokens {
+  --t-accent: var(--ev-primary);
+  --t-accent-2: var(--ev-secondary);
+  --t-accent-soft: color-mix(in srgb, var(--ev-primary) 16%, white);
+  --t-accent-soft-2: color-mix(in srgb, var(--ev-secondary) 14%, white);
+  --t-accent-muted: color-mix(in srgb, var(--ev-primary) 8%, transparent);
+  --t-accent-muted-2: color-mix(in srgb, var(--ev-secondary) 8%, transparent);
+  --t-gradient-brand: linear-gradient(135deg, var(--ev-primary) 0%, var(--ev-secondary) 100%);
+  --t-gradient-brand-soft: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ev-primary) 22%, transparent) 0%,
+    color-mix(in srgb, var(--ev-secondary) 18%, transparent) 100%
+  );
+  --t-border-accent: color-mix(in srgb, var(--ev-primary) 28%, var(--t-line));
+  --t-shadow-accent: 0 16px 48px -24px color-mix(in srgb, var(--ev-primary) 42%, transparent);
+  --t-shadow-accent-2: 0 12px 36px -20px color-mix(in srgb, var(--ev-secondary) 38%, transparent);
+  --t-btn-bg: var(--t-gradient-brand);
+  --t-link: var(--ev-primary);
+  --t-link-hover: var(--ev-secondary);
+}
