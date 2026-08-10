@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { business } from '@/lib/api';
 import VacancyCard from '@/components/advanced/VacancyCard';
 import AddVacancyModal from '@/components/advanced/AddVacancyModal';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import Button from '@/components/ui/Button';
 import { Plus } from 'lucide-react';
 import styles from './style.module.scss';
@@ -12,6 +13,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import Pagination from '@/components/ui/Pagination';
 import { useTranslation } from '@/i18n/client';
 import { emptyVacancyFilters } from './components/VacanciesFilters';
+import { sortVacanciesByStatus } from '@/lib/utils/vacancy';
 
 const VacanciesFiltersDynamic = dynamic(() => import('./components/VacanciesFilters'), {
   ssr: false,
@@ -34,6 +36,13 @@ function VacanciesPageContent() {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingVacancy, setEditingVacancy] = useState(null);
+  const [confirmationModal, setConfirmationModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+  });
 
   const pageRef = useRef(page);
   const filtersRef = useRef(filters);
@@ -53,8 +62,9 @@ function VacanciesPageContent() {
         location: f.searchLocation || undefined,
       };
       const res = await business.getVacancies(params);
-      setVacancies(res.data.results || res.data);
-      setTotalCount(res.data.count || (res.data.results || res.data).length);
+      const items = res.data.results || res.data;
+      setVacancies(sortVacanciesByStatus(items));
+      setTotalCount(res.data.count || items.length);
     } catch (err) {
       console.error('Failed to load vacancies', err);
     } finally {
@@ -72,6 +82,24 @@ function VacanciesPageContent() {
     } else {
       setPage(1);
     }
+  };
+
+  const openDeleteModal = (vacancyId) => {
+    setConfirmationModal({
+      isOpen: true,
+      title: t('profile.vacancies.delete_title'),
+      message: t('profile.vacancies.delete_message'),
+      onConfirm: async () => {
+        try {
+          await business.deleteVacancy(vacancyId);
+          setVacancies((prev) => prev.filter((item) => item.id !== vacancyId));
+          setTotalCount((prev) => Math.max(0, prev - 1));
+          fetchVacancies();
+        } catch (err) {
+          console.error('Failed to delete vacancy', err);
+        }
+      },
+    });
   };
 
   return (
@@ -99,7 +127,15 @@ function VacanciesPageContent() {
             {loading ? (
               <div className={styles.loading}>{t('vacancies.loading')}</div>
             ) : vacancies.length > 0 ? (
-              vacancies.map((v) => <VacancyCard key={v.id} vacancy={v} />)
+              vacancies.map((v) => (
+                <VacancyCard
+                  key={v.id}
+                  vacancy={v}
+                  isOwner={Boolean(v.is_owner)}
+                  onEdit={() => setEditingVacancy(v)}
+                  onDelete={() => openDeleteModal(v.id)}
+                />
+              ))
             ) : (
               <div className={styles.empty}>{t('vacancies.empty')}</div>
             )}
@@ -123,6 +159,26 @@ function VacanciesPageContent() {
           fetchVacancies();
           setPage(1);
         }}
+      />
+
+      <AddVacancyModal
+        isOpen={Boolean(editingVacancy)}
+        onClose={() => setEditingVacancy(null)}
+        initialData={editingVacancy}
+        onSuccess={() => {
+          setEditingVacancy(null);
+          fetchVacancies();
+        }}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmationModal.isOpen}
+        onClose={() => setConfirmationModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmationModal.onConfirm}
+        title={confirmationModal.title}
+        message={confirmationModal.message}
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
       />
     </div>
   );

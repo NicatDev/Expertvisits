@@ -12,6 +12,14 @@ import styles from '../style.module.scss';
 import { AlertCircle } from 'lucide-react';
 import { useTranslation } from '@/i18n/client';
 import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
+import { useAuth } from '@/lib/contexts/AuthContext';
+
+const COMMON_PASSWORDS = new Set([
+    'password', 'password123', '12345678', '123456789', '1234567890',
+    'qwerty123', 'qwertyuiop', 'admin123', 'adminadmin', 'letmein123'
+]);
+
+const AVAILABILITY_DELAY = 500;
 
 export default function RegisterPage() {
     const { t, i18n } = useTranslation('common');
@@ -20,6 +28,7 @@ export default function RegisterPage() {
     const profKey = `profession_${currentLang}`;
     
     const router = useRouter();
+    const { login } = useAuth();
     const [step, setStep] = useState(1); // 1: Registration, 3: Verification
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -27,6 +36,10 @@ export default function RegisterPage() {
     const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
     const [verificationCode, setVerificationCode] = useState('');
+    const [availability, setAvailability] = useState({
+        username: { status: 'idle', message: '' },
+        email: { status: 'idle', message: '' }
+    });
 
     const [formData, setFormData] = useState({
         username: '',
@@ -44,6 +57,106 @@ export default function RegisterPage() {
     useEffect(() => {
         fetchCategories();
     }, []);
+
+    const translateError = React.useCallback((field, message, fallbackKey = 'registration_failed') => {
+        const text = Array.isArray(message) ? message[0] : message;
+        const raw = String(text || '').toLowerCase();
+        const label = t(`auth_page.${field}`) || t(`auth_page.errors.${field}`) || field;
+
+        if (!text) return t(`auth_page.errors.${fallbackKey}`);
+        if (raw.includes('already taken') || raw.includes('already registered') || raw.includes('already exists') || raw.includes('unique')) {
+            return field === 'email' ? t('auth_page.validation.email_taken') : t('auth_page.validation.username_taken');
+        }
+        if (raw.includes('required') || raw.includes('blank') || raw.includes('null')) {
+            return t('auth_page.validation.field_required', { field: label });
+        }
+        if (raw.includes('valid email')) return t('auth_page.errors.invalid_email');
+        if (raw.includes('invalid code')) return t('auth_page.validation.invalid_code');
+        if (raw.includes('invalid verification session')) return t('auth_page.validation.invalid_session');
+        if (raw.includes('failed to send email')) return t('auth_page.validation.email_send_failed');
+        if (raw.includes('username taken during verification')) return t('auth_page.validation.username_taken');
+        if (raw.includes('no more than')) {
+            const count = raw.match(/no more than (\d+)/)?.[1];
+            return t('auth_page.validation.max_length', { field: label, count: count || '' });
+        }
+        return t(`auth_page.errors.${fallbackKey}`);
+    }, [t]);
+
+    const passwordChecks = React.useMemo(() => {
+        const password = formData.password || '';
+        const lowered = password.toLowerCase();
+        const profileParts = [
+            formData.username,
+            formData.email?.split('@')?.[0],
+            formData.first_name,
+            formData.last_name
+        ].filter(Boolean).map(v => String(v).toLowerCase().trim()).filter(v => v.length >= 3);
+        const similarPart = profileParts.find(part => lowered.includes(part) || part.includes(lowered));
+
+        return [
+            { key: 'min_length', valid: password.length >= 8 },
+            { key: 'not_numeric', valid: password.length > 0 && !/^\d+$/.test(password) },
+            { key: 'not_common', valid: password.length > 0 && !COMMON_PASSWORDS.has(lowered) },
+            { key: 'not_similar', valid: password.length > 0 && !similarPart }
+        ];
+    }, [formData.password, formData.username, formData.email, formData.first_name, formData.last_name]);
+
+    const passwordsMatch = Boolean(formData.password && formData.confirmPassword && formData.password === formData.confirmPassword);
+    const isPasswordValid = passwordChecks.every(item => item.valid) && passwordsMatch;
+
+    useEffect(() => {
+        const username = formData.username.trim();
+        const email = formData.email.trim();
+
+        setAvailability(prev => ({
+            username: username ? prev.username : { status: 'idle', message: '' },
+            email: email ? prev.email : { status: 'idle', message: '' }
+        }));
+
+        if (!username && !email) return;
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setAvailability(prev => ({
+                ...prev,
+                email: { status: 'invalid', message: t('auth_page.errors.invalid_email') }
+            }));
+        }
+
+        const timer = setTimeout(async () => {
+            const payload = {};
+            if (username) payload.username = username;
+            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) payload.email = email;
+            if (!payload.username && !payload.email) return;
+
+            setAvailability(prev => ({
+                username: payload.username ? { status: 'checking', message: t('auth_page.validation.checking') } : prev.username,
+                email: payload.email ? { status: 'checking', message: t('auth_page.validation.checking') } : prev.email
+            }));
+
+            try {
+                await auth.checkAvailability(payload);
+                setAvailability(prev => ({
+                    username: payload.username ? { status: 'valid', message: t('auth_page.validation.username_available') } : prev.username,
+                    email: payload.email ? { status: 'valid', message: t('auth_page.validation.email_available') } : prev.email
+                }));
+            } catch (err) {
+                const data = err.response?.data || {};
+                setAvailability(prev => ({
+                    username: payload.username
+                        ? data.username
+                            ? { status: 'invalid', message: translateError('username', data.username) }
+                            : { status: 'valid', message: t('auth_page.validation.username_available') }
+                        : prev.username,
+                    email: payload.email
+                        ? data.email
+                            ? { status: 'invalid', message: translateError('email', data.email) }
+                            : { status: 'valid', message: t('auth_page.validation.email_available') }
+                        : prev.email
+                }));
+            }
+        }, AVAILABILITY_DELAY);
+
+        return () => clearTimeout(timer);
+    }, [formData.username, formData.email, t, translateError]);
 
     const fetchCategories = async () => {
         try {
@@ -64,30 +177,26 @@ export default function RegisterPage() {
 
     const formatError = (errData) => {
         if (!errData) return '';
-        if (typeof errData === 'string') return errData;
+        if (typeof errData === 'string') return translateError('general', errData);
         if (typeof errData === 'object') {
             const firstKey = Object.keys(errData)[0];
             const detail = errData[firstKey];
-            const fieldLabel = t(`auth_page.${firstKey}`) || firstKey;
-            
-            if (Array.isArray(detail)) return `${fieldLabel}: ${detail[0]}`;
-            if (typeof detail === 'string') return `${fieldLabel}: ${detail}`;
-            return JSON.stringify(errData);
+            return translateError(firstKey, detail);
         }
-        return t('common.error') || 'Error';
+        return t('auth_page.errors.registration_failed');
     };
 
     const validateForm = () => {
         setFieldErrors({});
         const errors = {};
 
-        if (!formData.first_name) errors.first_name = t('auth_page.errors.fill_all');
-        if (!formData.last_name) errors.last_name = t('auth_page.errors.fill_all');
-        if (!formData.username) errors.username = t('auth_page.errors.fill_all');
-        if (!formData.email) errors.email = t('auth_page.errors.fill_all');
-        if (!formData.password) errors.password = t('auth_page.errors.fill_all');
-        if (!professionId) errors.professionId = t('auth_page.errors.fill_all');
-        if (!formData.city) errors.city = t('auth_page.errors.fill_all');
+        if (!formData.first_name) errors.first_name = t('auth_page.validation.field_required', { field: t('auth_page.first_name') });
+        if (!formData.last_name) errors.last_name = t('auth_page.validation.field_required', { field: t('auth_page.last_name') });
+        if (!formData.username) errors.username = t('auth_page.validation.field_required', { field: t('auth_page.username') });
+        if (!formData.email) errors.email = t('auth_page.validation.field_required', { field: t('auth_page.email') });
+        if (!formData.password) errors.password = t('auth_page.validation.field_required', { field: t('auth_page.password') });
+        if (!professionId) errors.professionId = t('auth_page.validation.field_required', { field: t('auth_page.profession') });
+        if (!formData.city) errors.city = t('auth_page.validation.field_required', { field: t('auth_page.city') });
 
         if (Object.keys(errors).length > 0) {
             setError(t('auth_page.errors.fill_all'));
@@ -95,16 +204,10 @@ export default function RegisterPage() {
             return false;
         }
 
-        if (formData.password.length < 8) {
-            const msg = t('auth_page.errors.password_short');
+        if (!isPasswordValid) {
+            const msg = t('auth_page.validation.password_incomplete');
             setError(msg);
             setFieldErrors({ password: msg });
-            return false;
-        }
-        if (formData.password !== formData.confirmPassword) {
-            const msg = t('auth_page.errors.passwords_mismatch');
-            setError(msg);
-            setFieldErrors({ confirmPassword: msg });
             return false;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -112,6 +215,11 @@ export default function RegisterPage() {
             const msg = t('auth_page.errors.invalid_email');
             setError(msg);
             setFieldErrors({ email: msg });
+            return false;
+        }
+        if (availability.username.status === 'invalid' || availability.email.status === 'invalid') {
+            const msg = availability.username.status === 'invalid' ? availability.username.message : availability.email.message;
+            setError(msg);
             return false;
         }
         return true;
@@ -148,7 +256,7 @@ export default function RegisterPage() {
                 
                 const newFieldErrors = {};
                 Object.keys(data).forEach(key => {
-                    const msg = Array.isArray(data[key]) ? data[key][0] : data[key];
+                    const msg = translateError(key, data[key]);
                     newFieldErrors[key] = msg;
                 });
                 setFieldErrors(newFieldErrors);
@@ -170,10 +278,16 @@ export default function RegisterPage() {
                 email: formData.email,
                 code: verificationCode
             });
-            router.push('/login?verified=true');
+            try {
+                await login(formData.username, formData.password);
+                router.push('/');
+            } catch (loginErr) {
+                console.error("Auto login after registration failed:", loginErr);
+                setError(t('auth_page.errors.auto_login_failed'));
+            }
         } catch (err) {
             if (err.response?.data?.error) {
-                setError(err.response.data.error);
+                setError(translateError('code', err.response.data.error, 'verification_failed'));
             } else {
                 setError(t('auth_page.errors.verification_failed'));
             }
@@ -187,8 +301,13 @@ export default function RegisterPage() {
             await auth.resendCode({ email: formData.email });
             alert(t('auth_page.alerts.code_resent') || 'Verification code resent!');
         } catch (err) {
-            setError(t('auth_page.errors.failed_resend'));
+            setError(translateError('email', err.response?.data?.error, 'failed_resend'));
         }
+    };
+
+    const ValidationHint = ({ state }) => {
+        if (!state?.message) return null;
+        return <div className={`${styles.validationHint} ${styles[state.status]}`}>{state.message}</div>;
     };
 
     return (
@@ -246,6 +365,7 @@ export default function RegisterPage() {
                                         required 
                                         error={fieldErrors.username} 
                                     />
+                                    <ValidationHint state={availability.username} />
                                 </div>
                                 <div className={styles.grid}>
                                     <div className={styles.field}>
@@ -319,6 +439,7 @@ export default function RegisterPage() {
                                         required 
                                         error={fieldErrors.email} 
                                     />
+                                    <ValidationHint state={availability.email} />
                                 </div>
                                 <div className={styles.grid}>
                                     <div className={styles.field}>
@@ -332,6 +453,15 @@ export default function RegisterPage() {
                                             required 
                                             error={fieldErrors.password} 
                                         />
+                                        {formData.password && (
+                                            <ul className={styles.passwordChecklist}>
+                                                {passwordChecks.map(item => (
+                                                    <li key={item.key} className={item.valid ? styles.valid : styles.invalid}>
+                                                        {t(`auth_page.password_rules.${item.key}`)}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
                                     <div className={styles.field}>
                                         <Input 
@@ -344,6 +474,11 @@ export default function RegisterPage() {
                                             required 
                                             error={fieldErrors.confirmPassword} 
                                         />
+                                        {formData.confirmPassword && (
+                                            <div className={`${styles.validationHint} ${passwordsMatch ? styles.valid : styles.invalid}`}>
+                                                {passwordsMatch ? t('auth_page.password_rules.passwords_match') : t('auth_page.errors.passwords_mismatch')}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

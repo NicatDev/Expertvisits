@@ -5,10 +5,21 @@ from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import SAFE_METHODS
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Exists, OuterRef, Value, BooleanField, Q
+from django.db.models import Case, Exists, IntegerField, OuterRef, Value, BooleanField, Q, When
+from django.utils import timezone
 from apps.business.models import Vacancy, VacancyApplication
 from apps.business.api.serializers import VacancySerializer, VacancyApplicationSerializer
 from .companies import StandardResultsSetPagination
+
+
+def _active_first(queryset):
+    return queryset.annotate(
+        expired_order=Case(
+            When(expires_at__lt=timezone.localdate(), then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField(),
+        )
+    ).order_by("expired_order", "-posted_at")
 
 
 def _user_owns_vacancy(user, vacancy: Vacancy) -> bool:
@@ -54,7 +65,7 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
             "company__our_values",
             "sub_category",
             "posted_by",
-        ).prefetch_related('company__profile_services').order_by('-posted_at')
+        ).prefetch_related('company__profile_services')
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
                 is_applied=Exists(
@@ -66,7 +77,7 @@ class VacancyListCreateAPIView(generics.ListCreateAPIView):
             )
         else:
              queryset = queryset.annotate(is_applied=Value(False, output_field=BooleanField()))
-        return queryset
+        return _active_first(queryset)
 
     def perform_create(self, serializer):
         serializer.save(posted_by=self.request.user)
@@ -131,7 +142,7 @@ class MyVacanciesAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Vacancy.objects.filter(
+        queryset = Vacancy.objects.filter(
             Q(company__owner=self.request.user) | Q(posted_by=self.request.user)
         ).select_related(
             "company",
@@ -141,7 +152,8 @@ class MyVacanciesAPIView(generics.ListAPIView):
             "company__our_values",
             "sub_category",
             "posted_by",
-        ).prefetch_related('company__profile_services').order_by('-posted_at')
+        ).prefetch_related('company__profile_services')
+        return _active_first(queryset)
 
 class VacancyApplicantsAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

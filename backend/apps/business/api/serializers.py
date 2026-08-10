@@ -58,6 +58,10 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
     vacancy_title = serializers.ReadOnlyField(source="vacancy.title")
     company_name = serializers.SerializerMethodField()
     applicant_details = serializers.SerializerMethodField()
+    applicant_username = serializers.ReadOnlyField(source="applicant.username")
+    applicant_first_name = serializers.ReadOnlyField(source="applicant.first_name")
+    applicant_last_name = serializers.ReadOnlyField(source="applicant.last_name")
+    applicant_avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = business_models.VacancyApplication
@@ -67,6 +71,10 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
             "vacancy_title",
             "company_name",
             "applicant",
+            "applicant_username",
+            "applicant_first_name",
+            "applicant_last_name",
+            "applicant_avatar",
             "applicant_details",
             "motivation_letter",
             "status",
@@ -100,6 +108,9 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
             'username': applicant.username,
             'avatar': avatar_url
         }
+
+    def get_applicant_avatar(self, obj):
+        return self.get_applicant_details(obj).get("avatar")
 
 class WhoWeAreSerializer(serializers.ModelSerializer):
     """`title` kept on model for DB compatibility; API is description-only."""

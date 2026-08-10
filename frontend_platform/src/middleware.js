@@ -41,6 +41,11 @@ export function middleware(request) {
   // Legacy routes without /{locale} prefix → /az/…
   const firstSeg = pathname.split('/').filter(Boolean)[0];
   const hasLocalePrefix = firstSeg === 'az' || firstSeg === 'en' || firstSeg === 'ru';
+  if (hasLocalePrefix && /^\/(az|en|ru)\/forgot-password\/?$/.test(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/forgot-password';
+    return NextResponse.rewrite(url);
+  }
     if (!hasLocalePrefix) {
         if (
             pathname === '/profile' ||

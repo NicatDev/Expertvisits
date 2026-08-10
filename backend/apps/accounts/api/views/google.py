@@ -9,6 +9,7 @@ from google.auth.transport import requests
 import uuid
 from django.core.files.base import ContentFile
 import requests as http_requests
+from core.utils.email import send_registration_complete_email
 
 User = get_user_model()
 
@@ -18,6 +19,9 @@ class GoogleAuthView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         token = request.data.get('token')
+        locale = request.data.get('locale') or request.headers.get('Accept-Language', 'az')[:2]
+        if locale not in ('az', 'en', 'ru'):
+            locale = 'az'
         if not token:
             return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -65,6 +69,7 @@ class GoogleAuthView(APIView):
                 'first_name': first_name,
                 'last_name': last_name,
                 'is_active': True,
+                'language': locale,
                 'username': email.split('@')[0] + '_' + str(uuid.uuid4())[:8] # Unique username
             })
 
@@ -81,6 +86,16 @@ class GoogleAuthView(APIView):
                     except Exception as e:
                         pass # Ignore image saving errors
 
+                try:
+                    send_registration_complete_email(
+                        user.email,
+                        user.username,
+                        locale=locale,
+                        include_password_link=True,
+                    )
+                except Exception:
+                    pass
+
             # Generate tokens
             refresh = RefreshToken.for_user(user)
             
@@ -90,6 +105,7 @@ class GoogleAuthView(APIView):
                 'user': {
                     'id': user.id,
                     'email': user.email,
+                    'username': user.username,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'avatar': user.avatar.url if user.avatar else None,

@@ -220,7 +220,7 @@ export default function HomePageClient() {
                     </div>
 
                     {/* Ordering & Scope (More Options) */}
-                    <div style={{ position: 'relative' }}>
+                    <div className={styles.filterMenuWrapper}>
                         <button
                             className={styles.filterBtn}
                             onClick={() => setShowFilters(!showFilters)}

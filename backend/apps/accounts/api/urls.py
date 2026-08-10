@@ -11,7 +11,14 @@ from .views.users import (
     UserFollowingAPIView,
 )
 from .views.categories import CategoryListAPIView, CategoryDetailAPIView
-from .views.auth import VerifyEmailAPIView, CheckAvailabilityAPIView, ResendCodeAPIView, SetPasswordAPIView
+from .views.auth import (
+    VerifyEmailAPIView,
+    CheckAvailabilityAPIView,
+    ResendCodeAPIView,
+    SetPasswordAPIView,
+    RequestPasswordResetAPIView,
+    ConfirmPasswordResetAPIView,
+)
 from .views.email_change import RequestEmailChangeAPIView, ConfirmEmailChangeAPIView
 from .views.profiles import UserProfileDetailsAPIView
 from .views.google import GoogleAuthView
@@ -22,6 +29,8 @@ urlpatterns = [
     path('users/set_password/', SetPasswordAPIView.as_view(), name='set-password'),
     path('users/request_email_change/', RequestEmailChangeAPIView.as_view(), name='request-email-change'),
     path('users/confirm_email_change/', ConfirmEmailChangeAPIView.as_view(), name='confirm-email-change'),
+    path('users/request_password_reset/', RequestPasswordResetAPIView.as_view(), name='request-password-reset'),
+    path('users/confirm_password_reset/', ConfirmPasswordResetAPIView.as_view(), name='confirm-password-reset'),
     path('users/check_availability/', CheckAvailabilityAPIView.as_view(), name='check-availability'),
     path('users/resend_code/', ResendCodeAPIView.as_view(), name='resend-code'),
     

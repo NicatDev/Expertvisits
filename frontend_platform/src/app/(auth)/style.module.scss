@@ -86,6 +86,14 @@
     gap: 24px;
 }
 
+.authHint {
+    margin: 0;
+    color: #666;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
 .section {
     display: flex;
     flex-direction: column;
@@ -127,6 +135,46 @@
 
     :global(.input-wrapper) {
         margin-bottom: 0 !important;
+    }
+}
+
+.validationHint {
+    font-size: 12px;
+    line-height: 1.4;
+    margin-top: -2px;
+}
+
+.checking {
+    color: #8c6d1f;
+}
+
+.valid {
+    color: #237804;
+}
+
+.invalid {
+    color: $error-color;
+}
+
+.passwordChecklist {
+    list-style: none;
+    padding: 0;
+    margin: 2px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        &::before {
+            content: '•';
+            font-weight: 700;
+        }
     }
 }
 

@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from apps.accounts.models import User, VerificationCode, RegistrationSession
 import random
 
@@ -31,6 +33,17 @@ class VerifyEmailAPIView(APIView):
                 
                 if interests_ids:
                     user.interests.set(interests_ids)
+
+                try:
+                    from core.utils.email import send_registration_complete_email
+                    send_registration_complete_email(
+                        user.email,
+                        user.username,
+                        locale=getattr(user, 'language', None) or 'az',
+                        include_password_link=False,
+                    )
+                except Exception:
+                    pass
                 
                 session.delete()
                 
@@ -112,6 +125,63 @@ class ResendCodeAPIView(APIView):
              return Response({'error': f'Failed to send email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
              
         return Response({'message': 'Verification code resent successfully'}, status=status.HTTP_200_OK)
+
+class RequestPasswordResetAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = (request.data.get('email') or '').strip()
+        if not email:
+            return Response({'detail': 'email_required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email__iexact=email, is_active=True).first()
+        if not user:
+            return Response({'detail': 'user_not_found'}, status=status.HTTP_404_NOT_FOUND)
+
+        code = str(random.randint(100000, 999999))
+        VerificationCode.objects.filter(user=user, is_used=False).update(is_used=True)
+        VerificationCode.objects.create(user=user, code=code)
+
+        try:
+            from core.utils.email import send_password_reset_email
+            send_password_reset_email(user.email, code)
+        except Exception:
+            return Response({'detail': 'email_send_failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'message': 'password_reset_code_sent'}, status=status.HTTP_200_OK)
+
+
+class ConfirmPasswordResetAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = (request.data.get('email') or '').strip()
+        code = (request.data.get('code') or '').strip()
+        new_password = request.data.get('new_password') or ''
+
+        if not email or not code or not new_password:
+            return Response({'detail': 'email_code_password_required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email__iexact=email, is_active=True).first()
+        if not user:
+            return Response({'detail': 'user_not_found'}, status=status.HTTP_404_NOT_FOUND)
+
+        verification = VerificationCode.objects.filter(user=user, is_used=False).order_by('-created_at').first()
+        if not verification or verification.code != code:
+            return Response({'detail': 'invalid_code'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            validate_password(new_password, user=user)
+        except ValidationError as exc:
+            return Response({'password': list(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save(update_fields=['password'])
+        verification.is_used = True
+        verification.save(update_fields=['is_used'])
+
+        return Response({'message': 'password_reset_success'}, status=status.HTTP_200_OK)
+
 
 class SetPasswordAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

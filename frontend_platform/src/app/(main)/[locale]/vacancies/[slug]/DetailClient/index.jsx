@@ -1,16 +1,18 @@
 
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from './style.module.scss';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import ApplyModal from '@/components/advanced/ApplyModal';
-import { MapPin, Briefcase, DollarSign, Clock, Building, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink } from 'lucide-react';
+import AddVacancyModal from '@/components/advanced/AddVacancyModal';
+import { MapPin, Briefcase, DollarSign, Clock, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink, Pencil } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
+import { isVacancyExpired } from '@/lib/utils/vacancy';
 
 function buildPublisher(vacancy) {
     if (vacancy.publisher) return vacancy.publisher;
@@ -47,11 +49,7 @@ export default function DetailClient({ vacancy }) {
     const [vacancyData, setVacancyData] = useState(vacancy);
     const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
     const [showApplyModal, setShowApplyModal] = useState(false);
-
-    useEffect(() => {
-        setVacancyData(vacancy);
-        if (vacancy.is_applied !== undefined) setIsApplied(vacancy.is_applied);
-    }, [vacancy]);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     useEffect(() => {
         if (!user || !vacancy.slug) return;
@@ -77,6 +75,12 @@ export default function DetailClient({ vacancy }) {
         toast.success(t('vacancy_detail.toasts.link_copied'));
     };
 
+    const refreshVacancy = async () => {
+        const res = await business.getVacancy(vacancyData.slug || vacancy.slug);
+        setVacancyData(res.data);
+        if (res.data.is_applied !== undefined) setIsApplied(res.data.is_applied);
+    };
+
     const formatDate = (dateStr) => {
         if (!dateStr) return 'N/A';
         return new Date(dateStr).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'));
@@ -95,6 +99,7 @@ export default function DetailClient({ vacancy }) {
     const companyPageHref = publisher?.slug ? withLocale(uiLocale, `/companies/${publisher.slug}`) : null;
     const displayName = publisher.name || vacancyData.company_name || '';
     const isOwner = Boolean(vacancyData.is_owner);
+    const isExpired = isVacancyExpired(vacancyData.expires_at);
 
     return (
         <div className={styles.container}>
@@ -122,6 +127,9 @@ export default function DetailClient({ vacancy }) {
                                 {publisher.type === 'individual' ? (
                                     <span className={styles.individualBadge}>{t('vacancy_detail.individual_posting_badge')}</span>
                                 ) : null}
+                                {isExpired ? (
+                                    <span className={styles.inactiveBadge}>{t('vacancies.inactive')}</span>
+                                ) : null}
                             </div>
                             {publisher.type === 'company' && publisher.slug && companyPageHref ? (
                                 <a href={companyPageHref} className={styles.companyPageLink}>
@@ -132,7 +140,11 @@ export default function DetailClient({ vacancy }) {
                     </div>
 
                     <div className={styles.actions}>
-                        {isApplied ? (
+                        {isOwner ? (
+                            <Button variant="outline" className={styles.editBtn} onClick={() => setShowEditModal(true)}>
+                                <Pencil size={18} /> {t('vacancy_detail.edit_vacancy')}
+                            </Button>
+                        ) : isApplied ? (
                             <Button variant="outline" className={styles.appliedBtn} disabled>
                                 <CheckCircle size={18} /> {t('vacancy_detail.applied')}
                             </Button>
@@ -272,6 +284,15 @@ export default function DetailClient({ vacancy }) {
                     setIsApplied(true);
                 }}
             />
+            <AddVacancyModal
+                isOpen={showEditModal}
+                onClose={() => setShowEditModal(false)}
+                initialData={vacancyData}
+                onSuccess={async () => {
+                    setShowEditModal(false);
+                    await refreshVacancy();
+                }}
+            />
         </div>
 
     );
@@ -282,11 +303,7 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadApplicants();
-    }, [vacancyId]);
-
-    const loadApplicants = async () => {
+    const loadApplicants = useCallback(async () => {
         try {
             const res = await business.getVacancyApplicants(vacancyId);
             setApplicants(res.data);
@@ -295,7 +312,11 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [vacancyId]);
+
+    useEffect(() => {
+        loadApplicants();
+    }, [loadApplicants]);
 
     const handleStatusChange = async (appId, newStatus) => {
         try {
@@ -343,9 +364,13 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
                                 )}
                                 <div>
                                     <a href={userPublicHref(app.applicant_username)} target="_blank" rel="noopener noreferrer" className={styles.applicantName}>
-                                        {app.applicant_first_name} {app.applicant_last_name}
+                                        {(app.applicant_first_name || app.applicant_details?.full_name || '').trim() || app.applicant_username || t('vacancy_detail.applicant_fallback')}
                                     </a>
-                                    <span className={styles.username}>@{app.applicant_username}</span>
+                                    {app.applicant_username ? (
+                                        <a href={userPublicHref(app.applicant_username)} target="_blank" rel="noopener noreferrer" className={styles.username}>
+                                            @{app.applicant_username}
+                                        </a>
+                                    ) : null}
                                     <div className={styles.appliedDate} suppressHydrationWarning>{t('vacancy_detail.applied')} {new Date(app.created_at).toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : (i18n.language === 'ru' ? 'ru-RU' : 'en-US'))}</div>
                                 </div>
                             </div>

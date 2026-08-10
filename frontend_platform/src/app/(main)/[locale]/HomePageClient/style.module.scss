@@ -189,8 +189,8 @@
     gap: 16px;
 
     @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: stretch;
+        flex-wrap: wrap;
+        align-items: center;
     }
 
     .leftGroup {
@@ -200,8 +200,57 @@
         flex: 1;
 
         @media (max-width: 480px) {
-            flex-direction: column;
-            align-items: stretch;
+            display: contents;
+        }
+    }
+
+    .filters {
+        @media (max-width: 480px) {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            flex-basis: 100%;
+            width: 100%;
+            order: 1;
+            gap: 6px;
+            overflow: visible;
+
+            button {
+                width: 100%;
+                min-width: 0;
+                padding: 7px 4px;
+                font-size: 13px;
+            }
+        }
+    }
+
+    .createBtnWrapper {
+        @media (max-width: 480px) {
+            order: 2;
+        }
+    }
+
+    .filterMenuWrapper {
+        position: relative;
+
+        @media (max-width: 480px) {
+            order: 3;
+            margin-left: auto;
+        }
+    }
+
+    .filterBtn {
+        @media (max-width: 480px) {
+            min-height: 34px;
+            white-space: nowrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        row-gap: 12px;
+        column-gap: 10px;
+
+        .createBtnWrapper,
+        .filterMenuWrapper {
             gap: 12px;
         }
     }

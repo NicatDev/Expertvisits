@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapPin, Clock, Briefcase, DollarSign, CheckCircle } from 'lucide-react';
 import styles from './style.module.scss';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import ApplyModal from '@/components/advanced/ApplyModal';
 import ApplicantsModal from '@/components/advanced/ApplicantsModal';
 import { useTranslation } from '@/i18n/client';
+import { isVacancyExpired } from '@/lib/utils/vacancy';
 
 function buildPublisher(vacancy) {
     if (vacancy.publisher) return vacancy.publisher;
@@ -45,14 +46,11 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
     const companyHref = publisher?.slug
         ? withLocale(pathLocale || defaultLocale, `/companies/${publisher.slug}`)
         : null;
-    const [isApplied, setIsApplied] = useState(vacancy.is_applied || false);
+    const [hasJustApplied, setHasJustApplied] = useState(false);
     const [showApplyModal, setShowApplyModal] = useState(false);
     const [showApplicantsModal, setShowApplicantsModal] = useState(false);
-
-    // Update local state if prop changes (e.g. after list refresh)
-    useEffect(() => {
-        setIsApplied(vacancy.is_applied);
-    }, [vacancy.is_applied]);
+    const isExpired = isVacancyExpired(vacancy.expires_at);
+    const isApplied = Boolean(vacancy.is_applied || hasJustApplied);
     // Helper to format date relative (e.g. 2 days ago)
     const timeAgo = (dateStr) => {
         const date = new Date(dateStr);
@@ -118,13 +116,15 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
             </div>
 
             <div className={styles.footer}>
-                <span className={styles.category}>{vacancy.sub_category?.name || 'General'}</span>
+                <span className={`${styles.category} ${isExpired ? styles.inactiveCategory : ''}`}>
+                    {isExpired ? t('vacancies.inactive') : (vacancy.sub_category?.name || t('vacancies.general'))}
+                </span>
 
                 {isOwner ? (
                     <div className={styles.ownerActions}>
                         <button className={styles.actionBtn} onClick={() => setShowApplicantsModal(true)}>{t('vacancy_detail.applicants')}</button>
-                        <button className={styles.actionBtn} onClick={onEdit}>{t('common.edit')}</button>
-                        <button className={styles.deleteBtn} onClick={onDelete}>{t('common.delete')}</button>
+                        {onEdit ? <button className={styles.actionBtn} onClick={onEdit}>{t('common.edit')}</button> : null}
+                        {onDelete ? <button className={styles.deleteBtn} onClick={onDelete}>{t('common.delete')}</button> : null}
                     </div>
                 ) : (
                     user ? (
@@ -144,7 +144,7 @@ const VacancyCard = ({ vacancy, isOwner, onEdit, onDelete }) => {
                 onClose={() => setShowApplyModal(false)}
                 vacancyId={vacancy.id}
                 vacancyTitle={vacancy.title}
-                onSuccess={() => setIsApplied(true)}
+                onSuccess={() => setHasJustApplied(true)}
             />
 
             <ApplicantsModal

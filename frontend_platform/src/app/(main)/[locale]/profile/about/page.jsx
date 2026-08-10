@@ -18,7 +18,10 @@ import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import { toast } from 'react-toastify';
 
 export default function AboutPage() {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+    const currentLang = i18n.language?.split('-')[0] || 'az';
+    const langKey = `name_${currentLang}`;
+    const profKey = `profession_${currentLang}`;
     const { profile, loading: profileLoading, refreshProfile, isOwner } = useProfile();
 
     const [details, setDetails] = useState({
@@ -190,7 +193,8 @@ export default function AboutPage() {
                                         value={aboutData.profession_sub_category}
                                         onChange={(val) => setAboutData({ ...aboutData, profession_sub_category: val })}
                                         groupBy="subcategories"
-                                        labelKey="name"
+                                        labelKey={langKey}
+                                        professionKey={profKey}
                                         valueKey="id"
                                         placeholder={t('profile.select_profession')}
                                     />
@@ -200,7 +204,7 @@ export default function AboutPage() {
                             ) : (
                                 <>
                                     <span style={{ color: profile.profession_sub_category ? '#333' : '#999' }}>
-                                        {profile.profession_sub_category?.profession || profile.profession_sub_category?.name || t('profile.not_set')}
+                                        {profile.profession_sub_category?.[profKey] || profile.profession_sub_category?.[langKey] || t('profile.not_set')}
                                     </span>
                                     {isOwner && (
                                         <Edit2

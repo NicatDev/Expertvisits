@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from '@/i18n/client';
 
 export default function GoogleAuthButton({ mode = 'login', className }) {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const { loginWithTokens } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -18,7 +18,8 @@ export default function GoogleAuthButton({ mode = 'login', className }) {
     const handleSuccess = async (tokenResponse) => {
         try {
             const res = await api.post('accounts/google/', {
-                token: tokenResponse.access_token
+                token: tokenResponse.access_token,
+                locale: i18n.language?.split('-')[0] || 'az'
             });
 
             if (res.data) {

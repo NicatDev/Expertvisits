@@ -12,6 +12,10 @@ export const auth = {
         api.post('accounts/users/request_email_change/', { new_email }),
     confirmEmailChange: (new_email, code) =>
         api.post('accounts/users/confirm_email_change/', { new_email, code }),
+    requestPasswordReset: (email) =>
+        api.post('accounts/users/request_password_reset/', { email }),
+    confirmPasswordReset: (email, code, new_password) =>
+        api.post('accounts/users/confirm_password_reset/', { email, code, new_password }),
     logout: () => {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('accessToken');

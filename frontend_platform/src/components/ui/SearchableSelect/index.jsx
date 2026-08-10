@@ -19,34 +19,47 @@ export default function SearchableSelect({ options, value, onChange, placeholder
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const normalizeText = (text) => String(text || '')
+        .toLocaleLowerCase('az')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ə/g, 'e')
+        .replace(/ı/g, 'i')
+        .trim();
+
+    const currentLabel = (item) => item?.[professionKey] || item?.[labelKey] || item?.profession || item?.name || '';
+
+    const searchableText = (item) => [
+        item.profession_az,
+        item.profession_en,
+        item.profession_ru,
+        item.name_az,
+        item.name_en,
+        item.name_ru,
+        item.profession,
+        item.name,
+        item[labelKey],
+        item[professionKey]
+    ].filter(Boolean).map(normalizeText).join(' ');
+
     const filteredOptions = options.map(group => {
+        const term = normalizeText(search);
+
         if (groupBy) {
             // For optgroup structures: { id, name, subcategories: [] }
             const subItems = [];
             
             group[groupBy].forEach(item => {
-                const term = search.toLowerCase().trim();
-                
                 // If search is empty, the list won't be shown anyway
                 if (term.length === 0) return;
 
-                // Define variants: AZ, EN, RU
-                const variants = [
-                    { label: item.profession_az || item.name_az, lang: 'az' },
-                    { label: item.profession_en || item.name_en, lang: 'en' },
-                    { label: item.profession_ru || item.name_ru, lang: 'ru' }
-                ].filter(v => v.label);
-
-                // For each variant, check if it matches the search term
-                variants.forEach(v => {
-                    if (v.label.toLowerCase().includes(term)) {
-                        subItems.push({
-                            ...item,
-                            displayLabel: v.label,
-                            displayKey: `${item[valueKey]}_${v.lang}_${group.id}` 
-                        });
-                    }
-                });
+                if (searchableText(item).includes(term)) {
+                    subItems.push({
+                        ...item,
+                        displayLabel: currentLabel(item),
+                        displayKey: `${item[valueKey]}_${group.id}`
+                    });
+                }
             });
 
             if (subItems.length > 0) {
@@ -55,12 +68,7 @@ export default function SearchableSelect({ options, value, onChange, placeholder
             return null;
         } else {
             // Flat list
-            const searchableString = [
-                group.name_az, group.name_en, group.name_ru,
-                group.name, group[labelKey]
-            ].filter(Boolean).join(' ').toLowerCase();
-            
-            if (searchableString.includes(search.toLowerCase())) return group;
+            if (searchableText(group).includes(term)) return group;
             return null;
         }
     }).filter(Boolean);
@@ -73,13 +81,13 @@ export default function SearchableSelect({ options, value, onChange, placeholder
             for (const group of options) {
                 const found = group[groupBy].find(i => i[valueKey] == value);
                 if (found) {
-                    selectedLabel = found[professionKey] || found[labelKey] || found.profession || found.name;
+                    selectedLabel = currentLabel(found);
                     break;
                 }
             }
         } else {
             const found = options.find(i => i[valueKey] == value);
-            if (found) selectedLabel = found[labelKey];
+            if (found) selectedLabel = currentLabel(found);
         }
     }
 
@@ -133,7 +141,7 @@ export default function SearchableSelect({ options, value, onChange, placeholder
                                                 }}
                                                 className={`${styles.option} ${sub[valueKey] == value ? styles.selected : ''}`}
                                             >
-                                                {sub.displayLabel || sub[professionKey] || sub[labelKey] || sub.profession || sub.name}
+                                                {sub.displayLabel || currentLabel(sub)}
                                                 {sub[valueKey] == value && <Check size={14} />}
                                             </div>
                                         ))}
@@ -147,7 +155,7 @@ export default function SearchableSelect({ options, value, onChange, placeholder
                                         }}
                                         className={styles.option}
                                     >
-                                        {opt[labelKey] || opt.name}
+                                        {currentLabel(opt)}
                                     </div>
                                 )
                             ))

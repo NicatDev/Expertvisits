@@ -102,6 +102,18 @@
     border-radius: 6px;
 }
 
+.inactiveBadge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #cf1322;
+    background: #fff1f0;
+    border: 1px solid #ffa39e;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
 .companyPageLink {
     display: inline-flex;
     align-items: center;
@@ -143,6 +155,10 @@
 }
 
 .applyBtn {
+    min-width: 120px;
+}
+
+.editBtn {
     min-width: 120px;
 }
 
@@ -436,6 +452,12 @@
     color: #666;
     display: block;
     margin-bottom: 2px;
+    text-decoration: none;
+
+    &:hover {
+        color: #1890ff;
+        text-decoration: underline;
+    }
 }
 
 .appliedDate {

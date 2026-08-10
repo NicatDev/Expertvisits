@@ -188,6 +188,7 @@
         "have_account": "Already have an account?",
         "register_link": "Register",
         "login_link": "Login",
+        "forgot_password": "Forgot password?",
         "personal_info": "Personal Information",
         "professional_details": "Professional Details",
         "security": "Account Security",
@@ -200,6 +201,7 @@
             "invalid_email": "Invalid email format.",
             "registration_failed": "An error occurred during registration.",
             "invalid_credentials": "Invalid username or password.",
+            "auto_login_failed": "Registration is complete, but automatic login failed. Please log in.",
             "verification_failed": "Verification code is incorrect.",
             "failed_resend": "Failed to resend verification code.",
             "taken": "This username or email is already taken.",
@@ -207,6 +209,53 @@
             "email": "Email",
             "password": "Password",
             "birth_day": "Birth day"
+        },
+        "validation": {
+            "checking": "Checking...",
+            "username_available": "Username is available.",
+            "email_available": "Email is available.",
+            "username_taken": "This username is already taken.",
+            "email_taken": "This email is already registered.",
+            "field_required": "{{field}} is required.",
+            "max_length": "{{field}} must be no more than {{count}} characters.",
+            "invalid_code": "Verification code is incorrect.",
+            "invalid_session": "Verification session is invalid or expired. Please register again.",
+            "email_send_failed": "We could not send the email. Please try again later.",
+            "password_incomplete": "Please complete all password requirements."
+        },
+        "password_rules": {
+            "min_length": "At least 8 characters",
+            "not_numeric": "Not entirely numeric",
+            "not_common": "Not a commonly used password",
+            "not_similar": "Not too similar to your personal information",
+            "passwords_match": "Passwords match"
+        },
+        "alerts": {
+            "code_resent": "Verification code resent."
+        },
+        "password_reset": {
+            "title": "Reset password",
+            "email_hint": "Enter your account email. We will send you a verification code.",
+            "code_hint": "Enter the code we sent to {{email}}, then choose a new password.",
+            "code_label": "Verification code",
+            "send_code": "Send code",
+            "sending": "Sending...",
+            "reset_password": "Reset password",
+            "resetting": "Resetting...",
+            "errors": {
+                "generic": "Something went wrong. Please try again.",
+                "reset_failed": "Could not reset password. Please try again.",
+                "email_required": "Please enter your email.",
+                "code_required": "Please enter the verification code.",
+                "email_code_password_required": "Email, code, and new password are required.",
+                "user_not_found": "No active account was found with this email.",
+                "invalid_code": "Verification code is incorrect.",
+                "email_send_failed": "We could not send the email. Please try again later.",
+                "password_too_short": "Password must be at least 8 characters.",
+                "password_too_common": "This password is too common.",
+                "password_entirely_numeric": "Password cannot be entirely numeric.",
+                "password_too_similar": "Password is too similar to your personal information."
+            }
         }
     },
     "create_modal": {
@@ -610,6 +659,8 @@
         "apply_now": "Apply Now",
         "applied": "Applied",
         "share": "Share this job",
+        "edit_vacancy": "Edit vacancy",
+        "applicant_fallback": "Applicant",
         "about": "About the job",
         "posted_date": "Posted Date",
         "deadline": "Deadline",
@@ -691,6 +742,8 @@
         "empty": "No vacancies found matching your criteria.",
         "apply": "Apply",
         "view": "View",
+        "general": "General",
+        "inactive": "Inactive",
         "add_modal": {
             "title_add": "Post a Vacancy",
             "title_edit": "Edit Vacancy",

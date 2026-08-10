@@ -166,6 +166,7 @@
         "no_account": "Hesabınız yoxdur?",
         "register_link": "Qeydiyyatdan keçin",
         "login_link": "Daxil ol",
+        "forgot_password": "Şifrəni unutdum?",
         "join_title": "Bizə Qoşulun",
         "interests_title": "Maraqlarınızı seçin",
         "verify_title": "E-poçtu təsdiqləyin",
@@ -200,6 +201,7 @@
             "invalid_email": "E-poçt formatı yanlışdır.",
             "registration_failed": "Qeydiyyat zamanı xəta baş verdi.",
             "invalid_credentials": "İstifadəçi adı və ya şifrə yanlışdır.",
+            "auto_login_failed": "Qeydiyyat tamamlandı, lakin avtomatik giriş mümkün olmadı. Zəhmət olmasa daxil olun.",
             "verification_failed": "Təsdiq kodu yanlışdır.",
             "failed_resend": "Kodu yenidən göndərmək mümkün olmadı.",
             "taken": "Bu istifadəçi adı və ya e-poçt artıq tutulub.",
@@ -207,6 +209,53 @@
             "email": "Bu e-poçt",
             "password": "Şifrə",
             "birth_day": "Doğum tarixi"
+        },
+        "validation": {
+            "checking": "Yoxlanılır...",
+            "username_available": "İstifadəçi adı uyğundur.",
+            "email_available": "E-poçt uyğundur.",
+            "username_taken": "Bu istifadəçi adı artıq tutulub.",
+            "email_taken": "Bu e-poçt artıq qeydiyyatdan keçib.",
+            "field_required": "{{field}} mütləqdir.",
+            "max_length": "{{field}} ən çox {{count}} simvol ola bilər.",
+            "invalid_code": "Təsdiq kodu yanlışdır.",
+            "invalid_session": "Təsdiq sessiyası yanlışdır və ya vaxtı bitib. Zəhmət olmasa yenidən qeydiyyatdan keçin.",
+            "email_send_failed": "E-poçt göndərilə bilmədi. Zəhmət olmasa sonra yenidən cəhd edin.",
+            "password_incomplete": "Zəhmət olmasa bütün şifrə tələblərini tamamlayın."
+        },
+        "password_rules": {
+            "min_length": "Ən azı 8 simvol",
+            "not_numeric": "Tamamilə rəqəmlərdən ibarət deyil",
+            "not_common": "Çox istifadə olunan şifrə deyil",
+            "not_similar": "Şəxsi məlumatlarınıza çox bənzəmir",
+            "passwords_match": "Şifrələr uyğun gəlir"
+        },
+        "alerts": {
+            "code_resent": "Təsdiq kodu yenidən göndərildi."
+        },
+        "password_reset": {
+            "title": "Şifrəni yenilə",
+            "email_hint": "Hesab e-poçtunuzu daxil edin. Sizə təsdiq kodu göndərəcəyik.",
+            "code_hint": "{{email}} ünvanına göndərilən kodu daxil edin və yeni şifrə seçin.",
+            "code_label": "Təsdiq kodu",
+            "send_code": "Kodu göndər",
+            "sending": "Göndərilir...",
+            "reset_password": "Şifrəni yenilə",
+            "resetting": "Yenilənir...",
+            "errors": {
+                "generic": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
+                "reset_failed": "Şifrəni yeniləmək mümkün olmadı. Zəhmət olmasa yenidən cəhd edin.",
+                "email_required": "Zəhmət olmasa e-poçtunuzu daxil edin.",
+                "code_required": "Zəhmət olmasa təsdiq kodunu daxil edin.",
+                "email_code_password_required": "E-poçt, kod və yeni şifrə mütləqdir.",
+                "user_not_found": "Bu e-poçtla aktiv hesab tapılmadı.",
+                "invalid_code": "Təsdiq kodu yanlışdır.",
+                "email_send_failed": "E-poçt göndərilə bilmədi. Zəhmət olmasa sonra yenidən cəhd edin.",
+                "password_too_short": "Şifrə ən azı 8 simvoldan ibarət olmalıdır.",
+                "password_too_common": "Bu şifrə çox yayğındır.",
+                "password_entirely_numeric": "Şifrə tamamilə rəqəmlərdən ibarət ola bilməz.",
+                "password_too_similar": "Şifrə şəxsi məlumatlarınıza çox bənzəyir."
+            }
         }
     },
     "create_modal": {
@@ -499,6 +548,8 @@
         "apply_now": "Müraciət et",
         "applied": "Müraciət olunub",
         "share": "Bu işi paylaş",
+        "edit_vacancy": "Vakansiyaya düzəliş et",
+        "applicant_fallback": "Namizəd",
         "applicants_modal": {
             "title": "Müraciət edənlər",
             "loading": "Yüklənir...",
@@ -580,6 +631,8 @@
         "empty": "Axtarışınıza uyğun vakansiya tapılmadı.",
         "apply": "Müraciət et",
         "view": "Bax",
+        "general": "Ümumi",
+        "inactive": "Deaktiv",
         "add_modal": {
             "title_add": "Vakansiya Paylaş",
             "title_edit": "Vakansiyaya Düzəliş Et",

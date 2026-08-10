@@ -68,6 +68,11 @@ export default function LoginPage() {
                         onChange={handleChange}
                         required
                     />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-14px' }}>
+                        <Link href="/forgot-password" style={{ fontSize: '13px', color: '#1890ff', fontWeight: 600, textDecoration: 'none' }}>
+                            {t('auth_page.forgot_password')}
+                        </Link>
+                    </div>
 
                     {error && (
                         <div style={{
@@ -107,4 +112,3 @@ export default function LoginPage() {
         </div>
     );
 }
-

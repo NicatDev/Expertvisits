@@ -74,6 +74,105 @@ def send_email_change_verification_email(email, code):
     )
 
 
+def send_password_reset_email(email, code):
+    """
+    One-time code to reset an account password.
+    """
+    subject = f"{_BRAND} â€” reset your password"
+    message = (
+        f"Hello,\n\n"
+        f"You asked to reset the password for your {_BRAND} account. "
+        f"Enter this one-time code on the site to continue:\n\n"
+        f"  {code}\n\n"
+        f"If you did not request a password reset, you can ignore this email.\n\n"
+        f"â€” {_BRAND}\n"
+        f"{_SITE}\n"
+    )
+    return send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=False,
+    )
+
+
+def send_registration_complete_email(email, username, locale='az', include_password_link=False):
+    """
+    Welcome email after manual or Google signup. Does not send passwords.
+    """
+    safe_locale = locale if locale in {'az', 'en', 'ru'} else 'az'
+    base_url = f"https://expertvisits.com/{safe_locale}"
+    reset_url = f"{base_url}/forgot-password"
+    website_url = f"{base_url}/website-template"
+
+    copy = {
+        'az': {
+            'subject': f"{_BRAND} â€” qeydiyyat tamamlandı",
+            'hello': "Salam,",
+            'done': f"Qeydiyyatı uğurla tamamladınız.",
+            'username': "Username",
+            'password_link': (
+                "Google ilə qeydiyyatdan keçdiyiniz üçün lokal şifrə hələ təyin olunmayıb. "
+                "Şifrə təyin etmək istəyirsinizsə, bu keçiddən istifadə edin:"
+            ),
+            'website': (
+                "Expert Visits-də öz vebsaytınızı da yarada bilərsiniz. "
+                "Profil məlumatlarınızı doldurub ödənişsiz portfolio vebsaytınızı burada yarada bilərsiniz:"
+            ),
+        },
+        'en': {
+            'subject': f"{_BRAND} â€” registration completed",
+            'hello': "Hello,",
+            'done': "Your registration has been completed successfully.",
+            'username': "Username",
+            'password_link': (
+                "Because you registered with Google, you do not have a local password yet. "
+                "If you want to set one, use this link:"
+            ),
+            'website': (
+                "You can also create your own website on Expert Visits. "
+                "Complete your profile information and create your free portfolio website here:"
+            ),
+        },
+        'ru': {
+            'subject': f"{_BRAND} â€” регистрация завершена",
+            'hello': "Здравствуйте,",
+            'done': "Вы успешно завершили регистрацию.",
+            'username': "Username",
+            'password_link': (
+                "Так как вы зарегистрировались через Google, локальный пароль пока не задан. "
+                "Если хотите задать пароль, используйте эту ссылку:"
+            ),
+            'website': (
+                "В Expert Visits вы также можете создать свой сайт. "
+                "Заполните данные профиля и создайте бесплатный сайт-портфолио здесь:"
+            ),
+        },
+    }[safe_locale]
+
+    subject = copy['subject']
+    password_line = f"\n{copy['password_link']}\n{reset_url}\n" if include_password_link else ""
+
+    message = (
+        f"{copy['hello']}\n\n"
+        f"{copy['done']}\n\n"
+        f"{copy['username']}: {username}\n"
+        f"{password_line}\n"
+        f"{copy['website']}\n"
+        f"{website_url}\n\n"
+        f"â€” {_BRAND}\n"
+        f"{_SITE}\n"
+    )
+    return send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=False,
+    )
+
+
 def send_company_registration_code_email(to_email: str, code: str, company_name: str) -> None:
     """One-time code to verify company contact email before creating the company profile."""
     to_email = (to_email or "").strip()
