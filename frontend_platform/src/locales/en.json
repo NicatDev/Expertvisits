@@ -661,6 +661,17 @@
         "share": "Share this job",
         "edit_vacancy": "Edit vacancy",
         "applicant_fallback": "Applicant",
+        "response_reason": "Response reason",
+        "decision_modal": {
+            "accept_title": "Send positive response",
+            "reject_title": "Send rejection response",
+            "description": "Write the response message that will be sent to {{name}}.",
+            "message_label": "Message / reason",
+            "message_placeholder": "Write the response to send to the applicant...",
+            "min_chars": "Minimum {{count}} characters. Current: {{current}}",
+            "accept_confirm": "Confirm positive response",
+            "reject_confirm": "Confirm rejection"
+        },
         "about": "About the job",
         "posted_date": "Posted Date",
         "deadline": "Deadline",

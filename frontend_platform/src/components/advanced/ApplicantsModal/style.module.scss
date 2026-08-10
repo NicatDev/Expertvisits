@@ -109,3 +109,28 @@
     white-space: pre-wrap;
     border-left: 3px solid #1890ff;
 }
+
+.responseMessage {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f6ffed;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    white-space: pre-wrap;
+    border-left: 3px solid #52c41a;
+}
+
+.responseLabel {
+    display: block;
+    margin-bottom: 6px;
+    color: #666;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.responseMessage p {
+    margin: 0;
+    line-height: 1.5;
+}

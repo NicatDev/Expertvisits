@@ -222,6 +222,7 @@ class VacancyApplication(models.Model):
     applicant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_applications')
     motivation_letter = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    response_message = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

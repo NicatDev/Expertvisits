@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import ApplyModal from '@/components/advanced/ApplyModal';
 import AddVacancyModal from '@/components/advanced/AddVacancyModal';
+import ApplicationDecisionModal from '@/components/advanced/ApplicationDecisionModal';
 import { MapPin, Briefcase, DollarSign, Clock, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink, Pencil } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
@@ -302,6 +303,8 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
     const { t, i18n } = useTranslation('common');
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [decision, setDecision] = useState(null);
+    const [decisionLoading, setDecisionLoading] = useState(false);
 
     const loadApplicants = useCallback(async () => {
         try {
@@ -318,17 +321,22 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
         loadApplicants();
     }, [loadApplicants]);
 
-    const handleStatusChange = async (appId, newStatus) => {
+    const handleStatusChange = async (responseMessage) => {
+        if (!decision) return;
+        const { app, status } = decision;
+        setDecisionLoading(true);
         try {
-            await business.updateApplicationStatus(appId, newStatus);
-            toast.success(t('vacancy_detail.toasts.status_updated', { status: newStatus }));
-            // Optimistic update
+            await business.updateApplicationStatus(app.id, status, responseMessage);
+            toast.success(t('vacancy_detail.toasts.status_updated', { status: t(`vacancy_detail.applicants_modal.statuses.${status}`) }));
             setApplicants(prev => prev.map(app =>
-                app.id === appId ? { ...app, status: newStatus } : app
+                app.id === decision.app.id ? { ...app, status, response_message: responseMessage } : app
             ));
+            setDecision(null);
         } catch (err) {
             console.error("Failed to update status", err);
             toast.error(t('vacancy_detail.toasts.update_failed'));
+        } finally {
+            setDecisionLoading(false);
         }
     };
 
@@ -386,12 +394,21 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
                             </div>
                         </div>
 
+                        {app.response_message ? (
+                            <div className={styles.responseSection}>
+                                <span className={styles.motivationLabel}>{t('vacancy_detail.response_reason')}:</span>
+                                <div className={styles.motivationContent}>
+                                    {app.response_message}
+                                </div>
+                            </div>
+                        ) : null}
+
                         {app.status === 'pending' && (
                             <div className={styles.applicantActions}>
-                                <Button size="small" variant="outline" onClick={() => handleStatusChange(app.id, 'rejected')} className={styles.rejectBtn}>
+                                <Button size="small" variant="outline" onClick={() => setDecision({ app, status: 'rejected' })} className={styles.rejectBtn}>
                                     {t('vacancy_detail.reject')}
                                 </Button>
-                                <Button size="small" onClick={() => handleStatusChange(app.id, 'accepted')} className={styles.acceptBtn}>
+                                <Button size="small" onClick={() => setDecision({ app, status: 'accepted' })} className={styles.acceptBtn}>
                                     {t('vacancy_detail.accept')}
                                 </Button>
                             </div>
@@ -399,6 +416,15 @@ function ApplicantsList({ vacancyId, userPublicHref }) {
                     </div>
                 ))}
             </div>
+            <ApplicationDecisionModal
+                key={decision ? `${decision.app.id}-${decision.status}` : 'closed'}
+                isOpen={Boolean(decision)}
+                status={decision?.status}
+                applicantName={(decision?.app?.applicant_first_name || decision?.app?.applicant_details?.full_name || '').trim() || decision?.app?.applicant_username}
+                onClose={() => setDecision(null)}
+                onConfirm={handleStatusChange}
+                loading={decisionLoading}
+            />
         </div>
     );
 }

@@ -78,9 +78,10 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
             "applicant_details",
             "motivation_letter",
             "status",
+            "response_message",
             "created_at",
         ]
-        read_only_fields = ["applicant", "status", "created_at"]
+        read_only_fields = ["applicant", "status", "response_message", "created_at"]
 
     def get_company_name(self, obj):
         v = obj.vacancy

@@ -299,6 +299,56 @@ def send_vacancy_application_email(application):
         logger.exception("Failed to send vacancy application email to %s", to_email)
 
 
+def send_vacancy_application_status_email(application_id):
+    from apps.business.models import VacancyApplication
+
+    try:
+        application = VacancyApplication.objects.select_related(
+            "vacancy", "vacancy__company", "applicant"
+        ).get(pk=application_id)
+    except VacancyApplication.DoesNotExist:
+        return
+
+    applicant = application.applicant
+    to_email = (getattr(applicant, "email", None) or "").strip()
+    if not to_email:
+        return
+
+    vacancy = application.vacancy
+    status_labels = {
+        "accepted": "müsbətdir",
+        "rejected": "mənfidir",
+    }
+    status_label = status_labels.get(application.status, application.status)
+    reason = (application.response_message or "").strip()
+    vacancy_path = f"/vacancies/{vacancy.slug}/" if vacancy.slug else "/vacancies/"
+    link = f"{_SITE}{vacancy_path}"
+    subject = f"{_BRAND} — vakansiya müraciətinizə cavab"
+    message = (
+        f"Salam {applicant.first_name or applicant.username},\n\n"
+        f"Vakansiya müraciətinizə cavab {status_label}.\n\n"
+        f"Vakansiya:\n"
+        f"  {vacancy.title}\n"
+        f"  {link}\n\n"
+        f"Cavab:\n"
+        f"  {'Müsbət' if application.status == 'accepted' else 'Mənfi'}\n\n"
+    )
+    if reason:
+        message += f"Səbəb / mesaj:\n{reason}\n\n"
+    message += f"— {_BRAND}\n"
+
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [to_email],
+            fail_silently=False,
+        )
+    except Exception:
+        logger.exception("Failed to send vacancy application status email to %s", to_email)
+
+
 def send_company_site_contact_email(company_email, sender_name, sender_email, subject_line, body_text):
     """
     Contact form submission from a public company website → company inbox (owner contact email).

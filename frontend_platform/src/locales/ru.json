@@ -652,6 +652,17 @@
         "share": "Поделиться",
         "edit_vacancy": "Редактировать вакансию",
         "applicant_fallback": "Кандидат",
+        "response_reason": "Причина ответа",
+        "decision_modal": {
+            "accept_title": "Отправить положительный ответ",
+            "reject_title": "Отправить отказ",
+            "description": "Напишите сообщение, которое будет отправлено кандидату {{name}}.",
+            "message_label": "Сообщение / причина",
+            "message_placeholder": "Напишите ответ для кандидата...",
+            "min_chars": "Минимум {{count}} символов. Сейчас: {{current}}",
+            "accept_confirm": "Подтвердить положительный ответ",
+            "reject_confirm": "Подтвердить отказ"
+        },
         "applicants": "Кандидаты",
         "applicants_modal": {
             "title": "Соискатели",

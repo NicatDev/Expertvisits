@@ -13,7 +13,8 @@ export const business = {
     getMyVacancies: (params = {}) => client.get('/business/vacancies/my_vacancies/', { params }),
     getVacancyApplicants: (id) => client.get(`/business/vacancies/${id}/applicants/`),
     getMyApplications: (params = {}) => client.get('/business/applications/', { params }),
-    updateApplicationStatus: (id, status) => client.post(`/business/applications/${id}/set_status/`, { status }),
+    updateApplicationStatus: (id, status, responseMessage = '') =>
+        client.post(`/business/applications/${id}/set_status/`, { status, response_message: responseMessage }),
 
     // Companies
     getCompanies: (params = {}) => client.get('/business/companies/', { params }),

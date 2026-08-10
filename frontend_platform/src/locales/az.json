@@ -550,6 +550,17 @@
         "share": "Bu işi paylaş",
         "edit_vacancy": "Vakansiyaya düzəliş et",
         "applicant_fallback": "Namizəd",
+        "response_reason": "Cavab səbəbi",
+        "decision_modal": {
+            "accept_title": "Müsbət cavab ver",
+            "reject_title": "Rədd cavabı ver",
+            "description": "{{name}} üçün göndəriləcək cavab mesajını yazın.",
+            "message_label": "Mesaj / səbəb",
+            "message_placeholder": "Namizədə göndəriləcək cavabı yazın...",
+            "min_chars": "Minimum {{count}} simvol. Hazırda: {{current}}",
+            "accept_confirm": "Müsbət cavabı təsdiqlə",
+            "reject_confirm": "Rədd cavabını təsdiqlə"
+        },
         "applicants_modal": {
             "title": "Müraciət edənlər",
             "loading": "Yüklənir...",

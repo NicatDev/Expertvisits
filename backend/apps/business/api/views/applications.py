@@ -8,6 +8,7 @@ from apps.business.models import VacancyApplication
 from apps.business.api.serializers import VacancyApplicationSerializer
 from apps.business.api.views.vacancies import _user_owns_vacancy
 from apps.notifications.services import notify_vacancy_application
+from core.utils.email import send_vacancy_application_status_email
 
 class ApplicationListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = VacancyApplicationSerializer
@@ -43,7 +44,7 @@ class ApplicationStatusAPIView(APIView):
 
     def post(self, request, pk=None):
         try:
-            application = VacancyApplication.objects.select_related('vacancy', 'vacancy__company').get(pk=pk)
+            application = VacancyApplication.objects.select_related('vacancy', 'vacancy__company', 'applicant').get(pk=pk)
         except VacancyApplication.DoesNotExist:
              return Response({"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -53,7 +54,17 @@ class ApplicationStatusAPIView(APIView):
         new_status = request.data.get('status')
         if new_status not in ['accepted', 'rejected', 'pending']:
             return Response({"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+
+        response_message = (request.data.get('response_message') or '').strip()
+        if new_status in ['accepted', 'rejected'] and len(response_message) < 10:
+            return Response(
+                {"response_message": ["Response message must be at least 10 characters."]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         
         application.status = new_status
+        application.response_message = response_message if new_status in ['accepted', 'rejected'] else ''
         application.save()
+        if new_status in ['accepted', 'rejected']:
+            transaction.on_commit(lambda: send_vacancy_application_status_email(application.pk))
         return Response({'status': 'updated'})

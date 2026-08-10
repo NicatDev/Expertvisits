@@ -33,11 +33,23 @@ export default function ApplicationsPage() {
                 <div className={styles.list}>
                     {applications.length === 0 ? <p>{t('profile.applications.no_applications')}</p> : (
                         applications.map(app => (
-                            <div key={app.id} className={styles.listItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <h4 style={{ margin: 0 }}>{app.vacancy_title}</h4>
-                                    <p style={{ margin: '4px 0', fontSize: '13px', color: '#666' }}>{app.company_name}</p>
-                                    <span style={{ fontSize: '12px', color: '#999' }}>{t('profile.applications.applied_on')} {new Date(app.created_at).toLocaleDateString()}</span>
+                            <div key={app.id} className={styles.listItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+                                <div style={{ flex: 1 }}>
+                                    <div>
+                                        <h4 style={{ margin: 0 }}>{app.vacancy_title}</h4>
+                                        <p style={{ margin: '4px 0', fontSize: '13px', color: '#666' }}>{app.company_name}</p>
+                                        <span style={{ fontSize: '12px', color: '#999' }}>{t('profile.applications.applied_on')} {new Date(app.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                    {app.response_message ? (
+                                        <div style={{ marginTop: 12, padding: 12, background: '#f9f9f9', borderLeft: '3px solid #1890ff', borderRadius: 6 }}>
+                                            <div style={{ fontSize: 12, fontWeight: 700, color: '#666', textTransform: 'uppercase', marginBottom: 6 }}>
+                                                {t('vacancy_detail.response_reason')}
+                                            </div>
+                                            <p style={{ margin: 0, fontSize: 14, color: '#333', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                                                {app.response_message}
+                                            </p>
+                                        </div>
+                                    ) : null}
                                 </div>
                                 <div style={{
                                     padding: '4px 12px',

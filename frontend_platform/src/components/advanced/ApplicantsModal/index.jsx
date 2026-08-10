@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import { business } from '@/lib/api';
@@ -11,6 +11,7 @@ import { useTranslation } from '@/i18n/client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { defaultLocale, localeFromPathname, withLocale } from '@/lib/i18n/routing';
+import ApplicationDecisionModal from '@/components/advanced/ApplicationDecisionModal';
 
 const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
     const { t } = useTranslation('common');
@@ -20,14 +21,10 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedApp, setExpandedApp] = useState(null); // ID of expanded application (motivation letter)
+    const [decision, setDecision] = useState(null);
+    const [decisionLoading, setDecisionLoading] = useState(false);
 
-    useEffect(() => {
-        if (isOpen && vacancyId) {
-            fetchApplicants();
-        }
-    }, [isOpen, vacancyId]);
-
-    const fetchApplicants = async () => {
+    const fetchApplicants = useCallback(async () => {
         setLoading(true);
         try {
             const res = await business.getVacancyApplicants(vacancyId);
@@ -38,17 +35,28 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [t, vacancyId]);
 
-    const handleStatusChange = async (appId, newStatus) => {
+    useEffect(() => {
+        if (isOpen && vacancyId) {
+            fetchApplicants();
+        }
+    }, [fetchApplicants, isOpen, vacancyId]);
+
+    const handleStatusChange = async (responseMessage) => {
+        if (!decision) return;
+        const { app, status } = decision;
+        setDecisionLoading(true);
         try {
-            await business.updateApplicationStatus(appId, newStatus);
-            toast.success(t('vacancy_detail.applicants_modal.app_status_update', { status: t(`vacancy_detail.applicants_modal.statuses.${newStatus}`) }));
-            // Optimistic update
-            setApplicants(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
+            await business.updateApplicationStatus(app.id, status, responseMessage);
+            toast.success(t('vacancy_detail.applicants_modal.app_status_update', { status: t(`vacancy_detail.applicants_modal.statuses.${status}`) }));
+            setApplicants(prev => prev.map(a => a.id === app.id ? { ...a, status, response_message: responseMessage } : a));
+            setDecision(null);
         } catch (err) {
             console.error(err);
             toast.error(t('vacancy_detail.applicants_modal.failed_update'));
+        } finally {
+            setDecisionLoading(false);
         }
     };
 
@@ -99,15 +107,22 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
 
                                     {app.status === 'pending' && (
                                         <div className={styles.decisionBtns}>
-                                            <Button size="sm" onClick={() => handleStatusChange(app.id, 'accepted')} style={{ background: '#52c41a', borderColor: '#52c41a' }}>
+                                            <Button size="sm" onClick={() => setDecision({ app, status: 'accepted' })} style={{ background: '#52c41a', borderColor: '#52c41a' }}>
                                                 <Check size={16} /> {t('vacancy_detail.applicants_modal.accept')}
                                             </Button>
-                                            <Button size="sm" type="default" onClick={() => handleStatusChange(app.id, 'rejected')} style={{ color: '#f5222d', borderColor: '#f5222d' }}>
+                                            <Button size="sm" type="default" onClick={() => setDecision({ app, status: 'rejected' })} style={{ color: '#f5222d', borderColor: '#f5222d' }}>
                                                 <X size={16} /> {t('vacancy_detail.applicants_modal.reject')}
                                             </Button>
                                         </div>
                                     )}
                                 </div>
+
+                                {app.response_message ? (
+                                    <div className={styles.responseMessage}>
+                                        <span className={styles.responseLabel}>{t('vacancy_detail.response_reason')}</span>
+                                        <p>{app.response_message}</p>
+                                    </div>
+                                ) : null}
 
                                 {expandedApp === app.id && (
                                     <div className={styles.motivation}>
@@ -119,6 +134,15 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
                     </div>
                 )}
             </div>
+            <ApplicationDecisionModal
+                key={decision ? `${decision.app.id}-${decision.status}` : 'closed'}
+                isOpen={Boolean(decision)}
+                status={decision?.status}
+                applicantName={decision?.app?.applicant_details?.full_name || decision?.app?.applicant_details?.username}
+                onClose={() => setDecision(null)}
+                onConfirm={handleStatusChange}
+                loading={decisionLoading}
+            />
         </Modal>
     );
 };

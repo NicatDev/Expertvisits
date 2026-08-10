@@ -1,0 +1,61 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.description {
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+
+    &:focus {
+        border-color: #1890ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.12);
+    }
+}
+
+.counter {
+    font-size: 12px;
+    color: #777;
+}
+
+.counterError {
+    color: #f5222d;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 8px;
+}
+
+.acceptButton {
+    background: #52c41a !important;
+    border-color: #52c41a !important;
+}
+
+.rejectButton {
+    background: #f5222d !important;
+    border-color: #f5222d !important;
+}
