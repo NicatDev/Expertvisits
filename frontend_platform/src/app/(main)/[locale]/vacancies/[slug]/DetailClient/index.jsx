@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button';
 import ApplyModal from '@/components/advanced/ApplyModal';
 import AddVacancyModal from '@/components/advanced/AddVacancyModal';
 import ApplicationDecisionModal from '@/components/advanced/ApplicationDecisionModal';
-import { MapPin, Briefcase, DollarSign, Clock, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink, Pencil } from 'lucide-react';
+import { MapPin, Briefcase, DollarSign, Clock, Share2, CheckCircle, Phone, Mail, Globe, ExternalLink, Pencil, Send } from 'lucide-react';
 import { business } from '@/lib/api';
 import { toast } from 'react-toastify';
 import { useTranslation } from '@/i18n/client';
@@ -150,8 +150,9 @@ export default function DetailClient({ vacancy }) {
                                 <CheckCircle size={18} /> {t('vacancy_detail.applied')}
                             </Button>
                         ) : (
-                            <Button size="lg" onClick={handleApplyClick} className={styles.applyBtn}>
-                                {t('vacancy_detail.apply_now')}
+                            <Button size="large" onClick={handleApplyClick} className={styles.applyBtn}>
+                                <Send size={18} />
+                                <span>{t('vacancy_detail.apply_now')}</span>
                             </Button>
                         )}
 

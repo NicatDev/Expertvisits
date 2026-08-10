@@ -33,6 +33,12 @@
     display: flex;
     align-items: center;
     gap: 20px;
+
+    @include mobile {
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+    }
 }
 
 .logo {
@@ -62,6 +68,7 @@
 .titleBlock {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .title {
@@ -70,7 +77,14 @@
     color: #1f1f1f;
     margin: 0 0 4px 0;
     line-height: 1.2;
-    letter-spacing: -0.5px;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+
+    @include mobile {
+        font-size: 21px;
+        line-height: 1.25;
+        font-weight: 750;
+    }
 }
 
 .companyName {
@@ -151,15 +165,28 @@
     @include mobile {
         width: 100%;
         margin-top: 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
     }
 }
 
 .applyBtn {
     min-width: 120px;
+    display: inline-flex;
+    gap: 10px;
+
+    @include mobile {
+        width: 100%;
+    }
 }
 
 .editBtn {
     min-width: 120px;
+
+    @include mobile {
+        width: 100%;
+    }
 }
 
 .shareBtn {
@@ -183,6 +210,10 @@
         background-color: #f5f5f5;
         color: #1890ff;
         border-color: #1890ff;
+    }
+
+    @include mobile {
+        width: 100%;
     }
 }
 
