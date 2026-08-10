@@ -2,6 +2,7 @@
     min-height: 300px;
     max-height: 60vh;
     overflow-y: auto;
+    width: min(100%, 680px);
 }
 
 .loading,
@@ -35,6 +36,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .avatar,
@@ -56,11 +58,13 @@
 .name {
     font-weight: 600;
     color: #333;
+    overflow-wrap: anywhere;
 }
 
 .username {
     font-size: 13px;
     color: #666;
+    overflow-wrap: anywhere;
 }
 
 .status {
@@ -97,6 +101,32 @@
 .decisionBtns {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
+}
+
+.acceptDecisionBtn {
+    background: #52c41a !important;
+    border-color: #52c41a !important;
+    color: #fff !important;
+
+    &:hover,
+    &:focus {
+        background: #389e0d !important;
+        border-color: #389e0d !important;
+        color: #fff !important;
+    }
+}
+
+.rejectDecisionBtn {
+    color: #f5222d !important;
+    border-color: #f5222d !important;
+
+    &:hover,
+    &:focus {
+        color: #cf1322 !important;
+        border-color: #cf1322 !important;
+        background: #fff1f0 !important;
+    }
 }
 
 .motivation {
@@ -133,4 +163,64 @@
 .responseMessage p {
     margin: 0;
     line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    .container {
+        min-height: 220px;
+        max-height: 68vh;
+        width: 100%;
+    }
+
+    .item {
+        padding: 14px;
+    }
+
+    .header {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .status {
+        flex-shrink: 0;
+        max-width: 42%;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .motivationBtn {
+        justify-content: flex-start;
+        min-height: 36px;
+        text-align: left;
+    }
+
+    .decisionBtns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+
+        button {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .status {
+        max-width: 100%;
+        width: fit-content;
+        text-align: left;
+    }
 }

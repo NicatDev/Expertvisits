@@ -107,10 +107,10 @@ const ApplicantsModal = ({ isOpen, onClose, vacancyId }) => {
 
                                     {app.status === 'pending' && (
                                         <div className={styles.decisionBtns}>
-                                            <Button size="sm" onClick={() => setDecision({ app, status: 'accepted' })} style={{ background: '#52c41a', borderColor: '#52c41a' }}>
+                                            <Button size="small" onClick={() => setDecision({ app, status: 'accepted' })} className={styles.acceptDecisionBtn}>
                                                 <Check size={16} /> {t('vacancy_detail.applicants_modal.accept')}
                                             </Button>
-                                            <Button size="sm" type="default" onClick={() => setDecision({ app, status: 'rejected' })} style={{ color: '#f5222d', borderColor: '#f5222d' }}>
+                                            <Button size="small" type="default" onClick={() => setDecision({ app, status: 'rejected' })} className={styles.rejectDecisionBtn}>
                                                 <X size={16} /> {t('vacancy_detail.applicants_modal.reject')}
                                             </Button>
                                         </div>
