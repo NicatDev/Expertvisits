@@ -585,13 +585,15 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                     </div>
                 </div>
 
-                <Button onClick={handleSubmit} disabled={loading} className={styles.submitBtn}>
-                    {loading
-                        ? t('vacancies.add_modal.submitting')
-                        : isEdit
-                          ? t('vacancies.add_modal.update')
-                          : t('vacancies.add_modal.submit')}
-                </Button>
+                <div className={styles.submitBar}>
+                    <Button onClick={handleSubmit} disabled={loading} className={styles.submitBtn}>
+                        {loading
+                            ? t('vacancies.add_modal.submitting')
+                            : isEdit
+                              ? t('vacancies.add_modal.update')
+                              : t('vacancies.add_modal.submit')}
+                    </Button>
+                </div>
             </div>
         </Modal>
     );

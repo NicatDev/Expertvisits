@@ -3,22 +3,21 @@
     flex-direction: column;
     gap: 16px;
     padding: 8px 0;
-    max-height: min(70vh, 640px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+}
+
+.submitBar {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    padding-top: 12px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.86), #fff 38%);
+    box-shadow: 0 -14px 24px rgba(255, 255, 255, 0.92);
 }
 
 .submitBtn {
     width: 100%;
-    position: sticky;
-    bottom: -8px;
-    z-index: 3;
     min-height: 44px;
-    margin-top: 8px;
     border-radius: 8px;
-    box-shadow:
-        0 -10px 0 #fff,
-        0 -18px 24px rgba(255, 255, 255, 0.94);
 }
 
 .postingMode {
