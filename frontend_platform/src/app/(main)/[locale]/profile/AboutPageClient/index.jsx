@@ -221,6 +221,20 @@ export default function AboutPage() {
         });
     };
 
+    const handleSkillReorder = async (skillType, orderedItems) => {
+        const orderedIds = orderedItems.map((item) => item.id);
+        const otherSkills = (details.skills || []).filter((skill) => skill.skill_type !== skillType);
+        const reorderedSkills = orderedItems.map((skill, index) => ({ ...skill, sort_order: index }));
+        setDetails((prev) => ({ ...prev, skills: [...otherSkills, ...reorderedSkills] }));
+        try {
+            await profiles.reorderSkills(skillType, orderedIds);
+        } catch (err) {
+            console.error(err);
+            toast.error(t('profile.toasts.failed_update'));
+            loadDetails();
+        }
+    };
+
     const loadCategories = async () => {
         if (allCategories.length === 0) {
             try {
@@ -364,6 +378,7 @@ export default function AboutPage() {
                     onAdd={() => openModal('skill', { skill_type: 'hard' })}
                     onEdit={(item) => openModal('skill', item)}
                     onDelete={(id) => handleDelete('skill', id)}
+                    onReorder={(items) => handleSkillReorder('hard', items)}
                     renderItem={(item, isCompact) => (
                         <div className={styles.itemContent} style={{ padding: isCompact ? 0 : '' }}>
                             <h3 style={{ margin: 0, fontSize: isCompact ? '14px' : '', fontWeight: isCompact ? 500 : '' }}>{item.name}</h3>
@@ -379,6 +394,7 @@ export default function AboutPage() {
                     onAdd={() => openModal('skill', { skill_type: 'soft' })}
                     onEdit={(item) => openModal('skill', item)}
                     onDelete={(id) => handleDelete('skill', id)}
+                    onReorder={(items) => handleSkillReorder('soft', items)}
                     renderItem={(item, isCompact) => (
                         <div className={styles.itemContent} style={{ padding: isCompact ? 0 : '' }}>
                             <h3 style={{ margin: 0, fontSize: isCompact ? '14px' : '', fontWeight: isCompact ? 500 : '' }}>{item.name}</h3>

@@ -10,11 +10,15 @@
 
 .submitBtn {
     width: 100%;
-    margin-top: 8px;
     position: sticky;
-    bottom: 0;
+    bottom: -8px;
     z-index: 3;
-    box-shadow: 0 -8px 18px rgba(255, 255, 255, 0.9);
+    min-height: 44px;
+    margin-top: 8px;
+    border-radius: 8px;
+    box-shadow:
+        0 -10px 0 #fff,
+        0 -18px 24px rgba(255, 255, 255, 0.94);
 }
 
 .postingMode {

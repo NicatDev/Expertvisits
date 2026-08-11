@@ -51,6 +51,7 @@
     border: 1px solid #f0f0f0;
     border-radius: 8px;
     transition: all 0.2s;
+    min-width: 0;
 
     &:hover {
         border-color: #1890ff;
@@ -65,6 +66,7 @@
         align-items: center;
         gap: 12px;
         margin: 0;
+        cursor: grab;
 
         &:hover {
             border-color: #1890ff;
@@ -78,6 +80,21 @@
             &:hover { opacity: 1; }
         }
     }
+}
+
+.draggingItem {
+    opacity: 0.55;
+    border-color: #1890ff;
+}
+
+.dragHandle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    cursor: grab;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
 .itemActions {

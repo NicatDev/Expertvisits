@@ -44,6 +44,10 @@ class Skill(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=100, db_index=True)
     skill_type = models.CharField(max_length=10, choices=SKILL_TYPES)
+    sort_order = models.PositiveIntegerField(default=0, db_index=True)
+
+    class Meta:
+        ordering = ['skill_type', 'sort_order', 'id']
 
     def __str__(self):
         return self.name

@@ -18,6 +18,8 @@ export const profiles = {
     addSkill: (data) => api.post('profiles/skills/', data),
     updateSkill: (id, data) => api.put(`profiles/skills/${id}/`, data),
     deleteSkill: (id) => api.delete(`profiles/skills/${id}/`),
+    reorderSkills: (skillType, orderedIds) =>
+        api.post('profiles/skills/reorder/', { skill_type: skillType, ordered_ids: orderedIds }),
 
     // Languages
     getLanguages: (params) => api.get('profiles/languages/', { params }),

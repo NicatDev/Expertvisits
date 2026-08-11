@@ -17,7 +17,7 @@ class EducationSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ['id', 'name', 'skill_type']
+        fields = ['id', 'name', 'skill_type', 'sort_order']
 
 class QuickNoteSerializer(serializers.ModelSerializer):
     class Meta:
