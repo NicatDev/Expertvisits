@@ -20,6 +20,8 @@ const emptyEmployer = () => ({
     employer_website: '',
 });
 
+const asBool = (value) => value === true || value === 'true' || value === 1 || value === '1';
+
 const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockCompanyId = null }) => {
     const { t } = useTranslation('common');
     const { user } = useAuth();
@@ -71,8 +73,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                     salary_range: initialData.salary_range || '',
                     description: initialData.description || '',
                     expires_at: initialData.expires_at,
-                    show_contact_email: Boolean(initialData.show_contact_email),
-                    show_contact_phone: Boolean(initialData.show_contact_phone),
+                    show_contact_email: asBool(initialData.show_contact_email),
+                    show_contact_phone: asBool(initialData.show_contact_phone),
                 });
                 setEmployer({
                     employer_display_name: initialData.employer_display_name || '',
@@ -121,8 +123,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                 salary_range: initialData.salary_range || '',
                 description: initialData.description || '',
                 expires_at: initialData.expires_at,
-                show_contact_email: Boolean(initialData.show_contact_email),
-                show_contact_phone: Boolean(initialData.show_contact_phone),
+                show_contact_email: asBool(initialData.show_contact_email),
+                show_contact_phone: asBool(initialData.show_contact_phone),
             });
             setEmployer({
                 employer_display_name: initialData.employer_display_name || '',

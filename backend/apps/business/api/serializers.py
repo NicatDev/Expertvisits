@@ -329,6 +329,21 @@ class VacancySerializer(serializers.ModelSerializer):
             return obj.company.name
         return (obj.employer_display_name or "").strip()
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        company = data.get("company")
+        if isinstance(company, dict):
+            if not instance.show_contact_email:
+                company["email"] = ""
+            if not instance.show_contact_phone:
+                company["phone"] = ""
+        if not self.get_is_owner(instance):
+            if not instance.show_contact_email:
+                data["employer_email"] = ""
+            if not instance.show_contact_phone:
+                data["employer_phone"] = ""
+        return data
+
     def get_is_owner(self, obj):
         request = self.context.get("request")
         if not request or not request.user.is_authenticated:

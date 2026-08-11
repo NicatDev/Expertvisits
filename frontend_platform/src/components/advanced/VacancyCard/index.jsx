@@ -20,8 +20,8 @@ function buildPublisher(vacancy) {
             name: vacancy.company.name,
             slug: vacancy.company.slug,
             logo: vacancy.company.logo,
-            email: vacancy.company.email,
-            phone: vacancy.company.phone,
+            email: vacancy.show_contact_email ? vacancy.company.email : '',
+            phone: vacancy.show_contact_phone ? vacancy.company.phone : '',
             website_url: vacancy.company.website_url,
         };
     }
@@ -30,8 +30,8 @@ function buildPublisher(vacancy) {
         name: vacancy.company_name || vacancy.employer_display_name || '',
         slug: null,
         logo: vacancy.employer_logo,
-        email: vacancy.employer_email,
-        phone: vacancy.employer_phone,
+        email: vacancy.show_contact_email ? vacancy.employer_email : '',
+        phone: vacancy.show_contact_phone ? vacancy.employer_phone : '',
         website_url: vacancy.employer_website,
     };
 }
