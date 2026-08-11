@@ -349,8 +349,8 @@ class VacancySerializer(serializers.ModelSerializer):
                 "name": c.name,
                 "slug": c.slug,
                 "logo": _absolute_media_url(request, c.logo),
-                "email": c.email,
-                "phone": c.phone or "",
+                "email": c.email if obj.show_contact_email else "",
+                "phone": (c.phone or "") if obj.show_contact_phone else "",
                 "website_url": c.website_url or "",
             }
         return {
@@ -358,8 +358,8 @@ class VacancySerializer(serializers.ModelSerializer):
             "name": (obj.employer_display_name or "").strip(),
             "slug": None,
             "logo": _absolute_media_url(request, obj.employer_logo),
-            "email": obj.employer_email or "",
-            "phone": obj.employer_phone or "",
+            "email": (obj.employer_email or "") if obj.show_contact_email else "",
+            "phone": (obj.employer_phone or "") if obj.show_contact_phone else "",
             "website_url": obj.employer_website or "",
         }
 

@@ -42,6 +42,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
         salary_range: '',
         description: '',
         expires_at: '',
+        show_contact_email: false,
+        show_contact_phone: false,
     });
 
     const isEdit = !!initialData;
@@ -69,6 +71,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                     salary_range: initialData.salary_range || '',
                     description: initialData.description || '',
                     expires_at: initialData.expires_at,
+                    show_contact_email: Boolean(initialData.show_contact_email),
+                    show_contact_phone: Boolean(initialData.show_contact_phone),
                 });
                 setEmployer({
                     employer_display_name: initialData.employer_display_name || '',
@@ -91,6 +95,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                     salary_range: '',
                     description: '',
                     expires_at: '',
+                    show_contact_email: false,
+                    show_contact_phone: false,
                 });
                 setEmployer(emptyEmployer());
                 setEmployerLogo(null);
@@ -115,6 +121,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                 salary_range: initialData.salary_range || '',
                 description: initialData.description || '',
                 expires_at: initialData.expires_at,
+                show_contact_email: Boolean(initialData.show_contact_email),
+                show_contact_phone: Boolean(initialData.show_contact_phone),
             });
             setEmployer({
                 employer_display_name: initialData.employer_display_name || '',
@@ -139,6 +147,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                 salary_range: '',
                 description: '',
                 expires_at: '',
+                show_contact_email: false,
+                show_contact_phone: false,
             });
             setEmployer(emptyEmployer());
             setEmployerLogo(null);
@@ -193,6 +203,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
         fd.append('location', formData.location);
         fd.append('expires_at', formData.expires_at);
         fd.append('description', formData.description);
+        fd.append('show_contact_email', formData.show_contact_email ? 'true' : 'false');
+        fd.append('show_contact_phone', formData.show_contact_phone ? 'true' : 'false');
         if (formData.salary_range) fd.append('salary_range', formData.salary_range);
         if (formData.sub_category) fd.append('sub_category', formData.sub_category);
         if (postedAs === 'company' && formData.company_id) {
@@ -219,6 +231,8 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
             location: formData.location,
             expires_at: formData.expires_at,
             description: formData.description,
+            show_contact_email: formData.show_contact_email,
+            show_contact_phone: formData.show_contact_phone,
         };
         if (formData.salary_range) payload.salary_range = formData.salary_range;
         if (formData.sub_category) payload.sub_category = formData.sub_category;
@@ -449,6 +463,31 @@ const AddVacancyModal = ({ isOpen, onClose, onSuccess, initialData = null, lockC
                         placeholder="e.g. 1000-1500 AZN"
                         error={errors.salary_range}
                     />
+                </div>
+
+                <hr className={styles.divider} />
+
+                <div className={styles.section}>
+                    <h4 className={styles.sectionTitle}>{t('vacancies.add_modal.contact_visibility')}</h4>
+                    <div className={styles.visibilityOptions}>
+                        <label className={styles.checkOption}>
+                            <input
+                                type="checkbox"
+                                checked={formData.show_contact_email}
+                                onChange={(e) => handleChange('show_contact_email', e.target.checked)}
+                            />
+                            <span>{t('vacancies.add_modal.show_contact_email')}</span>
+                        </label>
+                        <label className={styles.checkOption}>
+                            <input
+                                type="checkbox"
+                                checked={formData.show_contact_phone}
+                                onChange={(e) => handleChange('show_contact_phone', e.target.checked)}
+                            />
+                            <span>{t('vacancies.add_modal.show_contact_phone')}</span>
+                        </label>
+                    </div>
+                    <p className={styles.logoHint}>{t('vacancies.add_modal.contact_visibility_hint')}</p>
                 </div>
 
                 <hr className={styles.divider} />

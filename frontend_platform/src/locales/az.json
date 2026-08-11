@@ -612,6 +612,20 @@
         "error_body": "Server müvəqqəti əlçatan olmaya bilər. Bir az sonra yenidən cəhd edin.",
         "error_retry": "Yenidən cəhd et"
     },
+    "apply_modal": {
+        "title": "{{title}} üçün müraciət",
+        "motivation_label": "Bu rol üçün niyə uyğun olduğunuzu yazın.",
+        "motivation_placeholder": "Motivasiya məktubunuzu burada yazın...",
+        "submit": "Müraciəti göndər",
+        "submitting": "Göndərilir...",
+        "success": "Müraciət uğurla göndərildi!",
+        "profile_warning_title": "Profil tamamlanması: {{progress}}%",
+        "profile_warning_body": "Profil məlumatlarınızı doldurmasanız, sizi qiymətləndirmək çətin olacaq. Zəhmət olmasa təhsil, təcrübə və bacarıqlarınızı profilinizə əlavə edin.",
+        "errors": {
+            "motivation_required": "Zəhmət olmasa motivasiya məktubu yazın.",
+            "failed": "Müraciəti göndərmək mümkün olmadı."
+        }
+    },
     "vacancies": {
         "title": "Vakansiyalar",
         "filters_hidden": "Axtarış filtrləri",
@@ -658,6 +672,10 @@
             "business_name_ph": "Məs. komanda, layihə və ya fərdi brend",
             "contact_email": "Əlaqə e-poçtu",
             "contact_phone": "Əlaqə telefonu",
+            "contact_visibility": "Kontaktların görünməsi",
+            "show_contact_email": "E-poçt vakansiya səhifəsində görünsün",
+            "show_contact_phone": "Mobil nömrə vakansiya səhifəsində görünsün",
+            "contact_visibility_hint": "Aktiv etməsəniz, e-poçt və mobil nömrə vakansiya detail səhifəsində göstərilməyəcək.",
             "contact_website": "Vebsayt (istəyə bağlı)",
             "employer_logo": "Logo",
             "employer_logo_hint": "İstəyə bağlı — siyahı və vakansiya səhifəsində görünər.",

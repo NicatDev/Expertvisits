@@ -723,6 +723,20 @@
         "error_body": "The server may be temporarily unavailable. Please try again in a moment.",
         "error_retry": "Try again"
     },
+    "apply_modal": {
+        "title": "Apply to {{title}}",
+        "motivation_label": "Why are you a good fit for this role?",
+        "motivation_placeholder": "Write your motivation letter here...",
+        "submit": "Submit application",
+        "submitting": "Submitting...",
+        "success": "Application submitted successfully!",
+        "profile_warning_title": "Profile completion: {{progress}}%",
+        "profile_warning_body": "If your profile information is incomplete, it will be harder to evaluate you. Please add your education, experience, and skills to your profile.",
+        "errors": {
+            "motivation_required": "Please write a motivation letter.",
+            "failed": "Failed to submit application."
+        }
+    },
     "vacancies": {
         "title": "Vacancies",
         "filters_hidden": "Search filters",
@@ -769,6 +783,10 @@
             "business_name_ph": "e.g. team, project, or personal brand",
             "contact_email": "Contact email",
             "contact_phone": "Contact phone",
+            "contact_visibility": "Contact visibility",
+            "show_contact_email": "Show email on the vacancy page",
+            "show_contact_phone": "Show mobile number on the vacancy page",
+            "contact_visibility_hint": "If you do not enable these, email and mobile number will not be shown on the vacancy detail page.",
             "contact_website": "Website (optional)",
             "employer_logo": "Logo",
             "employer_logo_hint": "Optional — shown on the listing and vacancy page.",

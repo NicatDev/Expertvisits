@@ -282,6 +282,7 @@ export default function DetailClient({ vacancy }) {
                 isOpen={showApplyModal}
                 onClose={() => setShowApplyModal(false)}
                 vacancyId={vacancyData.id}
+                vacancyTitle={vacancyData.title}
                 onSuccess={() => {
                     setIsApplied(true);
                 }}

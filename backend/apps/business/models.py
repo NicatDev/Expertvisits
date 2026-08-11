@@ -172,6 +172,8 @@ class Vacancy(models.Model):
     employer_display_name = models.CharField(max_length=255, blank=True)
     employer_email = models.EmailField(blank=True)
     employer_phone = models.CharField(max_length=50, blank=True)
+    show_contact_email = models.BooleanField(default=False)
+    show_contact_phone = models.BooleanField(default=False)
     employer_website = models.URLField(blank=True, null=True)
     employer_logo = models.ImageField(upload_to="vacancy_employer_logos/", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
